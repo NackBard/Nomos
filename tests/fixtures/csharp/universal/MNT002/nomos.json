@@ -1,0 +1,1 @@
+{ "analyzers": { "MNT002": { "thresholds": { "minIndex": 70 } } } }

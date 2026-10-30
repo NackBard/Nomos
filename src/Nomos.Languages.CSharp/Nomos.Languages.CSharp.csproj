@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+    <ProjectReference Include="..\Nomos.Abstractions\Nomos.Abstractions.csproj" />
+  </ItemGroup>
+</Project>

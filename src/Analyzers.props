@@ -1,0 +1,7 @@
+<Project>
+  <ItemGroup>
+    <ProjectReference Include="..\Nomos.Abstractions\Nomos.Abstractions.csproj" />
+    <Using Include="Nomos.Abstractions" />
+    <Using Include="Nomos.Abstractions.Ir" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,74 @@
+{
+  "schemaVersion": "1.0.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "csharp" },
+  "files": [
+    { "path": "Basics.cs", "lines": 61, "loc": 54 }
+  ],
+  "modules": [
+    {
+      "id": "Metrics",
+      "name": "Metrics",
+      "files": ["Basics.cs"],
+      "loc": 54,
+      "metrics": { "ca": 0, "ce": 0, "instability": null, "abstractness": 0, "distance": null },
+      "paradigmEvidence": []
+    }
+  ],
+  "types": [
+    {
+      "id": "Metrics.Basics",
+      "name": "Basics",
+      "module": "Metrics",
+      "kind": "class",
+      "isAbstract": false,
+      "location": { "file": "Basics.cs", "startLine": 3 },
+      "metrics": { "lines": 59, "memberCount": 4, "methodCount": 4, "dit": 0, "cbo": 0, "lcom4": null, "wmc": 15 }
+    }
+  ],
+  "functions": [
+    {
+      "id": "Metrics.Basics.Straight",
+      "name": "Straight",
+      "module": "Metrics",
+      "type": "Metrics.Basics",
+      "kind": "method",
+      "visibility": "public",
+      "location": { "file": "Basics.cs", "startLine": 5 },
+      "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 1, "lines": 4 }
+    },
+    {
+      "id": "Metrics.Basics.Branches",
+      "name": "Branches",
+      "module": "Metrics",
+      "type": "Metrics.Basics",
+      "kind": "method",
+      "visibility": "public",
+      "location": { "file": "Basics.cs", "startLine": 11 },
+      "metrics": { "cyclomatic": 5, "maxNesting": 1, "parameterCount": 2, "lines": 13 }
+    },
+    {
+      "id": "Metrics.Basics.Loops",
+      "name": "Loops",
+      "module": "Metrics",
+      "type": "Metrics.Basics",
+      "kind": "method",
+      "visibility": "public",
+      "location": { "file": "Basics.cs", "startLine": 25 },
+      "metrics": { "cyclomatic": 4, "maxNesting": 3, "parameterCount": 2, "lines": 16 }
+    },
+    {
+      "id": "Metrics.Basics.Switches",
+      "name": "Switches",
+      "module": "Metrics",
+      "type": "Metrics.Basics",
+      "kind": "method",
+      "visibility": "public",
+      "location": { "file": "Basics.cs", "startLine": 42 },
+      "metrics": { "cyclomatic": 5, "maxNesting": 2, "parameterCount": 2, "lines": 19 }
+    }
+  ],
+  "dependencies": [],
+  "cycles": [],
+  "skippedRules": [],
+  "diagnostics": []
+}

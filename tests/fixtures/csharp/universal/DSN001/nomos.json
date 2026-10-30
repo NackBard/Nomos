@@ -1,0 +1,1 @@
+{ "analyzers": { "DSN001": { "thresholds": { "maxDistance": 0.5, "minCoupling": 1 } } } }

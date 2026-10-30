@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:nomos:contracts:1.0.0:conformance-case",
+  "title": "Conformance case",
+  "description": "Schema of conformance/cases/<id>/case.json. Contract version 1.0.0.",
+  "x-contractVersion": "1.0.0",
+  "type": "object",
+  "required": ["schemaVersion", "id", "title", "languages"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+    "title": { "type": "string" },
+    "covers": { "type": "array", "items": { "type": "string" }, "description": "Metric names or rule ids the case is designed to exercise, e.g. [\"cyclomatic\", \"instability\", \"DSN002\"]." },
+    "languages": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" }, "description": "Languages with sources and expected files in this case." },
+    "tolerance": {
+      "type": "object",
+      "description": "How far an actual value may differ from the expected one. Integers and ids are always exact. Default for non-integer numbers: absolute 0.001.",
+      "additionalProperties": false,
+      "properties": {
+        "default": { "$ref": "#/$defs/tolerance" },
+        "metrics": { "type": "object", "additionalProperties": { "$ref": "#/$defs/tolerance" }, "description": "Overrides keyed by metric name, e.g. maintainabilityIndex." }
+      }
+    },
+    "parity": {
+      "type": "array",
+      "description": "Cross-language assertions: the same metric of equivalent entities must be equal in every listed language, within tolerance. This is what keeps independent analyzers consistent.",
+      "items": {
+        "type": "object",
+        "required": ["metric", "scope", "entities"],
+        "additionalProperties": false,
+        "properties": {
+          "metric": { "type": "string" },
+          "scope": { "type": "string", "enum": ["module", "type", "function"] },
+          "entities": { "type": "object", "additionalProperties": { "type": "string" }, "description": "Language to entity id: { \"csharp\": \"Shop.Orders.OrderService.Place\", \"python\": \"shop.orders.OrderService.place\" }." }
+        }
+      }
+    },
+    "expectSarif": {
+      "type": "boolean",
+      "default": false,
+      "description": "When true, each language folder also has expected.sarif.json (reduced form: ruleId, file, startLine per result) and the analyzer must reproduce it."
+    }
+  },
+  "$defs": {
+    "tolerance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "absolute": { "type": "number", "minimum": 0 },
+        "relative": { "type": "number", "minimum": 0, "maximum": 1 }
+      },
+      "minProperties": 1
+    }
+  }
+}

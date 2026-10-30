@@ -1,0 +1,1 @@
+{ "analyzers": { "MNT001": { "thresholds": { "maxComplexity": 2 } } } }

@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:nomos:contracts:1.0.0:manifest",
+  "title": "Analyzer manifest",
+  "description": "Output of `<analyzer> manifest`. Contract version 1.0.0. Changing this file requires a schemaVersion bump and a record in docs/DECISIONS.md.",
+  "x-contractVersion": "1.0.0",
+  "type": "object",
+  "required": ["name", "language", "version", "schemaVersion", "paradigms", "capabilities", "rules"],
+  "additionalProperties": false,
+  "properties": {
+    "name": { "type": "string", "minLength": 1, "description": "Analyzer name, e.g. nomos-csharp." },
+    "language": { "$ref": "#/$defs/languageId", "description": "Language this analyzer handles." },
+    "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+([-+][0-9A-Za-z.-]+)?$", "description": "Analyzer build version (semver)." },
+    "schemaVersion": { "const": "1.0.0", "description": "Version of the contracts this analyzer speaks. Must equal x-contractVersion of the schemas it was built for." },
+    "paradigms": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/paradigmId" },
+      "description": "Paradigms the language supports. Whether a module actually shows one is reported per module in facts."
+    },
+    "capabilities": {
+      "type": "object",
+      "required": ["semantic", "supportedRules"],
+      "additionalProperties": false,
+      "properties": {
+        "semantic": { "type": "boolean", "description": "True when the analyzer resolves symbols with the language's own semantic model. False means names only." },
+        "supportedRules": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/ruleId" }, "description": "Rule IDs this analyzer implements detectors for. Must equal the set of ids in `rules`." },
+        "partialAnalysis": { "type": "boolean", "default": false, "description": "True when `analyze --files` produces correct facts for the listed files without the rest of the project." },
+        "sarif": { "type": "boolean", "default": true, "description": "True when `analyze --sarif <file>` is supported." }
+      }
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "category", "paradigms"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "#/$defs/ruleId" },
+          "category": { "type": "string", "minLength": 1 },
+          "paradigms": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/paradigmId" }, "description": "Paradigms the rule applies to. Empty means any module." },
+          "title": { "type": "string" }
+        }
+      },
+      "description": "Descriptors of the implemented rules. The authoritative definition of each shared rule lives in spec/rules/*.yaml; this list only states what this build implements."
+    }
+  },
+  "$defs": {
+    "languageId": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+    "paradigmId": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$", "description": "Known values are listed in spec/paradigms.md; the set is open." },
+    "ruleId": { "type": "string", "pattern": "^([A-Z]{2,3}\\.)?[A-Z]{2,4}[0-9]{3}$", "description": "Shared rules have no prefix (CC001); language-specific rules carry a language code prefix (CS.NAM001)." }
+  }
+}

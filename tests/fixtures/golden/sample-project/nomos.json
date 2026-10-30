@@ -1,0 +1,9 @@
+{
+  "languages": { "csharp": { "paradigms": ["oop", "structural"] } },
+  "layers": [
+    { "name": "Domain", "patterns": ["Sample.Domain*"], "mayDependOn": [] },
+    { "name": "Services", "patterns": ["Sample.Services*"], "mayDependOn": ["Domain"] }
+  ],
+  "analyzers": { "CC005": { "severity": "Minor" } },
+  "suppressions": [ { "id": "CC001", "path": "Legacy/**" } ]
+}

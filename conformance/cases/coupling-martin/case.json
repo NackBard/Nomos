@@ -1,0 +1,7 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "coupling-martin",
+  "title": "Afferent and efferent coupling, instability, abstractness and distance on four modules",
+  "covers": ["ca", "ce", "instability", "abstractness", "distance", "cbo", "dit"],
+  "languages": ["csharp"]
+}

@@ -1,0 +1,71 @@
+{
+  "schemaVersion": "1.0.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "csharp" },
+  "files": [
+    { "path": "App.cs", "lines": 7, "loc": 6 },
+    { "path": "Domain.cs", "lines": 10, "loc": 8 },
+    { "path": "Infra.cs", "lines": 6, "loc": 5 },
+    { "path": "Services.cs", "lines": 7, "loc": 6 }
+  ],
+  "modules": [
+    {
+      "id": "Shop.App", "name": "Shop.App", "files": ["App.cs"], "loc": 6,
+      "metrics": { "ca": 0, "ce": 2, "instability": 1, "abstractness": 0, "distance": 0 },
+      "paradigmEvidence": []
+    },
+    {
+      "id": "Shop.Domain", "name": "Shop.Domain", "files": ["Domain.cs"], "loc": 8,
+      "metrics": { "ca": 2, "ce": 0, "instability": 0, "abstractness": 0.5, "distance": 0.5 },
+      "paradigmEvidence": []
+    },
+    {
+      "id": "Shop.Infra", "name": "Shop.Infra", "files": ["Infra.cs"], "loc": 5,
+      "metrics": { "ca": 1, "ce": 2, "instability": 0.6667, "abstractness": 0, "distance": 0.3333 },
+      "paradigmEvidence": []
+    },
+    {
+      "id": "Shop.Services", "name": "Shop.Services", "files": ["Services.cs"], "loc": 6,
+      "metrics": { "ca": 1, "ce": 2, "instability": 0.6667, "abstractness": 0, "distance": 0.3333 },
+      "paradigmEvidence": []
+    }
+  ],
+  "types": [
+    {
+      "id": "Shop.App.Program", "name": "Program", "module": "Shop.App", "kind": "class", "isAbstract": false,
+      "location": { "file": "App.cs", "startLine": 3 },
+      "metrics": { "lines": 5, "memberCount": 2, "methodCount": 0, "dit": 0, "cbo": 2 }
+    },
+    {
+      "id": "Shop.Domain.Entity", "name": "Entity", "module": "Shop.Domain", "kind": "class", "isAbstract": false,
+      "location": { "file": "Domain.cs", "startLine": 7 },
+      "metrics": { "lines": 4, "memberCount": 1, "methodCount": 0, "dit": 0, "cbo": 0 }
+    },
+    {
+      "id": "Shop.Domain.IRepo", "name": "IRepo", "module": "Shop.Domain", "kind": "interface", "isAbstract": true,
+      "location": { "file": "Domain.cs", "startLine": 3 },
+      "metrics": { "lines": 3, "memberCount": 0, "methodCount": 0 }
+    },
+    {
+      "id": "Shop.Infra.SqlRepo", "name": "SqlRepo", "module": "Shop.Infra", "kind": "class", "isAbstract": false,
+      "location": { "file": "Infra.cs", "startLine": 3 },
+      "metrics": { "lines": 4, "memberCount": 1, "methodCount": 0, "dit": 0, "cbo": 2 }
+    },
+    {
+      "id": "Shop.Services.OrderService", "name": "OrderService", "module": "Shop.Services", "kind": "class", "isAbstract": false,
+      "location": { "file": "Services.cs", "startLine": 3 },
+      "metrics": { "lines": 5, "memberCount": 2, "methodCount": 0, "dit": 0, "cbo": 2 }
+    }
+  ],
+  "functions": [],
+  "dependencies": [
+    { "from": "Shop.App.Program", "to": "Shop.Infra.SqlRepo", "kind": "type-ref", "phase": "runtime" },
+    { "from": "Shop.App.Program", "to": "Shop.Services.OrderService", "kind": "type-ref", "phase": "runtime" },
+    { "from": "Shop.Infra.SqlRepo", "to": "Shop.Domain.Entity", "kind": "type-ref", "phase": "runtime" },
+    { "from": "Shop.Infra.SqlRepo", "to": "Shop.Domain.IRepo", "kind": "inheritance", "phase": "runtime" },
+    { "from": "Shop.Services.OrderService", "to": "Shop.Domain.Entity", "kind": "type-ref", "phase": "runtime" },
+    { "from": "Shop.Services.OrderService", "to": "Shop.Domain.IRepo", "kind": "type-ref", "phase": "runtime" }
+  ],
+  "cycles": [],
+  "skippedRules": [],
+  "diagnostics": []
+}

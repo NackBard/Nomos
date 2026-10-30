@@ -1,0 +1,1 @@
+{ "analyzers": { "CC001": { "thresholds": { "maxLines": 3 } } } }

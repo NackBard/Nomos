@@ -1,0 +1,7 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "metrics-basic",
+  "title": "Size, cyclomatic complexity, nesting and parameters on functions with a known structure",
+  "covers": ["lines", "loc", "parameterCount", "cyclomatic", "maxNesting", "memberCount", "methodCount", "wmc", "dit", "cbo", "lcom4", "instability", "abstractness", "distance"],
+  "languages": ["csharp"]
+}

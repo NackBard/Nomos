@@ -1,0 +1,1618 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "Nomos",
+          "semanticVersion": "0.1.0",
+          "rules": [
+            {
+              "id": "ALG001",
+              "name": "Time complexity estimate",
+              "shortDescription": {
+                "text": "Time complexity estimate"
+              },
+              "fullDescription": {
+                "text": "Estimates growth from loop nesting, known linear calls, recursion shape and project callees. Always an estimate: input sizes are unknown."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "category": "Algorithms",
+                "paradigms": [],
+                "languages": []
+              }
+            },
+            {
+              "id": "ALG002",
+              "name": "Quadratic pattern",
+              "shortDescription": {
+                "text": "Quadratic pattern"
+              },
+              "fullDescription": {
+                "text": "Finds list searches, front insertions and string concatenation inside loops."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "category": "Algorithms",
+                "paradigms": [],
+                "languages": []
+              }
+            },
+            {
+              "id": "ALG003",
+              "name": "Allocation in hot loop",
+              "shortDescription": {
+                "text": "Allocation in hot loop"
+              },
+              "fullDescription": {
+                "text": "Finds materializing calls in loops, and object creation or closures in nested loops."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "category": "Algorithms",
+                "paradigms": [],
+                "languages": []
+              }
+            },
+            {
+              "id": "ALG004",
+              "name": "Space complexity estimate",
+              "shortDescription": {
+                "text": "Space complexity estimate"
+              },
+              "fullDescription": {
+                "text": "Estimates extra memory from collections growing in loops, arrays of non-constant size and recursion depth."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "category": "Algorithms",
+                "paradigms": [],
+                "languages": []
+              }
+            },
+            {
+              "id": "CC001",
+              "name": "Long method",
+              "shortDescription": {
+                "text": "Long method"
+              },
+              "fullDescription": {
+                "text": "Counts source lines of a callable against maxLines."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "category": "CleanCode",
+                "paradigms": [
+                  "oop",
+                  "structural",
+                  "functional"
+                ],
+                "languages": []
+              }
+            },
+            {
+              "id": "CC002",
+              "name": "Large class",
+              "shortDescription": {
+                "text": "Large class"
+              },
+              "fullDescription": {
+                "text": "Counts lines and members of a type, over all partial parts."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "category": "CleanCode",
+                "paradigms": [
+                  "oop"
+                ],
+                "languages": []
+              }
+            },
+            {
+              "id": "CC003",
+              "name": "Too many parameters",
+              "shortDescription": {
+                "text": "Too many parameters"
+              },
+              "fullDescription": {
+                "text": "Counts parameters of a callable; constructors have a separate limit because of dependency injection."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "category": "CleanCode",
+                "paradigms": [
+                  "oop",
+                  "structural",
+                  "functional"
+                ],
+                "languages": []
+              }
+            },
+            {
+              "id": "CC004",
+              "name": "Deep nesting",
+              "shortDescription": {
+                "text": "Deep nesting"
+              },
+              "fullDescription": {
+                "text": "Measures nesting of branches, loops and guarded blocks; 'else if' chains stay flat."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "category": "CleanCode",
+                "paradigms": [
+                  "oop",
+                  "structural",
+                  "functional"
+                ],
+                "languages": []
+              }
+            },
+            {
+              "id": "CC005",
+              "name": "Naming conventions",
+              "shortDescription": {
+                "text": "Naming conventions"
+              },
+              "fullDescription": {
+                "text": "Types, methods and properties use PascalCase, interfaces start with I, parameters use camelCase; also flags one-letter parameters of public methods."
+              },
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "properties": {
+                "category": "CleanCode",
+                "paradigms": [
+                  "oop",
+                  "structural",
+                  "functional"
+                ],
+                "languages": [
+                  "csharp"
+                ]
+              }
+            },
+            {
+              "id": "CC006",
+              "name": "Placeholders",
+              "shortDescription": {
+                "text": "Placeholders"
+              },
+              "fullDescription": {
+                "text": "Finds TODO, FIXME, HACK and XXX comments and bodies that only throw NotImplementedException."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "category": "CleanCode",
+                "paradigms": [
+                  "oop",
+                  "structural",
+                  "functional"
+                ],
+                "languages": []
+              }
+            },
+            {
+              "id": "CC007",
+              "name": "Dead code",
+              "shortDescription": {
+                "text": "Dead code"
+              },
+              "fullDescription": {
+                "text": "Finds unreachable statements, unused locals, and private members nothing in the type refers to."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "category": "CleanCode",
+                "paradigms": [
+                  "oop",
+                  "structural",
+                  "functional"
+                ],
+                "languages": []
+              }
+            },
+            {
+              "id": "CC008",
+              "name": "Commented-out code",
+              "shortDescription": {
+                "text": "Commented-out code"
+              },
+              "fullDescription": {
+                "text": "Line comments that end like statements are probably disabled code; version control keeps the history instead."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "category": "CleanCode",
+                "paradigms": [
+                  "oop",
+                  "structural",
+                  "functional"
+                ],
+                "languages": []
+              }
+            },
+            {
+              "id": "CC009",
+              "name": "Empty catch",
+              "shortDescription": {
+                "text": "Empty catch"
+              },
+              "fullDescription": {
+                "text": "A catch block with no statements and no comment silently discards the failure."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "category": "CleanCode",
+                "paradigms": [
+                  "oop",
+                  "structural",
+                  "functional"
+                ],
+                "languages": []
+              }
+            },
+            {
+              "id": "DSN001",
+              "name": "Main sequence distance",
+              "shortDescription": {
+                "text": "Main sequence distance"
+              },
+              "fullDescription": {
+                "text": "Computes Ca, Ce, instability I, abstractness A and distance D = |A + I - 1| per module. D near 1 means rigid or useless."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "category": "Design",
+                "paradigms": [],
+                "languages": []
+              }
+            },
+            {
+              "id": "DSN002",
+              "name": "Dependency cycles",
+              "shortDescription": {
+                "text": "Dependency cycles"
+              },
+              "fullDescription": {
+                "text": "Runs Tarjan's algorithm on the module graph and the type graph."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "category": "Design",
+                "paradigms": [],
+                "languages": []
+              }
+            },
+            {
+              "id": "DSN003",
+              "name": "Layer violations",
+              "shortDescription": {
+                "text": "Layer violations"
+              },
+              "fullDescription": {
+                "text": "Maps modules to the layers from configuration and flags dependencies on layers that are not allowed."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "category": "Design",
+                "paradigms": [],
+                "languages": []
+              }
+            },
+            {
+              "id": "DSN004",
+              "name": "God class",
+              "shortDescription": {
+                "text": "God class"
+              },
+              "fullDescription": {
+                "text": "Lanza and Marinescu's detection strategy: high WMC, much foreign data used (ATFD), low cohesion (TCC)."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "category": "Design",
+                "paradigms": [],
+                "languages": []
+              }
+            },
+            {
+              "id": "DSN005",
+              "name": "Feature envy",
+              "shortDescription": {
+                "text": "Feature envy"
+              },
+              "fullDescription": {
+                "text": "A method that uses more data of one other type than of its own probably belongs there."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "category": "Design",
+                "paradigms": [],
+                "languages": []
+              }
+            },
+            {
+              "id": "DSN006",
+              "name": "Blast radius",
+              "shortDescription": {
+                "text": "Blast radius"
+              },
+              "fullDescription": {
+                "text": "Walks reversed dependencies from each type to count what a change can reach."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "category": "Design",
+                "paradigms": [],
+                "languages": []
+              }
+            },
+            {
+              "id": "MNT001",
+              "name": "Cyclomatic complexity",
+              "shortDescription": {
+                "text": "Cyclomatic complexity"
+              },
+              "fullDescription": {
+                "text": "Counts decision points per callable; reports every value as a metric and flags those above the limit."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "category": "Maintainability",
+                "paradigms": [],
+                "languages": []
+              }
+            },
+            {
+              "id": "MNT002",
+              "name": "Maintainability index",
+              "shortDescription": {
+                "text": "Maintainability index"
+              },
+              "fullDescription": {
+                "text": "MI = max(0, (171 - 5.2 ln V - 0.23 G - 16.2 ln L) * 100 / 171), from Halstead volume V, cyclomatic complexity G and lines L."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "category": "Maintainability",
+                "paradigms": [],
+                "languages": []
+              }
+            },
+            {
+              "id": "MNT003",
+              "name": "Duplication",
+              "shortDescription": {
+                "text": "Duplication"
+              },
+              "fullDescription": {
+                "text": "Finds type-2 clones: token sequences equal after normalizing identifiers and literals, with a rolling hash."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "category": "Maintainability",
+                "paradigms": [],
+                "languages": []
+              }
+            },
+            {
+              "id": "MNT004",
+              "name": "Test coverage",
+              "shortDescription": {
+                "text": "Test coverage"
+              },
+              "fullDescription": {
+                "text": "When thresholds.report points to a Cobertura XML or LCOV file, reports line coverage and flags files below minCoverage."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "category": "Maintainability",
+                "paradigms": [],
+                "languages": []
+              }
+            },
+            {
+              "id": "OOP001",
+              "name": "Encapsulation",
+              "shortDescription": {
+                "text": "Encapsulation"
+              },
+              "fullDescription": {
+                "text": "Public mutable fields hand a type's invariants to every caller."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "category": "Paradigm",
+                "paradigms": [
+                  "oop"
+                ],
+                "languages": []
+              }
+            },
+            {
+              "id": "OOP002",
+              "name": "Inheritance depth",
+              "shortDescription": {
+                "text": "Inheritance depth"
+              },
+              "fullDescription": {
+                "text": "Reports the depth of inheritance tree (DIT) and flags hierarchies deeper than maxDepth."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "category": "Paradigm",
+                "paradigms": [
+                  "oop"
+                ],
+                "languages": []
+              }
+            },
+            {
+              "id": "OOP003",
+              "name": "Polymorphism",
+              "shortDescription": {
+                "text": "Polymorphism"
+              },
+              "fullDescription": {
+                "text": "Several runtime type tests on project types in one callable usually reimplement virtual dispatch."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "category": "Paradigm",
+                "paradigms": [
+                  "oop"
+                ],
+                "languages": []
+              }
+            },
+            {
+              "id": "OOP004",
+              "name": "Cohesion",
+              "shortDescription": {
+                "text": "Cohesion"
+              },
+              "fullDescription": {
+                "text": "LCOM4 counts groups of methods that share no state; more than one group suggests a class that could be split."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "category": "Paradigm",
+                "paradigms": [
+                  "oop"
+                ],
+                "languages": []
+              }
+            },
+            {
+              "id": "OOP005",
+              "name": "Coupling",
+              "shortDescription": {
+                "text": "Coupling"
+              },
+              "fullDescription": {
+                "text": "Coupling Between Objects counts distinct types a class depends on, ignoring the System namespace."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "category": "Paradigm",
+                "paradigms": [
+                  "oop"
+                ],
+                "languages": []
+              }
+            },
+            {
+              "id": "OOP006",
+              "name": "Refused bequest",
+              "shortDescription": {
+                "text": "Refused bequest"
+              },
+              "fullDescription": {
+                "text": "A subclass that overrides nothing and touches no inherited member gains nothing from its base class."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "category": "Paradigm",
+                "paradigms": [
+                  "oop"
+                ],
+                "languages": []
+              }
+            },
+            {
+              "id": "PAT001",
+              "name": "Singleton",
+              "shortDescription": {
+                "text": "Singleton"
+              },
+              "fullDescription": {
+                "text": "A class with only private constructors that exposes a static instance of itself."
+              },
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "properties": {
+                "category": "Patterns",
+                "paradigms": [
+                  "oop"
+                ],
+                "languages": []
+              }
+            },
+            {
+              "id": "PAT002",
+              "name": "Factory",
+              "shortDescription": {
+                "text": "Factory"
+              },
+              "fullDescription": {
+                "text": "A method that returns an abstraction and creates several of its concrete subtypes."
+              },
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "properties": {
+                "category": "Patterns",
+                "paradigms": [
+                  "oop"
+                ],
+                "languages": []
+              }
+            },
+            {
+              "id": "PAT003",
+              "name": "Strategy",
+              "shortDescription": {
+                "text": "Strategy"
+              },
+              "fullDescription": {
+                "text": "A context class that receives one of several interchangeable implementations and delegates to it."
+              },
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "properties": {
+                "category": "Patterns",
+                "paradigms": [
+                  "oop"
+                ],
+                "languages": []
+              }
+            },
+            {
+              "id": "PAT004",
+              "name": "Observer",
+              "shortDescription": {
+                "text": "Observer"
+              },
+              "fullDescription": {
+                "text": "A type with events it raises, or a list of observers it notifies in a loop, with subscribe methods."
+              },
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "properties": {
+                "category": "Patterns",
+                "paradigms": [
+                  "oop"
+                ],
+                "languages": []
+              }
+            },
+            {
+              "id": "PAT005",
+              "name": "Decorator",
+              "shortDescription": {
+                "text": "Decorator"
+              },
+              "fullDescription": {
+                "text": "A class that implements an abstraction, wraps an instance of the same abstraction and forwards to it."
+              },
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "properties": {
+                "category": "Patterns",
+                "paradigms": [
+                  "oop"
+                ],
+                "languages": []
+              }
+            },
+            {
+              "id": "PAT006",
+              "name": "Repository",
+              "shortDescription": {
+                "text": "Repository"
+              },
+              "fullDescription": {
+                "text": "A type named *Repository, or a collection-like API of get, add and remove methods over one entity."
+              },
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "properties": {
+                "category": "Patterns",
+                "paradigms": [
+                  "oop"
+                ],
+                "languages": []
+              }
+            },
+            {
+              "id": "PAT007",
+              "name": "Builder",
+              "shortDescription": {
+                "text": "Builder"
+              },
+              "fullDescription": {
+                "text": "Fluent methods that return the type itself, plus a terminal Build-like method."
+              },
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "properties": {
+                "category": "Patterns",
+                "paradigms": [
+                  "oop"
+                ],
+                "languages": []
+              }
+            },
+            {
+              "id": "PAT101",
+              "name": "Service Locator",
+              "shortDescription": {
+                "text": "Service Locator"
+              },
+              "fullDescription": {
+                "text": "Resolving dependencies from a container inside business code hides them from the constructor."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "category": "Patterns",
+                "paradigms": [
+                  "oop"
+                ],
+                "languages": []
+              }
+            },
+            {
+              "id": "PAT102",
+              "name": "Anemic Domain Model",
+              "shortDescription": {
+                "text": "Anemic Domain Model"
+              },
+              "fullDescription": {
+                "text": "A domain-named class with settable data and no behavior, while logic lives in services."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "category": "Patterns",
+                "paradigms": [
+                  "oop"
+                ],
+                "languages": []
+              }
+            },
+            {
+              "id": "PAT103",
+              "name": "Middle Man",
+              "shortDescription": {
+                "text": "Middle Man"
+              },
+              "fullDescription": {
+                "text": "A class that does almost nothing but forward to one collaborator, without implementing a shared abstraction."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "category": "Patterns",
+                "paradigms": [
+                  "oop"
+                ],
+                "languages": []
+              }
+            },
+            {
+              "id": "PRN001",
+              "name": "Single Responsibility",
+              "shortDescription": {
+                "text": "Single Responsibility"
+              },
+              "fullDescription": {
+                "text": "A class that takes many constructor dependencies, or reaches into many project modules, likely has several reasons to change."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "category": "Principles",
+                "paradigms": [
+                  "oop"
+                ],
+                "languages": []
+              }
+            },
+            {
+              "id": "PRN002",
+              "name": "Open/Closed",
+              "shortDescription": {
+                "text": "Open/Closed"
+              },
+              "fullDescription": {
+                "text": "The same enum switched on in several places means adding a value requires editing all of them."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "category": "Principles",
+                "paradigms": [
+                  "oop"
+                ],
+                "languages": []
+              }
+            },
+            {
+              "id": "PRN003",
+              "name": "Liskov Substitution",
+              "shortDescription": {
+                "text": "Liskov Substitution"
+              },
+              "fullDescription": {
+                "text": "An override or implementation that only throws NotSupported/NotImplemented cannot stand in for its base type."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "category": "Principles",
+                "paradigms": [
+                  "oop"
+                ],
+                "languages": []
+              }
+            },
+            {
+              "id": "PRN004",
+              "name": "Interface Segregation",
+              "shortDescription": {
+                "text": "Interface Segregation"
+              },
+              "fullDescription": {
+                "text": "Interfaces with many members, or whose implementers stub some of them, force clients to depend on what they do not use."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "category": "Principles",
+                "paradigms": [
+                  "oop"
+                ],
+                "languages": []
+              }
+            },
+            {
+              "id": "PRN005",
+              "name": "Dependency Inversion",
+              "shortDescription": {
+                "text": "Dependency Inversion"
+              },
+              "fullDescription": {
+                "text": "Creating a project class that implements a project abstraction binds the caller to the concrete type."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "category": "Principles",
+                "paradigms": [
+                  "oop"
+                ],
+                "languages": []
+              }
+            },
+            {
+              "id": "PRN006",
+              "name": "Don't Repeat Yourself",
+              "shortDescription": {
+                "text": "Don't Repeat Yourself"
+              },
+              "fullDescription": {
+                "text": "Callables whose IR is identical up to local names and literals encode one piece of knowledge twice."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "category": "Principles",
+                "paradigms": [],
+                "languages": []
+              }
+            },
+            {
+              "id": "PRN007",
+              "name": "Keep It Simple",
+              "shortDescription": {
+                "text": "Keep It Simple"
+              },
+              "fullDescription": {
+                "text": "Long boolean conditions and nested ternaries pack too many decisions into one expression."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "category": "Principles",
+                "paradigms": [],
+                "languages": []
+              }
+            },
+            {
+              "id": "PRN008",
+              "name": "You Aren't Gonna Need It",
+              "shortDescription": {
+                "text": "You Aren't Gonna Need It"
+              },
+              "fullDescription": {
+                "text": "Non-public abstractions without enough implementers and unused private parameters are generality nobody uses."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "category": "Principles",
+                "paradigms": [],
+                "languages": []
+              }
+            },
+            {
+              "id": "PRN009",
+              "name": "Law of Demeter",
+              "shortDescription": {
+                "text": "Law of Demeter"
+              },
+              "fullDescription": {
+                "text": "A chain that walks through several distinct project types couples the caller to their internal structure."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "category": "Principles",
+                "paradigms": [
+                  "oop"
+                ],
+                "languages": []
+              }
+            },
+            {
+              "id": "SEC001",
+              "name": "Hardcoded secret (heuristic)",
+              "shortDescription": {
+                "text": "Hardcoded secret (heuristic)"
+              },
+              "fullDescription": {
+                "text": "Heuristic: string literals assigned to secret-like names, and literals with the shape of known credentials. Not a substitute for a secret scanner."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "category": "Security",
+                "paradigms": [],
+                "languages": []
+              }
+            },
+            {
+              "id": "SEC002",
+              "name": "Insecure deserialization (heuristic)",
+              "shortDescription": {
+                "text": "Insecure deserialization (heuristic)"
+              },
+              "fullDescription": {
+                "text": "Heuristic: use of formatters that instantiate arbitrary types from their input, or polymorphic type handling."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "category": "Security",
+                "paradigms": [],
+                "languages": []
+              }
+            },
+            {
+              "id": "SEC003",
+              "name": "SQL concatenation (heuristic)",
+              "shortDescription": {
+                "text": "SQL concatenation (heuristic)"
+              },
+              "fullDescription": {
+                "text": "Heuristic: SQL-looking text concatenated or interpolated with non-constant values."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "category": "Security",
+                "paradigms": [],
+                "languages": []
+              }
+            },
+            {
+              "id": "STR001",
+              "name": "Goto",
+              "shortDescription": {
+                "text": "Goto"
+              },
+              "fullDescription": {
+                "text": "Goto breaks the single-entry, single-exit structure of blocks. 'goto case' is not flagged."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "category": "Paradigm",
+                "paradigms": [
+                  "structural"
+                ],
+                "languages": []
+              }
+            },
+            {
+              "id": "STR002",
+              "name": "Global state",
+              "shortDescription": {
+                "text": "Global state"
+              },
+              "fullDescription": {
+                "text": "Non-private static mutable fields and properties, and module-level variables, act as globals."
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "properties": {
+                "category": "Paradigm",
+                "paradigms": [
+                  "structural"
+                ],
+                "languages": []
+              }
+            },
+            {
+              "id": "STR003",
+              "name": "Module size",
+              "shortDescription": {
+                "text": "Module size"
+              },
+              "fullDescription": {
+                "text": "Measures lines of code per module and lines per file."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "category": "Paradigm",
+                "paradigms": [
+                  "structural"
+                ],
+                "languages": []
+              }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "DSN002",
+          "ruleIndex": 14,
+          "level": "error",
+          "message": {
+            "text": "Module cycle: Sample.Domain <-> Sample.Services. These modules depend on each other, directly or transitively, so none can be built, tested or released alone."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Domain/Order.cs"
+                },
+                "region": {
+                  "startLine": 5,
+                  "startColumn": 14,
+                  "endLine": 11,
+                  "endColumn": 2,
+                  "snippet": {
+                    "text": "public class Order\n{\n    public int Id { get; set; }\n    public int Total { get; set; }"
+                  }
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "nomos/v1": "4b8a788d3964a189"
+          },
+          "properties": {
+            "confidence": "High",
+            "module": "Sample.Domain"
+          }
+        },
+        {
+          "ruleId": "PAT102",
+          "ruleIndex": 37,
+          "level": "warning",
+          "message": {
+            "text": "Order is an anemic domain object. 3 public setters and no methods: its invariants must be enforced by whoever changes it. Plain DTOs are fine; this one sits in a domain namespace."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Domain/Order.cs"
+                },
+                "region": {
+                  "startLine": 5,
+                  "startColumn": 14,
+                  "endLine": 11,
+                  "endColumn": 2,
+                  "snippet": {
+                    "text": "public class Order\n{\n    public int Id { get; set; }\n    public int Total { get; set; }"
+                  }
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "nomos/v1": "b658374eac986320"
+          },
+          "properties": {
+            "confidence": "Medium",
+            "module": "Sample.Domain",
+            "symbol": "Sample.Domain.Order"
+          }
+        },
+        {
+          "ruleId": "DSN003",
+          "ruleIndex": 15,
+          "level": "error",
+          "message": {
+            "text": "Domain must not depend on Services. Order (Sample.Domain) uses Notifier (Sample.Services); allowed: none."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Domain/Order.cs"
+                },
+                "region": {
+                  "startLine": 10,
+                  "startColumn": 38,
+                  "endLine": 10,
+                  "endColumn": 46,
+                  "snippet": {
+                    "text": "public Sample.Services.Notifier? Listener;"
+                  }
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "nomos/v1": "88d008b1f7ab9a3c"
+          },
+          "properties": {
+            "confidence": "High",
+            "module": "Sample.Domain",
+            "symbol": "Sample.Domain.Order"
+          }
+        },
+        {
+          "ruleId": "OOP001",
+          "ruleIndex": 23,
+          "level": "error",
+          "message": {
+            "text": "Public mutable field Order.Listener. Any caller can change this field, so the type cannot protect its invariants. A property or a method can."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Domain/Order.cs"
+                },
+                "region": {
+                  "startLine": 10,
+                  "startColumn": 38,
+                  "endLine": 10,
+                  "endColumn": 46,
+                  "snippet": {
+                    "text": "public Sample.Services.Notifier? Listener;"
+                  }
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "nomos/v1": "d1db33802df94b35"
+          },
+          "properties": {
+            "confidence": "High",
+            "module": "Sample.Domain",
+            "symbol": "Sample.Domain.Order.Listener"
+          }
+        },
+        {
+          "ruleId": "CC005",
+          "ruleIndex": 8,
+          "level": "warning",
+          "message": {
+            "text": "Parameter a of Many says little. One-letter names in a public signature leave the meaning to the reader."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Legacy/Old.cs"
+                },
+                "region": {
+                  "startLine": 6,
+                  "startColumn": 21,
+                  "endLine": 6,
+                  "endColumn": 26,
+                  "snippet": {
+                    "text": "public int Many(int a, int b, int c, int d, int e, int f) => a + b + c + d + e + f;"
+                  }
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "nomos/v1": "aff1a371053d7561"
+          },
+          "properties": {
+            "confidence": "Low",
+            "module": "Sample.Legacy",
+            "symbol": "Sample.Legacy.Old.Many(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)"
+          }
+        },
+        {
+          "ruleId": "CC005",
+          "ruleIndex": 8,
+          "level": "warning",
+          "message": {
+            "text": "Parameter b of Many says little. One-letter names in a public signature leave the meaning to the reader."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Legacy/Old.cs"
+                },
+                "region": {
+                  "startLine": 6,
+                  "startColumn": 28,
+                  "endLine": 6,
+                  "endColumn": 33,
+                  "snippet": {
+                    "text": "public int Many(int a, int b, int c, int d, int e, int f) => a + b + c + d + e + f;"
+                  }
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "nomos/v1": "f1192541bd354bfe"
+          },
+          "properties": {
+            "confidence": "Low",
+            "module": "Sample.Legacy",
+            "symbol": "Sample.Legacy.Old.Many(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)"
+          }
+        },
+        {
+          "ruleId": "CC005",
+          "ruleIndex": 8,
+          "level": "warning",
+          "message": {
+            "text": "Parameter c of Many says little. One-letter names in a public signature leave the meaning to the reader."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Legacy/Old.cs"
+                },
+                "region": {
+                  "startLine": 6,
+                  "startColumn": 35,
+                  "endLine": 6,
+                  "endColumn": 40,
+                  "snippet": {
+                    "text": "public int Many(int a, int b, int c, int d, int e, int f) => a + b + c + d + e + f;"
+                  }
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "nomos/v1": "cd8bbc01c603572b"
+          },
+          "properties": {
+            "confidence": "Low",
+            "module": "Sample.Legacy",
+            "symbol": "Sample.Legacy.Old.Many(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)"
+          }
+        },
+        {
+          "ruleId": "CC005",
+          "ruleIndex": 8,
+          "level": "warning",
+          "message": {
+            "text": "Parameter d of Many says little. One-letter names in a public signature leave the meaning to the reader."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Legacy/Old.cs"
+                },
+                "region": {
+                  "startLine": 6,
+                  "startColumn": 42,
+                  "endLine": 6,
+                  "endColumn": 47,
+                  "snippet": {
+                    "text": "public int Many(int a, int b, int c, int d, int e, int f) => a + b + c + d + e + f;"
+                  }
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "nomos/v1": "5370c19dd1f964b0"
+          },
+          "properties": {
+            "confidence": "Low",
+            "module": "Sample.Legacy",
+            "symbol": "Sample.Legacy.Old.Many(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)"
+          }
+        },
+        {
+          "ruleId": "CC005",
+          "ruleIndex": 8,
+          "level": "warning",
+          "message": {
+            "text": "Parameter e of Many says little. One-letter names in a public signature leave the meaning to the reader."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Legacy/Old.cs"
+                },
+                "region": {
+                  "startLine": 6,
+                  "startColumn": 49,
+                  "endLine": 6,
+                  "endColumn": 54,
+                  "snippet": {
+                    "text": "public int Many(int a, int b, int c, int d, int e, int f) => a + b + c + d + e + f;"
+                  }
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "nomos/v1": "a383eed8de44a36f"
+          },
+          "properties": {
+            "confidence": "Low",
+            "module": "Sample.Legacy",
+            "symbol": "Sample.Legacy.Old.Many(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)"
+          }
+        },
+        {
+          "ruleId": "CC005",
+          "ruleIndex": 8,
+          "level": "warning",
+          "message": {
+            "text": "Parameter f of Many says little. One-letter names in a public signature leave the meaning to the reader."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Legacy/Old.cs"
+                },
+                "region": {
+                  "startLine": 6,
+                  "startColumn": 56,
+                  "endLine": 6,
+                  "endColumn": 61,
+                  "snippet": {
+                    "text": "public int Many(int a, int b, int c, int d, int e, int f) => a + b + c + d + e + f;"
+                  }
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "nomos/v1": "c61d5bf4bc2df8ec"
+          },
+          "properties": {
+            "confidence": "Low",
+            "module": "Sample.Legacy",
+            "symbol": "Sample.Legacy.Old.Many(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)"
+          }
+        },
+        {
+          "ruleId": "OOP004",
+          "ruleIndex": 26,
+          "level": "warning",
+          "message": {
+            "text": "OrderService splits into 4 unrelated method groups. LCOM4 finds method groups that share no field and do not call each other; each may be a separate class."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Services/OrderService.cs"
+                },
+                "region": {
+                  "startLine": 12,
+                  "startColumn": 14,
+                  "endLine": 51,
+                  "endColumn": 2,
+                  "snippet": {
+                    "text": "public class OrderService\n{\n    private const string ApiKey = \"abc123def456\";\n"
+                  }
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "nomos/v1": "4bd0e0b0cdde521b"
+          },
+          "properties": {
+            "confidence": "Medium",
+            "module": "Sample.Services",
+            "symbol": "Sample.Services.OrderService"
+          }
+        },
+        {
+          "ruleId": "SEC001",
+          "ruleIndex": 48,
+          "level": "error",
+          "message": {
+            "text": "ApiKey looks like a hardcoded secret. Heuristic: the name suggests a secret and the value is a literal. It may be a placeholder or a non-secret value."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Services/OrderService.cs"
+                },
+                "region": {
+                  "startLine": 14,
+                  "startColumn": 26,
+                  "endLine": 14,
+                  "endColumn": 49,
+                  "snippet": {
+                    "text": "private const string ApiKey = \"abc123def456\";"
+                  }
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "nomos/v1": "1dd23068bee767fd"
+          },
+          "properties": {
+            "confidence": "Medium",
+            "module": "Sample.Services",
+            "symbol": "Sample.Services.OrderService.ApiKey"
+          }
+        },
+        {
+          "ruleId": "ALG001",
+          "ruleIndex": 0,
+          "level": "warning",
+          "message": {
+            "text": "Matches is likely O(n²). Estimated from nested loops over inputs of unknown size. Small inputs may make this irrelevant."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Services/OrderService.cs"
+                },
+                "region": {
+                  "startLine": 26,
+                  "startColumn": 16,
+                  "endLine": 34,
+                  "endColumn": 6,
+                  "snippet": {
+                    "text": "public int Matches(List<Order> orders, List<int> ids)\n{\n    var count = 0;\n    foreach (var order in orders)"
+                  }
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "nomos/v1": "cb90949cecf01334"
+          },
+          "properties": {
+            "confidence": "Medium",
+            "module": "Sample.Services",
+            "symbol": "Sample.Services.OrderService.Matches(System.Collections.Generic.List<Sample.Domain.Order>,System.Collections.Generic.List<System.Int32>)"
+          }
+        },
+        {
+          "ruleId": "ALG001",
+          "ruleIndex": 0,
+          "level": "warning",
+          "message": {
+            "text": "Pairs is likely O(n²). Estimated from nested loops over inputs of unknown size. Small inputs may make this irrelevant."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Services/OrderService.cs"
+                },
+                "region": {
+                  "startLine": 36,
+                  "startColumn": 16,
+                  "endLine": 43,
+                  "endColumn": 6,
+                  "snippet": {
+                    "text": "public int Pairs(int[] left, int[] right)\n{\n    var total = 0;\n    foreach (var a in left)"
+                  }
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "nomos/v1": "f0db41176d287ba3"
+          },
+          "properties": {
+            "confidence": "Medium",
+            "module": "Sample.Services",
+            "symbol": "Sample.Services.OrderService.Pairs(System.Int32[],System.Int32[])"
+          }
+        },
+        {
+          "ruleId": "CC006",
+          "ruleIndex": 9,
+          "level": "warning",
+          "message": {
+            "text": "TODO comment left in code. A placeholder records unfinished work that belongs in the issue tracker or in a fix."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Services/OrderService.cs"
+                },
+                "region": {
+                  "startLine": 45,
+                  "startColumn": 5,
+                  "endLine": 45,
+                  "endColumn": 41,
+                  "snippet": {
+                    "text": "// TODO: replace with a real gateway"
+                  }
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "nomos/v1": "999aeea86155da1d"
+          },
+          "properties": {
+            "confidence": "High",
+            "module": "Sample.Services"
+          }
+        },
+        {
+          "ruleId": "PRN005",
+          "ruleIndex": 43,
+          "level": "warning",
+          "message": {
+            "text": "OrderService creates Notifier directly. Notifier is available through INotifier, but Pay instantiates the concrete class. Injecting the abstraction keeps OrderService replaceable and testable."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "Services/OrderService.cs"
+                },
+                "region": {
+                  "startLine": 48,
+                  "startColumn": 24,
+                  "endLine": 48,
+                  "endColumn": 38,
+                  "snippet": {
+                    "text": "var notifier = new Notifier();"
+                  }
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "nomos/v1": "0e0cc8dd78186e88"
+          },
+          "properties": {
+            "confidence": "Medium",
+            "module": "Sample.Services",
+            "symbol": "Sample.Services.OrderService.Pay(Sample.Domain.Order)"
+          }
+        }
+      ]
+    }
+  ]
+}

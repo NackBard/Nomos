@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:nomos:contracts:1.0.0:nomos",
+  "title": "nomos.json",
+  "description": "Workspace file read by the extension and the CI runner: which analyzers exist and how to start them. Contract version 1.0.0. The extension never looks inside an analyzer.",
+  "x-contractVersion": "1.0.0",
+  "type": "object",
+  "required": ["schemaVersion", "analyzers"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "analyzers": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["language", "command"],
+        "additionalProperties": false,
+        "properties": {
+          "language": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+          "command": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string" },
+            "description": "Executable and fixed arguments, without the protocol command: [\"dotnet\", \"run\", \"--project\", \"analyzers/csharp\", \"--\"]. The host appends `manifest` or `analyze ...`."
+          },
+          "cwd": { "type": "string", "description": "Working directory relative to the nomos.json folder. Default: that folder." },
+          "env": { "type": "object", "additionalProperties": { "type": "string" } },
+          "include": { "type": "array", "items": { "type": "string" }, "description": "Globs of files this analyzer receives. Default: the analyzer decides." },
+          "exclude": { "type": "array", "items": { "type": "string" }, "default": [] },
+          "timeoutSeconds": { "type": "integer", "minimum": 1, "default": 300 }
+        }
+      }
+    },
+    "root": { "type": "string", "default": ".", "description": "Analysis root relative to the nomos.json folder." },
+    "rules": {
+      "type": "object",
+      "description": "Per-rule overrides keyed by rule id.",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "enabled": { "type": "boolean" },
+          "severity": { "type": "string", "enum": ["info", "minor", "major", "critical"] },
+          "threshold": { "type": "object" }
+        }
+      }
+    },
+    "paradigms": {
+      "type": "object",
+      "description": "Per-language narrowing of paradigms (spec/paradigms.md). Can only switch paradigms off; evidence is never invented.",
+      "additionalProperties": { "type": "array", "items": { "type": "string" } }
+    },
+    "layers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "patterns", "mayDependOn"],
+        "additionalProperties": false,
+        "properties": {
+          "name": { "type": "string" },
+          "patterns": { "type": "array", "items": { "type": "string" } },
+          "mayDependOn": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "scoring": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "categoryWeights": { "type": "object", "additionalProperties": { "type": "number", "minimum": 0 } },
+        "severityPenalties": { "type": "object", "additionalProperties": { "type": "number", "minimum": 0 } },
+        "confidenceFactors": { "type": "object", "additionalProperties": { "type": "number", "minimum": 0 } },
+        "decayPerKloc": { "type": "number", "exclusiveMinimum": 0 },
+        "minKloc": { "type": "number", "exclusiveMinimum": 0 }
+      }
+    }
+  }
+}

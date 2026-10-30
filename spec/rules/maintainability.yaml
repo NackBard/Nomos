@@ -1,0 +1,39 @@
+schemaVersion: "1.0.0"
+rules:
+  - id: MNT001
+    category: Maintainability
+    title: Cyclomatic complexity
+    description: Decision points per callable (spec/metrics.md). Every value is a metric in facts; results are emitted above the limit.
+    rationale: More paths mean more tests and more room for mistakes.
+    paradigms: []
+    severity: minor
+    confidence: high
+    threshold: { maxComplexity: 10 }
+  - id: MNT002
+    category: Maintainability
+    title: Maintainability index
+    description: MI from Halstead volume, cyclomatic complexity and lines (spec/metrics.md).
+    rationale: A composite index; a hint, not a measurement of quality.
+    paradigms: []
+    severity: minor
+    confidence: low
+    threshold: { minIndex: 20 }
+  - id: MNT003
+    category: Maintainability
+    title: Duplication
+    description: Type-1 and type-2 token clones (rolling hash over normalized tokens).
+    rationale: A defect fixed in one copy stays in the others.
+    paradigms: []
+    severity: minor
+    confidence: medium
+    threshold: { minTokens: 100 }
+  - id: MNT004
+    category: Maintainability
+    title: Test coverage
+    description: Line coverage from a Cobertura or LCOV report, per file.
+    rationale: Shows which files tests do not reach.
+    paradigms: []
+    severity: minor
+    confidence: high
+    threshold: { report: "", minCoverage: 50 }
+    requires: [coverage-report]

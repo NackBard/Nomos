@@ -1,0 +1,132 @@
+import fs from "node:fs";
+import path from "node:path";
+import { spawnSync } from "node:child_process";
+import YAML from "yaml";
+import { checkParity, compareFacts } from "./compare.ts";
+import type { CaseSpec } from "./compare.ts";
+import { casesDir, repoRoot, rulesDir } from "./paths.ts";
+import { formatErrors, loadValidators, readJson } from "./schemas.ts";
+
+export interface Analyzer { language: string; command: string[] }
+export interface Check { name: string; errors: string[] }
+
+function invoke(command: string[], args: string[]): { code: number | null; stdout: string; stderr: string } {
+  const result = spawnSync(command[0], [...command.slice(1), ...args], { cwd: repoRoot, encoding: "utf8", maxBuffer: 256 * 1024 * 1024 });
+  if (result.error) return { code: null, stdout: "", stderr: result.error.message };
+  return { code: result.status, stdout: result.stdout, stderr: result.stderr };
+}
+
+function parseJson(text: string): { value?: any; error?: string } {
+  try {
+    return { value: JSON.parse(text) };
+  } catch (e) {
+    return { error: `stdout is not JSON: ${(e as Error).message}` };
+  }
+}
+
+function loadSpecRules(): { ids: Set<string>; oop: Set<string> } {
+  const ids = new Set<string>();
+  const oop = new Set<string>();
+  for (const file of fs.readdirSync(rulesDir).filter((f) => f.endsWith(".yaml"))) {
+    for (const rule of YAML.parse(fs.readFileSync(path.join(rulesDir, file), "utf8")).rules) {
+      ids.add(rule.id);
+      if ((rule.paradigms as string[]).includes("oop")) oop.add(rule.id);
+    }
+  }
+  return { ids, oop };
+}
+
+function firstLine(text: string): string {
+  return text.trim().split("\n")[0] ?? "";
+}
+
+function checkManifest(analyzer: Analyzer, validators: ReturnType<typeof loadValidators>, specRules: ReturnType<typeof loadSpecRules>): { check: Check; supported: Set<string> } {
+  const errors: string[] = [];
+  const supported = new Set<string>();
+  const run = invoke(analyzer.command, ["manifest"]);
+  if (run.code !== 0) {
+    errors.push(`"manifest" exited with ${run.code ?? "no code"}; stderr: ${firstLine(run.stderr)}`);
+  } else {
+    const parsed = parseJson(run.stdout);
+    const validate = validators.get("manifest")!;
+    if (parsed.error) errors.push(parsed.error);
+    else if (!validate(parsed.value)) errors.push(...formatErrors(validate));
+    else {
+      const manifest = parsed.value;
+      if (manifest.language !== analyzer.language) errors.push(`manifest language is "${manifest.language}", the analyzer was registered for "${analyzer.language}"`);
+      const ruleIds = new Set<string>(manifest.rules.map((r: any) => r.id));
+      for (const id of manifest.capabilities.supportedRules as string[]) {
+        supported.add(id);
+        if (!ruleIds.has(id)) errors.push(`rule ${id} is in supportedRules but not in rules`);
+      }
+      for (const id of ruleIds) {
+        if (!supported.has(id)) errors.push(`rule ${id} is in rules but not in supportedRules`);
+        if (!id.includes(".") && !specRules.ids.has(id)) errors.push(`rule ${id} is not defined in spec/rules`);
+      }
+    }
+  }
+  return { check: { name: `${analyzer.language}: manifest`, errors }, supported };
+}
+
+function analyze(analyzer: Analyzer, root: string): { facts?: any; errors: string[]; text?: string } {
+  const run = invoke(analyzer.command, ["analyze", "--root", root]);
+  if (run.code !== 0 && run.code !== 4) return { errors: [`"analyze" exited with ${run.code ?? "no code"} (expected 0 or 4); stderr: ${firstLine(run.stderr)}`] };
+  const parsed = parseJson(run.stdout);
+  return parsed.error ? { errors: [parsed.error] } : { facts: parsed.value, text: run.stdout, errors: [] };
+}
+
+function skippedRulesErrors(facts: any, supported: Set<string>, oopRules: Set<string>): string[] {
+  const errors: string[] = [];
+  for (const module of facts.modules as any[]) {
+    if (module.paradigmEvidence.some((e: any) => e.kind === "oop.classes")) continue;
+    for (const ruleId of [...oopRules].filter((r) => supported.has(r)).sort()) {
+      const found = facts.skippedRules.some((s: any) => s.ruleId === ruleId && s.module === module.id && s.reason === "paradigm-not-detected");
+      if (!found) errors.push(`module ${module.id} has no oop.classes but rule ${ruleId} has no paradigm-not-detected record`);
+    }
+  }
+  return errors;
+}
+
+/** Runs every case for every registered analyzer. */
+export function runConformance(analyzers: Analyzer[], only?: string): Check[] {
+  const checks: Check[] = [];
+  const validators = loadValidators();
+  const specRules = loadSpecRules();
+  const caseIds = fs.existsSync(casesDir)
+    ? fs.readdirSync(casesDir).filter((d) => fs.existsSync(path.join(casesDir, d, "case.json")) && (!only || d === only)).sort()
+    : [];
+  const supportedBy = new Map<string, Set<string>>();
+
+  for (const analyzer of analyzers) {
+    const { check, supported } = checkManifest(analyzer, validators, specRules);
+    checks.push(check);
+    supportedBy.set(analyzer.language, supported);
+  }
+
+  for (const id of caseIds) {
+    const spec = readJson(path.join(casesDir, id, "case.json")) as CaseSpec;
+    const factsByLanguage = new Map<string, any>();
+    for (const analyzer of analyzers.filter((a) => spec.languages.includes(a.language))) {
+      const errors: string[] = [];
+      const root = path.join(casesDir, id, analyzer.language, "src");
+      const first = analyze(analyzer, root);
+      errors.push(...first.errors);
+      if (first.facts) {
+        const validate = validators.get("facts")!;
+        if (!validate(first.facts)) {
+          errors.push(...formatErrors(validate).map((m) => `facts schema: ${m}`));
+        } else {
+          factsByLanguage.set(analyzer.language, first.facts);
+          errors.push(...compareFacts(readJson(path.join(casesDir, id, analyzer.language, "expected.facts.json")), first.facts, spec));
+          errors.push(...skippedRulesErrors(first.facts, supportedBy.get(analyzer.language) ?? new Set(), specRules.oop));
+          if (first.text!.includes(repoRoot) || first.text!.includes(repoRoot.replaceAll("\\", "/"))) errors.push("output contains an absolute path");
+          const second = analyze(analyzer, root);
+          if (second.text !== first.text) errors.push("two runs on the same input differ (output is not deterministic)");
+        }
+      }
+      checks.push({ name: `${analyzer.language}: ${id}`, errors });
+    }
+    if (spec.parity?.length) checks.push({ name: `parity: ${id}`, errors: checkParity(spec, factsByLanguage) });
+  }
+  return checks;
+}

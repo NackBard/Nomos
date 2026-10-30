@@ -1,0 +1,1 @@
+{ "analyzers": { "DSN004": { "thresholds": { "minWmc": 2, "minAtfd": 2, "maxTcc": 0.5 } } } }

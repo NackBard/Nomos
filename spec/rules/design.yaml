@@ -1,0 +1,57 @@
+schemaVersion: "1.0.0"
+rules:
+  - id: DSN001
+    category: Design
+    title: Main sequence distance
+    description: Per module Ca, Ce, instability I, abstractness A and distance D (spec/metrics.md).
+    rationale: D near 1 means a module is rigid or useless.
+    paradigms: []
+    severity: minor
+    confidence: medium
+    threshold: { maxDistance: 0.7, minCoupling: 3 }
+  - id: DSN002
+    category: Design
+    title: Dependency cycles
+    description: Strongly connected components (Tarjan) in the module graph and the type graph.
+    rationale: Members of a cycle cannot be understood or changed separately.
+    paradigms: []
+    severity: major
+    confidence: high
+    threshold: {}
+  - id: DSN003
+    category: Design
+    title: Layer violations
+    description: Dependencies on layers that the configuration does not allow.
+    rationale: Layering was declared by the team and is being bypassed.
+    paradigms: []
+    severity: major
+    confidence: high
+    threshold: {}
+    requires: [layer-config]
+  - id: DSN004
+    category: Design
+    title: God class
+    description: Lanza and Marinescu detection strategy, high WMC, high ATFD, low TCC.
+    rationale: A class that knows and does too much.
+    paradigms: [oop]
+    severity: major
+    confidence: medium
+    threshold: { minWmc: 47, minAtfd: 5, maxTcc: 0.3333 }
+  - id: DSN005
+    category: Design
+    title: Feature envy
+    description: A method using more data of one other type than of its own.
+    rationale: The method probably belongs to the other type.
+    paradigms: [oop]
+    severity: minor
+    confidence: low
+    threshold: { minForeignMembers: 3 }
+  - id: DSN006
+    category: Design
+    title: Blast radius
+    description: Number of types reachable through reversed dependencies (spec/metrics.md).
+    rationale: Shows how far a change can propagate.
+    paradigms: []
+    severity: minor
+    confidence: medium
+    threshold: { maxDependents: 20 }

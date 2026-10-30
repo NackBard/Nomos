@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "1.0.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "csharp" },
+  "files": [
+    { "path": "Plain.cs", "lines": 7, "loc": 6 },
+    { "path": "Shapes.cs", "lines": 15, "loc": 12 }
+  ],
+  "modules": [
+    {
+      "id": "Pe.Plain", "name": "Pe.Plain", "files": ["Plain.cs"], "loc": 6,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "Pe.Shapes", "name": "Pe.Shapes", "files": ["Shapes.cs"], "loc": 12,
+      "metrics": {},
+      "paradigmEvidence": [
+        { "paradigm": "oop", "kind": "oop.abstractions", "count": 2, "description": "interfaces and abstract classes", "examples": ["Pe.Shapes.IShape", "Pe.Shapes.ShapeBase"] },
+        { "paradigm": "oop", "kind": "oop.classes", "count": 2, "description": "classes with methods or fields", "examples": ["Pe.Shapes.ShapeBase", "Pe.Shapes.Square"] },
+        { "paradigm": "oop", "kind": "oop.inheritance", "count": 1, "description": "project types inheriting project types", "examples": ["Pe.Shapes.Square"] },
+        { "paradigm": "oop", "kind": "oop.mutable-state-classes", "count": 2, "description": "classes with mutable instance state", "examples": ["Pe.Shapes.ShapeBase", "Pe.Shapes.Square"] }
+      ]
+    }
+  ],
+  "types": [
+    { "id": "Pe.Plain.Mode", "name": "Mode", "module": "Pe.Plain", "kind": "enum", "isAbstract": false, "location": { "file": "Plain.cs", "startLine": 3 }, "metrics": { "lines": 5 } },
+    { "id": "Pe.Shapes.IShape", "name": "IShape", "module": "Pe.Shapes", "kind": "interface", "isAbstract": true, "location": { "file": "Shapes.cs", "startLine": 3 }, "metrics": { "lines": 3, "memberCount": 0 } },
+    { "id": "Pe.Shapes.ShapeBase", "name": "ShapeBase", "module": "Pe.Shapes", "kind": "class", "isAbstract": true, "location": { "file": "Shapes.cs", "startLine": 7 }, "metrics": { "lines": 4, "memberCount": 1, "dit": 0 } },
+    { "id": "Pe.Shapes.Square", "name": "Square", "module": "Pe.Shapes", "kind": "class", "isAbstract": false, "location": { "file": "Shapes.cs", "startLine": 12 }, "metrics": { "lines": 4, "memberCount": 1, "dit": 1 } }
+  ],
+  "functions": [],
+  "dependencies": [
+    { "from": "Pe.Shapes.Square", "to": "Pe.Shapes.ShapeBase", "kind": "inheritance", "phase": "runtime" }
+  ],
+  "cycles": [],
+  "skippedRules": [
+    { "ruleId": "CC002", "module": "Pe.Plain", "reason": "paradigm-not-detected", "message": "OOP rule not applicable: module has no classes" },
+    { "ruleId": "PRN001", "module": "Pe.Plain", "reason": "paradigm-not-detected", "message": "OOP rule not applicable: module has no classes" }
+  ],
+  "diagnostics": []
+}

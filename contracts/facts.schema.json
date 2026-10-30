@@ -1,0 +1,262 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:nomos:contracts:1.0.0:facts",
+  "title": "Analysis facts",
+  "description": "Output of `<analyzer> analyze`. Contract version 1.0.0. Facts are measurements and observations; they carry no verdicts. Findings are reported separately as SARIF (see contracts/sarif-profile.md). Changing this file requires a schemaVersion bump and a record in docs/DECISIONS.md.",
+  "x-contractVersion": "1.0.0",
+  "type": "object",
+  "required": ["schemaVersion", "analyzer", "files", "modules", "types", "functions", "dependencies", "skippedRules", "diagnostics"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "analyzer": {
+      "type": "object",
+      "required": ["name", "version", "language"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string" },
+        "version": { "type": "string" },
+        "language": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+        "semantic": { "type": "boolean", "description": "Whether symbols were resolved semantically in this run." }
+      }
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "loc", "lines"],
+        "additionalProperties": false,
+        "properties": {
+          "path": { "$ref": "#/$defs/path" },
+          "lines": { "type": "integer", "minimum": 0, "description": "Physical lines." },
+          "loc": { "type": "integer", "minimum": 0, "description": "Source lines: not blank and not comment-only (spec/metrics.md)." },
+          "module": { "type": "string", "description": "Id of the module this file belongs to, when the file belongs to exactly one." },
+          "parsed": { "type": "boolean", "default": true, "description": "False when the file could not be analyzed; see diagnostics." }
+        }
+      }
+    },
+    "modules": {
+      "type": "array",
+      "description": "Unit of cohesion in the language: namespace, package, directory. The analyzer chooses and documents it (docs/DECISIONS.md).",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "files", "loc", "metrics", "paradigmEvidence"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "#/$defs/entityId" },
+          "name": { "type": "string" },
+          "files": { "type": "array", "items": { "$ref": "#/$defs/path" } },
+          "loc": { "type": "integer", "minimum": 0 },
+          "metrics": {
+            "type": "object",
+            "additionalProperties": { "type": ["number", "null"] },
+            "properties": {
+              "ca": { "type": ["integer", "null"], "minimum": 0, "description": "Afferent coupling." },
+              "ce": { "type": ["integer", "null"], "minimum": 0, "description": "Efferent coupling." },
+              "instability": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+              "abstractness": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+              "distance": { "type": ["number", "null"], "minimum": 0, "maximum": 1 }
+            },
+            "description": "Null means the metric is undefined for this module (spec/metrics.md). Extra metrics must be numbers or null."
+          },
+          "paradigmEvidence": {
+            "type": "array",
+            "items": { "$ref": "#/$defs/evidence" },
+            "description": "Observed signs of paradigms in this module. An empty list means nothing was detected, which is itself a fact."
+          },
+          "health": { "$ref": "#/$defs/health" }
+        }
+      }
+    },
+    "types": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "module", "kind", "isAbstract", "location", "metrics"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "#/$defs/entityId" },
+          "name": { "type": "string" },
+          "module": { "$ref": "#/$defs/entityId" },
+          "kind": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$", "description": "class, interface, struct, enum, record, trait, protocol, ... The set is open." },
+          "isAbstract": { "type": "boolean", "description": "Interface, abstract class, protocol, trait: counts toward abstractness A." },
+          "location": { "$ref": "#/$defs/location" },
+          "metrics": {
+            "type": "object",
+            "additionalProperties": { "type": ["number", "null"] },
+            "properties": {
+              "lines": { "type": "integer", "minimum": 0 },
+              "memberCount": { "type": "integer", "minimum": 0 },
+              "methodCount": { "type": "integer", "minimum": 0 },
+              "dit": { "type": ["integer", "null"], "minimum": 0, "description": "Depth of inheritance tree." },
+              "cbo": { "type": ["integer", "null"], "minimum": 0, "description": "Coupling between objects." },
+              "lcom4": { "type": ["integer", "null"], "minimum": 0 },
+              "wmc": { "type": ["integer", "null"], "minimum": 0 },
+              "atfd": { "type": ["integer", "null"], "minimum": 0 },
+              "tcc": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+              "blastRadius": { "type": ["integer", "null"], "minimum": 0 }
+            }
+          }
+        }
+      }
+    },
+    "functions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "module", "location", "metrics"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "#/$defs/entityId" },
+          "name": { "type": "string" },
+          "module": { "$ref": "#/$defs/entityId" },
+          "type": { "$ref": "#/$defs/entityId", "description": "Owning type. Absent for free functions." },
+          "kind": { "type": "string", "enum": ["function", "method", "constructor", "accessor", "lambda", "other"], "default": "function" },
+          "visibility": { "type": "string", "enum": ["public", "protected", "internal", "private", "unspecified"], "default": "unspecified" },
+          "location": { "$ref": "#/$defs/location" },
+          "metrics": {
+            "type": "object",
+            "required": ["cyclomatic", "maxNesting", "parameterCount", "lines"],
+            "additionalProperties": { "type": ["number", "null"] },
+            "properties": {
+              "cyclomatic": { "type": "integer", "minimum": 1 },
+              "maxNesting": { "type": "integer", "minimum": 0 },
+              "parameterCount": { "type": "integer", "minimum": 0 },
+              "lines": { "type": "integer", "minimum": 0 },
+              "halsteadVolume": { "type": ["number", "null"], "minimum": 0 },
+              "maintainabilityIndex": { "type": ["number", "null"], "minimum": 0, "maximum": 100 },
+              "blastRadius": { "type": ["integer", "null"], "minimum": 0 }
+            }
+          }
+        }
+      }
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["from", "to", "kind", "phase"],
+        "additionalProperties": false,
+        "properties": {
+          "from": { "$ref": "#/$defs/entityId" },
+          "to": { "$ref": "#/$defs/entityId" },
+          "kind": { "type": "string", "enum": ["import", "inheritance", "call", "type-ref"] },
+          "phase": { "type": "string", "enum": ["runtime", "type-only"], "description": "type-only: erased or unused at run time (TypeScript `import type`, Python TYPE_CHECKING)." },
+          "external": { "type": "boolean", "default": false, "description": "Target is outside the analyzed root. Its id need not appear in modules/types/functions." },
+          "stdlib": { "type": "boolean", "default": false, "description": "Target belongs to the language's standard library. Implies external." },
+          "count": { "type": "integer", "minimum": 1, "default": 1, "description": "Number of occurrences collapsed into this edge." },
+          "location": { "$ref": "#/$defs/location", "description": "First occurrence." }
+        }
+      },
+      "description": "Edges are unique by (from, to, kind, phase). `from` and `to` are ids of a module, type or function."
+    },
+    "cycles": {
+      "type": "array",
+      "description": "Strongly connected components with more than one member (Tarjan, spec/metrics.md). Members sorted ordinally; components sorted by first member.",
+      "items": {
+        "type": "object",
+        "required": ["level", "members"],
+        "additionalProperties": false,
+        "properties": {
+          "level": { "type": "string", "enum": ["module", "type"] },
+          "members": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/entityId" } }
+        }
+      }
+    },
+    "health": { "$ref": "#/$defs/health" },
+    "skippedRules": {
+      "type": "array",
+      "description": "Rules that were not applied, and why. Nothing is dropped silently.",
+      "items": {
+        "type": "object",
+        "required": ["ruleId", "reason", "message"],
+        "additionalProperties": false,
+        "properties": {
+          "ruleId": { "type": "string" },
+          "module": { "$ref": "#/$defs/entityId", "description": "Absent when the rule was skipped for the whole run." },
+          "reason": {
+            "type": "string",
+            "enum": ["paradigm-not-detected", "not-supported", "disabled-by-config", "needs-semantic-model", "missing-input", "error"],
+            "description": "paradigm-not-detected: the rule needs a paradigm with no evidence in the module. not-supported: the rule is absent from supportedRules. missing-input: e.g. no coverage report."
+          },
+          "message": { "type": "string", "minLength": 1, "description": "Human-readable cause, e.g. 'OOP rule not applicable: module has no classes'." }
+        }
+      }
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sarifFile": { "$ref": "#/$defs/path", "description": "Path of the SARIF file written because of --sarif, as passed on the command line." },
+        "resultCount": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "diagnostics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["level", "message"],
+        "additionalProperties": false,
+        "properties": {
+          "level": { "type": "string", "enum": ["info", "warning", "error"] },
+          "message": { "type": "string" },
+          "file": { "$ref": "#/$defs/path" },
+          "code": { "type": "string" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "path": { "type": "string", "minLength": 1, "pattern": "^[^\\\\]*$", "description": "Relative to --root, forward slashes, never absolute." },
+    "entityId": { "type": "string", "minLength": 1, "description": "Stable, language-native qualified name. Unique within one facts document." },
+    "location": {
+      "type": "object",
+      "required": ["file", "startLine"],
+      "additionalProperties": false,
+      "properties": {
+        "file": { "$ref": "#/$defs/path" },
+        "startLine": { "type": "integer", "minimum": 1 },
+        "startColumn": { "type": "integer", "minimum": 1 },
+        "endLine": { "type": "integer", "minimum": 1 },
+        "endColumn": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "required": ["paradigm", "kind", "count", "description"],
+      "additionalProperties": false,
+      "properties": {
+        "paradigm": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+        "kind": { "type": "string", "pattern": "^[a-z]+\\.[a-z0-9-]+$", "description": "Evidence kind from spec/paradigms.md, e.g. oop.mutable-state-classes." },
+        "count": { "type": "integer", "minimum": 1 },
+        "description": { "type": "string", "description": "e.g. 'classes with mutable state'." },
+        "examples": { "type": "array", "maxItems": 5, "items": { "$ref": "#/$defs/entityId" }, "description": "Up to five entity ids, ordinal order." }
+      }
+    },
+    "health": {
+      "type": "object",
+      "required": ["score", "categories", "explanation"],
+      "additionalProperties": false,
+      "description": "Health score by spec/metrics.md. A number with its derivation; there is no grade and no pass/fail threshold.",
+      "properties": {
+        "score": { "type": "number", "minimum": 0, "maximum": 100 },
+        "categories": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["category", "score", "weight", "penalty", "findingCount"],
+            "additionalProperties": false,
+            "properties": {
+              "category": { "type": "string" },
+              "score": { "type": "number", "minimum": 0, "maximum": 100 },
+              "weight": { "type": "number", "minimum": 0 },
+              "penalty": { "type": "number", "minimum": 0 },
+              "findingCount": { "type": "integer", "minimum": 0 }
+            }
+          }
+        },
+        "explanation": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

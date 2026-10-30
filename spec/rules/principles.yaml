@@ -1,0 +1,86 @@
+# Shared rules, category Principles. Validated by contracts/rule.schema.json.
+# threshold = sensitivity at which a detector emits a result; the raw measurement is always in facts.
+schemaVersion: "1.0.0"
+rules:
+  - id: PRN001
+    category: Principles
+    title: Single Responsibility
+    description: Counts constructor dependencies of a class and the project modules it reaches into.
+    rationale: A class with many collaborators likely has several reasons to change.
+    paradigms: [oop]
+    severity: major
+    confidence: medium
+    threshold: { maxConstructorDependencies: 5, maxModules: 4, minMethods: 3 }
+  - id: PRN002
+    category: Principles
+    title: Open/Closed
+    description: Finds the same enum or tag switched on in several places.
+    rationale: Adding a value then means editing every switch.
+    paradigms: [oop]
+    severity: minor
+    confidence: medium
+    threshold: { minOccurrences: 2, minCases: 3 }
+  - id: PRN003
+    category: Principles
+    title: Liskov Substitution
+    description: An override or implementation whose body only throws not-supported or not-implemented.
+    rationale: Such a member cannot stand in for its base type.
+    paradigms: [oop]
+    severity: major
+    confidence: medium
+    threshold: {}
+  - id: PRN004
+    category: Principles
+    title: Interface Segregation
+    description: Interfaces with many members, or whose implementers stub some of them.
+    rationale: Clients are forced to depend on members they do not use.
+    paradigms: [oop]
+    severity: minor
+    confidence: medium
+    threshold: { maxMembers: 10 }
+  - id: PRN005
+    category: Principles
+    title: Dependency Inversion
+    description: Creating a project class that implements a project abstraction, outside composition roots and test classes (a class with test-framework attributes such as Fact, Theory, Test, TestMethod, TestCase).
+    rationale: The caller is bound to the concrete type.
+    paradigms: [oop]
+    severity: minor
+    confidence: medium
+    threshold: { compositionRootSuffixes: [Factory, Builder, Program, Startup, Module, Registry, Tests] }
+  - id: PRN006
+    category: Principles
+    title: Do not repeat yourself
+    description: Callables whose structure is identical up to local names and literals.
+    rationale: One piece of knowledge is encoded twice.
+    paradigms: []
+    severity: minor
+    confidence: medium
+    threshold: { minNodes: 25 }
+  - id: PRN007
+    category: Principles
+    title: Keep it simple
+    description: Long boolean conditions and nested ternaries.
+    rationale: Too many decisions are packed into one expression.
+    paradigms: []
+    severity: minor
+    confidence: medium
+    threshold: { maxBooleanOperators: 3 }
+  - id: PRN008
+    category: Principles
+    title: You are not going to need it
+    description: Non-public abstractions with too few implementers, and unused private parameters.
+    rationale: Generality that nothing uses.
+    paradigms: []
+    severity: minor
+    confidence: low
+    threshold: {}
+  - id: PRN009
+    category: Principles
+    title: Law of Demeter
+    description: Call chains that walk through several distinct project types.
+    rationale: The caller is coupled to the internal structure of other types.
+    paradigms: [oop]
+    severity: minor
+    confidence: low
+    threshold: { maxHops: 2 }
+    needsSemantic: true

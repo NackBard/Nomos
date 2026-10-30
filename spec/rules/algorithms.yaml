@@ -1,0 +1,38 @@
+schemaVersion: "1.0.0"
+rules:
+  - id: ALG001
+    category: Algorithms
+    title: Time complexity estimate
+    description: Estimates growth from loop nesting, known linear calls, recursion shape and project callees.
+    rationale: Always an estimate; input sizes are unknown.
+    paradigms: []
+    severity: minor
+    confidence: low
+    threshold: { reportFromDegree: 2 }
+  - id: ALG002
+    category: Algorithms
+    title: Quadratic pattern
+    description: List searches, front insertions and string concatenation inside loops.
+    rationale: Typical sources of accidental quadratic time.
+    paradigms: []
+    severity: minor
+    confidence: low
+    threshold: {}
+  - id: ALG003
+    category: Algorithms
+    title: Allocation in hot loop
+    description: Materializing calls in loops; object creation or closures in nested loops.
+    rationale: Allocation pressure in frequently executed code.
+    paradigms: []
+    severity: minor
+    confidence: low
+    threshold: { minDepthForObjects: 2 }
+  - id: ALG004
+    category: Algorithms
+    title: Space complexity estimate
+    description: Collections growing in loops, arrays of non-constant size, recursion depth.
+    rationale: Always an estimate; input sizes are unknown.
+    paradigms: []
+    severity: minor
+    confidence: low
+    threshold: { reportFromDegree: 2 }

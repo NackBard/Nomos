@@ -1,0 +1,23 @@
+{
+  "name": "nomos-conformance-runner",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Conformance harness for Nomos analyzers (ROADMAP stage 1).",
+  "engines": { "node": ">=22.18" },
+  "scripts": {
+    "validate": "node src/cli.ts validate",
+    "run": "node src/cli.ts run",
+    "test": "node --test src/",
+    "selftest": "node src/cli.ts run --analyzer \"csharp=node conformance/runner/src/echo-analyzer.ts\"",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "ajv": "8.17.1",
+    "yaml": "2.8.1"
+  },
+  "devDependencies": {
+    "@types/node": "24.3.0",
+    "typescript": "5.9.2"
+  }
+}

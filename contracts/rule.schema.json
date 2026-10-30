@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:nomos:contracts:1.0.0:rule",
+  "title": "Rule specification file",
+  "description": "Schema of spec/rules/*.yaml (validated after YAML-to-JSON conversion). Contract version 1.0.0.",
+  "x-contractVersion": "1.0.0",
+  "type": "object",
+  "required": ["schemaVersion", "rules"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "language": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$", "description": "Set only in language-specific files (spec/rules/csharp.yaml). Every rule in such a file must carry the matching ID prefix." },
+    "rules": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "category", "title", "description", "rationale", "paradigms", "severity", "threshold"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^([A-Z]{2,3}\\.)?[A-Z]{2,4}[0-9]{3}$" },
+          "category": { "type": "string", "minLength": 1 },
+          "title": { "type": "string", "minLength": 1 },
+          "description": { "type": "string", "minLength": 1, "description": "What the detector looks at." },
+          "rationale": { "type": "string", "minLength": 1, "description": "Why a reader may want to know. Every result is a heuristic, never a verdict." },
+          "paradigms": { "type": "array", "uniqueItems": true, "items": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" }, "description": "The rule applies to modules showing evidence of at least one of these. Empty: any module." },
+          "severity": { "type": "string", "enum": ["info", "minor", "major", "critical"], "description": "Default severity of a result." },
+          "confidence": { "type": "string", "enum": ["low", "medium", "high"], "default": "medium", "description": "Typical confidence of a result; a detector may lower or raise it per result." },
+          "threshold": {
+            "type": "object",
+            "additionalProperties": { "type": ["number", "string", "boolean", "array"] },
+            "description": "Default sensitivity: the value from which the detector emits a result. It does not decide whether code is acceptable. Empty object: the rule has no parameters. The raw measurement is always present in facts."
+          },
+          "needsSemantic": { "type": "boolean", "default": false, "description": "True when the rule is meaningless without symbol resolution; it is skipped with reason needs-semantic-model otherwise." },
+          "requires": { "type": "array", "items": { "type": "string", "enum": ["coverage-report", "layer-config"] }, "description": "External input the rule needs; absent input produces a skipped-rule record with reason missing-input." }
+        }
+      }
+    }
+  }
+}

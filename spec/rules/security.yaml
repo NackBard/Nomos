@@ -1,0 +1,29 @@
+schemaVersion: "1.0.0"
+rules:
+  - id: SEC001
+    category: Security
+    title: Hardcoded secret (heuristic)
+    description: String literals assigned to secret-like names, and literals shaped like known credentials.
+    rationale: Not a substitute for a secret scanner.
+    paradigms: []
+    severity: major
+    confidence: low
+    threshold: {}
+  - id: SEC002
+    category: Security
+    title: Insecure deserialization (heuristic)
+    description: Use of formatters that instantiate arbitrary types from input, or polymorphic type handling.
+    rationale: Heuristic by shape of code, no taint analysis.
+    paradigms: []
+    severity: critical
+    confidence: low
+    threshold: {}
+  - id: SEC003
+    category: Security
+    title: SQL concatenation (heuristic)
+    description: SQL-looking text concatenated or interpolated with non-constant values.
+    rationale: Heuristic by shape of code, no taint analysis.
+    paradigms: []
+    severity: major
+    confidence: low
+    threshold: {}

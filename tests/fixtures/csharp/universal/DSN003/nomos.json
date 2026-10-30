@@ -1,0 +1,3 @@
+{ "layers": [
+  { "name": "Domain", "patterns": ["*.Domain*"], "mayDependOn": [] },
+  { "name": "Infrastructure", "patterns": ["*.Infrastructure*"], "mayDependOn": ["Domain"] } ] }

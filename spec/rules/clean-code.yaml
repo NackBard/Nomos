@@ -1,0 +1,74 @@
+schemaVersion: "1.0.0"
+rules:
+  - id: CC001
+    category: CleanCode
+    title: Long method
+    description: Source lines of a callable.
+    rationale: Long callables are harder to read and test.
+    paradigms: [oop, structural, functional]
+    severity: minor
+    confidence: high
+    threshold: { maxLines: 40 }
+  - id: CC002
+    category: CleanCode
+    title: Large class
+    description: Lines and members of a type, over all of its parts.
+    rationale: A large type tends to collect several responsibilities.
+    paradigms: [oop]
+    severity: minor
+    confidence: high
+    threshold: { maxLines: 400, maxMembers: 30 }
+  - id: CC003
+    category: CleanCode
+    title: Too many parameters
+    description: Parameter count of a callable; constructors have a separate limit because of dependency injection.
+    rationale: Long parameter lists are hard to call correctly.
+    paradigms: [oop, structural, functional]
+    severity: minor
+    confidence: high
+    threshold: { maxParameters: 5, maxConstructorParameters: 7 }
+  - id: CC004
+    category: CleanCode
+    title: Deep nesting
+    description: Nesting depth of branches, loops and guarded blocks; else-if chains stay flat.
+    rationale: Each level adds a condition the reader must hold in mind.
+    paradigms: [oop, structural, functional]
+    severity: minor
+    confidence: high
+    threshold: { maxDepth: 4 }
+  - id: CC006
+    category: CleanCode
+    title: Placeholders
+    description: TODO, FIXME, HACK and XXX comments, and bodies that only throw not-implemented.
+    rationale: Marks unfinished work.
+    paradigms: [oop, structural, functional]
+    severity: minor
+    confidence: high
+    threshold: {}
+  - id: CC007
+    category: CleanCode
+    title: Dead code
+    description: Unreachable statements, unused locals, private members nothing refers to.
+    rationale: Code that never runs still has to be read.
+    paradigms: [oop, structural, functional]
+    severity: minor
+    confidence: medium
+    threshold: {}
+  - id: CC008
+    category: CleanCode
+    title: Commented-out code
+    description: Line comments that end like statements.
+    rationale: Version control keeps history; disabled code is noise.
+    paradigms: [oop, structural, functional]
+    severity: minor
+    confidence: low
+    threshold: {}
+  - id: CC009
+    category: CleanCode
+    title: Empty catch
+    description: A catch block with no statements and no comment.
+    rationale: The failure is silently discarded.
+    paradigms: [oop, structural, functional]
+    severity: major
+    confidence: high
+    threshold: {}

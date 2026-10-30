@@ -1,0 +1,13 @@
+# Language-specific rules for C#. The CS. prefix is mandatory.
+schemaVersion: "1.0.0"
+language: csharp
+rules:
+  - id: CS.NAM001
+    category: CleanCode
+    title: Naming conventions
+    description: Types, methods and properties in PascalCase, interfaces start with I, parameters in camelCase; one-letter parameters of public methods.
+    rationale: Departures from .NET conventions slow reading. Formerly CC005.
+    paradigms: [oop, structural, functional]
+    severity: info
+    confidence: high
+    threshold: {}

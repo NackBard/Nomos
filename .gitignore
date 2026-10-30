@@ -1,0 +1,41 @@
+# .NET build output
+bin/
+obj/
+TestResults/
+*.user
+*.suo
+.vs/
+
+# Node (conformance/runner, future extension/)
+node_modules/
+*.tsbuildinfo
+
+# Nomos output
+nomos-report/
+plugins/*.dll
+
+# AI assistant context and local agent settings: kept on the developer's machine only
+CLAUDE.md
+CLAUDE.local.md
+.claude/
+.mcp.json
+AGENTS.md
+GEMINI.md
+.cursor/
+.cursorrules
+.windsurfrules
+.aider*
+.continue/
+.codex/
+.github/copilot-instructions.md
+
+# Local environment and secrets
+.env
+.env.*
+*.pfx
+*.snk
+
+# Editors and OS
+.idea/
+Thumbs.db
+.DS_Store

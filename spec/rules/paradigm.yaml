@@ -1,0 +1,128 @@
+schemaVersion: "1.0.0"
+rules:
+  - id: FUN001
+    category: Paradigm
+    title: Impure function
+    description: A callable that returns a value and also writes state or performs I/O.
+    rationale: Cannot be reasoned about by substitution.
+    paradigms: [functional]
+    severity: minor
+    confidence: low
+    threshold: {}
+  - id: FUN002
+    category: Paradigm
+    title: Side effect in lambda
+    description: A lambda passed to a higher-order function that changes outer variables.
+    rationale: The result depends on evaluation order.
+    paradigms: [functional]
+    severity: minor
+    confidence: medium
+    threshold: {}
+  - id: FUN003
+    category: Paradigm
+    title: Mutable state
+    description: Reassigned locals, mutable instance fields, settable properties.
+    rationale: Mutation makes data flow harder to follow.
+    paradigms: [functional]
+    severity: minor
+    confidence: high
+    threshold: {}
+  - id: FUN004
+    category: Paradigm
+    title: Non-tail recursion
+    description: A self-call whose result is used further.
+    rationale: Cannot be turned into a loop by tail-call elimination.
+    paradigms: [functional]
+    severity: minor
+    confidence: medium
+    threshold: {}
+  - id: FUN005
+    category: Paradigm
+    title: Higher-order depth
+    description: Order of functions (data, functions, functions of functions) and lambda nesting.
+    rationale: High orders and nested lambdas are hard to follow.
+    paradigms: [functional]
+    severity: minor
+    confidence: medium
+    threshold: { maxOrder: 3, maxLambdaNesting: 3 }
+  - id: OOP001
+    category: Paradigm
+    title: Encapsulation
+    description: Public mutable fields.
+    rationale: Hands a type's invariants to every caller.
+    paradigms: [oop]
+    severity: major
+    confidence: high
+    threshold: {}
+  - id: OOP002
+    category: Paradigm
+    title: Inheritance depth
+    description: Depth of inheritance tree (DIT).
+    rationale: Deep hierarchies are hard to understand and change.
+    paradigms: [oop]
+    severity: minor
+    confidence: high
+    threshold: { maxDepth: 4 }
+  - id: OOP003
+    category: Paradigm
+    title: Polymorphism
+    description: Several runtime type tests on project types in one callable.
+    rationale: Usually reimplements virtual dispatch.
+    paradigms: [oop]
+    severity: minor
+    confidence: medium
+    threshold: { minTypeTests: 3 }
+  - id: OOP004
+    category: Paradigm
+    title: Cohesion
+    description: LCOM4, groups of methods that share no state.
+    rationale: More than one group suggests a class that could be split.
+    paradigms: [oop]
+    severity: minor
+    confidence: medium
+    threshold: { maxLcom: 2, minMethods: 4 }
+  - id: OOP005
+    category: Paradigm
+    title: Coupling
+    description: Coupling between objects (CBO), excluding the standard library.
+    rationale: Many dependencies mean many reasons to change.
+    paradigms: [oop]
+    severity: minor
+    confidence: high
+    threshold: { maxCoupling: 15 }
+  - id: OOP006
+    category: Paradigm
+    title: Refused bequest
+    description: A subclass that overrides nothing and touches no inherited member.
+    rationale: Gains nothing from its base class.
+    paradigms: [oop]
+    severity: minor
+    confidence: low
+    threshold: {}
+  - id: STR001
+    category: Paradigm
+    title: Goto
+    description: Uses of goto. Switch-case jumps are not flagged.
+    rationale: Breaks single-entry, single-exit structure of blocks.
+    paradigms: [structural]
+    severity: minor
+    confidence: high
+    threshold: {}
+  - id: STR002
+    category: Paradigm
+    title: Global state
+    description: Non-private static mutable fields and properties, module-level variables.
+    rationale: Acts as a hidden global.
+    paradigms: [structural]
+    severity: major
+    confidence: medium
+    threshold: {}
+  - id: STR003
+    category: Paradigm
+    title: Module size
+    description: Lines of code per module and per file.
+    rationale: Very large modules are hard to navigate.
+    paradigms: [structural]
+    severity: minor
+    confidence: high
+    threshold: { maxModuleLines: 3000, maxFileLines: 800 }

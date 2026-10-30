@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "1.0.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "csharp" },
+  "files": [
+    { "path": "A.cs", "lines": 6, "loc": 5 },
+    { "path": "B.cs", "lines": 6, "loc": 5 },
+    { "path": "C.cs", "lines": 6, "loc": 5 },
+    { "path": "D.cs", "lines": 12, "loc": 10 },
+    { "path": "E.cs", "lines": 10, "loc": 8 },
+    { "path": "F.cs", "lines": 10, "loc": 8 }
+  ],
+  "modules": [
+    { "id": "Cyc.A", "name": "Cyc.A", "files": ["A.cs"], "loc": 5, "metrics": {}, "paradigmEvidence": [] },
+    { "id": "Cyc.B", "name": "Cyc.B", "files": ["B.cs"], "loc": 5, "metrics": {}, "paradigmEvidence": [] },
+    { "id": "Cyc.C", "name": "Cyc.C", "files": ["C.cs"], "loc": 5, "metrics": {}, "paradigmEvidence": [] },
+    { "id": "Cyc.D", "name": "Cyc.D", "files": ["D.cs"], "loc": 10, "metrics": {}, "paradigmEvidence": [] },
+    { "id": "Cyc.E", "name": "Cyc.E", "files": ["E.cs"], "loc": 8, "metrics": {}, "paradigmEvidence": [] },
+    { "id": "Cyc.F", "name": "Cyc.F", "files": ["F.cs"], "loc": 8, "metrics": {}, "paradigmEvidence": [] }
+  ],
+  "types": [
+    { "id": "Cyc.A.A1", "name": "A1", "module": "Cyc.A", "kind": "class", "isAbstract": false, "location": { "file": "A.cs", "startLine": 3 }, "metrics": { "lines": 4, "memberCount": 1 } },
+    { "id": "Cyc.B.B1", "name": "B1", "module": "Cyc.B", "kind": "class", "isAbstract": false, "location": { "file": "B.cs", "startLine": 3 }, "metrics": { "lines": 4, "memberCount": 1 } },
+    { "id": "Cyc.C.C1", "name": "C1", "module": "Cyc.C", "kind": "class", "isAbstract": false, "location": { "file": "C.cs", "startLine": 3 }, "metrics": { "lines": 4, "memberCount": 1 } },
+    { "id": "Cyc.D.D1", "name": "D1", "module": "Cyc.D", "kind": "class", "isAbstract": false, "location": { "file": "D.cs", "startLine": 3 }, "metrics": { "lines": 5, "memberCount": 2 } },
+    { "id": "Cyc.D.D2", "name": "D2", "module": "Cyc.D", "kind": "class", "isAbstract": false, "location": { "file": "D.cs", "startLine": 9 }, "metrics": { "lines": 4, "memberCount": 1 } },
+    { "id": "Cyc.E.E1", "name": "E1", "module": "Cyc.E", "kind": "class", "isAbstract": false, "location": { "file": "E.cs", "startLine": 3 }, "metrics": { "lines": 4, "memberCount": 1 } },
+    { "id": "Cyc.E.E2", "name": "E2", "module": "Cyc.E", "kind": "class", "isAbstract": false, "location": { "file": "E.cs", "startLine": 8 }, "metrics": { "lines": 3, "memberCount": 0 } },
+    { "id": "Cyc.F.F1", "name": "F1", "module": "Cyc.F", "kind": "class", "isAbstract": false, "location": { "file": "F.cs", "startLine": 3 }, "metrics": { "lines": 3, "memberCount": 0 } },
+    { "id": "Cyc.F.F2", "name": "F2", "module": "Cyc.F", "kind": "class", "isAbstract": false, "location": { "file": "F.cs", "startLine": 7 }, "metrics": { "lines": 4, "memberCount": 1 } }
+  ],
+  "functions": [],
+  "dependencies": [
+    { "from": "Cyc.A.A1", "to": "Cyc.B.B1", "kind": "type-ref", "phase": "runtime" },
+    { "from": "Cyc.B.B1", "to": "Cyc.C.C1", "kind": "type-ref", "phase": "runtime" },
+    { "from": "Cyc.C.C1", "to": "Cyc.A.A1", "kind": "type-ref", "phase": "runtime" },
+    { "from": "Cyc.D.D1", "to": "Cyc.A.A1", "kind": "type-ref", "phase": "runtime" },
+    { "from": "Cyc.D.D1", "to": "Cyc.D.D2", "kind": "type-ref", "phase": "runtime" },
+    { "from": "Cyc.D.D2", "to": "Cyc.D.D1", "kind": "type-ref", "phase": "runtime" },
+    { "from": "Cyc.E.E1", "to": "Cyc.F.F1", "kind": "type-ref", "phase": "runtime" },
+    { "from": "Cyc.F.F2", "to": "Cyc.E.E2", "kind": "type-ref", "phase": "runtime" }
+  ],
+  "cycles": [
+    { "level": "type", "members": ["Cyc.A.A1", "Cyc.B.B1", "Cyc.C.C1"] },
+    { "level": "type", "members": ["Cyc.D.D1", "Cyc.D.D2"] },
+    { "level": "module", "members": ["Cyc.A", "Cyc.B", "Cyc.C"] },
+    { "level": "module", "members": ["Cyc.E", "Cyc.F"] }
+  ],
+  "skippedRules": [],
+  "diagnostics": []
+}
