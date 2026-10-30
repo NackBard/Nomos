@@ -13,6 +13,7 @@
 Нужен .NET SDK 10.
 
 ```powershell
+cd analyzers/csharp
 dotnet build Nomos.slnx
 dotnet test Nomos.slnx
 
