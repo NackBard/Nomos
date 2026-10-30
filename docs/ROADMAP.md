@@ -67,7 +67,7 @@
 ## Миграция существующего .NET-кода (часть этапа 2)
 
 1. ~~Создать `analyzers/csharp/`, перенести туда `src/` и `tests/` (с пересборкой ссылок в `Directory.Build.props`, `Directory.Packages.props`, `Nomos.slnx`).~~ Сделано, D-027.
-2. Добавить слой «facts + SARIF»: по IR строится facts; существующие находки превращаются в SARIF по профилю.
+2. ~~Добавить слой «facts + SARIF»: по IR строится facts; существующие находки превращаются в SARIF по профилю.~~ Сделано, D-028 (`Nomos.Facts`, `Nomos.Analyzer.CSharp`); четыре случая conformance проходят.
 3. Привязать id анализаторов к `spec/rules`; `CC005` становится `CS.NAM001`.
 4. Заменить `Cli` на протокол `manifest`/`analyze`; удалить рефлексивный поиск плагинов и `Languages.TreeSitter`.
 5. Перегенерировать golden-файлы; после этого — удалить дубли, не используемые больше.

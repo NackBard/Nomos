@@ -1,0 +1,142 @@
+using System.Reflection;
+using System.Text;
+using System.Text.Json;
+using Nomos.Abstractions;
+using Nomos.Core;
+using Nomos.Facts;
+
+namespace Nomos.Analyzer.CSharp;
+
+/// <summary>
+/// Analyzer for C# speaking the Nomos protocol (docs/ARCHITECTURE.md): <c>manifest</c> and <c>analyze --root</c>.
+/// Facts go to stdout, SARIF to the file named by <c>--sarif</c>, diagnostics for people to stderr.
+/// </summary>
+public static class Program
+{
+    private const int Success = 0;
+    private const int Unexpected = 1;
+    private const int UsageError = 2;
+    private const int BadInput = 3;
+    private const string Name = "nomos-csharp";
+    private const string SchemaVersion = "1.0.0";
+
+    /// <summary>Runs the analyzer.</summary>
+    /// <param name="args">Command-line arguments.</param>
+    public static async Task<int> Main(string[] args)
+    {
+        try
+        {
+            return args switch
+            {
+                ["manifest"] => Manifest(),
+                ["analyze", .. var rest] => await AnalyzeAsync(rest).ConfigureAwait(false),
+                _ => Usage($"Unknown command or option: {string.Join(' ', args)}"),
+            };
+        }
+        catch (ConfigurationException exception)
+        {
+            await Console.Error.WriteLineAsync($"error: {exception.Message}").ConfigureAwait(false);
+            return BadInput;
+        }
+        catch (Exception exception) when (exception is not OperationCanceledException)
+        {
+            await Console.Error.WriteLineAsync($"error: {exception}").ConfigureAwait(false);
+            return Unexpected;
+        }
+    }
+
+    private static string Version { get; } =
+        typeof(Program).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion.Split('+')[0] ?? "0.0.0";
+
+    private static int Usage(string message)
+    {
+        Console.Error.WriteLine($"{message}\nUsage: {Name} manifest | analyze --root <path> [--sarif <file>] [--config <nomos.json>]");
+        return UsageError;
+    }
+
+    private static ComponentCatalog Catalog() => ComponentCatalog.Discover(PluginLoader.LoadBuiltIn());
+
+    private static int Manifest()
+    {
+        var descriptors = Catalog().Analyzers.Select(a => a.Descriptor).OrderBy(d => RuleIds.ToSpec(d.Id), StringComparer.Ordinal).ToList();
+        var manifest = new
+        {
+            name = Name,
+            language = Abstractions.Languages.CSharp,
+            version = Version,
+            schemaVersion = SchemaVersion,
+            paradigms = new[] { Paradigms.Functional, Paradigms.ObjectOriented, Paradigms.Structural },
+            capabilities = new
+            {
+                semantic = true,
+                supportedRules = descriptors.Select(d => RuleIds.ToSpec(d.Id)).ToList(),
+                partialAnalysis = false,
+                sarif = true,
+            },
+            rules = descriptors.Select(d => new { id = RuleIds.ToSpec(d.Id), category = d.Category, paradigms = d.Paradigms.Order(StringComparer.Ordinal).ToList(), title = d.Title }).ToList(),
+        };
+        WriteStdout(JsonSerializer.Serialize(manifest, new JsonSerializerOptions { WriteIndented = true }).ReplaceLineEndings("\n"));
+        return Success;
+    }
+
+    private static async Task<int> AnalyzeAsync(string[] args)
+    {
+        string? root = null, sarif = null, config = null;
+        for (var i = 0; i < args.Length; i += 2)
+        {
+            if (i + 1 >= args.Length) return Usage($"Missing value for {args[i]}");
+            var value = args[i + 1];
+            switch (args[i])
+            {
+                case "--root": root = value; break;
+                case "--sarif": sarif = value; break;
+                case "--config": config = value; break;
+                // Accepted by every analyzer in the protocol; this one analyzes the whole root (partialAnalysis = false).
+                case "--files" or "--rules": break;
+                default: return Usage($"Unknown option: {args[i]}");
+            }
+        }
+        if (root is null) return Usage("--root is required");
+        if (!Directory.Exists(root))
+        {
+            await Console.Error.WriteLineAsync($"error: root does not exist: {root}").ConfigureAwait(false);
+            return BadInput;
+        }
+
+        // The workspace file at the root has another meaning (contracts/nomos.schema.json), so only --config is read.
+        var settings = config is null ? new NomosConfig() : NomosConfig.Load(config);
+        var catalog = Catalog();
+        var result = await new AnalysisEngine(catalog).RunAsync(new AnalysisRequest { Path = root, Config = settings }).ConfigureAwait(false);
+        if (result.Model is not { Files.Count: > 0 })
+        {
+            await Console.Error.WriteLineAsync($"error: no C# files under {root}").ConfigureAwait(false);
+            return BadInput;
+        }
+
+        var options = new FactsOptions(Name, Version, [.. catalog.Analyzers.Select(a => a.Descriptor)], RuleIds.ToSpec)
+        {
+            SarifFile = sarif,
+            ResultCount = result.Findings.Count,
+        };
+        if (sarif is not null)
+        {
+            await using var stream = new StreamWriter(sarif, append: false, new UTF8Encoding(false));
+            SarifProfileWriter.Write(result, options, stream);
+        }
+
+        WriteStdout(FactsWriter.Write(result, options));
+        return Success;
+    }
+
+    private static void WriteStdout(string text)
+    {
+        using var stdout = Console.OpenStandardOutput();
+        stdout.Write(new UTF8Encoding(false).GetBytes(text + "\n"));
+    }
+}
+
+/// <summary>Maps implementation ids to the ids in spec/rules (migration step 3, D-023: CC005 became CS.NAM001).</summary>
+internal static class RuleIds
+{
+    public static string ToSpec(string id) => id == "CC005" ? "CS.NAM001" : id;
+}

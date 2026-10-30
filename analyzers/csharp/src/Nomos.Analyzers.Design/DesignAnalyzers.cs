@@ -103,7 +103,7 @@ public sealed class LayerViolationAnalyzer : AnalyzerBase
 }
 
 /// <summary>Detects god classes.</summary>
-[Analyzer("DSN004", Categories.Design, Title = "God class", Severity = Severity.Major,
+[Analyzer("DSN004", Categories.Design, Title = "God class", Severity = Severity.Major, Paradigms = [Paradigms.ObjectOriented],
     Description = "Lanza and Marinescu's detection strategy: high WMC, much foreign data used (ATFD), low cohesion (TCC).")]
 public sealed class GodClassAnalyzer : AnalyzerBase
 {
@@ -127,7 +127,7 @@ public sealed class GodClassAnalyzer : AnalyzerBase
 }
 
 /// <summary>Detects feature envy.</summary>
-[Analyzer("DSN005", Categories.Design, Title = "Feature envy", Severity = Severity.Minor,
+[Analyzer("DSN005", Categories.Design, Title = "Feature envy", Severity = Severity.Minor, Paradigms = [Paradigms.ObjectOriented],
     Description = "A method that uses more data of one other type than of its own probably belongs there.")]
 public sealed class FeatureEnvyAnalyzer : AnalyzerBase
 {

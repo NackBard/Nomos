@@ -16,7 +16,7 @@ public static class ControlFlow
                 IfStatement or LoopStatement or ConditionalExpression or CatchClause => 1,
                 SwitchSection section => section.Labels.Count > 0 ? 1 : 0,
                 SwitchArm arm => arm.Pattern is null ? 0 : 1,
-                BinaryExpression { Operator: "&&" or "||" or "??" or "and" or "or" } => 1,
+                BinaryExpression { Operator: "&&" or "||" or "and" or "or" } => 1,
                 _ => 0,
             };
         }

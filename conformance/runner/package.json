@@ -9,6 +9,7 @@
     "validate": "node src/cli.ts validate",
     "run": "node src/cli.ts run",
     "test": "node --test src/",
+    "csharp": "node src/cli.ts run --analyzer \"csharp=dotnet analyzers/csharp/src/Nomos.Analyzer.CSharp/bin/Debug/net10.0/nomos-csharp.dll\"",
     "selftest": "node src/cli.ts run --analyzer \"csharp=node conformance/runner/src/echo-analyzer.ts\"",
     "typecheck": "tsc --noEmit"
   },

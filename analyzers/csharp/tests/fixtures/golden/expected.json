@@ -1402,7 +1402,9 @@
       "category": "Design",
       "defaultSeverity": "major",
       "languages": [],
-      "paradigms": []
+      "paradigms": [
+        "oop"
+      ]
     },
     {
       "id": "DSN005",
@@ -1410,7 +1412,9 @@
       "category": "Design",
       "defaultSeverity": "minor",
       "languages": [],
-      "paradigms": []
+      "paradigms": [
+        "oop"
+      ]
     },
     {
       "id": "DSN006",

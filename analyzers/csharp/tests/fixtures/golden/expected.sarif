@@ -346,7 +346,9 @@
               },
               "properties": {
                 "category": "Design",
-                "paradigms": [],
+                "paradigms": [
+                  "oop"
+                ],
                 "languages": []
               }
             },
@@ -364,7 +366,9 @@
               },
               "properties": {
                 "category": "Design",
-                "paradigms": [],
+                "paradigms": [
+                  "oop"
+                ],
                 "languages": []
               }
             },

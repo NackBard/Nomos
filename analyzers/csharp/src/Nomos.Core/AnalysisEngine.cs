@@ -130,6 +130,7 @@ public sealed class AnalysisEngine(ComponentCatalog catalog)
             Modules = moduleHealth,
             Health = scorer.ScoreProject(moduleHealth),
             Diagnostics = [.. diagnostics.OrderByDescending(d => d.Level).ThenBy(d => d.Source, StringComparer.Ordinal).ThenBy(d => d.Message, StringComparer.Ordinal)],
+            Model = model,
         };
     }
 

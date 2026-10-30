@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\Nomos.Abstractions\Nomos.Abstractions.csproj" />
+    <ProjectReference Include="..\Nomos.Graph\Nomos.Graph.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,6 +1,7 @@
 <Solution>
   <Folder Name="/src/">
     <Project Path="src/Nomos.Abstractions/Nomos.Abstractions.csproj" />
+    <Project Path="src/Nomos.Analyzer.CSharp/Nomos.Analyzer.CSharp.csproj" />
     <Project Path="src/Nomos.Analyzers.Algorithms/Nomos.Analyzers.Algorithms.csproj" />
     <Project Path="src/Nomos.Analyzers.CleanCode/Nomos.Analyzers.CleanCode.csproj" />
     <Project Path="src/Nomos.Analyzers.Design/Nomos.Analyzers.Design.csproj" />
@@ -11,6 +12,7 @@
     <Project Path="src/Nomos.Analyzers.Security/Nomos.Analyzers.Security.csproj" />
     <Project Path="src/Nomos.Cli/Nomos.Cli.csproj" />
     <Project Path="src/Nomos.Core/Nomos.Core.csproj" />
+    <Project Path="src/Nomos.Facts/Nomos.Facts.csproj" />
     <Project Path="src/Nomos.Graph/Nomos.Graph.csproj" />
     <Project Path="src/Nomos.Languages.CSharp/Nomos.Languages.CSharp.csproj" />
     <Project Path="src/Nomos.Languages.TreeSitter/Nomos.Languages.TreeSitter.csproj" />
@@ -20,6 +22,7 @@
     <Project Path="tests/Nomos.Analyzers.Tests/Nomos.Analyzers.Tests.csproj" />
     <Project Path="tests/Nomos.Cli.Tests/Nomos.Cli.Tests.csproj" />
     <Project Path="tests/Nomos.Core.Tests/Nomos.Core.Tests.csproj" />
+    <Project Path="tests/Nomos.Facts.Tests/Nomos.Facts.Tests.csproj" />
     <Project Path="tests/Nomos.Graph.Tests/Nomos.Graph.Tests.csproj" />
     <Project Path="tests/Nomos.Languages.Tests/Nomos.Languages.Tests.csproj" />
     <Project Path="tests/Nomos.Reporting.Tests/Nomos.Reporting.Tests.csproj" />

@@ -472,6 +472,9 @@ public sealed record AnalysisResult
 
     /// <summary>Gets messages about the analysis itself.</summary>
     public required IReadOnlyList<ToolDiagnostic> Diagnostics { get; init; }
+
+    /// <summary>Gets the IR the run analyzed. Report writers do not use it; the facts writer builds on it.</summary>
+    public Ir.ProjectModel? Model { get; init; }
 }
 
 /// <summary>Renders an analysis result.</summary>

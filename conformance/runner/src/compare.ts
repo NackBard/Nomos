@@ -4,6 +4,7 @@ export interface CaseSpec {
   languages: string[];
   tolerance?: { default?: Tolerance; metrics?: Record<string, Tolerance> };
   covers?: string[];
+  expectSarif?: boolean;
   parity?: { metric: string; scope: "module" | "type" | "function"; entities: Record<string, string> }[];
 }
 
