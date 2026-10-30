@@ -21,13 +21,18 @@ public sealed class MainSequenceAnalyzer : AnalyzerBase
             Metric("instability", package.Instability);
             Metric("abstractness", package.Abstractness);
             Metric("distance", package.Distance);
-            void Metric(string id, double value) => context.Report(new Metric(id, MetricScope.Module, module.Name, Math.Round(value, 3), module.Name));
+            void Metric(string id, double? value)
+            {
+                if (value is { } known) context.Report(new Metric(id, MetricScope.Module, module.Name, Math.Round(known, 3), module.Name));
+            }
 
-            if (package.Distance <= maxDistance || package.AfferentCoupling + package.EfferentCoupling < minCoupling) continue;
-            var zone = package.Instability < 0.5 ? "the zone of pain: concrete and heavily depended upon" : "the zone of uselessness: abstract and unused";
+            if (package.Distance is not { } distance || package.Instability is not { } instability || package.Abstractness is not { } abstractness
+                || distance <= maxDistance || package.AfferentCoupling + package.EfferentCoupling < minCoupling) continue;
+            var zone = instability < 0.5 ? "the zone of pain: concrete and heavily depended upon" : "the zone of uselessness: abstract and unused";
             context.Report(Confidence.Medium, module.AllTypes.First().Location,
-                $"Module {module.Name} is far from the main sequence (D = {package.Distance:0.00})",
-                $"A = {package.Abstractness:0.00}, I = {package.Instability:0.00}, so it sits near {zone}.", module.Name);
+                $"Module {module.Name} is far from the main sequence (D = {distance:0.00})",
+                $"A = {abstractness:0.00}, I = {instability:0.00}, so it sits near {zone}.", module.Name,
+                measured: new Measurement("distance", Math.Round(distance, 4), maxDistance));
         }
     }
 }
@@ -116,12 +121,13 @@ public sealed class GodClassAnalyzer : AnalyzerBase
         foreach (var type in context.Types.Where(t => t.Kind == TypeKind.Class))
         {
             var wmc = TypeMetrics.Wmc(type);
-            var atfd = type.Callables.SelectMany(c => TypeMetrics.ForeignData(c, context.Model)).SelectMany(p => p.Value.Select(m => $"{p.Key}.{m}")).Distinct().Count();
-            var tcc = TypeMetrics.Tcc(type);
+            var atfd = TypeMetrics.Atfd(type, context.Model);
+            var tcc = TypeMetrics.TccOrNull(type);
             context.Report(new Metric("wmc", MetricScope.Type, type.Id, wmc, type.ModuleName));
-            if (wmc >= minWmc && atfd >= minAtfd && tcc < maxTcc)
+            if (wmc >= minWmc && atfd >= minAtfd && tcc is { } cohesion && cohesion < maxTcc)
                 context.Report(type, Confidence.Medium, $"{type.Name} looks like a god class",
-                    $"WMC = {wmc} (>= {minWmc}), ATFD = {atfd} (>= {minAtfd}), TCC = {tcc:0.00} (< {maxTcc:0.00}): it does much, uses others' data, and its methods share little.");
+                    $"WMC = {wmc} (>= {minWmc}), ATFD = {atfd} (>= {minAtfd}), TCC = {cohesion:0.00} (< {maxTcc:0.00}): it does much, uses others' data, and its methods share little.",
+                    measured: new Measurement("wmc", wmc, minWmc));
         }
     }
 }
@@ -169,7 +175,8 @@ public sealed class BlastRadiusAnalyzer : AnalyzerBase
             context.Report(new Metric("blast-radius", MetricScope.Type, type.Id, radius.Transitive.Count, type.ModuleName));
             if (radius.Transitive.Count > maxDependents)
                 context.Report(type, Confidence.Medium, $"Changing {type.Name} can reach {radius.Transitive.Count} types ({radius.ShareOfGraph:P0})",
-                    $"{radius.Direct} direct dependents, up to {radius.MaxDepth} hops away. Stable abstractions at such points limit the spread. Static dependencies overstate real impact when a change keeps the contract.");
+                    $"{radius.Direct} direct dependents, up to {radius.MaxDepth} hops away. Stable abstractions at such points limit the spread. Static dependencies overstate real impact when a change keeps the contract.",
+                    measured: new Measurement("blastRadius", radius.Transitive.Count, maxDependents));
         }
     }
 }

@@ -156,7 +156,7 @@ public class FactsTests
         var location = new SourceLocation("a.cs", 3, 5, 3, 9);
         var findings = new[]
         {
-            new Finding("PRN001", "Principles", Severity.Major, Confidence.Medium, "X has many dependencies", new Evidence(location, "class X", "Many collaborators suggest several reasons to change.")) { Module = "A", Symbol = "A.X.Run(System.Int32)" },
+            new Finding("PRN001", "Principles", Severity.Major, Confidence.Medium, "X has many dependencies", new Evidence(location, "class X", "Many collaborators suggest several reasons to change.")) { Module = "A", Symbol = "A.X.Run(System.Int32)", Measured = new Measurement("parameterCount", 1, 0) },
             new Finding("CC005", "CleanCode", Severity.Info, Confidence.High, "name is odd", new Evidence(new SourceLocation("a.cs", 1, 1, 1, 2), "", "Convention.")),
         };
         var result = await Analyze(findings, ("a.cs", "namespace A { public class X { public void Run() { } public void Run(int a) { } } }"));
@@ -178,5 +178,10 @@ public class FactsTests
         Assert.Equal("major", properties.GetProperty("severity").GetString());
         Assert.Equal("Many collaborators suggest several reasons to change.", properties.GetProperty("explanation").GetString());
         Assert.Equal("A.X.Run(System.Int32)", properties.GetProperty("entity").GetString());
+        var measured = properties.GetProperty("measured");
+        Assert.Equal("parameterCount", measured.GetProperty("metric").GetString());
+        Assert.Equal(1, measured.GetProperty("value").GetDouble());
+        Assert.Equal(0, measured.GetProperty("threshold").GetDouble());
+        Assert.False(results[0].GetProperty("properties").TryGetProperty("measured", out _));
     }
 }

@@ -143,17 +143,17 @@ public static class BlastRadius
 /// <param name="TypeCount">Types in the module.</param>
 /// <param name="AbstractCount">Interfaces and abstract classes in the module.</param>
 /// <param name="AfferentCoupling">Ca: outside types that depend on types of this module.</param>
-/// <param name="EfferentCoupling">Ce: types of this module that depend on outside types.</param>
+/// <param name="EfferentCoupling">Ce: distinct outside project types the types of this module depend on.</param>
 public sealed record PackageMetrics(string Module, int TypeCount, int AbstractCount, int AfferentCoupling, int EfferentCoupling)
 {
-    /// <summary>Gets I = Ce / (Ca + Ce); 0 when the module is isolated.</summary>
-    public double Instability => AfferentCoupling + EfferentCoupling == 0 ? 0 : (double)EfferentCoupling / (AfferentCoupling + EfferentCoupling);
+    /// <summary>Gets I = Ce / (Ca + Ce); <c>null</c> when the module is isolated (spec/metrics.md).</summary>
+    public double? Instability => AfferentCoupling + EfferentCoupling == 0 ? null : (double)EfferentCoupling / (AfferentCoupling + EfferentCoupling);
 
     /// <summary>Gets A = abstract types / types.</summary>
-    public double Abstractness => TypeCount == 0 ? 0 : (double)AbstractCount / TypeCount;
+    public double? Abstractness => TypeCount == 0 ? null : (double)AbstractCount / TypeCount;
 
     /// <summary>Gets D = |A + I - 1|, the distance from the main sequence.</summary>
-    public double Distance => Math.Abs(Abstractness + Instability - 1);
+    public double? Distance => Abstractness is null || Instability is null ? null : Math.Abs(Abstractness.Value + Instability.Value - 1);
 }
 
 /// <summary>Dependency graphs of a model, restricted to types declared in the project.</summary>
@@ -182,7 +182,7 @@ public sealed class DependencyGraphs
             Modules.AddNode(module.Name);
             var inside = module.AllTypes.Select(t => t.Id).ToHashSet();
             var afferent = inside.SelectMany(Types.Predecessors).Where(p => !inside.Contains(p)).Distinct().Count();
-            var efferent = inside.Count(id => Types.Successors(id).Any(s => !inside.Contains(s)));
+            var efferent = inside.SelectMany(Types.Successors).Where(s => !inside.Contains(s)).Distinct().Count();
             Packages[module.Name] = new PackageMetrics(module.Name, inside.Count, module.AllTypes.Count(t => t.IsAbstract), afferent, efferent);
         }
     }

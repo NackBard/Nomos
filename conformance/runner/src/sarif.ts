@@ -1,5 +1,7 @@
 // Checks a SARIF file against contracts/sarif-profile.md. The official SARIF 2.1.0 schema is not bundled
 // (the repository has no copy and the harness must work offline), so only the profile rules are verified.
+// When the official schema was downloaded (npm run fetch-sarif-schema) it is applied as well.
+import { validateSarifSchema } from "./sarif-schema.ts";
 
 const LEVELS: Record<string, string> = { info: "note", minor: "warning", major: "warning", critical: "error" };
 const CONFIDENCES = new Set(["low", "medium", "high"]);
@@ -8,12 +10,30 @@ const ordinal = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0);
 
 export interface SarifContext {
   manifest: { name: string; version: string; capabilities: { supportedRules: string[] } };
-  /** Entity ids present in the facts of the same run (types and functions). */
-  entities: Set<string>;
+  /** Entities of the facts of the same run (types and functions) with their metrics. */
+  entities: Map<string, Record<string, number | null>>;
   /** The value passed after --sarif and reported in facts.checks.sarifFile. */
   sarifPath: string;
   facts: any;
+  /** Shared rules from spec/rules: SARIF rule texts must be the spec texts. */
+  specRules?: Map<string, { title: string; description: string; rationale: string }>;
   expected?: { results: { ruleId: string; file: string; startLine: number }[] };
+}
+
+/** A measurement must have the shape of the profile and agree with the same metric in the facts. */
+function checkMeasured(where: string, properties: any, context: SarifContext): string[] {
+  const m = properties.measured;
+  if (typeof m?.metric !== "string" || typeof m?.value !== "number" || typeof m?.threshold !== "number") {
+    return [`${where}: properties.measured must be { metric, value, threshold } with a string and two numbers`];
+  }
+  const owner = properties.entity !== undefined
+    ? context.entities.get(properties.entity)
+    : context.facts.modules.find((x: any) => x.id === properties.module)?.metrics;
+  const known = owner?.[m.metric];
+  if (typeof known === "number" && Math.abs(known - m.value) > 0.001) {
+    return [`${where}: measured ${m.metric} is ${m.value}, the facts say ${known}`];
+  }
+  return [];
 }
 
 export function checkSarif(text: string, context: SarifContext): string[] {
@@ -24,6 +44,7 @@ export function checkSarif(text: string, context: SarifContext): string[] {
   } catch (e) {
     return [`SARIF is not JSON: ${(e as Error).message}`];
   }
+  errors.push(...validateSarifSchema(log).map((m) => `schema: ${m}`));
   if (log.version !== "2.1.0") errors.push(`version is ${JSON.stringify(log.version)}, expected "2.1.0"`);
   if (!Array.isArray(log.runs) || log.runs.length !== 1) return [...errors, "runs must contain exactly one run"];
   const run = log.runs[0];
@@ -40,6 +61,12 @@ export function checkSarif(text: string, context: SarifContext): string[] {
     if (!rule.shortDescription?.text) errors.push(`${where}: shortDescription.text is missing`);
     if (!rule.fullDescription?.text) errors.push(`${where}: fullDescription.text is missing`);
     if (!["note", "warning", "error"].includes(rule.defaultConfiguration?.level)) errors.push(`${where}: defaultConfiguration.level is invalid`);
+    const spec = context.specRules?.get(rule.id);
+    if (spec) {
+      if (rule.name !== spec.title) errors.push(`${where}: name differs from the spec title`);
+      if (rule.shortDescription?.text !== spec.description) errors.push(`${where}: shortDescription differs from the spec description`);
+      if (rule.fullDescription?.text !== spec.rationale) errors.push(`${where}: fullDescription differs from the spec rationale`);
+    }
     if (!rule.properties?.category) errors.push(`${where}: properties.category is missing`);
     if (!Array.isArray(rule.properties?.paradigms)) errors.push(`${where}: properties.paradigms must be an array`);
   }
@@ -58,6 +85,7 @@ export function checkSarif(text: string, context: SarifContext): string[] {
     if (typeof properties.explanation !== "string" || properties.explanation.trim() === "") errors.push(`${where}: properties.explanation is empty (every result is a heuristic and must explain itself)`);
     if (!result.partialFingerprints?.["nomos/v1"]) errors.push(`${where}: partialFingerprints["nomos/v1"] is missing`);
     if (properties.entity !== undefined && !context.entities.has(properties.entity)) errors.push(`${where}: properties.entity ${JSON.stringify(properties.entity)} is not an entity of the facts`);
+    if (properties.measured !== undefined) errors.push(...checkMeasured(where, properties, context));
 
     const physical = result.locations?.[0]?.physicalLocation;
     const uri: string = physical?.artifactLocation?.uri ?? "";

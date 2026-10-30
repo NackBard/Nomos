@@ -117,6 +117,7 @@ public static class Program
         {
             SarifFile = sarif,
             ResultCount = result.Findings.Count,
+            RuleTexts = SpecRules.Load(),
         };
         if (sarif is not null)
         {

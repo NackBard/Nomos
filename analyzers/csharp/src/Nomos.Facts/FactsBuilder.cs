@@ -37,17 +37,10 @@ internal sealed class FactsBuilder
 
     public FactsDocument Build()
     {
-        var dependencies = BuildDependencies(out var unitEdges);
-        var unitGraph = new DirectedGraph();
-        foreach (var id in _typeIds) unitGraph.AddNode(id);
-        foreach (var (from, to) in unitEdges) unitGraph.AddEdge(from, to);
-
-        var moduleGraph = new DirectedGraph();
-        foreach (var module in _model.Modules) moduleGraph.AddNode(module.Name);
-        foreach (var (from, to) in unitEdges)
-        {
-            if (_moduleOfType[from] != _moduleOfType[to]) moduleGraph.AddEdge(_moduleOfType[from], _moduleOfType[to]);
-        }
+        var dependencies = BuildDependencies();
+        var graphs = DependencyGraphs.Build(_model);
+        var unitGraph = graphs.Types;
+        var moduleGraph = graphs.Modules;
 
         var evidence = _model.Modules.ToDictionary(m => m.Name, Evidence, StringComparer.Ordinal);
         var moduleHealth = _result.Modules.ToDictionary(m => m.Module, m => m.Health, StringComparer.Ordinal);
@@ -57,7 +50,7 @@ internal sealed class FactsBuilder
             SchemaVersion,
             new FactsAnalyzer(_options.AnalyzerName, _options.AnalyzerVersion, Languages.CSharp, Semantic: true),
             BuildFiles(),
-            [.. _model.Modules.OrderBy(m => m.Name, StringComparer.Ordinal).Select(m => BuildModule(m, unitEdges, evidence[m.Name], moduleHealth.GetValueOrDefault(m.Name)))],
+            [.. _model.Modules.OrderBy(m => m.Name, StringComparer.Ordinal).Select(m => BuildModule(m, graphs.Packages[m.Name], evidence[m.Name], moduleHealth.GetValueOrDefault(m.Name)))],
             [.. _types.Select(t => BuildType(t, unitGraph))],
             BuildFunctions(unitGraph),
             dependencies,
@@ -96,16 +89,8 @@ internal sealed class FactsBuilder
         })];
     }
 
-    private FactsModule BuildModule(ModuleDecl module, IReadOnlyList<(string From, string To)> unitEdges, IReadOnlyList<FactsEvidence> evidence, HealthScore? health)
+    private FactsModule BuildModule(ModuleDecl module, PackageMetrics martin, IReadOnlyList<FactsEvidence> evidence, HealthScore? health)
     {
-        var own = module.AllTypes.Select(t => t.Id).ToHashSet(StringComparer.Ordinal);
-        var ca = unitEdges.Where(e => own.Contains(e.To) && !own.Contains(e.From)).Select(e => e.From).Distinct().Count();
-        var ce = unitEdges.Where(e => own.Contains(e.From) && !own.Contains(e.To)).Select(e => e.To).Distinct().Count();
-        double? instability = ca + ce == 0 ? null : (double)ce / (ca + ce);
-        var typeCount = module.AllTypes.Count();
-        double? abstractness = typeCount == 0 ? null : (double)module.AllTypes.Count(t => t.IsAbstract) / typeCount;
-        double? distance = abstractness is null || instability is null ? null : Math.Abs(abstractness.Value + instability.Value - 1);
-
         var files = FilesOf(module).ToList();
         return new FactsModule(
             module.Name,
@@ -114,11 +99,11 @@ internal sealed class FactsBuilder
             files.Sum(f => _fileSizes.TryGetValue(f, out var size) ? size.Loc : 0),
             new SortedDictionary<string, double?>(StringComparer.Ordinal)
             {
-                ["ca"] = ca,
-                ["ce"] = ce,
-                ["instability"] = Round(instability),
-                ["abstractness"] = Round(abstractness),
-                ["distance"] = Round(distance),
+                ["ca"] = martin.AfferentCoupling,
+                ["ce"] = martin.EfferentCoupling,
+                ["instability"] = Round(martin.Instability),
+                ["abstractness"] = Round(martin.Abstractness),
+                ["distance"] = Round(martin.Distance),
             },
             evidence,
             health is null ? null : ToHealth(health));
@@ -138,10 +123,12 @@ internal sealed class FactsBuilder
         };
         if (type.Kind is TypeKind.Class or TypeKind.Struct or TypeKind.Record)
         {
-            metrics["dit"] = InheritanceDepth(type);
-            metrics["cbo"] = Cbo(type);
-            metrics["lcom4"] = Lcom4(type);
-            metrics["wmc"] = type.Callables.Where(IsMethodLike).Sum(ControlFlow.CyclomaticComplexity);
+            metrics["dit"] = TypeMetrics.Dit(type, _model);
+            metrics["cbo"] = TypeMetrics.Cbo(type, _model);
+            metrics["lcom4"] = TypeMetrics.Lcom4OrNull(type);
+            metrics["wmc"] = TypeMetrics.Wmc(type);
+            metrics["atfd"] = TypeMetrics.Atfd(type, _model);
+            metrics["tcc"] = Round(TypeMetrics.TccOrNull(type));
         }
         return new FactsType(type.Id, type.Name, type.ModuleName, KindName(type.Kind), type.IsAbstract, Place(type.Location), metrics);
     }
@@ -149,33 +136,6 @@ internal sealed class FactsBuilder
     private static string KindName(TypeKind kind) => kind.ToString().ToLowerInvariant();
 
     private static bool IsMethodLike(Callable callable) => callable.Kind is CallableKind.Method or CallableKind.Constructor or CallableKind.Destructor or CallableKind.Operator;
-
-    /// <summary>DIT: base classes only. A base outside the project is one step; its own ancestors are unknown.</summary>
-    private int InheritanceDepth(TypeDecl type)
-    {
-        if (type.Kind != TypeKind.Class) return 0;
-        var depth = 0;
-        var seen = new HashSet<string> { type.Id };
-        for (var current = type.BaseType; current is { Id: { } id } && seen.Add(id); current = _model.FindType(id)?.BaseType)
-        {
-            depth++;
-            if (_model.FindType(id) is null) break;
-        }
-        return depth;
-    }
-
-    /// <summary>CBO: distinct other types the type points to, project types and external non-standard types.</summary>
-    private int Cbo(TypeDecl type) =>
-        type.Dependencies.Select(d => d.TargetTypeId).Where(t => t != type.Id && !IsStandardLibrary(t, _typeIds)).Distinct(StringComparer.Ordinal).Count();
-
-    private static int? Lcom4(TypeDecl type)
-    {
-        var count = type.Callables.Count(c => c.Kind == CallableKind.Method && !c.Has(Modifiers.Static) && c.Body is not null);
-        return count == 0 ? null : TypeMetrics.Lcom4(type);
-    }
-
-    private static bool IsStandardLibrary(string typeId, HashSet<string> projectTypes) =>
-        !projectTypes.Contains(typeId) && (typeId == "System" || typeId.StartsWith("System.", StringComparison.Ordinal) || typeId.StartsWith("Microsoft.", StringComparison.Ordinal));
 
     // ---- functions --------------------------------------------------------------------------------------------
 
@@ -212,7 +172,7 @@ internal sealed class FactsBuilder
 
     // ---- dependencies and graphs ------------------------------------------------------------------------------
 
-    private IReadOnlyList<FactsDependency> BuildDependencies(out List<(string From, string To)> unitEdges)
+    private IReadOnlyList<FactsDependency> BuildDependencies()
     {
         var edges = new Dictionary<(string From, string To, string Kind), (int Count, SourceLocation Location)>();
         foreach (var type in _types)
@@ -224,12 +184,11 @@ internal sealed class FactsBuilder
             }
         }
 
-        unitEdges = [.. edges.Keys.Where(k => _typeIds.Contains(k.To)).Select(k => (k.From, k.To)).Distinct().OrderBy(e => e.From, StringComparer.Ordinal).ThenBy(e => e.To, StringComparer.Ordinal)];
         return [.. edges.OrderBy(e => e.Key.From, StringComparer.Ordinal).ThenBy(e => e.Key.To, StringComparer.Ordinal).ThenBy(e => e.Key.Kind, StringComparer.Ordinal)
             .Select(e =>
             {
                 var external = !_typeIds.Contains(e.Key.To);
-                return new FactsDependency(e.Key.From, e.Key.To, e.Key.Kind, "runtime", external, external && IsStandardLibrary(e.Key.To, _typeIds), e.Value.Count,
+                return new FactsDependency(e.Key.From, e.Key.To, e.Key.Kind, "runtime", external, external && TypeMetrics.IsStandardLibrary(e.Key.To, _model), e.Value.Count,
                     e.Value.Location.IsKnown ? Place(e.Value.Location) : null);
             })];
     }

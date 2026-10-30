@@ -15,7 +15,7 @@ public sealed class LongMethodAnalyzer : AnalyzerBase
             if (lines > maxLines)
                 context.Report(Confidence.High, callable.Location, $"{callable.Name} spans {lines} lines",
                     $"The line count is exact; the limit of {maxLines} is a readability convention.", symbol: callable.Id,
-                    severity: lines > maxLines * 2 ? Severity.Major : null);
+                    severity: lines > maxLines * 2 ? Severity.Major : null, measured: new Measurement("lines", lines, maxLines));
         }
     }
 }
@@ -36,7 +36,8 @@ public sealed class LargeClassAnalyzer : AnalyzerBase
             context.Report(new Metric("lines", MetricScope.Type, type.Id, type.LineCount, type.ModuleName));
             if (type.LineCount > maxLines || members > maxMembers)
                 context.Report(type, Confidence.High, $"{type.Name} has {type.LineCount} lines and {members} members",
-                    $"The counts are exact; the limits ({maxLines} lines, {maxMembers} members) are conventions.");
+                    $"The counts are exact; the limits ({maxLines} lines, {maxMembers} members) are conventions.",
+                    measured: type.LineCount > maxLines ? new Measurement("lines", type.LineCount, maxLines) : null);
         }
     }
 }
@@ -56,7 +57,8 @@ public sealed class TooManyParametersAnalyzer : AnalyzerBase
             var limit = callable.Kind == CallableKind.Constructor ? maxConstructor : max;
             if (callable.Parameters.Count > limit)
                 context.Report(Confidence.High, callable.Location, $"{callable.Name} takes {callable.Parameters.Count} parameters",
-                    $"The limit is {limit}. Long lists are easy to misorder; a parameter object groups what belongs together.", symbol: callable.Id);
+                    $"The limit is {limit}. Long lists are easy to misorder; a parameter object groups what belongs together.", symbol: callable.Id,
+                    measured: new Measurement("parameterCount", callable.Parameters.Count, limit));
         }
     }
 }
@@ -75,7 +77,8 @@ public sealed class DeepNestingAnalyzer : AnalyzerBase
             var depth = ControlFlow.MaxNesting(callable.Body);
             if (depth > maxDepth)
                 context.Report(Confidence.High, callable.Location, $"{callable.Name} nests {depth} levels deep",
-                    $"The limit is {maxDepth}. Guard clauses or extracted methods flatten the flow.", symbol: callable.Id);
+                    $"The limit is {maxDepth}. Guard clauses or extracted methods flatten the flow.", symbol: callable.Id,
+                    measured: new Measurement("maxNesting", depth, maxDepth));
         }
     }
 }

@@ -19,7 +19,7 @@ public sealed class CyclomaticComplexityAnalyzer : AnalyzerBase
             if (complexity > max)
                 context.Report(Confidence.High, callable.Location, $"{callable.Name} has cyclomatic complexity {complexity}",
                     $"The count is exact; above {max}, the number of paths to test and to understand grows quickly.", symbol: callable.Id,
-                    severity: complexity > max * 2 ? Severity.Major : null);
+                    severity: complexity > max * 2 ? Severity.Major : null, measured: new Measurement("cyclomatic", complexity, max));
         }
 
         foreach (var type in context.Types.Where(t => t.Callables.Count > 0))

@@ -28,10 +28,12 @@ public sealed class InheritanceDepthAnalyzer : AnalyzerBase
         var maxDepth = context.Options.Int("maxDepth", 4);
         foreach (var type in context.Types.Where(t => t.Kind is TypeKind.Class or TypeKind.Record))
         {
-            context.Report(new Metric("dit", MetricScope.Type, type.Id, type.InheritanceDepth, type.ModuleName));
-            if (type.InheritanceDepth > maxDepth)
-                context.Report(type, Confidence.High, $"{type.Name} sits {type.InheritanceDepth} levels deep",
-                    $"The depth is exact; beyond {maxDepth} levels, behavior is spread over many classes. Composition often reads better.");
+            var depth = TypeMetrics.Dit(type, context.Model);
+            context.Report(new Metric("dit", MetricScope.Type, type.Id, depth, type.ModuleName));
+            if (depth > maxDepth)
+                context.Report(type, Confidence.High, $"{type.Name} sits {depth} levels deep",
+                    $"The depth counts base classes in the project; a base outside it is one step. Beyond {maxDepth} levels, behavior is spread over many classes. Composition often reads better.",
+                    measured: new Measurement("dit", depth, maxDepth));
         }
     }
 }
@@ -68,11 +70,12 @@ public sealed class CohesionAnalyzer : AnalyzerBase
         var minMethods = context.Options.Int("minMethods", 4);
         foreach (var type in context.Types.Where(t => t.Kind == TypeKind.Class && !t.Has(Modifiers.Static)))
         {
-            var lcom = TypeMetrics.Lcom4(type);
+            if (TypeMetrics.Lcom4OrNull(type) is not { } lcom) continue;
             context.Report(new Metric("lcom4", MetricScope.Type, type.Id, lcom, type.ModuleName));
             if (lcom > maxLcom && type.Callables.Count(c => c.Kind == CallableKind.Method) >= minMethods)
                 context.Report(type, Confidence.Medium, $"{type.Name} splits into {lcom} unrelated method groups",
-                    "LCOM4 finds method groups that share no field and do not call each other; each may be a separate class.");
+                    "LCOM4 finds method groups that share no field and do not call each other; each may be a separate class.",
+                    measured: new Measurement("lcom4", lcom, maxLcom));
         }
     }
 }
@@ -88,11 +91,12 @@ public sealed class CouplingAnalyzer : AnalyzerBase
         var maxCoupling = context.Options.Int("maxCoupling", 15);
         foreach (var type in context.Types.Where(t => t.Kind is not (TypeKind.Enum or TypeKind.Delegate)))
         {
-            var coupling = type.Dependencies.Where(d => !d.TargetTypeId.StartsWith("System", StringComparison.Ordinal)).Select(d => d.TargetTypeId).Distinct().Count();
+            var coupling = TypeMetrics.Cbo(type, context.Model);
             context.Report(new Metric("cbo", MetricScope.Type, type.Id, coupling, type.ModuleName));
             if (coupling > maxCoupling)
                 context.Report(type, Confidence.Medium, $"{type.Name} depends on {coupling} types",
-                    $"Beyond {maxCoupling} collaborators, changes elsewhere are likely to reach this class.");
+                    $"Beyond {maxCoupling} collaborators, changes elsewhere are likely to reach this class.",
+                    measured: new Measurement("cbo", coupling, maxCoupling));
         }
     }
 }

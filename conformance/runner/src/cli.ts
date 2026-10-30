@@ -1,6 +1,7 @@
 import { validateRepository } from "./validate.ts";
 import { runConformance } from "./run.ts";
 import type { Analyzer, Check } from "./run.ts";
+import { sarifSchemaAvailable } from "./sarif-schema.ts";
 
 const usage = `Usage:
   node src/cli.ts validate
@@ -16,6 +17,7 @@ function report(checks: Check[]): number {
     if (check.errors.length) failed++;
   }
   console.log(`\n${checks.length - failed} passed, ${failed} failed`);
+  if (!sarifSchemaAvailable()) console.log("note: the official SARIF 2.1.0 schema is not downloaded, only the profile rules were checked (npm run fetch-sarif-schema)");
   return failed ? 1 : 0;
 }
 

@@ -54,7 +54,7 @@ public class GraphTests
         Assert.Equal(0.25, metrics.Instability);
         Assert.Equal(0.25, metrics.Abstractness);
         Assert.Equal(0.5, metrics.Distance);
-        Assert.Equal(0, new PackageMetrics("isolated", 0, 0, 0, 0).Instability);
+        Assert.Null(new PackageMetrics("isolated", 0, 0, 0, 0).Instability);
     }
 
     [Fact]
@@ -79,6 +79,7 @@ public class GraphTests
 
         Assert.Equal(["core"], graphs.Modules.Successors("app"));
         Assert.Equal(new PackageMetrics("core", 2, 0, 1, 0), graphs.Packages["core"]);
-        Assert.Equal(new PackageMetrics("app", 2, 0, 0, 1), graphs.Packages["app"]);
+        // Ce counts the distinct outside types reached (c1 and c2), not the types that reach out.
+        Assert.Equal(new PackageMetrics("app", 2, 0, 0, 2), graphs.Packages["app"]);
     }
 }

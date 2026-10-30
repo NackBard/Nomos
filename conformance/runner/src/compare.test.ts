@@ -58,12 +58,15 @@ test("evidence is exact only when the case covers paradigmEvidence", () => {
   assert.deepEqual(compareFacts(expected, actual, { ...spec, covers: ["paradigmEvidence"] }), ["module A evidence fp.lambdas=3: reported but not expected"]);
 });
 
-test("dependencies ignore kind and external targets", () => {
+test("dependencies are compared by kind and phase, external targets are left out", () => {
   const edge = (from: string, to: string, kind: string, extra: object = {}) => ({ from, to, kind, phase: "runtime", ...extra });
   const expected = facts({ dependencies: [edge("A", "B", "type-ref")] });
-  const actual = facts({ dependencies: [edge("A", "B", "call"), edge("A", "System.String", "type-ref", { external: true, stdlib: true })] });
-  assert.deepEqual(compareFacts(expected, actual, spec), []);
-  assert.deepEqual(compareFacts(expected, facts(), spec), ["dependency A -> B [runtime]: expected but not reported"]);
+  const external = edge("A", "System.String", "type-ref", { external: true, stdlib: true });
+  assert.deepEqual(compareFacts(expected, facts({ dependencies: [edge("A", "B", "type-ref"), external] }), spec), []);
+  assert.deepEqual(compareFacts(expected, facts({ dependencies: [edge("A", "B", "call")] }), spec), [
+    "dependency A -> B [type-ref, runtime]: expected but not reported",
+    "dependency A -> B [call, runtime]: reported but not expected",
+  ]);
 });
 
 test("cycles are compared as sets regardless of member order", () => {

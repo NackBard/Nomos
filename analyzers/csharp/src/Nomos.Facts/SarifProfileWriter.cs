@@ -49,14 +49,14 @@ public static class SarifProfileWriter
                             name = options.AnalyzerName,
                             version = options.AnalyzerVersion,
                             semanticVersion = options.AnalyzerVersion,
-                            rules = rules.Select(r => new
+                            rules = rules.Select(r => Text(options, r.Id, r.Descriptor)).Select(t => new
                             {
-                                id = r.Id,
-                                name = r.Descriptor.Title,
-                                shortDescription = new { text = r.Descriptor.Title },
-                                fullDescription = new { text = r.Descriptor.Description.Length > 0 ? r.Descriptor.Description : r.Descriptor.Title },
-                                defaultConfiguration = new { level = Level(r.Descriptor.DefaultSeverity) },
-                                properties = new { category = r.Descriptor.Category, paradigms = r.Descriptor.Paradigms.Order(StringComparer.Ordinal).ToList() },
+                                id = t.Id,
+                                name = t.Title,
+                                shortDescription = new { text = t.Description },
+                                fullDescription = new { text = t.Rationale },
+                                defaultConfiguration = new { level = Level(t.Descriptor.DefaultSeverity) },
+                                properties = new { category = t.Descriptor.Category, paradigms = t.Descriptor.Paradigms.Order(StringComparer.Ordinal).ToList() },
                             }),
                         },
                     },
@@ -75,12 +75,21 @@ public static class SarifProfileWriter
                             explanation = f.Evidence.Explanation,
                             module = f.Module,
                             entity = entities?.Resolve(f.Symbol),
+                            measured = f.Measured is { } m ? new { metric = m.Metric, value = m.Value, threshold = m.Threshold } : null,
                         },
                     }),
                 },
             },
         };
         output.WriteLine(JsonSerializer.Serialize(log, Options).ReplaceLineEndings("\n"));
+    }
+
+    /// <summary>Rule texts come from spec/rules; a rule without a spec entry falls back to the descriptor.</summary>
+    private static (string Id, string Title, string Description, string Rationale, AnalyzerDescriptor Descriptor) Text(FactsOptions options, string id, AnalyzerDescriptor descriptor)
+    {
+        if (options.RuleTexts?.TryGetValue(id, out var spec) == true) return (id, spec.Title, spec.Description, spec.Rationale, descriptor);
+        var description = descriptor.Description.Length > 0 ? descriptor.Description : descriptor.Title;
+        return (id, descriptor.Title, description, description, descriptor);
     }
 
     private static object Location(Finding finding)

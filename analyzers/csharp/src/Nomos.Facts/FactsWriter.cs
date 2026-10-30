@@ -15,9 +15,18 @@ public sealed record FactsOptions(string AnalyzerName, string AnalyzerVersion, I
     /// <summary>Gets the SARIF file written for this run, as passed on the command line; <c>null</c> when none was requested.</summary>
     public string? SarifFile { get; init; }
 
+    /// <summary>Gets the texts of the rules by spec id; SARIF rule descriptions come from here when present.</summary>
+    public IReadOnlyDictionary<string, RuleText>? RuleTexts { get; init; }
+
     /// <summary>Gets the number of results in that SARIF file.</summary>
     public int ResultCount { get; init; }
 }
+
+/// <summary>Texts of a rule from <c>spec/rules</c>.</summary>
+/// <param name="Title">Short name of the rule.</param>
+/// <param name="Description">What the detector looks at.</param>
+/// <param name="Rationale">Why a reader may want to know.</param>
+public sealed record RuleText(string Title, string Description, string Rationale);
 
 /// <summary>Serializes an analysis result as a facts document (contracts/facts.schema.json).</summary>
 public static class FactsWriter

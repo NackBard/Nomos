@@ -25,7 +25,7 @@ function parseJson(text: string): { value?: any; error?: string } {
   }
 }
 
-interface SpecRule { category: string; paradigms: string[] }
+interface SpecRule { category: string; paradigms: string[]; title: string; description: string; rationale: string }
 
 function loadSpecRules(): { ids: Set<string>; oop: Set<string>; byId: Map<string, SpecRule> } {
   const ids = new Set<string>();
@@ -34,7 +34,7 @@ function loadSpecRules(): { ids: Set<string>; oop: Set<string>; byId: Map<string
   for (const file of fs.readdirSync(rulesDir).filter((f) => f.endsWith(".yaml"))) {
     for (const rule of YAML.parse(fs.readFileSync(path.join(rulesDir, file), "utf8")).rules) {
       ids.add(rule.id);
-      byId.set(rule.id, { category: rule.category, paradigms: rule.paradigms });
+      byId.set(rule.id, { category: rule.category, paradigms: rule.paradigms, title: rule.title, description: rule.description, rationale: rule.rationale });
       if ((rule.paradigms as string[]).includes("oop")) oop.add(rule.id);
     }
   }
@@ -149,9 +149,10 @@ export function runConformance(analyzers: Analyzer[], only?: string): Check[] {
             const expectedFile = path.join(casesDir, id, analyzer.language, "expected.sarif.json");
             errors.push(...checkSarif(sarifText, {
               manifest,
-              entities: new Set<string>([...first.facts.types, ...first.facts.functions].map((e: any) => e.id)),
+              entities: new Map<string, Record<string, number | null>>([...first.facts.types, ...first.facts.functions].map((e: any) => [e.id, e.metrics])),
               sarifPath: sarifRelative,
               facts: first.facts,
+              specRules: specRules.byId,
               expected: spec.expectSarif && fs.existsSync(expectedFile) ? readJson(expectedFile) : undefined,
             }).map((m) => `sarif: ${m}`));
             const second = analyze(analyzer, root, sarifRelative);

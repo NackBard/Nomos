@@ -73,6 +73,12 @@ public enum Confidence
 /// <param name="Explanation">Why the analyzer believes this; mandatory.</param>
 public sealed record Evidence(SourceLocation Location, string Snippet, string Explanation);
 
+/// <summary>The measurement a finding is based on: the value of a metric of facts and the sensitivity at which the detector reports it.</summary>
+/// <param name="Metric">Metric name as in the facts document, e.g. <c>lines</c> or <c>cyclomatic</c>.</param>
+/// <param name="Value">Measured value.</param>
+/// <param name="Threshold">Sensitivity of the detector (not an acceptance limit).</param>
+public sealed record Measurement(string Metric, double Value, double Threshold);
+
 /// <summary>A single analyzer result.</summary>
 /// <param name="AnalyzerId">Reporting analyzer.</param>
 /// <param name="Category">Analyzer category.</param>
@@ -87,6 +93,9 @@ public sealed record Finding(string AnalyzerId, string Category, Severity Severi
 
     /// <summary>Gets the identifier of the type or callable the finding is about.</summary>
     public string? Symbol { get; init; }
+
+    /// <summary>Gets the measurement the finding is based on; <c>null</c> for rules that are not about a number.</summary>
+    public Measurement? Measured { get; init; }
 
     /// <summary>Gets a hash that survives line shifts, for baselines and IDE tracking.</summary>
     public string Fingerprint
@@ -282,6 +291,7 @@ public sealed class AnalysisContext
     /// <param name="module">Owning module.</param>
     /// <param name="symbol">Identifier of the type or callable.</param>
     /// <param name="severity">Severity, when it differs from the analyzer default.</param>
+    /// <param name="measured">The measurement the finding is based on, for rules about a number.</param>
     public void Report(
         Confidence confidence,
         SourceLocation location,
@@ -289,13 +299,14 @@ public sealed class AnalysisContext
         string explanation,
         string? module = null,
         string? symbol = null,
-        Severity? severity = null)
+        Severity? severity = null,
+        Measurement? measured = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(message);
         ArgumentException.ThrowIfNullOrWhiteSpace(explanation);
         var snippet = Model.FindFile(location.FilePath)?.Excerpt(location) ?? string.Empty;
         _onFinding(new Finding(_descriptor.Id, _descriptor.Category, severity ?? _descriptor.DefaultSeverity, confidence, message,
-            new Evidence(location, snippet, explanation)) { Module = module, Symbol = symbol });
+            new Evidence(location, snippet, explanation)) { Module = module, Symbol = symbol, Measured = measured });
     }
 
     /// <summary>Reports a finding about a type.</summary>
@@ -304,8 +315,9 @@ public sealed class AnalysisContext
     /// <param name="message">One-line summary.</param>
     /// <param name="explanation">Why the analyzer believes this.</param>
     /// <param name="severity">Severity override.</param>
-    public void Report(TypeDecl type, Confidence confidence, string message, string explanation, Severity? severity = null) =>
-        Report(confidence, type.Location, message, explanation, type.ModuleName, type.Id, severity);
+    /// <param name="measured">The measurement the finding is based on, for rules about a number.</param>
+    public void Report(TypeDecl type, Confidence confidence, string message, string explanation, Severity? severity = null, Measurement? measured = null) =>
+        Report(confidence, type.Location, message, explanation, type.ModuleName, type.Id, severity, measured);
 
     /// <summary>Reports a metric.</summary>
     /// <param name="metric">The metric.</param>

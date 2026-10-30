@@ -94,9 +94,9 @@ export function compareFacts(expected: any, actual: any, spec: CaseSpec): string
     compareMetrics(`function ${id}`, e.metrics, a.metrics, spec, errors);
   });
 
-  // Edges are compared by (from, to, phase). `kind` is not compared: spec/metrics.md does not yet say when an edge is
-  // a call and when a type-ref. External targets are optional detail and are left out on both sides.
-  const dependency = (d: any) => `${d.from} -> ${d.to} [${d.phase}]`;
+  // Edges are compared by (from, to, kind, phase); kinds are defined in spec/metrics.md. External targets are
+  // optional detail and are left out on both sides.
+  const dependency = (d: any) => `${d.from} -> ${d.to} [${d.kind}, ${d.phase}]`;
   const internal = (list: any[]) => list.filter((d) => !d.external && !d.stdlib).map(dependency);
   compareSets("dependency", internal(expected.dependencies), internal(actual.dependencies), errors);
 

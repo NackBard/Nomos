@@ -103,12 +103,22 @@ public static class TypeMetrics
         return Enumerable.Range(0, methods.Count).Select(Find).Distinct().Count();
     }
 
-    /// <summary>Computes Tight Class Cohesion: the share of method pairs that use a common member.</summary>
+    /// <summary>LCOM4 as spec/metrics.md defines it: <c>null</c> when the type has no instance method with a body.</summary>
     /// <param name="type">The type.</param>
-    public static double Tcc(TypeDecl type)
+    public static int? Lcom4OrNull(TypeDecl type) =>
+        type.Callables.Any(c => c.Kind == CallableKind.Method && !c.Has(Modifiers.Static) && c.Body is not null) ? Lcom4(type) : null;
+
+    /// <summary>
+    /// Computes Tight Class Cohesion: the share of pairs of visible methods that use a common member.
+    /// Visible methods are non-private instance methods with a body. <c>null</c> below two such methods (spec/metrics.md).
+    /// </summary>
+    /// <param name="type">The type.</param>
+    public static double? TccOrNull(TypeDecl type)
     {
-        var used = type.Callables.Where(c => c.Kind == CallableKind.Method && c.Body is not null).Select(m => OwnMembersUsed(m, type)).ToList();
-        if (used.Count < 2) return 1;
+        var used = type.Callables
+            .Where(c => c.Kind == CallableKind.Method && !c.Has(Modifiers.Static) && c.Visibility != Visibility.Private && c.Body is not null)
+            .Select(m => OwnMembersUsed(m, type)).ToList();
+        if (used.Count < 2) return null;
         var connected = 0;
         for (var i = 0; i < used.Count; i++)
             for (var j = i + 1; j < used.Count; j++)
@@ -116,9 +126,46 @@ public static class TypeMetrics
         return connected / (used.Count * (used.Count - 1) / 2.0);
     }
 
-    /// <summary>Computes Weighted Methods per Class as the sum of cyclomatic complexities.</summary>
+    /// <summary>Computes Weighted Methods per Class as the sum of cyclomatic complexities of its methods and constructors.</summary>
     /// <param name="type">The type.</param>
-    public static int Wmc(TypeDecl type) => type.Callables.Sum(ControlFlow.CyclomaticComplexity);
+    public static int Wmc(TypeDecl type) => type.Callables.Where(c => c.Kind is CallableKind.Method or CallableKind.Constructor or CallableKind.Destructor or CallableKind.Operator).Sum(ControlFlow.CyclomaticComplexity);
+
+    /// <summary>
+    /// Computes the depth of the inheritance tree: base classes only, interfaces and the language root excluded.
+    /// A base class outside the project is one step, its own ancestors are unknown (spec/metrics.md).
+    /// </summary>
+    /// <param name="type">The type.</param>
+    /// <param name="model">The project model.</param>
+    public static int Dit(TypeDecl type, ProjectModel model)
+    {
+        if (type.Kind != TypeKind.Class) return 0;
+        var depth = 0;
+        var seen = new HashSet<string> { type.Id };
+        for (var current = type.BaseType; current is { Id: { } id } && seen.Add(id); current = model.FindType(id)?.BaseType)
+        {
+            depth++;
+            if (model.FindType(id) is null) break;
+        }
+        return depth;
+    }
+
+    /// <summary>Gets whether a type id belongs to the standard library: outside the project and under System or Microsoft.</summary>
+    /// <param name="typeId">The type id.</param>
+    /// <param name="model">The project model.</param>
+    public static bool IsStandardLibrary(string typeId, ProjectModel model) =>
+        model.FindType(typeId) is null && (typeId == "System" || typeId.StartsWith("System.", StringComparison.Ordinal) || typeId.StartsWith("Microsoft.", StringComparison.Ordinal));
+
+    /// <summary>Computes Coupling Between Objects: distinct other types, project types and external non-standard types.</summary>
+    /// <param name="type">The type.</param>
+    /// <param name="model">The project model.</param>
+    public static int Cbo(TypeDecl type, ProjectModel model) =>
+        type.Dependencies.Select(d => d.TargetTypeId).Where(t => t != type.Id && !IsStandardLibrary(t, model)).Distinct(StringComparer.Ordinal).Count();
+
+    /// <summary>Computes Access To Foreign Data: distinct fields and properties of other project types the type reaches.</summary>
+    /// <param name="type">The type.</param>
+    /// <param name="model">The project model.</param>
+    public static int Atfd(TypeDecl type, ProjectModel model) =>
+        type.Callables.SelectMany(c => ForeignData(c, model)).SelectMany(p => p.Value.Select(m => $"{p.Key}.{m}")).Distinct(StringComparer.Ordinal).Count();
 
     /// <summary>Gets foreign data used by a callable: fields and properties of other project types, by owner.</summary>
     /// <param name="callable">The callable.</param>
