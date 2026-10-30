@@ -8,4 +8,5 @@ public class C
         return _n;
     }
     public string Stamp() => DateTime.Now.ToString(); // expect
+    public int Add(int a, int b) => a + b;
 }

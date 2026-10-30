@@ -1,0 +1,7 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "oop-cohesion",
+  "title": "DIT with a base outside the project, CBO without the standard library, LCOM4 and TCC on a class with two state groups, WMC and ATFD",
+  "covers": ["dit", "cbo", "lcom4", "wmc", "atfd", "tcc"],
+  "languages": ["csharp"]
+}

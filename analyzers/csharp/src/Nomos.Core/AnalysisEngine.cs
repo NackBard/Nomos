@@ -72,13 +72,18 @@ public sealed class AnalysisEngine(ComponentCatalog catalog)
             var paradigms = ActiveParadigms(language, config, diagnostics);
             activeParadigms[language] = [.. paradigms.Order(StringComparer.Ordinal)];
             var languageModules = modules.Where(m => m.Language == language).ToList();
+            // Paradigm signs per module: a rule bound to paradigms sees only the modules where one of them shows (spec/paradigms.md).
+            var activeIn = languageModules.ToDictionary(m => m.Name, m => ParadigmSigns.ActiveParadigms(ParadigmSigns.Collect(model, m)), StringComparer.Ordinal);
             var eligible = catalog.Analyzers.Where(a => IsEligible(a.Descriptor, language, paradigms, config)).ToList();
             request.Progress?.Report($"Running {eligible.Count} analyzer(s) on {language}");
 
             await Parallel.ForEachAsync(eligible, cancellationToken, (analyzer, token) =>
             {
                 ran[analyzer.Descriptor.Id] = analyzer.Descriptor;
-                var context = new AnalysisContext(analyzer.Descriptor, model, languageModules, language, paradigms,
+                var visibleModules = analyzer.Descriptor.Paradigms.Count == 0
+                    ? languageModules
+                    : [.. languageModules.Where(m => ParadigmSigns.Applies(analyzer.Descriptor.Paradigms, activeIn[m.Name]))];
+                var context = new AnalysisContext(analyzer.Descriptor, model, visibleModules, language, paradigms,
                     new AnalyzerOptions(config.Analyzers.GetValueOrDefault(analyzer.Descriptor.Id)), shared, findings.Add, metrics.Add)
                 {
                     Layers = config.Layers,

@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "1.0.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "csharp" },
+  "files": [
+    { "path": "Broken.cs", "lines": 1, "loc": 1, "parsed": false },
+    { "path": "Good.cs", "lines": 6, "loc": 5, "module": "Pf" }
+  ],
+  "modules": [
+    { "id": "Pf", "name": "Pf", "files": ["Good.cs"], "loc": 5, "metrics": {}, "paradigmEvidence": [] }
+  ],
+  "types": [
+    { "id": "Pf.Ok", "name": "Ok", "module": "Pf", "kind": "class", "isAbstract": false, "location": { "file": "Good.cs", "startLine": 3 }, "metrics": { "lines": 4, "memberCount": 1 } }
+  ],
+  "functions": [],
+  "dependencies": [],
+  "cycles": [],
+  "skippedRules": [],
+  "diagnostics": [
+    { "level": "warning", "message": "Syntax errors: declarations in this file may be missing from the facts.", "file": "Broken.cs", "code": "syntax-error" }
+  ]
+}

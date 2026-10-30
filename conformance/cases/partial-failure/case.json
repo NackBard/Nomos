@@ -1,0 +1,7 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "partial-failure",
+  "title": "A file with a syntax error: the rest is analyzed, the broken file is marked as not parsed and the exit code is 4",
+  "covers": ["parsed", "diagnostics"],
+  "languages": ["csharp"]
+}

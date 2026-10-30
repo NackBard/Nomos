@@ -60,6 +60,8 @@ internal sealed class FactsBuilder
             _options.SarifFile is null ? null : new FactsChecks(_options.SarifFile, _options.ResultCount),
             [.. _result.Diagnostics
                 .Select(d => new FactsDiagnostic(d.Level.ToString().ToLowerInvariant(), d.Message, null, d.Source))
+                .Concat(_model.Files.Where(f => f.HasSyntaxErrors).Select(f =>
+                    new FactsDiagnostic("warning", "Syntax errors: declarations in this file may be missing from the facts.", f.Path, "syntax-error")))
                 .OrderBy(d => d.Level, StringComparer.Ordinal).ThenBy(d => d.Code, StringComparer.Ordinal).ThenBy(d => d.Message, StringComparer.Ordinal)]);
     }
 
@@ -85,7 +87,7 @@ internal sealed class FactsBuilder
         {
             var size = _fileSizes[f.Path];
             var modules = moduleOfFile.GetValueOrDefault(f.Path);
-            return new FactsFile(f.Path, size.Lines, size.Loc, modules is [var only] ? only : null);
+            return new FactsFile(f.Path, size.Lines, size.Loc, modules is [var only] ? only : null, Parsed: !f.HasSyntaxErrors);
         })];
     }
 
@@ -207,18 +209,20 @@ internal sealed class FactsBuilder
 
     // ---- paradigms and skipped rules --------------------------------------------------------------------------
 
-    private IReadOnlyList<FactsEvidence> Evidence(ModuleDecl module) => new ParadigmEvidenceCollector(_model, _functionIds).Collect(module);
+    private IReadOnlyList<FactsEvidence> Evidence(ModuleDecl module) =>
+        [.. ParadigmSigns.Collect(_model, module).Select(e => new FactsEvidence(e.Paradigm, e.Kind, e.Count, e.Description,
+            [.. e.Examples.Select(id => _functionIds.GetValueOrDefault(id, id)).Order(StringComparer.Ordinal)]))];
 
     private IReadOnlyList<FactsSkippedRule> BuildSkippedRules(Dictionary<string, IReadOnlyList<FactsEvidence>> evidence)
     {
         var skipped = new List<FactsSkippedRule>();
         foreach (var module in _model.Modules)
         {
-            var active = ParadigmEvidenceCollector.ActiveParadigms(evidence[module.Name]);
-            foreach (var rule in _options.SupportedRules.Where(r => r.Paradigms.Count > 0 && !r.Paradigms.Any(active.Contains)))
+            var active = ParadigmSigns.ActiveParadigms(evidence[module.Name].Select(e => new EvidenceItem(e.Paradigm, e.Kind, e.Count, e.Description, e.Examples)));
+            foreach (var rule in _options.SupportedRules.Where(r => r.Paradigms.Count > 0 && !ParadigmSigns.Applies(r.Paradigms, active)))
             {
                 var paradigm = rule.Paradigms[0];
-                skipped.Add(new FactsSkippedRule(_options.RuleId(rule.Id), module.Name, "paradigm-not-detected", ParadigmEvidenceCollector.NotApplicable(paradigm)));
+                skipped.Add(new FactsSkippedRule(_options.RuleId(rule.Id), module.Name, "paradigm-not-detected", ParadigmSigns.NotApplicable(paradigm)));
             }
         }
         return [.. skipped.OrderBy(s => s.RuleId, StringComparer.Ordinal).ThenBy(s => s.Module, StringComparer.Ordinal)];

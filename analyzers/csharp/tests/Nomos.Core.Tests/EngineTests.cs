@@ -39,13 +39,22 @@ public sealed class OptInAnalyzer : AnalyzerBase
     public override void Analyze(AnalysisContext context) => context.Report(Confidence.Low, SourceLocation.None, "opted in", "because");
 }
 
+[Analyzer("T006", "Test", Title = "Lists the modules it sees", Paradigms = ["oop"])]
+public sealed class ModuleListAnalyzer : AnalyzerBase
+{
+    public override void Analyze(AnalysisContext context)
+    {
+        foreach (var module in context.Modules) context.Report(Confidence.Low, SourceLocation.None, $"module {module.Name}", "because");
+    }
+}
+
 public sealed class ToyAdapter : ILanguageAdapter
 {
     public string Language => "toy";
 
     public IReadOnlyList<string> FileExtensions => [".toy"];
 
-    public IReadOnlyList<string> SupportedParadigms => ["p1", "p2"];
+    public IReadOnlyList<string> SupportedParadigms => ["p1", "p2", "oop"];
 
     public IReadOnlyList<string> DefaultParadigms => ["p1"];
 
@@ -57,7 +66,7 @@ public sealed class ToyAdapter : ILanguageAdapter
             return new ModuleDecl(s.Path, Language)
             {
                 LinesOfCode = 100,
-                Types = [new TypeDecl(location) { Id = s.Text, Name = s.Text, Kind = TypeKind.Class, ModuleName = s.Path, Attributes = s.Text == "Attributed" ? [new AttributeInfo("NomosSuppress", ["T001"], location)] : [] }],
+                Types = [new TypeDecl(location) { Id = s.Text, Name = s.Text, Kind = TypeKind.Class, ModuleName = s.Path, Fields = s.Text == "Rich" ? [new FieldDecl("X", null, Visibility.Public, location) { Id = "Rich.X" }] : [], Attributes = s.Text == "Attributed" ? [new AttributeInfo("NomosSuppress", ["T001"], location)] : [] }],
             };
         }).ToList();
         var files = sources.Select(s => new SourceFile(s.Path, Language, s.Text)
@@ -97,6 +106,14 @@ public class EngineTests
         Assert.Equal(["T001", "T004"], result.Analyzers.Select(a => a.Id));
         Assert.Equal("type A", Assert.Single(result.Findings).Message);
         Assert.Equal(1, Assert.Single(result.Metrics).Value);
+    }
+
+    [Fact]
+    public async Task RuleBoundToAKnownParadigm_SeesOnlyTheModulesThatShowIt()
+    {
+        var config = new NomosConfig { Languages = { ["toy"] = new LanguageConfig { Paradigms = ["oop"] } } };
+        var result = await Run(config, "Plain", "Rich");
+        Assert.Equal(["module Rich.toy"], result.Findings.Where(f => f.AnalyzerId == "T006").Select(f => f.Message));
     }
 
     [Fact]

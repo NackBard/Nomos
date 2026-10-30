@@ -84,11 +84,11 @@ function checkManifest(analyzer: Analyzer, validators: ReturnType<typeof loadVal
   return { check: { name: `${analyzer.language}: manifest`, errors }, supported, manifest: valid };
 }
 
-function analyze(analyzer: Analyzer, root: string, sarif?: string): { facts?: any; errors: string[]; text?: string } {
+function analyze(analyzer: Analyzer, root: string, sarif?: string): { facts?: any; errors: string[]; text?: string; code?: number } {
   const run = invoke(analyzer.command, ["analyze", "--root", root, ...(sarif ? ["--sarif", sarif] : [])]);
   if (run.code !== 0 && run.code !== 4) return { errors: [`"analyze" exited with ${run.code ?? "no code"} (expected 0 or 4); stderr: ${firstLine(run.stderr)}`] };
   const parsed = parseJson(run.stdout);
-  return parsed.error ? { errors: [parsed.error] } : { facts: parsed.value, text: run.stdout, errors: [] };
+  return parsed.error ? { errors: [parsed.error] } : { facts: parsed.value, text: run.stdout, errors: [], code: run.code ?? undefined };
 }
 
 function skippedRulesErrors(facts: any, supported: Set<string>, oopRules: Set<string>): string[] {
@@ -141,6 +141,10 @@ export function runConformance(analyzers: Analyzer[], only?: string): Check[] {
         } else {
           factsByLanguage.set(analyzer.language, first.facts);
           errors.push(...compareFacts(readJson(path.join(casesDir, id, analyzer.language, "expected.facts.json")), first.facts, spec));
+          // Exit code 4 means a partial result: it is expected exactly when the reference marks a file as not parsed.
+          const expectedFacts = readJson(path.join(casesDir, id, analyzer.language, "expected.facts.json"));
+          const expectedCode = expectedFacts.files.some((f: any) => f.parsed === false) ? 4 : 0;
+          if (first.code !== expectedCode) errors.push(`exit code is ${first.code}, expected ${expectedCode}`);
           errors.push(...skippedRulesErrors(first.facts, supportedBy.get(analyzer.language) ?? new Set(), specRules.oop));
           if (first.text!.includes(repoRoot) || first.text!.includes(repoRoot.replaceAll("\\", "/"))) errors.push("output contains an absolute path");
           const manifest = manifests.get(analyzer.language);

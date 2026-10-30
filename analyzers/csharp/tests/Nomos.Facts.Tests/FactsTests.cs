@@ -122,6 +122,48 @@ public class FactsTests
     }
 
     [Fact]
+    public async Task PureFunctions_AreRecognizedConservatively()
+    {
+        const string source = """
+            namespace P;
+            public class Calc
+            {
+                private int state;
+                private readonly int fixedValue = 2;
+                public static int Counter;
+
+                public static int Add(int a, int b) { return a + b; }
+                public static int Biggest(int a, int b) { return Math.Max(a, b); }
+                public static int Twice(int x) { return Add(x, x); }
+                public static int Countdown(int n) { return n <= 0 ? 0 : Countdown(n - 1); }
+                public static int Local(int n) { var total = 0; for (var i = 0; i < n; i++) { total += i; } return total; }
+                public static string Greet(string name) { return name.ToUpper() + "!"; }
+                public static int ReadsConst(int x) { return x + System.Int32.MaxValue; }
+                public int ReadsReadonly(int x) { return x + fixedValue; }
+
+                public int ReadsState(int x) { return x + state; }
+                public void WritesState() { state++; }
+                public static void WritesStatic() { Counter = 1; }
+                public static void Prints() { System.Console.WriteLine("x"); }
+                public static int Apply(System.Func<int, int> f, int x) { return f(x); }
+                public static void Fill(int[] items) { items[0] = 1; }
+                public static void Out(out int x) { x = 1; }
+                public static int CallsImpure(int x) { WritesStatic(); return x; }
+                public static int Spreads(int x) { return Twice(x) + CallsImpure(x); }
+                public static System.Collections.Generic.List<int> MakesList() { return new System.Collections.Generic.List<int>(); }
+            }
+            """;
+        var result = await Analyze(null, ("calc.cs", source));
+        var facts = JsonDocument.Parse(FactsWriter.Write(result, Options)).RootElement;
+        var evidence = Entity(facts, "modules", "P").GetProperty("paradigmEvidence").EnumerateArray().Single(e => e.GetProperty("kind").GetString() == "fp.pure-functions");
+        var pure = ParadigmSigns.PureFunctions(result.Model!).Select(id => id.Split((char)40)[0]).Select(id => id[(id.LastIndexOf((char)46) + 1)..]).Order(StringComparer.Ordinal).ToList();
+
+        // Math.Max and string members are allowed; Int32.MaxValue is an external static constant outside System.Math, so it is not.
+        Assert.Equal(["Add", "Biggest", "Countdown", "Greet", "Local", "ReadsReadonly", "Twice"], pure);
+        Assert.Equal(7, evidence.GetProperty("count").GetInt32());
+    }
+
+    [Fact]
     public async Task Loc_SkipsBlankAndCommentOnlyLines_WhileLinesCountsEverything()
     {
         var facts = await Facts(("a.cs", "// header\n\nnamespace A;\n\n/* block\n   comment */\npublic class X { } // tail\n"));

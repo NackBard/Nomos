@@ -2,10 +2,20 @@
   "schemaVersion": "1.0.0",
   "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "csharp" },
   "files": [
+    { "path": "Funcs.cs", "lines": 16, "loc": 13 },
     { "path": "Plain.cs", "lines": 7, "loc": 6 },
     { "path": "Shapes.cs", "lines": 15, "loc": 12 }
   ],
   "modules": [
+    {
+      "id": "Pe.Funcs", "name": "Pe.Funcs", "files": ["Funcs.cs"], "loc": 13,
+      "metrics": {},
+      "paradigmEvidence": [
+        { "paradigm": "functional", "kind": "fp.pure-functions", "count": 1, "description": "functions that provably have no effects (conservative)", "examples": ["Pe.Funcs.Calc.Add"] },
+        { "paradigm": "oop", "kind": "oop.classes", "count": 1, "description": "classes with methods or fields", "examples": ["Pe.Funcs.Calc"] },
+        { "paradigm": "structural", "kind": "str.global-state", "count": 1, "description": "module-level variables and static mutable state", "examples": ["Pe.Funcs.Calc.Counter"] }
+      ]
+    },
     {
       "id": "Pe.Plain", "name": "Pe.Plain", "files": ["Plain.cs"], "loc": 6,
       "metrics": {},
@@ -23,12 +33,24 @@
     }
   ],
   "types": [
+    { "id": "Pe.Funcs.Calc", "name": "Calc", "module": "Pe.Funcs", "kind": "class", "isAbstract": false, "location": { "file": "Funcs.cs", "startLine": 3 }, "metrics": { "lines": 14, "memberCount": 3, "methodCount": 2, "dit": 0 } },
     { "id": "Pe.Plain.Mode", "name": "Mode", "module": "Pe.Plain", "kind": "enum", "isAbstract": false, "location": { "file": "Plain.cs", "startLine": 3 }, "metrics": { "lines": 5 } },
     { "id": "Pe.Shapes.IShape", "name": "IShape", "module": "Pe.Shapes", "kind": "interface", "isAbstract": true, "location": { "file": "Shapes.cs", "startLine": 3 }, "metrics": { "lines": 3, "memberCount": 0 } },
     { "id": "Pe.Shapes.ShapeBase", "name": "ShapeBase", "module": "Pe.Shapes", "kind": "class", "isAbstract": true, "location": { "file": "Shapes.cs", "startLine": 7 }, "metrics": { "lines": 4, "memberCount": 1, "dit": 0 } },
     { "id": "Pe.Shapes.Square", "name": "Square", "module": "Pe.Shapes", "kind": "class", "isAbstract": false, "location": { "file": "Shapes.cs", "startLine": 12 }, "metrics": { "lines": 4, "memberCount": 1, "dit": 1 } }
   ],
-  "functions": [],
+  "functions": [
+    {
+      "id": "Pe.Funcs.Calc.Add", "name": "Add", "module": "Pe.Funcs", "type": "Pe.Funcs.Calc", "kind": "method", "visibility": "public",
+      "location": { "file": "Funcs.cs", "startLine": 7 },
+      "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 2, "lines": 4 }
+    },
+    {
+      "id": "Pe.Funcs.Calc.Bump", "name": "Bump", "module": "Pe.Funcs", "type": "Pe.Funcs.Calc", "kind": "method", "visibility": "public",
+      "location": { "file": "Funcs.cs", "startLine": 12 },
+      "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 0, "lines": 4 }
+    }
+  ],
   "dependencies": [
     { "from": "Pe.Shapes.Square", "to": "Pe.Shapes.ShapeBase", "kind": "inheritance", "phase": "runtime" }
   ],

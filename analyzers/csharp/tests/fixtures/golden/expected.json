@@ -1023,20 +1023,6 @@
     {
       "id": "loc",
       "scope": "module",
-      "target": "Sample.Domain",
-      "value": 8,
-      "module": "Sample.Domain"
-    },
-    {
-      "id": "loc",
-      "scope": "module",
-      "target": "Sample.Legacy",
-      "value": 5,
-      "module": "Sample.Legacy"
-    },
-    {
-      "id": "loc",
-      "scope": "module",
       "target": "Sample.Services",
       "value": 45,
       "module": "Sample.Services"

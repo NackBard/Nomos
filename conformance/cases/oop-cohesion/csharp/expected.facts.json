@@ -1,0 +1,72 @@
+{
+  "schemaVersion": "1.0.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "csharp" },
+  "files": [
+    { "path": "Cohesion.cs", "lines": 38, "loc": 31 },
+    { "path": "Errors.cs", "lines": 9, "loc": 7 }
+  ],
+  "modules": [
+    {
+      "id": "Oc", "name": "Oc", "files": ["Cohesion.cs", "Errors.cs"], "loc": 38,
+      "metrics": { "ca": 0, "ce": 0, "instability": null, "abstractness": 0, "distance": null },
+      "paradigmEvidence": []
+    }
+  ],
+  "types": [
+    {
+      "id": "Oc.Data", "name": "Data", "module": "Oc", "kind": "class", "isAbstract": false,
+      "location": { "file": "Cohesion.cs", "startLine": 3 },
+      "metrics": { "lines": 5, "memberCount": 2, "methodCount": 0, "dit": 0, "cbo": 0, "lcom4": null, "wmc": 0, "atfd": 0, "tcc": null }
+    },
+    {
+      "id": "Oc.Mixed", "name": "Mixed", "module": "Oc", "kind": "class", "isAbstract": false,
+      "location": { "file": "Cohesion.cs", "startLine": 9 },
+      "metrics": { "lines": 26, "memberCount": 7, "methodCount": 4, "dit": 0, "cbo": 1, "lcom4": 3, "wmc": 4, "atfd": 2, "tcc": 0.1667 }
+    },
+    {
+      "id": "Oc.Derived", "name": "Derived", "module": "Oc", "kind": "class", "isAbstract": false,
+      "location": { "file": "Cohesion.cs", "startLine": 36 },
+      "metrics": { "lines": 3, "memberCount": 0, "methodCount": 0, "dit": 1, "cbo": 1, "lcom4": null, "wmc": 0, "atfd": 0, "tcc": null }
+    },
+    {
+      "id": "Oc.Fail", "name": "Fail", "module": "Oc", "kind": "class", "isAbstract": false,
+      "location": { "file": "Errors.cs", "startLine": 3 },
+      "metrics": { "lines": 3, "memberCount": 0, "methodCount": 0, "dit": 1, "cbo": 0, "lcom4": null, "wmc": 0, "atfd": 0, "tcc": null }
+    },
+    {
+      "id": "Oc.DeepFail", "name": "DeepFail", "module": "Oc", "kind": "class", "isAbstract": false,
+      "location": { "file": "Errors.cs", "startLine": 7 },
+      "metrics": { "lines": 3, "memberCount": 0, "methodCount": 0, "dit": 2, "cbo": 1, "lcom4": null, "wmc": 0, "atfd": 0, "tcc": null }
+    }
+  ],
+  "functions": [
+    {
+      "id": "Oc.Mixed.IncA", "name": "IncA", "module": "Oc", "type": "Oc.Mixed", "kind": "method", "visibility": "public",
+      "location": { "file": "Cohesion.cs", "startLine": 15 },
+      "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 0, "lines": 4 }
+    },
+    {
+      "id": "Oc.Mixed.ReadA", "name": "ReadA", "module": "Oc", "type": "Oc.Mixed", "kind": "method", "visibility": "public",
+      "location": { "file": "Cohesion.cs", "startLine": 20 },
+      "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 0, "lines": 4 }
+    },
+    {
+      "id": "Oc.Mixed.IncB", "name": "IncB", "module": "Oc", "type": "Oc.Mixed", "kind": "method", "visibility": "public",
+      "location": { "file": "Cohesion.cs", "startLine": 25 },
+      "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 0, "lines": 4 }
+    },
+    {
+      "id": "Oc.Mixed.Peek", "name": "Peek", "module": "Oc", "type": "Oc.Mixed", "kind": "method", "visibility": "public",
+      "location": { "file": "Cohesion.cs", "startLine": 30 },
+      "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 0, "lines": 4 }
+    }
+  ],
+  "dependencies": [
+    { "from": "Oc.DeepFail", "to": "Oc.Fail", "kind": "inheritance", "phase": "runtime" },
+    { "from": "Oc.Derived", "to": "Oc.Mixed", "kind": "inheritance", "phase": "runtime" },
+    { "from": "Oc.Mixed", "to": "Oc.Data", "kind": "type-ref", "phase": "runtime" }
+  ],
+  "cycles": [],
+  "skippedRules": [],
+  "diagnostics": []
+}

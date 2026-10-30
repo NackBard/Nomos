@@ -98,16 +98,21 @@ internal static class LexicalScanner
     public static SourceFile Scan(SyntaxTree tree)
     {
         var root = tree.GetRoot();
-        var tokens = new List<SourceToken>();
-        foreach (var token in root.DescendantTokens())
-        {
-            if (token.IsKind(SyntaxKind.EndOfFileToken)) continue;
-            var kind = token.IsKeyword() ? SourceTokenKind.Keyword
-                : token.IsKind(SyntaxKind.IdentifierToken) ? SourceTokenKind.Identifier
-                : token.Value is not null ? SourceTokenKind.Literal
-                : SourceTokenKind.Symbol;
-            tokens.Add(new SourceToken(kind, token.ValueText, token.GetLocation().GetLineSpan().StartLinePosition.Line + 1));
-        }
+        // Tokens the parser could not place (after a syntax error) are trivia, not tokens, but they are still code on their line.
+        var skipped = root.DescendantTrivia(descendIntoTrivia: false)
+            .Where(t => t.IsKind(SyntaxKind.SkippedTokensTrivia))
+            .SelectMany(t => ((Microsoft.CodeAnalysis.CSharp.Syntax.SkippedTokensTriviaSyntax)t.GetStructure()!).Tokens);
+        var tokens = root.DescendantTokens().Concat(skipped)
+            .Where(token => !token.IsKind(SyntaxKind.EndOfFileToken))
+            .OrderBy(token => token.SpanStart)
+            .Select(token =>
+            {
+                var kind = token.IsKeyword() ? SourceTokenKind.Keyword
+                    : token.IsKind(SyntaxKind.IdentifierToken) ? SourceTokenKind.Identifier
+                    : token.Value is not null ? SourceTokenKind.Literal
+                    : SourceTokenKind.Symbol;
+                return new SourceToken(kind, token.ValueText, token.GetLocation().GetLineSpan().StartLinePosition.Line + 1);
+            }).ToList();
 
         var comments = new List<CommentInfo>();
         foreach (var trivia in root.DescendantTrivia(descendIntoTrivia: false))
@@ -116,7 +121,7 @@ internal static class LexicalScanner
             if (!isDocumentation && !trivia.IsKind(SyntaxKind.SingleLineCommentTrivia) && !trivia.IsKind(SyntaxKind.MultiLineCommentTrivia)) continue;
             comments.Add(new CommentInfo(trivia.ToFullString().TrimEnd(), Locations.Of(trivia.GetLocation()), isDocumentation));
         }
-        return new SourceFile(tree.FilePath, string.Empty, tree.GetText().ToString()) { Tokens = tokens, Comments = comments };
+        return new SourceFile(tree.FilePath, string.Empty, tree.GetText().ToString()) { Tokens = tokens, Comments = comments, HasSyntaxErrors = tree.GetDiagnostics().Any(d => d.Severity == DiagnosticSeverity.Error) };
     }
 }
 

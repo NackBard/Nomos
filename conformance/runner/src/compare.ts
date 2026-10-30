@@ -104,6 +104,10 @@ export function compareFacts(expected: any, actual: any, spec: CaseSpec): string
   compareSets("cycle", (expected.cycles ?? []).map(cycle), (actual.cycles ?? []).map(cycle), errors);
 
   const skipped = (s: any) => `${s.ruleId} @ ${s.module ?? "*"} (${s.reason})`;
+  // Expected diagnostics that name a file (syntax errors) must be reported; others are analyzer-specific notes.
+  const diagnostic = (d: any) => `${d.level} ${d.file} ${d.code ?? ""}`;
+  compareSubset("diagnostic", (expected.diagnostics ?? []).filter((d: any) => d.file).map(diagnostic), (actual.diagnostics ?? []).map(diagnostic), errors);
+
   // Completeness of paradigm-not-detected records is checked separately against the analyzer's supportedRules.
   compareSubset("skipped rule", expected.skippedRules.map(skipped), actual.skippedRules.map(skipped), errors);
 

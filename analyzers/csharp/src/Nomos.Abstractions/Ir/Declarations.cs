@@ -437,6 +437,9 @@ public sealed record SourceFile(string Path, string Language, string Text)
     /// <summary>Gets the comments.</summary>
     public IReadOnlyList<CommentInfo> Comments { get; init; } = [];
 
+    /// <summary>Gets whether the parser reported syntax errors; declarations of such a file may be missing from the model.</summary>
+    public bool HasSyntaxErrors { get; init; }
+
     /// <summary>Gets the source lines.</summary>
     public IReadOnlyList<string> Lines => _lines.Value;
 

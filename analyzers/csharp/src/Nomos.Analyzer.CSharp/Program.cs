@@ -17,6 +17,7 @@ public static class Program
     private const int Unexpected = 1;
     private const int UsageError = 2;
     private const int BadInput = 3;
+    private const int Partial = 4;
     private const string Name = "nomos-csharp";
     private const string SchemaVersion = "1.0.0";
 
@@ -126,7 +127,8 @@ public static class Program
         }
 
         WriteStdout(FactsWriter.Write(result, options));
-        return Success;
+        // Findings never change the exit code; only an incomplete result does (docs/ARCHITECTURE.md, exit code 4).
+        return result.Model.Files.Any(f => f.HasSyntaxErrors) ? Partial : Success;
     }
 
     private static void WriteStdout(string text)

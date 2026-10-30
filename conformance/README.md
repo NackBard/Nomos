@@ -45,7 +45,9 @@ node src/cli.ts run --analyzer "csharp=<команда>" [--case cycles]
 
 ## Набор случаев (план этапа 1)
 
-Готовы (только C#, эталоны посчитаны вручную): `metrics-basic`, `coupling-martin`, `cycles`, `paradigm-evidence`. Остальные — позже.
+Готовы (только C#, эталоны посчитаны вручную): `metrics-basic`, `coupling-martin`, `cycles`, `paradigm-evidence`, `oop-cohesion`, `partial-failure`. Остальные — позже.
+
+Код возврата анализатора в `run` не задаётся в `case.json`: он выводится из эталона. Если в `expected.facts.json` есть файл с `parsed: false`, ожидается код 4 (частичный результат), иначе 0.
 
 | Случай | Что покрывает |
 |---|---|
