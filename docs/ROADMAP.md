@@ -6,7 +6,7 @@
 
 Состояние: этапы 1–4 завершены (D-031, D-032, D-034). Следующий — этап 5.
 
-Как проверить, что всё на месте: `dotnet test Nomos.slnx` в `analyzers/csharp`; `npm run validate`, `npm test`, `npm run selftest`, `npm run csharp` в `conformance/runner`; `npm test`, `npm run check-boundary`, `npm run e2e` в `extension`. Если CI ещё не запускался на GitHub, первый прогон `.github/workflows/ci.yml` тоже входит в проверку.
+Как проверить, что всё на месте: `dotnet test Nomos.slnx` в `analyzers/csharp`; `npm run validate`, `npm test`, `npm run selftest`, `npm run csharp` в `conformance/runner`; `npm test`, `npm run check-boundary`, `npm run e2e` в `extension`. CI (`.github/workflows/ci.yml`) зелёный на `main`, он запускается на Ubuntu и Node 22.18 (D-035), его результат смотрит `gh run list`.
 
 ## Этап 1. Контракты, spec, conformance-harness
 
@@ -50,6 +50,20 @@
 - ALG001–ALG004.
 - DSN001–DSN006, включая God class, Feature envy, blast radius; DSN003 по `layers`.
 - Случаи conformance для `blast-radius`, `cycles` на сложных графах.
+
+Отправная точка (на момент завершения этапа 4):
+
+- Уже есть: детекторы ALG001–ALG004 и DSN001–DSN006 с фикстурами и записью в `spec/rules`; метрики `blastRadius`, `atfd`, `tcc`, Мартина в facts; случай `cycles` на простом графе; `layers` в `nomos.json`, которые читает `WorkspaceFile`.
+- `measured` есть у DSN001, DSN004, DSN006. Нет у ALG001, ALG003, ALG004 и DSN005, у которых в spec есть пороги: оценка сложности и `minForeignMembers` пока не определены в `spec/metrics.md` и не выводятся в facts. По D-034 сначала определение в spec и вывод в facts, затем `measured`.
+- Нет случаев conformance с `blast-radius` и `cycles` на сложных графах; DSN003 не проверялся через `nomos.json` в conformance, потому что harness не передаёт `--config`, а в `case.json` нет такого поля. Новое поле — изменение контракта.
+- Blast radius считается обходом на каждый тип, квадратично (D-028); на больших графах это не проверено (D-030).
+
+Перенесено с прошлых этапов, вне состава этапа 5, решать отдельно:
+
+- Балл здоровья нормируется на `LinesOfCode` из IR, а spec требует `loc` модуля (D-034); исправление меняет все баллы.
+- OOP006 смотрит только на классы, записи не учитывает (D-034).
+- Панель графа и деревья расширения, включая «Modules by style», глазами не проверены (D-032, D-034).
+- В CI действия `checkout`, `setup-dotnet`, `setup-node` версии 4 предупреждают об устаревшем Node 20; `npm ci` в harness сообщает о двух уязвимостях средней серьёзности (D-035).
 
 ## Этап 6. Patterns, Maintainability, Security
 
