@@ -42,7 +42,7 @@
   },
   "scripts": {
     "compile": "node scripts/copy-contracts.mjs && tsc -p .",
-    "test": "npm run compile && node --test out/test/",
+    "test": "npm run compile && node --test \"out/test/**/*.test.js\"",
     "e2e": "npm run compile && node scripts/run-e2e.mjs",
     "check-boundary": "node scripts/check-boundary.mjs"
   },

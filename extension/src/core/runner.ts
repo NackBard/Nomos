@@ -35,14 +35,21 @@ function run(config: AnalyzerConfig, folder: string, args: string[], signal?: Ab
       cwd: config.cwd ? path.resolve(folder, config.cwd) : folder,
       env: { ...process.env, ...config.env },
       signal,
-      timeout: (config.timeoutSeconds ?? DefaultTimeoutSeconds) * 1000,
     });
+    // Not the timeout option of spawn: its timer outlives a command that cannot start and keeps the process alive.
+    const timer = setTimeout(() => child.kill(), (config.timeoutSeconds ?? DefaultTimeoutSeconds) * 1000);
     const stdout: Buffer[] = [];
     const stderr: Buffer[] = [];
     child.stdout.on("data", (d: Buffer) => stdout.push(d));
     child.stderr.on("data", (d: Buffer) => stderr.push(d));
-    child.on("error", (e) => reject(new AnalyzerError(`${config.language}: cannot start "${command}": ${e.message}`)));
-    child.on("close", (code) => resolve({ code, stdout: Buffer.concat(stdout).toString("utf8"), stderr: Buffer.concat(stderr).toString("utf8") }));
+    child.on("error", (e) => {
+      clearTimeout(timer);
+      reject(new AnalyzerError(`${config.language}: cannot start "${command}": ${e.message}`));
+    });
+    child.on("close", (code) => {
+      clearTimeout(timer);
+      resolve({ code, stdout: Buffer.concat(stdout).toString("utf8"), stderr: Buffer.concat(stderr).toString("utf8") });
+    });
   });
 }
 
