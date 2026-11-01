@@ -382,7 +382,7 @@ func Analyze(p *Project, options Options) (*Result, error) {
 	for _, f := range p.Files {
 		byFile[f.Path] = f.Module
 	}
-	findings := sortFindings(r.findings)
+	findings, suppressed := p.suppress(sortFindings(r.findings))
 	for i := range findings {
 		if findings[i].Module == "" && byFile[findings[i].Place.File] != nil {
 			findings[i].Module = byFile[findings[i].Place.File].ID
@@ -406,6 +406,9 @@ func Analyze(p *Project, options Options) (*Result, error) {
 			partial = true
 			diagnostics = append(diagnostics, diagnostic{"warning", "Syntax errors: declarations in this file may be missing from the facts.", f.Path, "syntax-error"})
 		}
+	}
+	if suppressed > 0 {
+		diagnostics = append(diagnostics, diagnostic{"info", fmt.Sprintf("%d finding(s) suppressed by directives.", suppressed), "", "suppressed"})
 	}
 	if !p.Semantic {
 		diagnostics = append(diagnostics, diagnostic{"warning", "The standard library could not be loaded: symbols are partly unresolved.", "", "no-stdlib"})

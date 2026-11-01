@@ -1,0 +1,14 @@
+{
+  "results": [
+    {
+      "ruleId": "ALG001",
+      "file": "Code.cs",
+      "startLine": 5
+    },
+    {
+      "ruleId": "ALG001",
+      "file": "Code.cs",
+      "startLine": 13
+    }
+  ]
+}

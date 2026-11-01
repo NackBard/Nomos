@@ -71,6 +71,7 @@ node src/cli.ts run --analyzer "csharp=<команда>" [--case cycles]
 | `health` | балл здоровья: нормировка по `loc`, а не по физическим строкам; взвешивание модулей |
 | `patterns` | PAT001–PAT007, PAT101–PAT103, `settableProperties`, `forwardingMethods` |
 | `security-heuristics` | SEC001–SEC003 и безобидные двойники их шаблонов |
+| `suppressions` | директивы `spec/suppressions.md`; подавленное не попадает в SARIF, метрики остаются |
 | `maintainability` | `halsteadVolume`, `maintainabilityIndex`, `coverage`; MNT002–MNT004 |
 | `partial-failure` | файл с синтаксической ошибкой: код возврата 4, `parsed: false`, `diagnostics` |
 

@@ -62,6 +62,7 @@ internal sealed class FactsBuilder
                 .Select(d => new FactsDiagnostic(d.Level.ToString().ToLowerInvariant(), d.Message, null, d.Source))
                 .Concat(_model.Files.Where(f => f.HasSyntaxErrors).Select(f =>
                     new FactsDiagnostic("warning", "Syntax errors: declarations in this file may be missing from the facts.", f.Path, "syntax-error")))
+                .Concat(_result.Suppressed.Count == 0 ? [] : [new FactsDiagnostic("info", $"{_result.Suppressed.Count} finding(s) suppressed by directives or attributes.", null, "suppressed")])
                 .OrderBy(d => d.Level, StringComparer.Ordinal).ThenBy(d => d.Code, StringComparer.Ordinal).ThenBy(d => d.Message, StringComparer.Ordinal)]);
     }
 

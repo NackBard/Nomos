@@ -35,6 +35,7 @@ type File struct {
 	Path        string
 	Lines, Loc  int
 	Tokens      []Token
+	Directives  *directives
 	ImportLines map[int]bool
 	AST         *ast.File
 	Module      *Module
@@ -246,7 +247,7 @@ func (p *Project) addFile(file, rel string) error {
 	if len(source) > 0 && source[len(source)-1] != '\n' {
 		f.Lines++
 	}
-	f.Tokens = tokenize(source)
+	f.Tokens, f.Directives = tokenize(source)
 	seen := map[int]bool{}
 	for _, t := range f.Tokens {
 		seen[t.Line] = true
@@ -291,16 +292,22 @@ func (p *Project) addFile(file, rel string) error {
 	return nil
 }
 
-func tokenize(source []byte) []Token {
+func tokenize(source []byte) ([]Token, *directives) {
 	var s scanner.Scanner
 	set := token.NewFileSet()
 	file := set.AddFile("", set.Base(), len(source))
-	s.Init(file, source, func(token.Position, string) {}, 0)
+	s.Init(file, source, func(token.Position, string) {}, scanner.ScanComments)
 	var result []Token
+	found := &directives{lines: map[int][]string{}}
 	for {
 		pos, tok, lit := s.Scan()
 		if tok == token.EOF {
-			return result
+			return result, found
+		}
+		if tok == token.COMMENT {
+			line := set.Position(pos).Line
+			found.add(lit, line, line+strings.Count(lit, "\n"))
+			continue
 		}
 		if tok == token.SEMICOLON && lit == "\n" {
 			continue

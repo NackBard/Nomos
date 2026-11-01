@@ -4,7 +4,7 @@
 
 Общее ограничение всех этапов: платформа даёт статистику. Пороги приёмки и вердикты не вводятся.
 
-Состояние: все этапы 1–8 завершены (D-031, D-032, D-034, D-036, D-037, D-038, D-039). Открытые вопросы — в `docs/DECISIONS.md`.
+Состояние: все этапы 1–8 завершены (D-031, D-032, D-034, D-036, D-037, D-038, D-039). Открытые вопросы закрыты (D-040).
 
 Как проверить, что всё на месте: `dotnet test Nomos.slnx` в `analyzers/csharp`; `npm run validate`, `npm test`, `npm run selftest`, `npm run all` в `conformance/runner`; `go test ./...` в `analyzers/go`; `npm test` в `ci`; `npm test`, `npm run check-boundary`, `npm run e2e` в `extension`. CI (`.github/workflows/ci.yml`) зелёный на `main`, он запускается на Ubuntu и Node 22.18 (D-035), его результат смотрит `gh run list`.
 

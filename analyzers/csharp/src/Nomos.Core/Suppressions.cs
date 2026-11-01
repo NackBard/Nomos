@@ -76,7 +76,7 @@ internal sealed partial class SuppressionFilter
         return directives;
     }
 
-    [GeneratedRegex(@"nomos-disable(?<scope>-next-line|-line)?(?<ids>[ \t,\w]*)")]
+    [GeneratedRegex(@"nomos-disable(?<scope>-next-line|-line)?(?<ids>[ \t,\w.*]*)")]
     private static partial Regex DirectiveRegex();
 
     private sealed class FileDirectives

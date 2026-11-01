@@ -1,0 +1,152 @@
+{
+  "schemaVersion": "1.2.0",
+  "analyzer": {
+    "name": "hand-computed",
+    "version": "0.0.0",
+    "language": "go"
+  },
+  "files": [
+    {
+      "path": "code.go",
+      "lines": 13,
+      "loc": 6
+    },
+    {
+      "path": "whole/whole.go",
+      "lines": 4,
+      "loc": 2
+    }
+  ],
+  "modules": [
+    {
+      "id": "sup",
+      "name": "sup",
+      "files": [
+        "code.go"
+      ],
+      "loc": 6,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "sup/whole",
+      "name": "whole",
+      "files": [
+        "whole/whole.go"
+      ],
+      "loc": 2,
+      "metrics": {},
+      "paradigmEvidence": []
+    }
+  ],
+  "types": [],
+  "functions": [
+    {
+      "id": "sup.Reported",
+      "name": "Reported",
+      "module": "sup",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "code.go",
+        "startLine": 3
+      },
+      "metrics": {
+        "cyclomatic": 3,
+        "maxNesting": 2,
+        "parameterCount": 1,
+        "lines": 1
+      }
+    },
+    {
+      "id": "sup.Next",
+      "name": "Next",
+      "module": "sup",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "code.go",
+        "startLine": 6
+      },
+      "metrics": {
+        "cyclomatic": 3,
+        "maxNesting": 2,
+        "parameterCount": 1,
+        "lines": 1
+      }
+    },
+    {
+      "id": "sup.Same",
+      "name": "Same",
+      "module": "sup",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "code.go",
+        "startLine": 8
+      },
+      "metrics": {
+        "cyclomatic": 3,
+        "maxNesting": 2,
+        "parameterCount": 1,
+        "lines": 1
+      }
+    },
+    {
+      "id": "sup.OtherRule",
+      "name": "OtherRule",
+      "module": "sup",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "code.go",
+        "startLine": 11
+      },
+      "metrics": {
+        "cyclomatic": 3,
+        "maxNesting": 2,
+        "parameterCount": 1,
+        "lines": 1
+      }
+    },
+    {
+      "id": "sup.Reasoned",
+      "name": "Reasoned",
+      "module": "sup",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "code.go",
+        "startLine": 13
+      },
+      "metrics": {
+        "cyclomatic": 3,
+        "maxNesting": 2,
+        "parameterCount": 1,
+        "lines": 1
+      }
+    },
+    {
+      "id": "sup/whole.Pairs",
+      "name": "Pairs",
+      "module": "sup/whole",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "whole/whole.go",
+        "startLine": 4
+      },
+      "metrics": {
+        "cyclomatic": 3,
+        "maxNesting": 2,
+        "parameterCount": 1,
+        "lines": 1,
+        "timeDegree": 2
+      }
+    }
+  ],
+  "dependencies": [],
+  "cycles": [],
+  "skippedRules": [],
+  "diagnostics": []
+}

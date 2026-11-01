@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "1.2.0",
+  "id": "suppressions",
+  "title": "Directives of spec/suppressions.md: next line, same line, another rule, a list with a reason in another case, a whole file",
+  "covers": [
+    "ALG001"
+  ],
+  "languages": [
+    "csharp",
+    "go"
+  ],
+  "expectSarif": true
+}

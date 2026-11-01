@@ -1,0 +1,189 @@
+{
+  "schemaVersion": "1.2.0",
+  "analyzer": {
+    "name": "hand-computed",
+    "version": "0.0.0",
+    "language": "csharp"
+  },
+  "files": [
+    {
+      "path": "Code.cs",
+      "lines": 16,
+      "loc": 9
+    },
+    {
+      "path": "Whole.cs",
+      "lines": 7,
+      "loc": 5
+    }
+  ],
+  "modules": [
+    {
+      "id": "Sup.Code",
+      "name": "Sup.Code",
+      "files": [
+        "Code.cs"
+      ],
+      "loc": 9,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "Sup.Whole",
+      "name": "Sup.Whole",
+      "files": [
+        "Whole.cs"
+      ],
+      "loc": 5,
+      "metrics": {},
+      "paradigmEvidence": []
+    }
+  ],
+  "types": [
+    {
+      "id": "Sup.Code.Loops",
+      "name": "Loops",
+      "module": "Sup.Code",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "Code.cs",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 14,
+        "methodCount": 5
+      }
+    },
+    {
+      "id": "Sup.Whole.Quiet",
+      "name": "Quiet",
+      "module": "Sup.Whole",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "Whole.cs",
+        "startLine": 4
+      },
+      "metrics": {
+        "lines": 4,
+        "methodCount": 1
+      }
+    }
+  ],
+  "functions": [
+    {
+      "id": "Sup.Code.Loops.Reported",
+      "name": "Reported",
+      "module": "Sup.Code",
+      "type": "Sup.Code.Loops",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Code.cs",
+        "startLine": 5
+      },
+      "metrics": {
+        "cyclomatic": 3,
+        "maxNesting": 2,
+        "parameterCount": 1,
+        "lines": 1
+      }
+    },
+    {
+      "id": "Sup.Code.Loops.Next",
+      "name": "Next",
+      "module": "Sup.Code",
+      "type": "Sup.Code.Loops",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Code.cs",
+        "startLine": 8
+      },
+      "metrics": {
+        "cyclomatic": 3,
+        "maxNesting": 2,
+        "parameterCount": 1,
+        "lines": 1
+      }
+    },
+    {
+      "id": "Sup.Code.Loops.Same",
+      "name": "Same",
+      "module": "Sup.Code",
+      "type": "Sup.Code.Loops",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Code.cs",
+        "startLine": 10
+      },
+      "metrics": {
+        "cyclomatic": 3,
+        "maxNesting": 2,
+        "parameterCount": 1,
+        "lines": 1
+      }
+    },
+    {
+      "id": "Sup.Code.Loops.OtherRule",
+      "name": "OtherRule",
+      "module": "Sup.Code",
+      "type": "Sup.Code.Loops",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Code.cs",
+        "startLine": 13
+      },
+      "metrics": {
+        "cyclomatic": 3,
+        "maxNesting": 2,
+        "parameterCount": 1,
+        "lines": 1
+      }
+    },
+    {
+      "id": "Sup.Code.Loops.Reasoned",
+      "name": "Reasoned",
+      "module": "Sup.Code",
+      "type": "Sup.Code.Loops",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Code.cs",
+        "startLine": 15
+      },
+      "metrics": {
+        "cyclomatic": 3,
+        "maxNesting": 2,
+        "parameterCount": 1,
+        "lines": 1
+      }
+    },
+    {
+      "id": "Sup.Whole.Quiet.Pairs",
+      "name": "Pairs",
+      "module": "Sup.Whole",
+      "type": "Sup.Whole.Quiet",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Whole.cs",
+        "startLine": 6
+      },
+      "metrics": {
+        "cyclomatic": 3,
+        "maxNesting": 2,
+        "parameterCount": 1,
+        "lines": 1,
+        "timeDegree": 2
+      }
+    }
+  ],
+  "dependencies": [],
+  "cycles": [],
+  "skippedRules": [],
+  "diagnostics": []
+}

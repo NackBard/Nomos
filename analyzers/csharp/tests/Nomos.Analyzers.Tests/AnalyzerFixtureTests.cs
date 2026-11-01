@@ -35,6 +35,17 @@ public class AnalyzerFixtureTests
     }
 
     [Theory]
+    [InlineData("// nomos-disable CS.NAM001 -- generated names")]
+    [InlineData("// nomos-disable-next-line cs.nam001")]
+    public async Task Directive_AcceptsLanguagePrefixedRuleIds(string directive)
+    {
+        var source = $"namespace N;\n{directive}\npublic class bad_name {{ }}\n";
+        var result = await Run("CS.NAM001", Path.GetTempPath(), "a.cs", source);
+        Assert.DoesNotContain(result.Findings, f => f.AnalyzerId == "CS.NAM001");
+        Assert.Contains(result.Suppressed, f => f.AnalyzerId == "CS.NAM001");
+    }
+
+    [Theory]
     [InlineData("FUN005")]
     [InlineData("OOP003")]
     [InlineData("STR003")]

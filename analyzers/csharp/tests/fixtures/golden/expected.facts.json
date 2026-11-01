@@ -1121,5 +1121,11 @@
     "sarifFile": "out.sarif",
     "resultCount": 16
   },
-  "diagnostics": []
+  "diagnostics": [
+    {
+      "level": "info",
+      "message": "2 finding(s) suppressed by directives or attributes.",
+      "code": "suppressed"
+    }
+  ]
 }
