@@ -33,6 +33,7 @@ conformance/ ── прогоняет каждый анализатор на э
 | `analyzers/<язык>/` | будущие анализаторы | |
 | `extension/` | расширение VS Code, только потребитель контрактов | |
 | `conformance/` | фикстуры, эталонные facts, harness | |
+| `ci/` | запуск анализаторов без IDE, отчёты md/html из facts и SARIF, baseline | |
 | `docs/` | эта документация | |
 
 Анализатор Go лежит в `analyzers/go/`, точка входа `cmd/nomos-go`, зависимостей вне стандартной библиотеки нет. Анализатор C# лежит в `analyzers/csharp/` (`src/`, `tests/`, `Nomos.slnx`, `Directory.*`). Точка входа — `src/Nomos.Analyzer.CSharp` (`nomos-csharp`), она говорит по протоколу `manifest`/`analyze`.
@@ -124,6 +125,17 @@ Facts — измерения и наблюдения, без вердиктов:
 
 Правило с парадигмой применяется только к модулям, где найден признак этой парадигмы (`spec/paradigms.md`). Остальные модули получают запись `skippedRules` с причиной `paradigm-not-detected`, а правила выключенной конфигурацией парадигмы — `disabled-by-config`. Молчаливых исключений нет.
 
+## Запуск без IDE
+
+`ci/` читает `nomos.json`, запускает каждый анализатор по протоколу и пишет в выходную папку (`.nomos`) `<язык>.facts.json`, `<язык>.sarif`, `report.md`, `report.html`. Как и расширение, он не знает языков: только контракты.
+
+```powershell
+node ci/src/cli.ts --workspace nomos.json --out .nomos --write-baseline baseline.json   # снимок
+node ci/src/cli.ts --workspace nomos.json --out .nomos --baseline baseline.json         # сравнение
+```
+
+Сравнение идёт по `partialFingerprints["nomos/v1"]`, результат — `diff.json` и раздел отчёта: новые, исчезнувшие, неизменные. Код возврата: 0 — отчёты полные, в том числе при частичном результате анализатора; 1 — анализатор не завершился, отчёт это показывает; 2 — ошибка использования; 3 — нет файла рабочей области. Число находок, балл и появление новых находок на код не влияют (D-021).
+
 ## Расширение VS Code
 
 Папка `extension/`, TypeScript. Логика чтения контрактов лежит в `src/core` и не зависит от `vscode`, интерфейс — в `src/ui`. Получает данные только из контрактов:
@@ -148,7 +160,7 @@ Facts — измерения и наблюдения, без вердиктов:
 | `Abstractions` (IR, `Queries`, `Flow`) | внутренняя модель анализатора C# |
 | `Analyzers.*` (детекторы) | детекторы правил `analyzers/csharp`, привязанные к id из `spec/rules` |
 | `Core` (движок, подавления, `HealthScorer`) | движок анализатора C#; поиск плагинов удалён, детекторы перечислены в `BuiltInComponents` |
-| `Reporting` | json и старый SARIF удалены (их заменили facts и `SarifProfileWriter`); md/html ждут этапа 8 и пока ни к чему не подключены |
+| `Reporting` | удалён: json заменили facts, SARIF — `SarifProfileWriter`, md/html — `ci/` (D-039) |
 | `Graph` | расчёт метрик на уровне facts (Ca, Ce, Тарьян, blast radius) |
 | `Languages.TreeSitter` | удалён: общего мультиязычного разбора нет (D-017 отменён D-020) |
 | `Cli` | удалён; его заменил `Nomos.Analyzer.CSharp` |

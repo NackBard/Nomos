@@ -14,7 +14,9 @@ export async function run(): Promise<void> {
   const runs = api.runs();
   const [run] = runs;
   assert.ok(run, "no analysis run");
-  assert.deepEqual(runs.map((r) => r.language).sort(), ["csharp", "go"], "every analyzer of nomos.json must run");
+  const folder = vscode.workspace.workspaceFolders![0].uri;
+  const workspace = JSON.parse(Buffer.from(await vscode.workspace.fs.readFile(vscode.Uri.joinPath(folder, "nomos.json"))).toString("utf8")) as { analyzers: { language: string }[] };
+  assert.deepEqual(runs.map((r) => r.language).sort(), workspace.analyzers.map((a) => a.language).sort(), "every analyzer of nomos.json must run");
   for (const each of runs) assert.ok(each.findings.length > 0, `no findings from ${each.language}`);
 
   const withDiagnostics = vscode.languages.getDiagnostics().filter(([, list]) => list.some((d) => d.source === "nomos"));

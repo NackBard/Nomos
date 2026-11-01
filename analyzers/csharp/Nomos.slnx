@@ -14,7 +14,6 @@
     <Project Path="src/Nomos.Facts/Nomos.Facts.csproj" />
     <Project Path="src/Nomos.Graph/Nomos.Graph.csproj" />
     <Project Path="src/Nomos.Languages.CSharp/Nomos.Languages.CSharp.csproj" />
-    <Project Path="src/Nomos.Reporting/Nomos.Reporting.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Nomos.Analyzers.Tests/Nomos.Analyzers.Tests.csproj" />
@@ -23,6 +22,5 @@
     <Project Path="tests/Nomos.Facts.Tests/Nomos.Facts.Tests.csproj" />
     <Project Path="tests/Nomos.Graph.Tests/Nomos.Graph.Tests.csproj" />
     <Project Path="tests/Nomos.Languages.Tests/Nomos.Languages.Tests.csproj" />
-    <Project Path="tests/Nomos.Reporting.Tests/Nomos.Reporting.Tests.csproj" />
   </Folder>
 </Solution>

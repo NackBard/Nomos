@@ -43,3 +43,4 @@ Thumbs.db
 .nomos/
 
 analyzers/go/bin/
+ci/node_modules/

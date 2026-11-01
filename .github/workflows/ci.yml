@@ -9,15 +9,15 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-dotnet@v5
         with:
           global-json-file: analyzers/csharp/global.json
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v6
         with:
           go-version: "1.26"
           cache: false
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 22.18
       - name: Contracts, spec/rules and cases
@@ -41,6 +41,18 @@ jobs:
       - name: Conformance and parity
         working-directory: conformance/runner
         run: npm run all
+      - name: CI runner
+        working-directory: ci
+        run: |
+          npm ci
+          npm run typecheck
+          npm test
+      - name: Report on this repository
+        run: node ci/src/cli.ts --workspace nomos.json --out .nomos
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nomos-report
+          path: .nomos/
       - name: Extension
         working-directory: extension
         run: |

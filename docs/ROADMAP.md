@@ -4,9 +4,9 @@
 
 Общее ограничение всех этапов: платформа даёт статистику. Пороги приёмки и вердикты не вводятся.
 
-Состояние: этапы 1–7 завершены (D-031, D-032, D-034, D-036, D-037, D-038). Следующий — этап 8.
+Состояние: все этапы 1–8 завершены (D-031, D-032, D-034, D-036, D-037, D-038, D-039). Открытые вопросы — в `docs/DECISIONS.md`.
 
-Как проверить, что всё на месте: `dotnet test Nomos.slnx` в `analyzers/csharp`; `npm run validate`, `npm test`, `npm run selftest`, `npm run all` в `conformance/runner`; `go test ./...` в `analyzers/go`; `npm test`, `npm run check-boundary`, `npm run e2e` в `extension`. CI (`.github/workflows/ci.yml`) зелёный на `main`, он запускается на Ubuntu и Node 22.18 (D-035), его результат смотрит `gh run list`.
+Как проверить, что всё на месте: `dotnet test Nomos.slnx` в `analyzers/csharp`; `npm run validate`, `npm test`, `npm run selftest`, `npm run all` в `conformance/runner`; `go test ./...` в `analyzers/go`; `npm test` в `ci`; `npm test`, `npm run check-boundary`, `npm run e2e` в `extension`. CI (`.github/workflows/ci.yml`) зелёный на `main`, он запускается на Ubuntu и Node 22.18 (D-035), его результат смотрит `gh run list`.
 
 ## Этап 1. Контракты, spec, conformance-harness
 
@@ -53,10 +53,9 @@
 
 Завершён, D-036: оценки сложности и `foreignMembers` определены в `spec/metrics.md`, выведены в facts и в `measured` у ALG001, ALG003, ALG004, DSN005; `config` в `case.json` (контракт `conformance-case` 1.1.0); случаи `blast-radius`, `cycles-complex`, `layers`, `design-smells`, `complexity-estimates`; запись `missing-input` у DSN003 и MNT004; blast radius за один проход.
 
-Перенесено с прошлых этапов, вне состава этапа 6, решать отдельно:
+Перенесено с прошлых этапов, вне состава этапов, решать отдельно:
 
 - Панель графа и деревья расширения, включая «Modules by style», глазами не проверены (D-032, D-034).
-- В CI действия `checkout`, `setup-dotnet`, `setup-node` версии 4 предупреждают об устаревшем Node 20; `npm ci` в harness сообщает о двух уязвимостях средней серьёзности (D-035).
 
 ## Этап 6. Patterns, Maintainability, Security
 
@@ -80,6 +79,8 @@
 - Отчёты md/html из facts и SARIF (по образцу прежнего Reporting).
 - CI-режим: запуск без IDE по `nomos.json`, выгрузка SARIF и facts, сравнение с предыдущим запуском (baseline по fingerprint).
 - Режим только сообщает: код возврата не зависит от числа находок и значения балла (D-021).
+
+Завершён, D-039: пакет `ci/`: запуск по `nomos.json`, `<язык>.facts.json`, `<язык>.sarif`, `report.md`, `report.html`, сравнение с baseline в `diff.json`; `Nomos.Reporting` удалён.
 
 ## Миграция существующего .NET-кода (часть этапа 2)
 
