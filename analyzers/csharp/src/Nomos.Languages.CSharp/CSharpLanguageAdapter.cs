@@ -109,6 +109,7 @@ internal static class LexicalScanner
             {
                 var kind = token.IsKeyword() ? SourceTokenKind.Keyword
                     : token.IsKind(SyntaxKind.IdentifierToken) ? SourceTokenKind.Identifier
+                    : SyntaxFacts.IsPunctuation(token.Kind()) ? SourceTokenKind.Symbol
                     : token.Value is not null ? SourceTokenKind.Literal
                     : SourceTokenKind.Symbol;
                 return new SourceToken(kind, token.ValueText, token.GetLocation().GetLineSpan().StartLinePosition.Line + 1);

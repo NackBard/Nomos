@@ -195,10 +195,11 @@ public sealed class AnemicDomainModelAnalyzer : AnalyzerBase
         var namespaces = context.Options.List("domainNamespaces", ["Domain", "Model", "Entities"]);
         foreach (var type in context.Types.Where(t => t.Kind == TypeKind.Class))
         {
-            var settable = type.Properties.Count(p => p.SetterVisibility == Visibility.Public);
+            var settable = TypeMetrics.SettableProperties(type);
             var inDomain = namespaces.Any(n => type.ModuleName.Contains(n, StringComparison.OrdinalIgnoreCase));
             if (inDomain && settable >= minProperties && !type.Callables.Any(c => c.Kind == CallableKind.Method))
-                context.Report(type, Confidence.Medium, $"{type.Name} is an anemic domain object", $"{settable} public setters and no methods: its invariants must be enforced by whoever changes it. Plain DTOs are fine; this one sits in a domain namespace.");
+                context.Report(type, Confidence.Medium, $"{type.Name} is an anemic domain object", $"{settable} public setters and no methods: its invariants must be enforced by whoever changes it. Plain DTOs are fine; this one sits in a domain namespace.",
+                    measured: new Measurement("settableProperties", settable, minProperties));
         }
     }
 }
@@ -216,20 +217,10 @@ public sealed class MiddleManAnalyzer : AnalyzerBase
         {
             var methods = type.Callables.Where(c => c is { Kind: CallableKind.Method, Visibility: Visibility.Public }).ToList();
             if (methods.Count < minMethods) continue;
-            var targets = methods.Select(ForwardTarget).ToList();
+            var targets = methods.Select(TypeMetrics.ForwardTarget).ToList();
             if (targets.All(t => t is not null) && targets.Distinct().Count() == 1)
-                context.Report(type, Confidence.Medium, $"{type.Name} only forwards to {targets[0]}", $"All {methods.Count} public methods are single calls to the same member; callers could use it directly.");
+                context.Report(type, Confidence.Medium, $"{type.Name} only forwards to {targets[0]}", $"All {methods.Count} public methods are single calls to the same member; callers could use it directly.",
+                    measured: new Measurement("forwardingMethods", methods.Count, minMethods));
         }
-    }
-
-    private static string? ForwardTarget(Callable callable)
-    {
-        var call = callable.Body?.Statements switch
-        {
-            [ReturnStatement { Value: InvocationExpression c }] => c,
-            [ExpressionStatement { Expression: InvocationExpression c }] => c,
-            _ => null,
-        };
-        return (call?.Receiver as NameExpression)?.Symbol is { Kind: SymbolKind.Field or SymbolKind.Property } symbol ? symbol.Name : null;
     }
 }

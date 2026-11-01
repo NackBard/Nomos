@@ -64,7 +64,8 @@ public sealed class HealthScorer(ScoringConfig config)
         var explanation = new List<string> { Format($"Weighted mean over {breakdown.Count} categories, normalized by {kloc:0.###} KLOC.") };
         explanation.AddRange(breakdown.Where(c => c.Penalty > 0).OrderByDescending(c => c.Penalty * c.Weight).ThenBy(c => c.Category, StringComparer.Ordinal)
             .Select(c => Format($"{c.Category}: {c.Score:0.0} (weight {c.Weight:0.###}) from {c.FindingCount} finding(s), penalty {c.Penalty:0.##}.")));
-        return new HealthScore(Math.Round(total, 1), breakdown, explanation);
+        // Not rounded here: the project score is a mean of exact module scores. Facts round on output.
+        return new HealthScore(total, breakdown, explanation);
     }
 
     private double Weight(string category) => config.CategoryWeights.GetValueOrDefault(category, 1);

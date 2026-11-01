@@ -1182,7 +1182,12 @@
             "confidence": "medium",
             "explanation": "3 public setters and no methods: its invariants must be enforced by whoever changes it. Plain DTOs are fine; this one sits in a domain namespace.",
             "module": "Sample.Domain",
-            "entity": "Sample.Domain.Order"
+            "entity": "Sample.Domain.Order",
+            "measured": {
+              "metric": "settableProperties",
+              "value": 3,
+              "threshold": 3
+            }
           }
         },
         {

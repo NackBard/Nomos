@@ -1,0 +1,15 @@
+{
+  "results": [
+    { "ruleId": "PAT001", "file": "Singleton.cs", "startLine": 3 },
+    { "ruleId": "PAT002", "file": "Shapes.cs", "startLine": 20 },
+    { "ruleId": "PAT003", "file": "Shapes.cs", "startLine": 30 },
+    { "ruleId": "PAT004", "file": "Bus.cs", "startLine": 3 },
+    { "ruleId": "PAT005", "file": "Logged.cs", "startLine": 3 },
+    { "ruleId": "PAT006", "file": "Repo.cs", "startLine": 3 },
+    { "ruleId": "PAT006", "file": "Repo.cs", "startLine": 12 },
+    { "ruleId": "PAT007", "file": "Builder.cs", "startLine": 3 },
+    { "ruleId": "PAT101", "file": "Locator.cs", "startLine": 12 },
+    { "ruleId": "PAT102", "file": "Customer.cs", "startLine": 3, "measured": { "metric": "settableProperties", "value": 3, "threshold": 3 } },
+    { "ruleId": "PAT103", "file": "Middle.cs", "startLine": 12, "measured": { "metric": "forwardingMethods", "value": 3, "threshold": 3 } }
+  ]
+}

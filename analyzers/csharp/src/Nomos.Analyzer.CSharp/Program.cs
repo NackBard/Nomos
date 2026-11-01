@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using Nomos.Abstractions;
+using Nomos.Abstractions.Ir;
 using Nomos.Core;
 using Nomos.Facts;
 
@@ -116,12 +117,17 @@ public static class Program
             return BadInput;
         }
 
+        var coverage = LoadCoverage(settings, root);
+        var inputs = new HashSet<string>(StringComparer.Ordinal);
+        if (settings.Layers.Count > 0) inputs.Add("layer-config");
+        if (coverage is not null) inputs.Add("coverage-report");
         var options = new FactsOptions(Name, Version, [.. catalog.Analyzers.Select(a => a.Descriptor)])
         {
             SarifFile = sarif,
             ResultCount = result.Findings.Count,
             RuleTexts = SpecRules.Load(),
-            AvailableInputs = AvailableInputs(settings),
+            AvailableInputs = inputs,
+            Coverage = coverage,
         };
         if (sarif is not null)
         {
@@ -134,12 +140,12 @@ public static class Program
         return result.Model.Files.Any(f => f.HasSyntaxErrors) ? Partial : Success;
     }
 
-    private static HashSet<string> AvailableInputs(NomosConfig settings)
+    /// <summary>The report named by MNT004, relative to the root; absent or missing means no coverage input.</summary>
+    private static CoverageReport? LoadCoverage(NomosConfig settings, string root)
     {
-        var inputs = new HashSet<string>(StringComparer.Ordinal);
-        if (settings.Layers.Count > 0) inputs.Add("layer-config");
-        if (settings.Analyzers.GetValueOrDefault("MNT004")?.Thresholds.ContainsKey("report") == true) inputs.Add("coverage-report");
-        return inputs;
+        if (settings.Analyzers.GetValueOrDefault("MNT004")?.Thresholds.GetValueOrDefault("report") is not { ValueKind: JsonValueKind.String } report) return null;
+        var path = Path.Combine(root, report.GetString()!);
+        return File.Exists(path) ? CoverageReport.Load(path) : null;
     }
 
     private static void WriteStdout(string text)

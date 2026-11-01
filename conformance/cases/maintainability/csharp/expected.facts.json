@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "1.2.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "csharp" },
+  "files": [
+    { "path": "Calc.cs", "lines": 9, "loc": 8, "coverage": 25 },
+    { "path": "Left.cs", "lines": 13, "loc": 12, "coverage": 100 },
+    { "path": "Right.cs", "lines": 13, "loc": 12 }
+  ],
+  "modules": [
+    { "id": "Mnt.Code", "name": "Mnt.Code", "files": ["Calc.cs", "Left.cs", "Right.cs"], "loc": 32, "metrics": {}, "paradigmEvidence": [] }
+  ],
+  "types": [
+    { "id": "Mnt.Code.Calc", "name": "Calc", "module": "Mnt.Code", "kind": "class", "isAbstract": false, "location": { "file": "Calc.cs", "startLine": 3 }, "metrics": { "lines": 7 } },
+    { "id": "Mnt.Code.Left", "name": "Left", "module": "Mnt.Code", "kind": "class", "isAbstract": false, "location": { "file": "Left.cs", "startLine": 3 }, "metrics": { "lines": 11, "memberCount": 8 } },
+    { "id": "Mnt.Code.Right", "name": "Right", "module": "Mnt.Code", "kind": "class", "isAbstract": false, "location": { "file": "Right.cs", "startLine": 3 }, "metrics": { "lines": 11, "memberCount": 8 } }
+  ],
+  "functions": [
+    { "id": "Mnt.Code.Calc.Add", "name": "Add", "module": "Mnt.Code", "type": "Mnt.Code.Calc", "kind": "method", "visibility": "public", "location": { "file": "Calc.cs", "startLine": 5 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 2, "lines": 4, "halsteadVolume": 30.88, "maintainabilityIndex": 76.3 } }
+  ],
+  "dependencies": [],
+  "cycles": [],
+  "skippedRules": [
+    { "ruleId": "DSN003", "reason": "missing-input", "message": "No layers in the configuration" }
+  ],
+  "diagnostics": []
+}

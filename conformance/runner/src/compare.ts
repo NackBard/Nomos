@@ -72,6 +72,7 @@ export function compareFacts(expected: any, actual: any, spec: CaseSpec): string
   compareById("file", (expected.files ?? []).map((f: any) => ({ ...f, id: f.path })), (actual.files ?? []).map((f: any) => ({ ...f, id: f.path })), errors, (id, e, a) => {
     for (const key of ["lines", "loc"]) if (e[key] !== a[key]) errors.push(`file ${id}: ${key} is ${a[key]}, expected ${e[key]}`);
     if ((e.parsed ?? true) !== (a.parsed ?? true)) errors.push(`file ${id}: parsed is ${a.parsed ?? true}, expected ${e.parsed ?? true}`);
+    if (e.coverage !== undefined && !valuesMatch(e.coverage, a.coverage ?? null, toleranceFor(spec, "coverage"))) errors.push(`file ${id}: coverage is ${a.coverage}, expected ${e.coverage}`);
   });
 
   compareById("module", expected.modules, actual.modules, errors, (id, e, a) => {

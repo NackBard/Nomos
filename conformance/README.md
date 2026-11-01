@@ -48,7 +48,7 @@ node src/cli.ts run --analyzer "csharp=<команда>" [--case cycles]
 
 ## Набор случаев (план этапа 1)
 
-Готовы (только C#, эталоны посчитаны вручную) все случаи таблицы, кроме `health`.
+Готовы все случаи таблицы, эталоны посчитаны вручную.
 
 Код возврата анализатора в `run` не задаётся в `case.json`: он выводится из эталона. Если в `expected.facts.json` есть файл с `parsed: false`, ожидается код 4 (частичный результат), иначе 0.
 
@@ -65,7 +65,10 @@ node src/cli.ts run --analyzer "csharp=<команда>" [--case cycles]
 | `complexity-estimates` | `timeDegree`, `timeLogFactor`, `timeExponential`, `spaceDegree`, `allocationDepth`; ALG001, ALG003, ALG004 и их `measured` |
 | `paradigm-evidence` | признаки `oop.*`, `fp.*`, `str.*`; запись `paradigm-not-detected` для модуля без классов |
 | `paradigm-activation` | точные `activeParadigms`: лямбды и глобальное состояние сами по себе ничего не активируют; `disabled-by-config`; `hofOrder`, `lambdaNesting`, `typeTests`, `measured` у OOP003 |
-| `health` | балл здоровья и разбивка при заданных результатах |
+| `health` | балл здоровья: нормировка по `loc`, а не по физическим строкам; взвешивание модулей |
+| `patterns` | PAT001–PAT007, PAT101–PAT103, `settableProperties`, `forwardingMethods` |
+| `security-heuristics` | SEC001–SEC003 и безобидные двойники их шаблонов |
+| `maintainability` | `halsteadVolume`, `maintainabilityIndex`, `coverage`; MNT002–MNT004 |
 | `partial-failure` | файл с синтаксической ошибкой: код возврата 4, `parsed: false`, `diagnostics` |
 
 ## Как добавить случай

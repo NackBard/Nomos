@@ -2,6 +2,7 @@ using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Nomos.Abstractions;
+using Nomos.Abstractions.Ir;
 
 namespace Nomos.Facts;
 
@@ -16,6 +17,9 @@ public sealed record FactsOptions(string AnalyzerName, string AnalyzerVersion, I
 
     /// <summary>Gets the texts of the rules by spec id; SARIF rule descriptions come from here when present.</summary>
     public IReadOnlyDictionary<string, RuleText>? RuleTexts { get; init; }
+
+    /// <summary>Gets the coverage report of this run, if there is one.</summary>
+    public CoverageReport? Coverage { get; init; }
 
     /// <summary>Gets the external inputs this run has, in the terms of <c>requires</c> in spec/rules.</summary>
     public IReadOnlySet<string> AvailableInputs { get; init; } = new HashSet<string>();

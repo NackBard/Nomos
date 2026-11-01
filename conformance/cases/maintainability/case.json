@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "maintainability",
+  "title": "Halstead volume and maintainability index of one function, a type-2 clone, line coverage from LCOV with a path that only looks alike",
+  "covers": ["halsteadVolume", "maintainabilityIndex", "coverage", "MNT002", "MNT003", "MNT004"],
+  "languages": ["csharp"],
+  "expectSarif": true,
+  "config": true
+}

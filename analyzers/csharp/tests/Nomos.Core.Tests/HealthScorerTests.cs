@@ -36,7 +36,7 @@ public class HealthScorerTests
     {
         var scorer = new HealthScorer(new ScoringConfig());
         var health = scorer.ScoreModules([("m", 1000)], [Finding("m", "A", Severity.Major, Confidence.High)], ["A"])[0].Health;
-        Assert.Equal(Math.Round(100 * Math.Exp(-3.0 / 1 / 20), 1), health.Score);
+        Assert.Equal(100 * Math.Exp(-3.0 / 1 / 20), health.Score, 6);
     }
 
     [Fact]

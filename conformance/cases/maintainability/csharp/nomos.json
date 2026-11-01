@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "1.0.0",
+  "analyzers": [{ "language": "csharp", "command": ["nomos-csharp"] }],
+  "rules": {
+    "MNT002": { "threshold": { "minIndex": 77 } },
+    "MNT003": { "threshold": { "minTokens": 30 } },
+    "MNT004": { "threshold": { "report": "coverage.info", "minCoverage": 50 } }
+  }
+}

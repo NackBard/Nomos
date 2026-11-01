@@ -32,8 +32,8 @@ function checkMeasured(where: string, properties: any, uri: string, context: Sar
   }
   const module = context.facts.modules.find((x: any) => x.id === properties.module);
   const file = context.facts.files?.find((x: any) => x.path === uri);
-  // Without an entity the measure belongs to the module, or to the file for sizes of a whole file (`lines`).
-  const owner = properties.entity !== undefined ? context.entities.get(properties.entity) : { ...module?.metrics, loc: module?.loc, lines: file?.lines };
+  // Without an entity the measure belongs to the module, or to the file for `lines` and `coverage`.
+  const owner = properties.entity !== undefined ? context.entities.get(properties.entity) : { ...module?.metrics, loc: module?.loc, lines: file?.lines, coverage: file?.coverage };
   const known = owner?.[m.metric];
   if (typeof known === "number" && Math.abs(known - m.value) > 0.001) {
     return [`${where}: measured ${m.metric} is ${m.value}, the facts say ${known}`];

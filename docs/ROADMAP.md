@@ -4,7 +4,7 @@
 
 Общее ограничение всех этапов: платформа даёт статистику. Пороги приёмки и вердикты не вводятся.
 
-Состояние: этапы 1–5 завершены (D-031, D-032, D-034, D-036). Следующий — этап 6.
+Состояние: этапы 1–6 завершены (D-031, D-032, D-034, D-036, D-037). Следующий — этап 7.
 
 Как проверить, что всё на месте: `dotnet test Nomos.slnx` в `analyzers/csharp`; `npm run validate`, `npm test`, `npm run selftest`, `npm run csharp` в `conformance/runner`; `npm test`, `npm run check-boundary`, `npm run e2e` в `extension`. CI (`.github/workflows/ci.yml`) зелёный на `main`, он запускается на Ubuntu и Node 22.18 (D-035), его результат смотрит `gh run list`.
 
@@ -55,8 +55,6 @@
 
 Перенесено с прошлых этапов, вне состава этапа 6, решать отдельно:
 
-- Балл здоровья нормируется на `LinesOfCode` из IR, а spec требует `loc` модуля (D-034); исправление меняет все баллы.
-- OOP006 смотрит только на классы, записи не учитывает (D-034).
 - Панель графа и деревья расширения, включая «Modules by style», глазами не проверены (D-032, D-034).
 - В CI действия `checkout`, `setup-dotnet`, `setup-node` версии 4 предупреждают об устаревшем Node 20; `npm ci` в harness сообщает о двух уязвимостях средней серьёзности (D-035).
 
@@ -66,7 +64,7 @@
 - MNT001–MNT004 (покрытие из Cobertura/LCOV).
 - SEC001–SEC003 как эвристики, с честной пометкой о границах.
 
-Отправная точка (на момент завершения этапа 5): детекторы PAT, MNT и SEC уже есть в `analyzers/csharp` с фикстурами и записью в `spec/rules`. `measured` нет у правил с порогами вне Algorithms и Design (PRN, PAT, MNT002–MNT004 и др.): сначала определение в `spec/metrics.md` и вывод в facts (D-034). Случаев conformance для этих категорий нет; `case.json` с `config` и `expectSarif` по `covers` теперь позволяет их написать (D-036). Покрытие проверялось только на отсутствие входа: запись `missing-input` у MNT004 есть, путь с настоящим отчётом Cobertura/LCOV через conformance не проходил.
+Завершён, D-037: Halstead и MI по spec выведены в facts; покрытие в `files[].coverage` (контракт facts 1.2.0); `measured` у MNT002–MNT004, PAT102, PAT103; случаи `patterns`, `security-heuristics`, `maintainability`, `health`.
 
 ## Этап 7. Второй язык
 

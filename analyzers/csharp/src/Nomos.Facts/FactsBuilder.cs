@@ -10,7 +10,7 @@ namespace Nomos.Facts;
 /// </summary>
 internal sealed class FactsBuilder
 {
-    private const string SchemaVersion = "1.1.0";
+    private const string SchemaVersion = "1.2.0";
 
     private readonly ProjectModel _model;
     private readonly AnalysisResult _result;
@@ -77,7 +77,7 @@ internal sealed class FactsBuilder
         {
             var size = _fileSizes[f.Path];
             var modules = moduleOfFile.GetValueOrDefault(f.Path);
-            return new FactsFile(f.Path, size.Lines, size.Loc, modules is [var only] ? only : null, Parsed: !f.HasSyntaxErrors);
+            return new FactsFile(f.Path, size.Lines, size.Loc, _options.Coverage?.Percent(f.Path), modules is [var only] ? only : null, Parsed: !f.HasSyntaxErrors);
         })];
     }
 
@@ -122,6 +122,8 @@ internal sealed class FactsBuilder
             metrics["wmc"] = TypeMetrics.Wmc(type);
             metrics["atfd"] = TypeMetrics.Atfd(type, _model);
             metrics["tcc"] = Round(TypeMetrics.TccOrNull(type));
+            metrics["settableProperties"] = TypeMetrics.SettableProperties(type);
+            metrics["forwardingMethods"] = TypeMetrics.ForwardingMethods(type);
         }
         return new FactsType(type.Id, type.Name, type.ModuleName, KindName(type.Kind), type.IsAbstract, Place(type.Location), metrics);
     }
@@ -148,6 +150,8 @@ internal sealed class FactsBuilder
                 ["lambdaNesting"] = CallableMetrics.LambdaNesting(callable),
                 ["typeTests"] = CallableMetrics.TestedTypes(callable).Count,
             };
+            metrics["halsteadVolume"] = Round(CallableMetrics.HalsteadVolume(callable, _model));
+            metrics["maintainabilityIndex"] = Round(CallableMetrics.MaintainabilityIndex(callable, _model));
             AddEstimates(metrics, callable, estimates);
             AddMemberUse(metrics, callable, owner);
             if (owner is not null) metrics["blastRadius"] = graphs.BlastRadii[owner.Id];

@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "1.2.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "csharp" },
+  "files": [ { "path": "Store.cs", "lines": 28, "loc": 23 } ],
+  "modules": [
+    { "id": "Sec.Code", "name": "Sec.Code", "files": ["Store.cs"], "loc": 23, "metrics": {}, "paradigmEvidence": [] }
+  ],
+  "types": [
+    { "id": "Sec.Code.Store", "name": "Store", "module": "Sec.Code", "kind": "class", "isAbstract": false, "location": { "file": "Store.cs", "startLine": 3 }, "metrics": { "lines": 26, "memberCount": 7, "methodCount": 4 } }
+  ],
+  "functions": [
+    { "id": "Sec.Code.Store.Query", "name": "Query", "module": "Sec.Code", "type": "Sec.Code.Store", "kind": "method", "visibility": "public", "location": { "file": "Store.cs", "startLine": 9 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 1, "lines": 4 } },
+    { "id": "Sec.Code.Store.Fixed", "name": "Fixed", "module": "Sec.Code", "type": "Sec.Code.Store", "kind": "method", "visibility": "public", "location": { "file": "Store.cs", "startLine": 14 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 0, "lines": 4 } },
+    { "id": "Sec.Code.Store.Interpolated", "name": "Interpolated", "module": "Sec.Code", "type": "Sec.Code.Store", "kind": "method", "visibility": "public", "location": { "file": "Store.cs", "startLine": 19 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 1, "lines": 4 } },
+    { "id": "Sec.Code.Store.Danger", "name": "Danger", "module": "Sec.Code", "type": "Sec.Code.Store", "kind": "method", "visibility": "public", "location": { "file": "Store.cs", "startLine": 24 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 0, "lines": 4 } }
+  ],
+  "dependencies": [],
+  "cycles": [],
+  "skippedRules": [],
+  "diagnostics": []
+}

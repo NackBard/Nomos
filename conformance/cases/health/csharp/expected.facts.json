@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "1.2.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "csharp" },
+  "files": [
+    { "path": "Store.cs", "lines": 401, "loc": 300 },
+    { "path": "Tiny.cs", "lines": 6, "loc": 5 }
+  ],
+  "modules": [
+    { "id": "Health.Big", "name": "Health.Big", "files": ["Store.cs"], "loc": 300, "metrics": {}, "paradigmEvidence": [], "health": { "score": 90.5, "categories": [], "explanation": ["100 * exp(-0.6 / 0.3 / 20)"] } },
+    { "id": "Health.Tiny", "name": "Health.Tiny", "files": ["Tiny.cs"], "loc": 5, "metrics": {}, "paradigmEvidence": [], "health": { "score": 100, "categories": [], "explanation": ["no findings in the only weighted category"] } }
+  ],
+  "types": [
+    { "id": "Health.Big.Store", "name": "Store", "module": "Health.Big", "kind": "class", "isAbstract": false, "location": { "file": "Store.cs", "startLine": 3 }, "metrics": { "lines": 399, "memberCount": 285, "methodCount": 1 } },
+    { "id": "Health.Tiny.Box", "name": "Box", "module": "Health.Tiny", "kind": "class", "isAbstract": false, "location": { "file": "Tiny.cs", "startLine": 3 }, "metrics": { "lines": 4, "memberCount": 1 } }
+  ],
+  "functions": [
+    { "id": "Health.Big.Store.Pairs", "name": "Pairs", "module": "Health.Big", "type": "Health.Big.Store", "kind": "method", "visibility": "public", "location": { "file": "Store.cs", "startLine": 389 }, "metrics": { "cyclomatic": 3, "maxNesting": 2, "parameterCount": 2, "lines": 12 } }
+  ],
+  "dependencies": [],
+  "cycles": [],
+  "health": { "score": 90.6, "categories": [], "explanation": ["(90.48 * 300 + 100 * 5) / 305"] },
+  "skippedRules": [],
+  "diagnostics": []
+}

@@ -119,7 +119,7 @@ public sealed class AnalysisEngine(ComponentCatalog catalog)
 
         var scorer = new HealthScorer(config.Scoring);
         var categories = ran.Values.Select(d => d.Category).Distinct().ToList();
-        var moduleHealth = scorer.ScoreModules(modules.OrderBy(m => m.Name, StringComparer.Ordinal).Select(m => (m.Name, m.LinesOfCode)), kept, categories);
+        var moduleHealth = scorer.ScoreModules(modules.OrderBy(m => m.Name, StringComparer.Ordinal).Select(m => (m.Name, SizeMetrics.Loc(m, model))), kept, categories);
 
         return new AnalysisResult
         {

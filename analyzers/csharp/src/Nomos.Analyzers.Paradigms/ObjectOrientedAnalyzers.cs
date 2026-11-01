@@ -109,7 +109,7 @@ public sealed class RefusedBequestAnalyzer : AnalyzerBase
     /// <inheritdoc />
     public override void Analyze(AnalysisContext context)
     {
-        foreach (var type in context.Types.Where(t => t.Kind == TypeKind.Class))
+        foreach (var type in context.Types.Where(t => t.Kind is TypeKind.Class or TypeKind.Record))
         {
             if (context.Model.FindType(type.BaseType?.Id) is not { } baseType) continue;
             var offered = baseType.Callables.Count(c => c.Visibility >= Visibility.Protected && c.Kind == CallableKind.Method) + baseType.Fields.Count(f => f.Visibility >= Visibility.Protected);

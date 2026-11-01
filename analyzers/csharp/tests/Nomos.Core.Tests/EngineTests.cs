@@ -175,6 +175,25 @@ public class EngineTests
     }
 
     [Fact]
+    public void CoverageReport_ReadsCobertura_AndDoesNotConfuseSimilarPaths()
+    {
+        var path = Path.Combine(Path.GetTempPath(), $"nomos-{Guid.NewGuid():N}.xml");
+        File.WriteAllText(path, """<coverage><packages><package><classes><class filename="src/a.cs"><lines><line number="1" hits="2"/><line number="2" hits="0"/></lines></class></classes></package></packages></coverage>""");
+        try
+        {
+            var report = Nomos.Abstractions.Ir.CoverageReport.Load(path);
+            Assert.Equal(50, report.Percent("a.cs"));
+            Assert.Equal(50, report.Percent("src/a.cs"));
+            Assert.Null(report.Percent("c/a.cs"));
+            Assert.Null(report.Percent("b.cs"));
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
+    [Fact]
     public void Finding_RequiresAnExplanation()
     {
         var context = new AnalysisContext(new EveryTypeAnalyzer().Descriptor, new ProjectModel("p", [], []), [], "toy", new HashSet<string>(),

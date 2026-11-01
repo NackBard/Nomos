@@ -1,14 +1,14 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:nomos:contracts:1.1.0:facts",
+  "$id": "urn:nomos:contracts:1.2.0:facts",
   "title": "Analysis facts",
-  "description": "Output of `<analyzer> analyze`. Contract version 1.1.0. Facts are measurements and observations; they carry no verdicts. Findings are reported separately as SARIF (see contracts/sarif-profile.md). Changing this file requires a schemaVersion bump and a record in docs/DECISIONS.md.",
-  "x-contractVersion": "1.1.0",
+  "description": "Output of `<analyzer> analyze`. Contract version 1.2.0. Facts are measurements and observations; they carry no verdicts. Findings are reported separately as SARIF (see contracts/sarif-profile.md). Changing this file requires a schemaVersion bump and a record in docs/DECISIONS.md.",
+  "x-contractVersion": "1.2.0",
   "type": "object",
   "required": ["schemaVersion", "analyzer", "files", "modules", "types", "functions", "dependencies", "skippedRules", "diagnostics"],
   "additionalProperties": false,
   "properties": {
-    "schemaVersion": { "enum": ["1.0.0", "1.1.0"], "description": "Minor versions only add optional fields, so documents of 1.0.0 stay valid." },
+    "schemaVersion": { "enum": ["1.0.0", "1.1.0", "1.2.0"], "description": "Minor versions only add optional fields, so documents of older minor versions stay valid." },
     "analyzer": {
       "type": "object",
       "required": ["name", "version", "language"],
@@ -30,6 +30,7 @@
           "path": { "$ref": "#/$defs/path" },
           "lines": { "type": "integer", "minimum": 0, "description": "Physical lines." },
           "loc": { "type": "integer", "minimum": 0, "description": "Source lines: not blank and not comment-only (spec/metrics.md)." },
+          "coverage": { "type": "number", "minimum": 0, "maximum": 100, "description": "Since 1.2.0. Percentage of covered lines from the coverage report (spec/metrics.md). Absent without a report or when the report does not mention the file." },
           "module": { "type": "string", "description": "Id of the module this file belongs to, when the file belongs to exactly one." },
           "parsed": { "type": "boolean", "default": true, "description": "False when the file could not be analyzed; see diagnostics." }
         }

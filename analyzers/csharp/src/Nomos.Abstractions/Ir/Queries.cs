@@ -88,6 +88,7 @@ public static class SizeMetrics
 /// <summary>Measures of a single callable by spec/metrics.md, shared by facts and analyzers.</summary>
 public static class CallableMetrics
 {
+    private static readonly HashSet<string> Separators = ["(", ")", "{", "}", "[", "]", ";", ","];
     private static readonly HashSet<string> GrowingCalls = ["Add", "AddRange", "Push", "Enqueue", "Insert", "Append"];
 
     /// <summary>Gets the order of a callable: 1 for plain data, plus the deepest nesting of function types in its signature.</summary>
@@ -130,6 +131,28 @@ public static class CallableMetrics
     /// <param name="callable">The callable.</param>
     public static int AllocationDepth(Callable callable) =>
         callable.Body.WithLoopDepth().Where(n => Allocates(n.Node)).Select(n => n.LoopDepth).DefaultIfEmpty(0).Max();
+
+    /// <summary>Gets the Halstead volume of a callable; <c>null</c> when it is zero (spec/metrics.md).</summary>
+    /// <param name="callable">The callable.</param>
+    /// <param name="model">The project model.</param>
+    public static double? HalsteadVolume(Callable callable, ProjectModel model)
+    {
+        var location = callable.Location;
+        var tokens = model.FindFile(location.FilePath)?.Tokens
+            .Where(t => t.Line >= location.StartLine && t.Line <= location.EndLine && !(t.Kind == SourceTokenKind.Symbol && Separators.Contains(t.Text))).ToList() ?? [];
+        var distinct = tokens.Select(t => t.Text).Distinct(StringComparer.Ordinal).Count();
+        return distinct < 2 ? null : tokens.Count * Math.Log2(distinct);
+    }
+
+    /// <summary>Gets the maintainability index of a callable; <c>null</c> when its volume or its size is undefined (spec/metrics.md).</summary>
+    /// <param name="callable">The callable.</param>
+    /// <param name="model">The project model.</param>
+    public static double? MaintainabilityIndex(Callable callable, ProjectModel model)
+    {
+        var lines = callable.Location.LineSpan;
+        if (HalsteadVolume(callable, model) is not { } volume || lines == 0) return null;
+        return Math.Max(0, (171 - 5.2 * Math.Log(volume) - 0.23 * ControlFlow.CyclomaticComplexity(callable) - 16.2 * Math.Log(lines)) * 100 / 171);
+    }
 
     private static int FunctionDepth(TypeRef? type) => type switch
     {
@@ -287,6 +310,29 @@ public static class TypeMetrics
         var candidates = ForeignData(callable, model).Where(p => model.FindType(p.Key)?.Kind is not (TypeKind.Record or TypeKind.Struct));
         return candidates.OrderByDescending(p => p.Value.Count).ThenBy(p => p.Key, StringComparer.Ordinal).Select(p => ((string, IReadOnlySet<string>)?)(p.Key, p.Value)).FirstOrDefault();
     }
+
+    /// <summary>Gets the properties of a type with a public setter.</summary>
+    /// <param name="type">The type.</param>
+    public static int SettableProperties(TypeDecl type) => type.Properties.Count(p => p.SetterVisibility == Visibility.Public);
+
+    /// <summary>Gets the member a method only forwards to; <c>null</c> when the method does anything else.</summary>
+    /// <param name="callable">The method.</param>
+    public static string? ForwardTarget(Callable callable)
+    {
+        var call = callable.Body?.Statements switch
+        {
+            [ReturnStatement { Value: InvocationExpression c }] => c,
+            [ExpressionStatement { Expression: InvocationExpression c }] => c,
+            _ => null,
+        };
+        return (call?.Receiver as NameExpression)?.Symbol is { Kind: SymbolKind.Field or SymbolKind.Property } symbol ? symbol.Name : null;
+    }
+
+    /// <summary>Gets the public methods of a type that are single calls to one member, for the most used member.</summary>
+    /// <param name="type">The type.</param>
+    public static int ForwardingMethods(TypeDecl type) =>
+        type.Callables.Where(c => c is { Kind: CallableKind.Method, Visibility: Visibility.Public }).Select(ForwardTarget).OfType<string>()
+            .GroupBy(t => t, StringComparer.Ordinal).Select(g => g.Count()).DefaultIfEmpty(0).Max();
 
     /// <summary>Gets whether foreignMembers and ownMembers are defined for a callable: an instance method with a body.</summary>
     /// <param name="callable">The callable.</param>

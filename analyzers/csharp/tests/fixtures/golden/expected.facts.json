@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "1.1.0",
+  "schemaVersion": "1.2.0",
   "analyzer": {
     "name": "nomos-csharp",
     "version": "0.1.0",
@@ -390,10 +390,12 @@
         "blastRadius": 1,
         "cbo": 2,
         "dit": 0,
+        "forwardingMethods": 0,
         "lcom4": null,
         "lines": 7,
         "memberCount": 4,
         "methodCount": 0,
+        "settableProperties": 3,
         "tcc": null,
         "wmc": 0
       }
@@ -436,10 +438,12 @@
         "blastRadius": 0,
         "cbo": 0,
         "dit": 0,
+        "forwardingMethods": 0,
         "lcom4": 1,
         "lines": 4,
         "memberCount": 1,
         "methodCount": 1,
+        "settableProperties": 0,
         "tcc": null,
         "wmc": 1
       }
@@ -482,10 +486,12 @@
         "blastRadius": 2,
         "cbo": 1,
         "dit": 0,
+        "forwardingMethods": 0,
         "lcom4": 1,
         "lines": 4,
         "memberCount": 1,
         "methodCount": 1,
+        "settableProperties": 0,
         "tcc": null,
         "wmc": 1
       }
@@ -508,10 +514,12 @@
         "blastRadius": 0,
         "cbo": 3,
         "dit": 0,
+        "forwardingMethods": 0,
         "lcom4": 4,
         "lines": 40,
         "memberCount": 5,
         "methodCount": 4,
+        "settableProperties": 0,
         "tcc": 0,
         "wmc": 10
       }
@@ -537,9 +545,11 @@
         "blastRadius": 0,
         "cyclomatic": 1,
         "foreignMembers": 0,
+        "halsteadVolume": 93.4047,
         "hofOrder": 1,
         "lambdaNesting": 0,
         "lines": 1,
+        "maintainabilityIndex": 86.069,
         "maxNesting": 0,
         "ownMembers": 0,
         "parameterCount": 6,
@@ -569,9 +579,11 @@
         "blastRadius": 3,
         "cyclomatic": 1,
         "foreignMembers": null,
+        "halsteadVolume": 19.6515,
         "hofOrder": 1,
         "lambdaNesting": 0,
         "lines": 1,
+        "maintainabilityIndex": 90.8091,
         "maxNesting": 0,
         "ownMembers": null,
         "parameterCount": 1,
@@ -601,9 +613,11 @@
         "blastRadius": 2,
         "cyclomatic": 1,
         "foreignMembers": 0,
+        "halsteadVolume": 31.6993,
         "hofOrder": 1,
         "lambdaNesting": 0,
         "lines": 1,
+        "maintainabilityIndex": 89.3551,
         "maxNesting": 0,
         "ownMembers": 0,
         "parameterCount": 1,
@@ -633,9 +647,11 @@
         "blastRadius": 0,
         "cyclomatic": 3,
         "foreignMembers": 1,
+        "halsteadVolume": 112.588,
         "hofOrder": 1,
         "lambdaNesting": 0,
         "lines": 9,
+        "maintainabilityIndex": 64.4161,
         "maxNesting": 1,
         "ownMembers": 0,
         "parameterCount": 1,
@@ -665,9 +681,11 @@
         "blastRadius": 0,
         "cyclomatic": 3,
         "foreignMembers": 1,
+        "halsteadVolume": 147.1612,
         "hofOrder": 1,
         "lambdaNesting": 0,
         "lines": 9,
+        "maintainabilityIndex": 63.6018,
         "maxNesting": 2,
         "ownMembers": 0,
         "parameterCount": 2,
@@ -697,9 +715,11 @@
         "blastRadius": 0,
         "cyclomatic": 3,
         "foreignMembers": 0,
+        "halsteadVolume": 122.6239,
         "hofOrder": 1,
         "lambdaNesting": 0,
         "lines": 8,
+        "maintainabilityIndex": 65.2723,
         "maxNesting": 2,
         "ownMembers": 0,
         "parameterCount": 2,
@@ -729,9 +749,11 @@
         "blastRadius": 0,
         "cyclomatic": 1,
         "foreignMembers": 1,
+        "halsteadVolume": 68.5324,
         "hofOrder": 1,
         "lambdaNesting": 0,
         "lines": 5,
+        "maintainabilityIndex": 71.7632,
         "maxNesting": 0,
         "ownMembers": 0,
         "parameterCount": 1,
@@ -931,25 +953,25 @@
     }
   ],
   "health": {
-    "score": 85.3,
+    "score": 85.5,
     "categories": [
       {
         "category": "Algorithms",
-        "score": 79.9,
+        "score": 80.9,
         "weight": 0.121,
         "penalty": 1.2,
         "findingCount": 2
       },
       {
         "category": "CleanCode",
-        "score": 80.2,
+        "score": 80.4,
         "weight": 0.121,
         "penalty": 2.5,
         "findingCount": 7
       },
       {
         "category": "Design",
-        "score": 89.3,
+        "score": 87.7,
         "weight": 0.152,
         "penalty": 6,
         "findingCount": 2
@@ -963,38 +985,38 @@
       },
       {
         "category": "Paradigm",
-        "score": 81.9,
+        "score": 81.4,
         "weight": 0.091,
         "penalty": 3.6,
         "findingCount": 2
       },
       {
         "category": "Patterns",
-        "score": 98.1,
+        "score": 97.8,
         "weight": 0.061,
         "penalty": 0.6,
         "findingCount": 1
       },
       {
         "category": "Principles",
-        "score": 89.2,
+        "score": 89.8,
         "weight": 0.121,
         "penalty": 0.6,
         "findingCount": 1
       },
       {
         "category": "Security",
-        "score": 71.9,
+        "score": 73.3,
         "weight": 0.182,
         "penalty": 1.8,
         "findingCount": 1
       }
     ],
     "explanation": [
-      "Mean of 3 module score(s), weighted by lines of code (58 total).",
-      "Lowest: Sample.Domain = 82.6 (8 lines).",
-      "Lowest: Sample.Services = 84.6 (45 lines).",
-      "Lowest: Sample.Legacy = 96.2 (5 lines)."
+      "Mean of 3 module score(s), weighted by lines of code (57 total).",
+      "Lowest: Sample.Domain = 82.6 (9 lines).",
+      "Lowest: Sample.Services = 84.6 (42 lines).",
+      "Lowest: Sample.Legacy = 96.2 (6 lines)."
     ]
   },
   "skippedRules": [

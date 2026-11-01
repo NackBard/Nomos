@@ -18,7 +18,7 @@ internal sealed record FactsDocument(
 
 internal sealed record FactsAnalyzer(string Name, string Version, string Language, bool Semantic);
 
-internal sealed record FactsFile(string Path, int Lines, int Loc, string? Module, bool Parsed = true);
+internal sealed record FactsFile(string Path, int Lines, int Loc, double? Coverage, string? Module, bool Parsed = true);
 
 internal sealed record FactsModule(
     string Id,
