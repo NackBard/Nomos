@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: analyzers/csharp/global.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.18
+      - name: Contracts, spec/rules and cases
+        working-directory: conformance/runner
+        run: |
+          npm ci
+          npm run validate
+          npm test
+          npm run selftest
+          npm run typecheck
+      - name: Analyzer C#
+        working-directory: analyzers/csharp
+        run: |
+          dotnet build Nomos.slnx
+          dotnet test Nomos.slnx --no-build
+      - name: Conformance C#
+        working-directory: conformance/runner
+        run: npm run csharp
+      - name: Extension
+        working-directory: extension
+        run: |
+          npm ci
+          npm test
+          npm run check-boundary

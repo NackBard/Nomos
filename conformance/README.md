@@ -25,7 +25,7 @@ conformance/
 2. `<analyzer> analyze --root cases/<id>/<язык>/src` даёт документ, валидный по `facts.schema.json`.
 3. Фактический facts совпадает с `expected.facts.json`: сущности сопоставляются по `id`, метрики — по допускам `case.json` (`spec/metrics.md`, раздел «Допуски»). Лишние сущности — ошибка, отсутствующие — ошибка. Порядок массивов не сравнивается, но вывод обязан быть детерминированным (два запуска побайтово равны).
 4. Для каждого пункта `parity` значение метрики совпадает у всех перечисленных языков.
-5. SARIF проверяется по профилю (`contracts/sarif-profile.md`) для каждого случая; схема SARIF 2.1.0 пока не проверяется (её копии в репозитории нет). При `expectSarif` множество `(ruleId, файл, startLine)` совпадает с эталоном `expected.sarif.json` вида `{ "results": [{ "ruleId": "CC001", "file": "A.cs", "startLine": 12 }] }`.
+5. SARIF проверяется по профилю (`contracts/sarif-profile.md`) для каждого случая; официальная схема SARIF 2.1.0 проверяется, если скачана командой `npm run fetch-sarif-schema` (копии в репозитории нет, D-029). При `expectSarif` множество `(ruleId, файл, startLine)` совпадает с эталоном `expected.sarif.json` вида `{ "results": [{ "ruleId": "CC001", "file": "A.cs", "startLine": 12 }] }`.
    Манифест сверяется со spec: парадигмы и категория каждого общего правила равны записи в `spec/rules`.
 6. `skippedRules`: для каждого правила ООП на модуле без классов есть запись `paradigm-not-detected`.
 
@@ -37,6 +37,7 @@ npm install
 npm run validate     # контракты, spec/rules, случаи и их эталоны
 npm test             # самопроверка сравнения
 npm run selftest     # эхо-анализатор: путь успеха harness
+npm run rules-doc    # пересобрать docs/ANALYZERS.md из spec/rules
 npm run csharp       # собранный анализатор C#: dotnet build analyzers/csharp/Nomos.slnx, затем harness на всех случаях
 node src/cli.ts run --analyzer "csharp=<команда>" [--case cycles]
 ```

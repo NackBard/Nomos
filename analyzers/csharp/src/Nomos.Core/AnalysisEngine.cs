@@ -34,7 +34,7 @@ public sealed class AnalysisEngine(ComponentCatalog catalog)
     public async Task<AnalysisResult> RunAsync(AnalysisRequest request, CancellationToken cancellationToken = default)
     {
         var config = request.Config;
-        var diagnostics = new ConcurrentBag<ToolDiagnostic>(catalog.Diagnostics);
+        var diagnostics = new ConcurrentBag<ToolDiagnostic>();
         var root = request.Path is null ? null : ResolveRoot(request.Path);
 
         request.Progress?.Report("Collecting sources");

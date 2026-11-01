@@ -9,8 +9,7 @@ namespace Nomos.Facts;
 /// <param name="AnalyzerName">Analyzer name for <c>analyzer.name</c>.</param>
 /// <param name="AnalyzerVersion">Analyzer build version.</param>
 /// <param name="SupportedRules">Descriptors of every implemented rule, used to record skipped rules.</param>
-/// <param name="RuleId">Maps an implementation id to the id in <c>spec/rules</c>.</param>
-public sealed record FactsOptions(string AnalyzerName, string AnalyzerVersion, IReadOnlyList<AnalyzerDescriptor> SupportedRules, Func<string, string> RuleId)
+public sealed record FactsOptions(string AnalyzerName, string AnalyzerVersion, IReadOnlyList<AnalyzerDescriptor> SupportedRules)
 {
     /// <summary>Gets the SARIF file written for this run, as passed on the command line; <c>null</c> when none was requested.</summary>
     public string? SarifFile { get; init; }

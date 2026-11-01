@@ -8,11 +8,13 @@ const [command, ...args] = process.argv.slice(2);
 if (command === "manifest") {
   console.log(JSON.stringify({
     name: "nomos-echo", language: "csharp", version: "0.0.0", schemaVersion: "1.0.0", paradigms: [],
-    capabilities: { semantic: false, supportedRules: [] }, rules: [],
+    capabilities: { semantic: false, supportedRules: [], sarif: false }, rules: [],
   }));
 } else if (command === "analyze") {
   const root = args[args.indexOf("--root") + 1];
-  process.stdout.write(fs.readFileSync(path.join(root, "..", "expected.facts.json"), "utf8"));
+  const expected = fs.readFileSync(path.join(root, "..", "expected.facts.json"), "utf8");
+  process.stdout.write(expected);
+  if (JSON.parse(expected).files.some((f: { parsed?: boolean }) => f.parsed === false)) process.exitCode = 4;
 } else {
   console.error(`unknown command: ${command}`);
   process.exit(2);

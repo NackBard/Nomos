@@ -1,12 +1,12 @@
 # Nomos
 
-> Прежнее название — DeepCode.Analizer (D-024). Проекты и пространства имён уже переименованы в `Nomos.*`; перенос папок в `analyzers/csharp` — этап 2.
+> Прежнее название — DeepCode.Analizer (D-024).
 
-Расширяемая платформа статического осмотра исходного кода: принципы проектирования, парадигмы, сложность алгоритмов, архитектура, паттерны, чистота кода, базовая безопасность. Первый поддерживаемый язык — C#.
+Платформа статического осмотра исходного кода: принципы проектирования, парадигмы, сложность алгоритмов, архитектура, паттерны, чистота кода, базовая безопасность. Первый поддерживаемый язык — C#.
 
 Все выводы — эвристики: у каждой находки есть уровень уверенности и объяснение. Платформа даёт статистику для анализа разработчиком, порогов приёмки нет.
 
-> Архитектура меняется (D-020): отдельные анализаторы по языкам, контракты в `contracts/`, расширение VS Code в `extension/`. См. [ARCHITECTURE](docs/ARCHITECTURE.md) и [ROADMAP](docs/ROADMAP.md). Описанный ниже .NET-CLI — текущая реализация, она переедет в `analyzers/csharp`.
+Устройство (D-020): отдельные анализаторы по языкам, контракты в `contracts/`, расширение VS Code в `extension/`. См. [ARCHITECTURE](docs/ARCHITECTURE.md) и [ROADMAP](docs/ROADMAP.md).
 
 ## Быстрый старт
 
@@ -17,25 +17,24 @@ cd analyzers/csharp
 dotnet build Nomos.slnx
 dotnet test Nomos.slnx
 
-dotnet run --project src/Nomos.Cli -- analyze tests/fixtures/golden/sample-project --format md,html,json,sarif
+dotnet run --project src/Nomos.Analyzer.CSharp -- manifest
+dotnet run --project src/Nomos.Analyzer.CSharp -- analyze --root tests/fixtures/golden/sample-project --sarif nomos.sarif > facts.json
 ```
 
-Отчёты появятся в `nomos-report/`. Анализировать можно папку, `.sln`, `.slnx` или `.csproj`.
+Facts печатаются в stdout, находки пишутся в файл SARIF.
 
-## CLI
+## Протокол
 
 ```
-nomos analyze <path> [--config f] [--format md,html,json,sarif] [--output dir]
-                         [--plugins dir] [--quiet]
-nomos list-analyzers
-nomos init [folder]
+nomos-csharp manifest
+nomos-csharp analyze --root <путь> [--sarif <файл>] [--config <nomos.json>] [--rules <id,id>]
 ```
 
-Коды выхода: 0 — успех, 1 — не пройден порог качества, 2 — ошибка запуска или конфигурации.
+Коды выхода: 0 — успех, 1 — непредвиденная ошибка, 2 — ошибка использования, 3 — входные данные не годятся, 4 — частичный результат. Число находок и балл на код не влияют.
 
 ## Документация
 
 - [Архитектура и конфигурация](docs/ARCHITECTURE.md)
-- [Каталог анализаторов](docs/ANALYZERS.md)
+- [Каталог правил](docs/ANALYZERS.md)
 - [Как добавить анализатор, язык, парадигму](docs/EXTENDING.md)
 - [Журнал решений и отложенные задачи](docs/DECISIONS.md)

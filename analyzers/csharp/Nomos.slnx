@@ -10,17 +10,15 @@
     <Project Path="src/Nomos.Analyzers.Patterns/Nomos.Analyzers.Patterns.csproj" />
     <Project Path="src/Nomos.Analyzers.Principles/Nomos.Analyzers.Principles.csproj" />
     <Project Path="src/Nomos.Analyzers.Security/Nomos.Analyzers.Security.csproj" />
-    <Project Path="src/Nomos.Cli/Nomos.Cli.csproj" />
     <Project Path="src/Nomos.Core/Nomos.Core.csproj" />
     <Project Path="src/Nomos.Facts/Nomos.Facts.csproj" />
     <Project Path="src/Nomos.Graph/Nomos.Graph.csproj" />
     <Project Path="src/Nomos.Languages.CSharp/Nomos.Languages.CSharp.csproj" />
-    <Project Path="src/Nomos.Languages.TreeSitter/Nomos.Languages.TreeSitter.csproj" />
     <Project Path="src/Nomos.Reporting/Nomos.Reporting.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Nomos.Analyzers.Tests/Nomos.Analyzers.Tests.csproj" />
-    <Project Path="tests/Nomos.Cli.Tests/Nomos.Cli.Tests.csproj" />
+    <Project Path="tests/Nomos.Analyzer.Tests/Nomos.Analyzer.Tests.csproj" />
     <Project Path="tests/Nomos.Core.Tests/Nomos.Core.Tests.csproj" />
     <Project Path="tests/Nomos.Facts.Tests/Nomos.Facts.Tests.csproj" />
     <Project Path="tests/Nomos.Graph.Tests/Nomos.Graph.Tests.csproj" />

@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 namespace Nomos.Analyzers.CleanCode;
 
 /// <summary>Checks C# naming conventions.</summary>
-[Analyzer("CC005", Categories.CleanCode, Title = "Naming conventions", Severity = Severity.Info, Languages = [Languages.CSharp], Paradigms = [Paradigms.ObjectOriented, Paradigms.Structural, Paradigms.Functional],
+[Analyzer("CS.NAM001", Categories.CleanCode, Title = "Naming conventions", Severity = Severity.Info, Languages = [Languages.CSharp], Paradigms = [Paradigms.ObjectOriented, Paradigms.Structural, Paradigms.Functional],
     Description = "Types, methods and properties use PascalCase, interfaces start with I, parameters use camelCase; also flags one-letter parameters of public methods.")]
 public sealed partial class NamingAnalyzer : AnalyzerBase
 {

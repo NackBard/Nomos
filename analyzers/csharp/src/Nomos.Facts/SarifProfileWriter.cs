@@ -16,17 +16,16 @@ public static class SarifProfileWriter
     };
 
     /// <summary>Writes the SARIF log with LF line endings.</summary>
-    /// <param name="result">Result of an analysis run; findings carry implementation rule ids.</param>
-    /// <param name="options">Analyzer identity and rule descriptors; <see cref="FactsOptions.RuleId"/> maps ids to spec ids.</param>
+    /// <param name="result">Result of an analysis run.</param>
+    /// <param name="options">Analyzer identity and rule descriptors.</param>
     /// <param name="output">Destination.</param>
     public static void Write(AnalysisResult result, FactsOptions options, TextWriter output)
     {
         var entities = result.Model is null ? null : new EntityIndex(result.Model);
-        var rules = options.SupportedRules.Select(d => (Descriptor: d, Id: options.RuleId(d.Id))).OrderBy(r => r.Id, StringComparer.Ordinal).ToList();
+        var rules = options.SupportedRules.Select(d => (Descriptor: d, d.Id)).OrderBy(r => r.Id, StringComparer.Ordinal).ToList();
         var ruleIndex = rules.Select((r, i) => (r.Id, i)).ToDictionary(p => p.Id, p => p.i, StringComparer.Ordinal);
 
         var findings = result.Findings
-            .Select(f => f with { AnalyzerId = options.RuleId(f.AnalyzerId) })
             .OrderBy(f => f.Evidence.Location.FilePath, StringComparer.Ordinal)
             .ThenBy(f => f.Evidence.Location.StartLine)
             .ThenBy(f => f.Evidence.Location.StartColumn)

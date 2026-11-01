@@ -5,89 +5,86 @@
     {
       "tool": {
         "driver": {
-          "name": "Nomos",
+          "name": "nomos-csharp",
+          "version": "0.1.0",
           "semanticVersion": "0.1.0",
           "rules": [
             {
               "id": "ALG001",
               "name": "Time complexity estimate",
               "shortDescription": {
-                "text": "Time complexity estimate"
+                "text": "Estimates growth from loop nesting, known linear calls, recursion shape and project callees."
               },
               "fullDescription": {
-                "text": "Estimates growth from loop nesting, known linear calls, recursion shape and project callees. Always an estimate: input sizes are unknown."
+                "text": "Always an estimate; input sizes are unknown."
               },
               "defaultConfiguration": {
                 "level": "warning"
               },
               "properties": {
                 "category": "Algorithms",
-                "paradigms": [],
-                "languages": []
+                "paradigms": []
               }
             },
             {
               "id": "ALG002",
               "name": "Quadratic pattern",
               "shortDescription": {
-                "text": "Quadratic pattern"
+                "text": "List searches, front insertions and string concatenation inside loops."
               },
               "fullDescription": {
-                "text": "Finds list searches, front insertions and string concatenation inside loops."
+                "text": "Typical sources of accidental quadratic time."
               },
               "defaultConfiguration": {
                 "level": "warning"
               },
               "properties": {
                 "category": "Algorithms",
-                "paradigms": [],
-                "languages": []
+                "paradigms": []
               }
             },
             {
               "id": "ALG003",
               "name": "Allocation in hot loop",
               "shortDescription": {
-                "text": "Allocation in hot loop"
+                "text": "Materializing calls in loops; object creation or closures in nested loops."
               },
               "fullDescription": {
-                "text": "Finds materializing calls in loops, and object creation or closures in nested loops."
+                "text": "Allocation pressure in frequently executed code."
               },
               "defaultConfiguration": {
                 "level": "warning"
               },
               "properties": {
                 "category": "Algorithms",
-                "paradigms": [],
-                "languages": []
+                "paradigms": []
               }
             },
             {
               "id": "ALG004",
               "name": "Space complexity estimate",
               "shortDescription": {
-                "text": "Space complexity estimate"
+                "text": "Collections growing in loops, arrays of non-constant size, recursion depth."
               },
               "fullDescription": {
-                "text": "Estimates extra memory from collections growing in loops, arrays of non-constant size and recursion depth."
+                "text": "Always an estimate; input sizes are unknown."
               },
               "defaultConfiguration": {
                 "level": "warning"
               },
               "properties": {
                 "category": "Algorithms",
-                "paradigms": [],
-                "languages": []
+                "paradigms": []
               }
             },
             {
               "id": "CC001",
               "name": "Long method",
               "shortDescription": {
-                "text": "Long method"
+                "text": "Source lines of a callable."
               },
               "fullDescription": {
-                "text": "Counts source lines of a callable against maxLines."
+                "text": "Long callables are harder to read and test."
               },
               "defaultConfiguration": {
                 "level": "warning"
@@ -95,21 +92,20 @@
               "properties": {
                 "category": "CleanCode",
                 "paradigms": [
+                  "functional",
                   "oop",
-                  "structural",
-                  "functional"
-                ],
-                "languages": []
+                  "structural"
+                ]
               }
             },
             {
               "id": "CC002",
               "name": "Large class",
               "shortDescription": {
-                "text": "Large class"
+                "text": "Lines and members of a type, over all of its parts."
               },
               "fullDescription": {
-                "text": "Counts lines and members of a type, over all partial parts."
+                "text": "A large type tends to collect several responsibilities."
               },
               "defaultConfiguration": {
                 "level": "warning"
@@ -118,18 +114,17 @@
                 "category": "CleanCode",
                 "paradigms": [
                   "oop"
-                ],
-                "languages": []
+                ]
               }
             },
             {
               "id": "CC003",
               "name": "Too many parameters",
               "shortDescription": {
-                "text": "Too many parameters"
+                "text": "Parameter count of a callable; constructors have a separate limit because of dependency injection."
               },
               "fullDescription": {
-                "text": "Counts parameters of a callable; constructors have a separate limit because of dependency injection."
+                "text": "Long parameter lists are hard to call correctly."
               },
               "defaultConfiguration": {
                 "level": "warning"
@@ -137,21 +132,20 @@
               "properties": {
                 "category": "CleanCode",
                 "paradigms": [
+                  "functional",
                   "oop",
-                  "structural",
-                  "functional"
-                ],
-                "languages": []
+                  "structural"
+                ]
               }
             },
             {
               "id": "CC004",
               "name": "Deep nesting",
               "shortDescription": {
-                "text": "Deep nesting"
+                "text": "Nesting depth of branches, loops and guarded blocks; else-if chains stay flat."
               },
               "fullDescription": {
-                "text": "Measures nesting of branches, loops and guarded blocks; 'else if' chains stay flat."
+                "text": "Each level adds a condition the reader must hold in mind."
               },
               "defaultConfiguration": {
                 "level": "warning"
@@ -159,34 +153,9 @@
               "properties": {
                 "category": "CleanCode",
                 "paradigms": [
+                  "functional",
                   "oop",
-                  "structural",
-                  "functional"
-                ],
-                "languages": []
-              }
-            },
-            {
-              "id": "CC005",
-              "name": "Naming conventions",
-              "shortDescription": {
-                "text": "Naming conventions"
-              },
-              "fullDescription": {
-                "text": "Types, methods and properties use PascalCase, interfaces start with I, parameters use camelCase; also flags one-letter parameters of public methods."
-              },
-              "defaultConfiguration": {
-                "level": "note"
-              },
-              "properties": {
-                "category": "CleanCode",
-                "paradigms": [
-                  "oop",
-                  "structural",
-                  "functional"
-                ],
-                "languages": [
-                  "csharp"
+                  "structural"
                 ]
               }
             },
@@ -194,10 +163,10 @@
               "id": "CC006",
               "name": "Placeholders",
               "shortDescription": {
-                "text": "Placeholders"
+                "text": "TODO, FIXME, HACK and XXX comments, and bodies that only throw not-implemented."
               },
               "fullDescription": {
-                "text": "Finds TODO, FIXME, HACK and XXX comments and bodies that only throw NotImplementedException."
+                "text": "Marks unfinished work."
               },
               "defaultConfiguration": {
                 "level": "warning"
@@ -205,21 +174,20 @@
               "properties": {
                 "category": "CleanCode",
                 "paradigms": [
+                  "functional",
                   "oop",
-                  "structural",
-                  "functional"
-                ],
-                "languages": []
+                  "structural"
+                ]
               }
             },
             {
               "id": "CC007",
               "name": "Dead code",
               "shortDescription": {
-                "text": "Dead code"
+                "text": "Unreachable statements, unused locals, private members nothing refers to."
               },
               "fullDescription": {
-                "text": "Finds unreachable statements, unused locals, and private members nothing in the type refers to."
+                "text": "Code that never runs still has to be read."
               },
               "defaultConfiguration": {
                 "level": "warning"
@@ -227,21 +195,20 @@
               "properties": {
                 "category": "CleanCode",
                 "paradigms": [
+                  "functional",
                   "oop",
-                  "structural",
-                  "functional"
-                ],
-                "languages": []
+                  "structural"
+                ]
               }
             },
             {
               "id": "CC008",
               "name": "Commented-out code",
               "shortDescription": {
-                "text": "Commented-out code"
+                "text": "Line comments that end like statements."
               },
               "fullDescription": {
-                "text": "Line comments that end like statements are probably disabled code; version control keeps the history instead."
+                "text": "Version control keeps history; disabled code is noise."
               },
               "defaultConfiguration": {
                 "level": "warning"
@@ -249,117 +216,132 @@
               "properties": {
                 "category": "CleanCode",
                 "paradigms": [
+                  "functional",
                   "oop",
-                  "structural",
-                  "functional"
-                ],
-                "languages": []
+                  "structural"
+                ]
               }
             },
             {
               "id": "CC009",
               "name": "Empty catch",
               "shortDescription": {
-                "text": "Empty catch"
+                "text": "A catch block with no statements and no comment."
               },
               "fullDescription": {
-                "text": "A catch block with no statements and no comment silently discards the failure."
+                "text": "The failure is silently discarded."
               },
               "defaultConfiguration": {
-                "level": "error"
+                "level": "warning"
               },
               "properties": {
                 "category": "CleanCode",
                 "paradigms": [
+                  "functional",
                   "oop",
-                  "structural",
-                  "functional"
-                ],
-                "languages": []
+                  "structural"
+                ]
+              }
+            },
+            {
+              "id": "CS.NAM001",
+              "name": "Naming conventions",
+              "shortDescription": {
+                "text": "Types, methods and properties in PascalCase, interfaces start with I, parameters in camelCase; one-letter parameters of public methods."
+              },
+              "fullDescription": {
+                "text": "Departures from .NET conventions slow reading. Formerly CC005."
+              },
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "properties": {
+                "category": "CleanCode",
+                "paradigms": [
+                  "functional",
+                  "oop",
+                  "structural"
+                ]
               }
             },
             {
               "id": "DSN001",
               "name": "Main sequence distance",
               "shortDescription": {
-                "text": "Main sequence distance"
+                "text": "Per module Ca, Ce, instability I, abstractness A and distance D (spec/metrics.md)."
               },
               "fullDescription": {
-                "text": "Computes Ca, Ce, instability I, abstractness A and distance D = |A + I - 1| per module. D near 1 means rigid or useless."
+                "text": "D near 1 means a module is rigid or useless."
               },
               "defaultConfiguration": {
                 "level": "warning"
               },
               "properties": {
                 "category": "Design",
-                "paradigms": [],
-                "languages": []
+                "paradigms": []
               }
             },
             {
               "id": "DSN002",
               "name": "Dependency cycles",
               "shortDescription": {
-                "text": "Dependency cycles"
+                "text": "Strongly connected components (Tarjan) in the module graph and the type graph."
               },
               "fullDescription": {
-                "text": "Runs Tarjan's algorithm on the module graph and the type graph."
+                "text": "Members of a cycle cannot be understood or changed separately."
               },
               "defaultConfiguration": {
-                "level": "error"
+                "level": "warning"
               },
               "properties": {
                 "category": "Design",
-                "paradigms": [],
-                "languages": []
+                "paradigms": []
               }
             },
             {
               "id": "DSN003",
               "name": "Layer violations",
               "shortDescription": {
-                "text": "Layer violations"
+                "text": "Dependencies on layers that the configuration does not allow."
               },
               "fullDescription": {
-                "text": "Maps modules to the layers from configuration and flags dependencies on layers that are not allowed."
+                "text": "Layering was declared by the team and is being bypassed."
               },
               "defaultConfiguration": {
-                "level": "error"
+                "level": "warning"
               },
               "properties": {
                 "category": "Design",
-                "paradigms": [],
-                "languages": []
+                "paradigms": []
               }
             },
             {
               "id": "DSN004",
               "name": "God class",
               "shortDescription": {
-                "text": "God class"
+                "text": "Lanza and Marinescu detection strategy, high WMC, high ATFD, low TCC."
               },
               "fullDescription": {
-                "text": "Lanza and Marinescu's detection strategy: high WMC, much foreign data used (ATFD), low cohesion (TCC)."
+                "text": "A class that knows and does too much."
               },
               "defaultConfiguration": {
-                "level": "error"
+                "level": "warning"
               },
               "properties": {
                 "category": "Design",
                 "paradigms": [
                   "oop"
-                ],
-                "languages": []
+                ]
               }
             },
             {
               "id": "DSN005",
               "name": "Feature envy",
               "shortDescription": {
-                "text": "Feature envy"
+                "text": "A method using more data of one other type than of its own."
               },
               "fullDescription": {
-                "text": "A method that uses more data of one other type than of its own probably belongs there."
+                "text": "The method probably belongs to the other type."
               },
               "defaultConfiguration": {
                 "level": "warning"
@@ -368,128 +350,216 @@
                 "category": "Design",
                 "paradigms": [
                   "oop"
-                ],
-                "languages": []
+                ]
               }
             },
             {
               "id": "DSN006",
               "name": "Blast radius",
               "shortDescription": {
-                "text": "Blast radius"
+                "text": "Number of types reachable through reversed dependencies (spec/metrics.md)."
               },
               "fullDescription": {
-                "text": "Walks reversed dependencies from each type to count what a change can reach."
+                "text": "Shows how far a change can propagate."
               },
               "defaultConfiguration": {
                 "level": "warning"
               },
               "properties": {
                 "category": "Design",
-                "paradigms": [],
-                "languages": []
+                "paradigms": []
+              }
+            },
+            {
+              "id": "FUN001",
+              "name": "Impure function",
+              "shortDescription": {
+                "text": "A callable that returns a value and also writes state or performs I/O."
+              },
+              "fullDescription": {
+                "text": "Cannot be reasoned about by substitution."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "category": "Paradigm",
+                "paradigms": [
+                  "functional"
+                ]
+              }
+            },
+            {
+              "id": "FUN002",
+              "name": "Side effect in lambda",
+              "shortDescription": {
+                "text": "A lambda passed to a higher-order function that changes outer variables."
+              },
+              "fullDescription": {
+                "text": "The result depends on evaluation order."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "category": "Paradigm",
+                "paradigms": [
+                  "functional"
+                ]
+              }
+            },
+            {
+              "id": "FUN003",
+              "name": "Mutable state",
+              "shortDescription": {
+                "text": "Reassigned locals, mutable instance fields, settable properties."
+              },
+              "fullDescription": {
+                "text": "Mutation makes data flow harder to follow."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "category": "Paradigm",
+                "paradigms": [
+                  "functional"
+                ]
+              }
+            },
+            {
+              "id": "FUN004",
+              "name": "Non-tail recursion",
+              "shortDescription": {
+                "text": "A self-call whose result is used further."
+              },
+              "fullDescription": {
+                "text": "Cannot be turned into a loop by tail-call elimination."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "category": "Paradigm",
+                "paradigms": [
+                  "functional"
+                ]
+              }
+            },
+            {
+              "id": "FUN005",
+              "name": "Higher-order depth",
+              "shortDescription": {
+                "text": "Order of functions (data, functions, functions of functions) and lambda nesting."
+              },
+              "fullDescription": {
+                "text": "High orders and nested lambdas are hard to follow."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "category": "Paradigm",
+                "paradigms": [
+                  "functional"
+                ]
               }
             },
             {
               "id": "MNT001",
               "name": "Cyclomatic complexity",
               "shortDescription": {
-                "text": "Cyclomatic complexity"
+                "text": "Decision points per callable (spec/metrics.md). Every value is a metric in facts; results are emitted above the limit."
               },
               "fullDescription": {
-                "text": "Counts decision points per callable; reports every value as a metric and flags those above the limit."
+                "text": "More paths mean more tests and more room for mistakes."
               },
               "defaultConfiguration": {
                 "level": "warning"
               },
               "properties": {
                 "category": "Maintainability",
-                "paradigms": [],
-                "languages": []
+                "paradigms": []
               }
             },
             {
               "id": "MNT002",
               "name": "Maintainability index",
               "shortDescription": {
-                "text": "Maintainability index"
+                "text": "MI from Halstead volume, cyclomatic complexity and lines (spec/metrics.md)."
               },
               "fullDescription": {
-                "text": "MI = max(0, (171 - 5.2 ln V - 0.23 G - 16.2 ln L) * 100 / 171), from Halstead volume V, cyclomatic complexity G and lines L."
+                "text": "A composite index; a hint, not a measurement of quality."
               },
               "defaultConfiguration": {
                 "level": "warning"
               },
               "properties": {
                 "category": "Maintainability",
-                "paradigms": [],
-                "languages": []
+                "paradigms": []
               }
             },
             {
               "id": "MNT003",
               "name": "Duplication",
               "shortDescription": {
-                "text": "Duplication"
+                "text": "Type-1 and type-2 token clones (rolling hash over normalized tokens)."
               },
               "fullDescription": {
-                "text": "Finds type-2 clones: token sequences equal after normalizing identifiers and literals, with a rolling hash."
+                "text": "A defect fixed in one copy stays in the others."
               },
               "defaultConfiguration": {
                 "level": "warning"
               },
               "properties": {
                 "category": "Maintainability",
-                "paradigms": [],
-                "languages": []
+                "paradigms": []
               }
             },
             {
               "id": "MNT004",
               "name": "Test coverage",
               "shortDescription": {
-                "text": "Test coverage"
+                "text": "Line coverage from a Cobertura or LCOV report, per file."
               },
               "fullDescription": {
-                "text": "When thresholds.report points to a Cobertura XML or LCOV file, reports line coverage and flags files below minCoverage."
+                "text": "Shows which files tests do not reach."
               },
               "defaultConfiguration": {
                 "level": "warning"
               },
               "properties": {
                 "category": "Maintainability",
-                "paradigms": [],
-                "languages": []
+                "paradigms": []
               }
             },
             {
               "id": "OOP001",
               "name": "Encapsulation",
               "shortDescription": {
-                "text": "Encapsulation"
+                "text": "Public mutable fields."
               },
               "fullDescription": {
-                "text": "Public mutable fields hand a type's invariants to every caller."
+                "text": "Hands a type's invariants to every caller."
               },
               "defaultConfiguration": {
-                "level": "error"
+                "level": "warning"
               },
               "properties": {
                 "category": "Paradigm",
                 "paradigms": [
                   "oop"
-                ],
-                "languages": []
+                ]
               }
             },
             {
               "id": "OOP002",
               "name": "Inheritance depth",
               "shortDescription": {
-                "text": "Inheritance depth"
+                "text": "Depth of inheritance tree (DIT)."
               },
               "fullDescription": {
-                "text": "Reports the depth of inheritance tree (DIT) and flags hierarchies deeper than maxDepth."
+                "text": "Deep hierarchies are hard to understand and change."
               },
               "defaultConfiguration": {
                 "level": "warning"
@@ -498,18 +568,17 @@
                 "category": "Paradigm",
                 "paradigms": [
                   "oop"
-                ],
-                "languages": []
+                ]
               }
             },
             {
               "id": "OOP003",
               "name": "Polymorphism",
               "shortDescription": {
-                "text": "Polymorphism"
+                "text": "Several runtime type tests on project types in one callable."
               },
               "fullDescription": {
-                "text": "Several runtime type tests on project types in one callable usually reimplement virtual dispatch."
+                "text": "Usually reimplements virtual dispatch."
               },
               "defaultConfiguration": {
                 "level": "warning"
@@ -518,18 +587,17 @@
                 "category": "Paradigm",
                 "paradigms": [
                   "oop"
-                ],
-                "languages": []
+                ]
               }
             },
             {
               "id": "OOP004",
               "name": "Cohesion",
               "shortDescription": {
-                "text": "Cohesion"
+                "text": "LCOM4, groups of methods that share no state."
               },
               "fullDescription": {
-                "text": "LCOM4 counts groups of methods that share no state; more than one group suggests a class that could be split."
+                "text": "More than one group suggests a class that could be split."
               },
               "defaultConfiguration": {
                 "level": "warning"
@@ -538,18 +606,17 @@
                 "category": "Paradigm",
                 "paradigms": [
                   "oop"
-                ],
-                "languages": []
+                ]
               }
             },
             {
               "id": "OOP005",
               "name": "Coupling",
               "shortDescription": {
-                "text": "Coupling"
+                "text": "Coupling between objects (CBO), excluding the standard library."
               },
               "fullDescription": {
-                "text": "Coupling Between Objects counts distinct types a class depends on, ignoring the System namespace."
+                "text": "Many dependencies mean many reasons to change."
               },
               "defaultConfiguration": {
                 "level": "warning"
@@ -558,18 +625,17 @@
                 "category": "Paradigm",
                 "paradigms": [
                   "oop"
-                ],
-                "languages": []
+                ]
               }
             },
             {
               "id": "OOP006",
               "name": "Refused bequest",
               "shortDescription": {
-                "text": "Refused bequest"
+                "text": "A subclass that overrides nothing and touches no inherited member."
               },
               "fullDescription": {
-                "text": "A subclass that overrides nothing and touches no inherited member gains nothing from its base class."
+                "text": "Gains nothing from its base class."
               },
               "defaultConfiguration": {
                 "level": "warning"
@@ -578,18 +644,17 @@
                 "category": "Paradigm",
                 "paradigms": [
                   "oop"
-                ],
-                "languages": []
+                ]
               }
             },
             {
               "id": "PAT001",
               "name": "Singleton",
               "shortDescription": {
-                "text": "Singleton"
+                "text": "A class with only private constructors that exposes a static instance of itself."
               },
               "fullDescription": {
-                "text": "A class with only private constructors that exposes a static instance of itself."
+                "text": "Informational: recognizes the pattern; hidden global state is a cost."
               },
               "defaultConfiguration": {
                 "level": "note"
@@ -598,18 +663,17 @@
                 "category": "Patterns",
                 "paradigms": [
                   "oop"
-                ],
-                "languages": []
+                ]
               }
             },
             {
               "id": "PAT002",
               "name": "Factory",
               "shortDescription": {
-                "text": "Factory"
+                "text": "A method that returns an abstraction and creates several of its concrete subtypes."
               },
               "fullDescription": {
-                "text": "A method that returns an abstraction and creates several of its concrete subtypes."
+                "text": "Informational: recognizes the pattern."
               },
               "defaultConfiguration": {
                 "level": "note"
@@ -618,18 +682,17 @@
                 "category": "Patterns",
                 "paradigms": [
                   "oop"
-                ],
-                "languages": []
+                ]
               }
             },
             {
               "id": "PAT003",
               "name": "Strategy",
               "shortDescription": {
-                "text": "Strategy"
+                "text": "A context class that receives one of several interchangeable implementations and delegates to it."
               },
               "fullDescription": {
-                "text": "A context class that receives one of several interchangeable implementations and delegates to it."
+                "text": "Informational: recognizes the pattern."
               },
               "defaultConfiguration": {
                 "level": "note"
@@ -638,18 +701,17 @@
                 "category": "Patterns",
                 "paradigms": [
                   "oop"
-                ],
-                "languages": []
+                ]
               }
             },
             {
               "id": "PAT004",
               "name": "Observer",
               "shortDescription": {
-                "text": "Observer"
+                "text": "A type with events it raises, or a list of observers it notifies in a loop, with subscribe methods."
               },
               "fullDescription": {
-                "text": "A type with events it raises, or a list of observers it notifies in a loop, with subscribe methods."
+                "text": "Informational: recognizes the pattern."
               },
               "defaultConfiguration": {
                 "level": "note"
@@ -658,18 +720,17 @@
                 "category": "Patterns",
                 "paradigms": [
                   "oop"
-                ],
-                "languages": []
+                ]
               }
             },
             {
               "id": "PAT005",
               "name": "Decorator",
               "shortDescription": {
-                "text": "Decorator"
+                "text": "A class that implements an abstraction, wraps an instance of the same abstraction and forwards to it."
               },
               "fullDescription": {
-                "text": "A class that implements an abstraction, wraps an instance of the same abstraction and forwards to it."
+                "text": "Informational: recognizes the pattern."
               },
               "defaultConfiguration": {
                 "level": "note"
@@ -678,18 +739,17 @@
                 "category": "Patterns",
                 "paradigms": [
                   "oop"
-                ],
-                "languages": []
+                ]
               }
             },
             {
               "id": "PAT006",
               "name": "Repository",
               "shortDescription": {
-                "text": "Repository"
+                "text": "A type named *Repository, or a collection-like API of get, add and remove over one entity."
               },
               "fullDescription": {
-                "text": "A type named *Repository, or a collection-like API of get, add and remove methods over one entity."
+                "text": "Informational: recognizes the pattern."
               },
               "defaultConfiguration": {
                 "level": "note"
@@ -698,18 +758,17 @@
                 "category": "Patterns",
                 "paradigms": [
                   "oop"
-                ],
-                "languages": []
+                ]
               }
             },
             {
               "id": "PAT007",
               "name": "Builder",
               "shortDescription": {
-                "text": "Builder"
+                "text": "Fluent methods that return the type itself plus a terminal Build-like method."
               },
               "fullDescription": {
-                "text": "Fluent methods that return the type itself, plus a terminal Build-like method."
+                "text": "Informational: recognizes the pattern."
               },
               "defaultConfiguration": {
                 "level": "note"
@@ -718,18 +777,17 @@
                 "category": "Patterns",
                 "paradigms": [
                   "oop"
-                ],
-                "languages": []
+                ]
               }
             },
             {
               "id": "PAT101",
               "name": "Service Locator",
               "shortDescription": {
-                "text": "Service Locator"
+                "text": "Resolving dependencies from a container inside business code."
               },
               "fullDescription": {
-                "text": "Resolving dependencies from a container inside business code hides them from the constructor."
+                "text": "Hides dependencies from the constructor."
               },
               "defaultConfiguration": {
                 "level": "warning"
@@ -738,18 +796,17 @@
                 "category": "Patterns",
                 "paradigms": [
                   "oop"
-                ],
-                "languages": []
+                ]
               }
             },
             {
               "id": "PAT102",
               "name": "Anemic Domain Model",
               "shortDescription": {
-                "text": "Anemic Domain Model"
+                "text": "A domain-named class with settable data and no behavior, while logic lives in services."
               },
               "fullDescription": {
-                "text": "A domain-named class with settable data and no behavior, while logic lives in services."
+                "text": "Behavior is separated from the data it belongs to."
               },
               "defaultConfiguration": {
                 "level": "warning"
@@ -758,18 +815,17 @@
                 "category": "Patterns",
                 "paradigms": [
                   "oop"
-                ],
-                "languages": []
+                ]
               }
             },
             {
               "id": "PAT103",
               "name": "Middle Man",
               "shortDescription": {
-                "text": "Middle Man"
+                "text": "A class that does almost nothing but forward to one collaborator, without a shared abstraction."
               },
               "fullDescription": {
-                "text": "A class that does almost nothing but forward to one collaborator, without implementing a shared abstraction."
+                "text": "An extra hop with no value of its own."
               },
               "defaultConfiguration": {
                 "level": "warning"
@@ -778,38 +834,36 @@
                 "category": "Patterns",
                 "paradigms": [
                   "oop"
-                ],
-                "languages": []
+                ]
               }
             },
             {
               "id": "PRN001",
               "name": "Single Responsibility",
               "shortDescription": {
-                "text": "Single Responsibility"
+                "text": "Counts constructor dependencies of a class and the project modules it reaches into."
               },
               "fullDescription": {
-                "text": "A class that takes many constructor dependencies, or reaches into many project modules, likely has several reasons to change."
+                "text": "A class with many collaborators likely has several reasons to change."
               },
               "defaultConfiguration": {
-                "level": "error"
+                "level": "warning"
               },
               "properties": {
                 "category": "Principles",
                 "paradigms": [
                   "oop"
-                ],
-                "languages": []
+                ]
               }
             },
             {
               "id": "PRN002",
               "name": "Open/Closed",
               "shortDescription": {
-                "text": "Open/Closed"
+                "text": "Finds the same enum or tag switched on in several places."
               },
               "fullDescription": {
-                "text": "The same enum switched on in several places means adding a value requires editing all of them."
+                "text": "Adding a value then means editing every switch."
               },
               "defaultConfiguration": {
                 "level": "warning"
@@ -818,38 +872,36 @@
                 "category": "Principles",
                 "paradigms": [
                   "oop"
-                ],
-                "languages": []
+                ]
               }
             },
             {
               "id": "PRN003",
               "name": "Liskov Substitution",
               "shortDescription": {
-                "text": "Liskov Substitution"
+                "text": "An override or implementation whose body only throws not-supported or not-implemented."
               },
               "fullDescription": {
-                "text": "An override or implementation that only throws NotSupported/NotImplemented cannot stand in for its base type."
+                "text": "Such a member cannot stand in for its base type."
               },
               "defaultConfiguration": {
-                "level": "error"
+                "level": "warning"
               },
               "properties": {
                 "category": "Principles",
                 "paradigms": [
                   "oop"
-                ],
-                "languages": []
+                ]
               }
             },
             {
               "id": "PRN004",
               "name": "Interface Segregation",
               "shortDescription": {
-                "text": "Interface Segregation"
+                "text": "Interfaces with many members, or whose implementers stub some of them."
               },
               "fullDescription": {
-                "text": "Interfaces with many members, or whose implementers stub some of them, force clients to depend on what they do not use."
+                "text": "Clients are forced to depend on members they do not use."
               },
               "defaultConfiguration": {
                 "level": "warning"
@@ -858,18 +910,17 @@
                 "category": "Principles",
                 "paradigms": [
                   "oop"
-                ],
-                "languages": []
+                ]
               }
             },
             {
               "id": "PRN005",
               "name": "Dependency Inversion",
               "shortDescription": {
-                "text": "Dependency Inversion"
+                "text": "Creating a project class that implements a project abstraction, outside composition roots and test classes (a class with test-framework attributes such as Fact, Theory, Test, TestMethod, TestCase)."
               },
               "fullDescription": {
-                "text": "Creating a project class that implements a project abstraction binds the caller to the concrete type."
+                "text": "The caller is bound to the concrete type."
               },
               "defaultConfiguration": {
                 "level": "warning"
@@ -878,72 +929,68 @@
                 "category": "Principles",
                 "paradigms": [
                   "oop"
-                ],
-                "languages": []
+                ]
               }
             },
             {
               "id": "PRN006",
-              "name": "Don't Repeat Yourself",
+              "name": "Do not repeat yourself",
               "shortDescription": {
-                "text": "Don't Repeat Yourself"
+                "text": "Callables whose structure is identical up to local names and literals."
               },
               "fullDescription": {
-                "text": "Callables whose IR is identical up to local names and literals encode one piece of knowledge twice."
+                "text": "One piece of knowledge is encoded twice."
               },
               "defaultConfiguration": {
                 "level": "warning"
               },
               "properties": {
                 "category": "Principles",
-                "paradigms": [],
-                "languages": []
+                "paradigms": []
               }
             },
             {
               "id": "PRN007",
-              "name": "Keep It Simple",
+              "name": "Keep it simple",
               "shortDescription": {
-                "text": "Keep It Simple"
+                "text": "Long boolean conditions and nested ternaries."
               },
               "fullDescription": {
-                "text": "Long boolean conditions and nested ternaries pack too many decisions into one expression."
+                "text": "Too many decisions are packed into one expression."
               },
               "defaultConfiguration": {
                 "level": "warning"
               },
               "properties": {
                 "category": "Principles",
-                "paradigms": [],
-                "languages": []
+                "paradigms": []
               }
             },
             {
               "id": "PRN008",
-              "name": "You Aren't Gonna Need It",
+              "name": "You are not going to need it",
               "shortDescription": {
-                "text": "You Aren't Gonna Need It"
+                "text": "Non-public abstractions with too few implementers, and unused private parameters."
               },
               "fullDescription": {
-                "text": "Non-public abstractions without enough implementers and unused private parameters are generality nobody uses."
+                "text": "Generality that nothing uses."
               },
               "defaultConfiguration": {
                 "level": "warning"
               },
               "properties": {
                 "category": "Principles",
-                "paradigms": [],
-                "languages": []
+                "paradigms": []
               }
             },
             {
               "id": "PRN009",
               "name": "Law of Demeter",
               "shortDescription": {
-                "text": "Law of Demeter"
+                "text": "Call chains that walk through several distinct project types."
               },
               "fullDescription": {
-                "text": "A chain that walks through several distinct project types couples the caller to their internal structure."
+                "text": "The caller is coupled to the internal structure of other types."
               },
               "defaultConfiguration": {
                 "level": "warning"
@@ -952,72 +999,68 @@
                 "category": "Principles",
                 "paradigms": [
                   "oop"
-                ],
-                "languages": []
+                ]
               }
             },
             {
               "id": "SEC001",
               "name": "Hardcoded secret (heuristic)",
               "shortDescription": {
-                "text": "Hardcoded secret (heuristic)"
+                "text": "String literals assigned to secret-like names, and literals shaped like known credentials."
               },
               "fullDescription": {
-                "text": "Heuristic: string literals assigned to secret-like names, and literals with the shape of known credentials. Not a substitute for a secret scanner."
+                "text": "Not a substitute for a secret scanner."
               },
               "defaultConfiguration": {
-                "level": "error"
+                "level": "warning"
               },
               "properties": {
                 "category": "Security",
-                "paradigms": [],
-                "languages": []
+                "paradigms": []
               }
             },
             {
               "id": "SEC002",
               "name": "Insecure deserialization (heuristic)",
               "shortDescription": {
-                "text": "Insecure deserialization (heuristic)"
+                "text": "Use of formatters that instantiate arbitrary types from input, or polymorphic type handling."
               },
               "fullDescription": {
-                "text": "Heuristic: use of formatters that instantiate arbitrary types from their input, or polymorphic type handling."
+                "text": "Heuristic by shape of code, no taint analysis."
               },
               "defaultConfiguration": {
                 "level": "error"
               },
               "properties": {
                 "category": "Security",
-                "paradigms": [],
-                "languages": []
+                "paradigms": []
               }
             },
             {
               "id": "SEC003",
               "name": "SQL concatenation (heuristic)",
               "shortDescription": {
-                "text": "SQL concatenation (heuristic)"
+                "text": "SQL-looking text concatenated or interpolated with non-constant values."
               },
               "fullDescription": {
-                "text": "Heuristic: SQL-looking text concatenated or interpolated with non-constant values."
+                "text": "Heuristic by shape of code, no taint analysis."
               },
               "defaultConfiguration": {
-                "level": "error"
+                "level": "warning"
               },
               "properties": {
                 "category": "Security",
-                "paradigms": [],
-                "languages": []
+                "paradigms": []
               }
             },
             {
               "id": "STR001",
               "name": "Goto",
               "shortDescription": {
-                "text": "Goto"
+                "text": "Uses of goto. Switch-case jumps are not flagged."
               },
               "fullDescription": {
-                "text": "Goto breaks the single-entry, single-exit structure of blocks. 'goto case' is not flagged."
+                "text": "Breaks single-entry, single-exit structure of blocks."
               },
               "defaultConfiguration": {
                 "level": "warning"
@@ -1026,38 +1069,17 @@
                 "category": "Paradigm",
                 "paradigms": [
                   "structural"
-                ],
-                "languages": []
+                ]
               }
             },
             {
               "id": "STR002",
               "name": "Global state",
               "shortDescription": {
-                "text": "Global state"
+                "text": "Non-private static mutable fields and properties, module-level variables."
               },
               "fullDescription": {
-                "text": "Non-private static mutable fields and properties, and module-level variables, act as globals."
-              },
-              "defaultConfiguration": {
-                "level": "error"
-              },
-              "properties": {
-                "category": "Paradigm",
-                "paradigms": [
-                  "structural"
-                ],
-                "languages": []
-              }
-            },
-            {
-              "id": "STR003",
-              "name": "Module size",
-              "shortDescription": {
-                "text": "Module size"
-              },
-              "fullDescription": {
-                "text": "Measures lines of code per module and lines per file."
+                "text": "Acts as a hidden global."
               },
               "defaultConfiguration": {
                 "level": "warning"
@@ -1066,8 +1088,26 @@
                 "category": "Paradigm",
                 "paradigms": [
                   "structural"
-                ],
-                "languages": []
+                ]
+              }
+            },
+            {
+              "id": "STR003",
+              "name": "Module size",
+              "shortDescription": {
+                "text": "Lines of code per module and per file."
+              },
+              "fullDescription": {
+                "text": "Very large modules are hard to navigate."
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "properties": {
+                "category": "Paradigm",
+                "paradigms": [
+                  "structural"
+                ]
               }
             }
           ]
@@ -1077,9 +1117,9 @@
         {
           "ruleId": "DSN002",
           "ruleIndex": 14,
-          "level": "error",
+          "level": "warning",
           "message": {
-            "text": "Module cycle: Sample.Domain <-> Sample.Services. These modules depend on each other, directly or transitively, so none can be built, tested or released alone."
+            "text": "Module cycle: Sample.Domain <-> Sample.Services"
           },
           "locations": [
             {
@@ -1103,16 +1143,18 @@
             "nomos/v1": "4b8a788d3964a189"
           },
           "properties": {
-            "confidence": "High",
+            "severity": "major",
+            "confidence": "high",
+            "explanation": "These modules depend on each other, directly or transitively, so none can be built, tested or released alone.",
             "module": "Sample.Domain"
           }
         },
         {
           "ruleId": "PAT102",
-          "ruleIndex": 37,
+          "ruleIndex": 42,
           "level": "warning",
           "message": {
-            "text": "Order is an anemic domain object. 3 public setters and no methods: its invariants must be enforced by whoever changes it. Plain DTOs are fine; this one sits in a domain namespace."
+            "text": "Order is an anemic domain object"
           },
           "locations": [
             {
@@ -1136,17 +1178,19 @@
             "nomos/v1": "b658374eac986320"
           },
           "properties": {
-            "confidence": "Medium",
+            "severity": "minor",
+            "confidence": "medium",
+            "explanation": "3 public setters and no methods: its invariants must be enforced by whoever changes it. Plain DTOs are fine; this one sits in a domain namespace.",
             "module": "Sample.Domain",
-            "symbol": "Sample.Domain.Order"
+            "entity": "Sample.Domain.Order"
           }
         },
         {
           "ruleId": "DSN003",
           "ruleIndex": 15,
-          "level": "error",
+          "level": "warning",
           "message": {
-            "text": "Domain must not depend on Services. Order (Sample.Domain) uses Notifier (Sample.Services); allowed: none."
+            "text": "Domain must not depend on Services"
           },
           "locations": [
             {
@@ -1170,17 +1214,19 @@
             "nomos/v1": "88d008b1f7ab9a3c"
           },
           "properties": {
-            "confidence": "High",
+            "severity": "major",
+            "confidence": "high",
+            "explanation": "Order (Sample.Domain) uses Notifier (Sample.Services); allowed: none.",
             "module": "Sample.Domain",
-            "symbol": "Sample.Domain.Order"
+            "entity": "Sample.Domain.Order"
           }
         },
         {
           "ruleId": "OOP001",
-          "ruleIndex": 23,
-          "level": "error",
+          "ruleIndex": 28,
+          "level": "warning",
           "message": {
-            "text": "Public mutable field Order.Listener. Any caller can change this field, so the type cannot protect its invariants. A property or a method can."
+            "text": "Public mutable field Order.Listener"
           },
           "locations": [
             {
@@ -1204,17 +1250,19 @@
             "nomos/v1": "d1db33802df94b35"
           },
           "properties": {
-            "confidence": "High",
+            "severity": "major",
+            "confidence": "high",
+            "explanation": "Any caller can change this field, so the type cannot protect its invariants. A property or a method can.",
             "module": "Sample.Domain",
-            "symbol": "Sample.Domain.Order.Listener"
+            "entity": "Sample.Domain.Order"
           }
         },
         {
-          "ruleId": "CC005",
-          "ruleIndex": 8,
+          "ruleId": "CS.NAM001",
+          "ruleIndex": 12,
           "level": "warning",
           "message": {
-            "text": "Parameter a of Many says little. One-letter names in a public signature leave the meaning to the reader."
+            "text": "Parameter a of Many says little"
           },
           "locations": [
             {
@@ -1235,20 +1283,22 @@
             }
           ],
           "partialFingerprints": {
-            "nomos/v1": "aff1a371053d7561"
+            "nomos/v1": "7e90e3294a57deec"
           },
           "properties": {
-            "confidence": "Low",
+            "severity": "minor",
+            "confidence": "low",
+            "explanation": "One-letter names in a public signature leave the meaning to the reader.",
             "module": "Sample.Legacy",
-            "symbol": "Sample.Legacy.Old.Many(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)"
+            "entity": "Sample.Legacy.Old.Many"
           }
         },
         {
-          "ruleId": "CC005",
-          "ruleIndex": 8,
+          "ruleId": "CS.NAM001",
+          "ruleIndex": 12,
           "level": "warning",
           "message": {
-            "text": "Parameter b of Many says little. One-letter names in a public signature leave the meaning to the reader."
+            "text": "Parameter b of Many says little"
           },
           "locations": [
             {
@@ -1269,20 +1319,22 @@
             }
           ],
           "partialFingerprints": {
-            "nomos/v1": "f1192541bd354bfe"
+            "nomos/v1": "acf117929a8e674d"
           },
           "properties": {
-            "confidence": "Low",
+            "severity": "minor",
+            "confidence": "low",
+            "explanation": "One-letter names in a public signature leave the meaning to the reader.",
             "module": "Sample.Legacy",
-            "symbol": "Sample.Legacy.Old.Many(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)"
+            "entity": "Sample.Legacy.Old.Many"
           }
         },
         {
-          "ruleId": "CC005",
-          "ruleIndex": 8,
+          "ruleId": "CS.NAM001",
+          "ruleIndex": 12,
           "level": "warning",
           "message": {
-            "text": "Parameter c of Many says little. One-letter names in a public signature leave the meaning to the reader."
+            "text": "Parameter c of Many says little"
           },
           "locations": [
             {
@@ -1303,20 +1355,22 @@
             }
           ],
           "partialFingerprints": {
-            "nomos/v1": "cd8bbc01c603572b"
+            "nomos/v1": "145a4e4da7bcdfa7"
           },
           "properties": {
-            "confidence": "Low",
+            "severity": "minor",
+            "confidence": "low",
+            "explanation": "One-letter names in a public signature leave the meaning to the reader.",
             "module": "Sample.Legacy",
-            "symbol": "Sample.Legacy.Old.Many(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)"
+            "entity": "Sample.Legacy.Old.Many"
           }
         },
         {
-          "ruleId": "CC005",
-          "ruleIndex": 8,
+          "ruleId": "CS.NAM001",
+          "ruleIndex": 12,
           "level": "warning",
           "message": {
-            "text": "Parameter d of Many says little. One-letter names in a public signature leave the meaning to the reader."
+            "text": "Parameter d of Many says little"
           },
           "locations": [
             {
@@ -1337,20 +1391,22 @@
             }
           ],
           "partialFingerprints": {
-            "nomos/v1": "5370c19dd1f964b0"
+            "nomos/v1": "e5d8e44a4db97691"
           },
           "properties": {
-            "confidence": "Low",
+            "severity": "minor",
+            "confidence": "low",
+            "explanation": "One-letter names in a public signature leave the meaning to the reader.",
             "module": "Sample.Legacy",
-            "symbol": "Sample.Legacy.Old.Many(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)"
+            "entity": "Sample.Legacy.Old.Many"
           }
         },
         {
-          "ruleId": "CC005",
-          "ruleIndex": 8,
+          "ruleId": "CS.NAM001",
+          "ruleIndex": 12,
           "level": "warning",
           "message": {
-            "text": "Parameter e of Many says little. One-letter names in a public signature leave the meaning to the reader."
+            "text": "Parameter e of Many says little"
           },
           "locations": [
             {
@@ -1371,20 +1427,22 @@
             }
           ],
           "partialFingerprints": {
-            "nomos/v1": "a383eed8de44a36f"
+            "nomos/v1": "13f0e5434d8b3d87"
           },
           "properties": {
-            "confidence": "Low",
+            "severity": "minor",
+            "confidence": "low",
+            "explanation": "One-letter names in a public signature leave the meaning to the reader.",
             "module": "Sample.Legacy",
-            "symbol": "Sample.Legacy.Old.Many(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)"
+            "entity": "Sample.Legacy.Old.Many"
           }
         },
         {
-          "ruleId": "CC005",
-          "ruleIndex": 8,
+          "ruleId": "CS.NAM001",
+          "ruleIndex": 12,
           "level": "warning",
           "message": {
-            "text": "Parameter f of Many says little. One-letter names in a public signature leave the meaning to the reader."
+            "text": "Parameter f of Many says little"
           },
           "locations": [
             {
@@ -1405,20 +1463,22 @@
             }
           ],
           "partialFingerprints": {
-            "nomos/v1": "c61d5bf4bc2df8ec"
+            "nomos/v1": "5a53108e8121e54e"
           },
           "properties": {
-            "confidence": "Low",
+            "severity": "minor",
+            "confidence": "low",
+            "explanation": "One-letter names in a public signature leave the meaning to the reader.",
             "module": "Sample.Legacy",
-            "symbol": "Sample.Legacy.Old.Many(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)"
+            "entity": "Sample.Legacy.Old.Many"
           }
         },
         {
           "ruleId": "OOP004",
-          "ruleIndex": 26,
+          "ruleIndex": 31,
           "level": "warning",
           "message": {
-            "text": "OrderService splits into 4 unrelated method groups. LCOM4 finds method groups that share no field and do not call each other; each may be a separate class."
+            "text": "OrderService splits into 4 unrelated method groups"
           },
           "locations": [
             {
@@ -1442,17 +1502,24 @@
             "nomos/v1": "4bd0e0b0cdde521b"
           },
           "properties": {
-            "confidence": "Medium",
+            "severity": "minor",
+            "confidence": "medium",
+            "explanation": "LCOM4 finds method groups that share no field and do not call each other; each may be a separate class.",
             "module": "Sample.Services",
-            "symbol": "Sample.Services.OrderService"
+            "entity": "Sample.Services.OrderService",
+            "measured": {
+              "metric": "lcom4",
+              "value": 4,
+              "threshold": 2
+            }
           }
         },
         {
           "ruleId": "SEC001",
-          "ruleIndex": 48,
-          "level": "error",
+          "ruleIndex": 53,
+          "level": "warning",
           "message": {
-            "text": "ApiKey looks like a hardcoded secret. Heuristic: the name suggests a secret and the value is a literal. It may be a placeholder or a non-secret value."
+            "text": "ApiKey looks like a hardcoded secret"
           },
           "locations": [
             {
@@ -1476,9 +1543,11 @@
             "nomos/v1": "1dd23068bee767fd"
           },
           "properties": {
-            "confidence": "Medium",
+            "severity": "major",
+            "confidence": "medium",
+            "explanation": "Heuristic: the name suggests a secret and the value is a literal. It may be a placeholder or a non-secret value.",
             "module": "Sample.Services",
-            "symbol": "Sample.Services.OrderService.ApiKey"
+            "entity": "Sample.Services.OrderService"
           }
         },
         {
@@ -1486,7 +1555,7 @@
           "ruleIndex": 0,
           "level": "warning",
           "message": {
-            "text": "Matches is likely O(n²). Estimated from nested loops over inputs of unknown size. Small inputs may make this irrelevant."
+            "text": "Matches is likely O(n²)"
           },
           "locations": [
             {
@@ -1510,9 +1579,11 @@
             "nomos/v1": "cb90949cecf01334"
           },
           "properties": {
-            "confidence": "Medium",
+            "severity": "minor",
+            "confidence": "medium",
+            "explanation": "Estimated from nested loops over inputs of unknown size. Small inputs may make this irrelevant.",
             "module": "Sample.Services",
-            "symbol": "Sample.Services.OrderService.Matches(System.Collections.Generic.List<Sample.Domain.Order>,System.Collections.Generic.List<System.Int32>)"
+            "entity": "Sample.Services.OrderService.Matches"
           }
         },
         {
@@ -1520,7 +1591,7 @@
           "ruleIndex": 0,
           "level": "warning",
           "message": {
-            "text": "Pairs is likely O(n²). Estimated from nested loops over inputs of unknown size. Small inputs may make this irrelevant."
+            "text": "Pairs is likely O(n²)"
           },
           "locations": [
             {
@@ -1544,17 +1615,19 @@
             "nomos/v1": "f0db41176d287ba3"
           },
           "properties": {
-            "confidence": "Medium",
+            "severity": "minor",
+            "confidence": "medium",
+            "explanation": "Estimated from nested loops over inputs of unknown size. Small inputs may make this irrelevant.",
             "module": "Sample.Services",
-            "symbol": "Sample.Services.OrderService.Pairs(System.Int32[],System.Int32[])"
+            "entity": "Sample.Services.OrderService.Pairs"
           }
         },
         {
           "ruleId": "CC006",
-          "ruleIndex": 9,
+          "ruleIndex": 8,
           "level": "warning",
           "message": {
-            "text": "TODO comment left in code. A placeholder records unfinished work that belongs in the issue tracker or in a fix."
+            "text": "TODO comment left in code"
           },
           "locations": [
             {
@@ -1578,16 +1651,18 @@
             "nomos/v1": "999aeea86155da1d"
           },
           "properties": {
-            "confidence": "High",
+            "severity": "minor",
+            "confidence": "high",
+            "explanation": "A placeholder records unfinished work that belongs in the issue tracker or in a fix.",
             "module": "Sample.Services"
           }
         },
         {
           "ruleId": "PRN005",
-          "ruleIndex": 43,
+          "ruleIndex": 48,
           "level": "warning",
           "message": {
-            "text": "OrderService creates Notifier directly. Notifier is available through INotifier, but Pay instantiates the concrete class. Injecting the abstraction keeps OrderService replaceable and testable."
+            "text": "OrderService creates Notifier directly"
           },
           "locations": [
             {
@@ -1611,9 +1686,11 @@
             "nomos/v1": "0e0cc8dd78186e88"
           },
           "properties": {
-            "confidence": "Medium",
+            "severity": "minor",
+            "confidence": "medium",
+            "explanation": "Notifier is available through INotifier, but Pay instantiates the concrete class. Injecting the abstraction keeps OrderService replaceable and testable.",
             "module": "Sample.Services",
-            "symbol": "Sample.Services.OrderService.Pay(Sample.Domain.Order)"
+            "entity": "Sample.Services.OrderService.Pay"
           }
         }
       ]

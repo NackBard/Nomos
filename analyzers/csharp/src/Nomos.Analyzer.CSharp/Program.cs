@@ -51,15 +51,13 @@ public static class Program
 
     private static int Usage(string message)
     {
-        Console.Error.WriteLine($"{message}\nUsage: {Name} manifest | analyze --root <path> [--sarif <file>] [--config <nomos.json>]");
+        Console.Error.WriteLine($"{message}\nUsage: {Name} manifest | analyze --root <path> [--sarif <file>] [--config <nomos.json>] [--rules <ids>]");
         return UsageError;
     }
 
-    private static ComponentCatalog Catalog() => ComponentCatalog.Discover(PluginLoader.LoadBuiltIn());
-
     private static int Manifest()
     {
-        var descriptors = Catalog().Analyzers.Select(a => a.Descriptor).OrderBy(d => RuleIds.ToSpec(d.Id), StringComparer.Ordinal).ToList();
+        var descriptors = BuiltInComponents.Catalog().Analyzers.Select(a => a.Descriptor).OrderBy(d => d.Id, StringComparer.Ordinal).ToList();
         var manifest = new
         {
             name = Name,
@@ -70,11 +68,11 @@ public static class Program
             capabilities = new
             {
                 semantic = true,
-                supportedRules = descriptors.Select(d => RuleIds.ToSpec(d.Id)).ToList(),
+                supportedRules = descriptors.Select(d => d.Id).ToList(),
                 partialAnalysis = false,
                 sarif = true,
             },
-            rules = descriptors.Select(d => new { id = RuleIds.ToSpec(d.Id), category = d.Category, paradigms = d.Paradigms.Order(StringComparer.Ordinal).ToList(), title = d.Title }).ToList(),
+            rules = descriptors.Select(d => new { id = d.Id, category = d.Category, paradigms = d.Paradigms.Order(StringComparer.Ordinal).ToList(), title = d.Title }).ToList(),
         };
         WriteStdout(JsonSerializer.Serialize(manifest, new JsonSerializerOptions { WriteIndented = true }).ReplaceLineEndings("\n"));
         return Success;
@@ -82,7 +80,7 @@ public static class Program
 
     private static async Task<int> AnalyzeAsync(string[] args)
     {
-        string? root = null, sarif = null, config = null;
+        string? root = null, sarif = null, config = null, rules = null;
         for (var i = 0; i < args.Length; i += 2)
         {
             if (i + 1 >= args.Length) return Usage($"Missing value for {args[i]}");
@@ -92,8 +90,9 @@ public static class Program
                 case "--root": root = value; break;
                 case "--sarif": sarif = value; break;
                 case "--config": config = value; break;
+                case "--rules": rules = value; break;
                 // Accepted by every analyzer in the protocol; this one analyzes the whole root (partialAnalysis = false).
-                case "--files" or "--rules": break;
+                case "--files": break;
                 default: return Usage($"Unknown option: {args[i]}");
             }
         }
@@ -104,17 +103,20 @@ public static class Program
             return BadInput;
         }
 
-        // The workspace file at the root has another meaning (contracts/nomos.schema.json), so only --config is read.
-        var settings = config is null ? new NomosConfig() : NomosConfig.Load(config);
-        var catalog = Catalog();
-        var result = await new AnalysisEngine(catalog).RunAsync(new AnalysisRequest { Path = root, Config = settings }).ConfigureAwait(false);
+        var settings = config is null ? new NomosConfig() : WorkspaceFile.Load(config);
+        var catalog = BuiltInComponents.Catalog();
+        var selected = rules?.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        var unknown = selected?.FirstOrDefault(id => catalog.Analyzers.All(a => a.Descriptor.Id != id));
+        if (unknown is not null) return Usage($"Unknown rule: {unknown}");
+        var running = selected is null ? catalog : catalog.Filter(d => selected.Contains(d.Id, StringComparer.Ordinal));
+        var result = await new AnalysisEngine(running).RunAsync(new AnalysisRequest { Path = root, Config = settings }).ConfigureAwait(false);
         if (result.Model is not { Files.Count: > 0 })
         {
             await Console.Error.WriteLineAsync($"error: no C# files under {root}").ConfigureAwait(false);
             return BadInput;
         }
 
-        var options = new FactsOptions(Name, Version, [.. catalog.Analyzers.Select(a => a.Descriptor)], RuleIds.ToSpec)
+        var options = new FactsOptions(Name, Version, [.. catalog.Analyzers.Select(a => a.Descriptor)])
         {
             SarifFile = sarif,
             ResultCount = result.Findings.Count,
@@ -136,10 +138,4 @@ public static class Program
         using var stdout = Console.OpenStandardOutput();
         stdout.Write(new UTF8Encoding(false).GetBytes(text + "\n"));
     }
-}
-
-/// <summary>Maps implementation ids to the ids in spec/rules (migration step 3, D-023: CC005 became CS.NAM001).</summary>
-internal static class RuleIds
-{
-    public static string ToSpec(string id) => id == "CC005" ? "CS.NAM001" : id;
 }

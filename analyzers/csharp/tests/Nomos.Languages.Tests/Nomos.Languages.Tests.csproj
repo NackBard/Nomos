@@ -10,6 +10,5 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Nomos.Languages.CSharp\Nomos.Languages.CSharp.csproj" />
-    <ProjectReference Include="..\..\src\Nomos.Languages.TreeSitter\Nomos.Languages.TreeSitter.csproj" />
   </ItemGroup>
 </Project>

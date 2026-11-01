@@ -9,9 +9,9 @@ namespace Nomos.Facts.Tests;
 public class FactsTests
 {
     private static readonly AnalyzerDescriptor OopRule = new("PRN001", "Single Responsibility", "Principles", "Counts dependencies.", Severity.Major, [], ["oop"]);
-    private static readonly AnalyzerDescriptor NamingRule = new("CC005", "Naming conventions", "CleanCode", "Names.", Severity.Info, [], []);
+    private static readonly AnalyzerDescriptor NamingRule = new("CS.NAM001", "Naming conventions", "CleanCode", "Names.", Severity.Info, [], []);
 
-    private static readonly FactsOptions Options = new("test-analyzer", "1.2.3", [OopRule, NamingRule], id => id == "CC005" ? "CS.NAM001" : id);
+    private static readonly FactsOptions Options = new("test-analyzer", "1.2.3", [OopRule, NamingRule]);
 
     private static async Task<AnalysisResult> Analyze(IReadOnlyList<Finding>? findings = null, params (string Path, string Text)[] sources)
     {
@@ -199,7 +199,7 @@ public class FactsTests
         var findings = new[]
         {
             new Finding("PRN001", "Principles", Severity.Major, Confidence.Medium, "X has many dependencies", new Evidence(location, "class X", "Many collaborators suggest several reasons to change.")) { Module = "A", Symbol = "A.X.Run(System.Int32)", Measured = new Measurement("parameterCount", 1, 0) },
-            new Finding("CC005", "CleanCode", Severity.Info, Confidence.High, "name is odd", new Evidence(new SourceLocation("a.cs", 1, 1, 1, 2), "", "Convention.")),
+            new Finding("CS.NAM001", "CleanCode", Severity.Info, Confidence.High, "name is odd", new Evidence(new SourceLocation("a.cs", 1, 1, 1, 2), "", "Convention.")),
         };
         var result = await Analyze(findings, ("a.cs", "namespace A { public class X { public void Run() { } public void Run(int a) { } } }"));
         using var writer = new StringWriter();

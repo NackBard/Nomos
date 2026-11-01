@@ -6,12 +6,9 @@ using Nomos.Abstractions;
 
 namespace Nomos.Core;
 
-/// <summary>The content of nomos.json.</summary>
+/// <summary>Engine settings. The host fills them; the protocol form is the workspace file (contracts/nomos.schema.json).</summary>
 public sealed class NomosConfig
 {
-    /// <summary>The configuration file name looked up in the analysis root.</summary>
-    public const string FileName = "nomos.json";
-
     /// <summary>Gets settings per language. When empty, every language with an adapter and matching files is analyzed.</summary>
     public Dictionary<string, LanguageConfig> Languages { get; init; } = new(StringComparer.OrdinalIgnoreCase);
 
@@ -20,9 +17,6 @@ public sealed class NomosConfig
 
     /// <summary>Gets exclude globs, added to the built-in excludes.</summary>
     public List<string> Exclude { get; init; } = [];
-
-    /// <summary>Gets the plugin directory, relative to the analysis root.</summary>
-    public string PluginsPath { get; init; } = "plugins";
 
     /// <summary>Gets settings per analyzer id.</summary>
     public Dictionary<string, AnalyzerConfig> Analyzers { get; init; } = new(StringComparer.OrdinalIgnoreCase);
@@ -52,14 +46,6 @@ public sealed class NomosConfig
         {
             throw new ConfigurationException($"{path}: {exception.Message}", exception);
         }
-    }
-
-    /// <summary>Loads nomos.json from a directory, or defaults when it does not exist.</summary>
-    /// <param name="directory">The directory.</param>
-    public static NomosConfig LoadOrDefault(string directory)
-    {
-        var path = Path.Combine(directory, FileName);
-        return File.Exists(path) ? Load(path) : new NomosConfig();
     }
 
     /// <summary>Gets the options used for reading and writing configuration.</summary>

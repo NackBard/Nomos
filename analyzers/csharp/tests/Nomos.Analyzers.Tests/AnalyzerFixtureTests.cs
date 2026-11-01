@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using Nomos.Abstractions;
+using Nomos.Analyzer.CSharp;
 using Nomos.Core;
 using Xunit;
 
@@ -8,7 +9,7 @@ namespace Nomos.Analyzers.Tests;
 /// <summary>Runs each analyzer on tests/fixtures/&lt;language&gt;/&lt;paradigm&gt;/&lt;id&gt;/{bad,good}.cs.</summary>
 public class AnalyzerFixtureTests
 {
-    private static readonly ComponentCatalog Catalog = BuildCatalog();
+    private static readonly ComponentCatalog Catalog = BuiltInComponents.Catalog();
 
     public static TheoryData<string> AnalyzerIds()
     {
@@ -18,10 +19,19 @@ public class AnalyzerFixtureTests
     }
 
     [Fact]
-    public void Catalog_FindsAllBuiltInAnalyzers()
+    public void Catalog_HasEveryClassMarkedAsAnalyzer()
     {
-        Assert.Empty(Catalog.Diagnostics);
-        Assert.True(Catalog.Analyzers.Count >= 50, $"Found {Catalog.Analyzers.Count}");
+        var marked = Catalog.Analyzers.Select(a => a.GetType().Assembly).Distinct()
+            .SelectMany(a => a.GetTypes()).Where(t => t.IsDefined(typeof(AnalyzerAttribute), false));
+        Assert.Equal(marked.OrderBy(t => t.FullName, StringComparer.Ordinal), Catalog.Analyzers.Select(a => a.GetType()).OrderBy(t => t.FullName, StringComparer.Ordinal));
+    }
+
+    [Fact]
+    public void AnalyzerIds_ExistInSpecRules()
+    {
+        var spec = Directory.GetFiles(Path.Combine(Root(), "..", "..", "spec", "rules"), "*.yaml")
+            .SelectMany(File.ReadAllLines).Select(l => Regex.Match(l, @"^\s*- \{?\s*id:\s*([^\s,]+)")).Where(m => m.Success).Select(m => m.Groups[1].Value).ToHashSet();
+        Assert.All(Catalog.Analyzers, a => Assert.Contains(a.Descriptor.Id, spec));
     }
 
     [Theory]
@@ -61,7 +71,8 @@ public class AnalyzerFixtureTests
 
     private static async Task<AnalysisResult> Run(string id, string directory, string name, string text)
     {
-        var config = NomosConfig.LoadOrDefault(directory);
+        var file = Path.Combine(directory, "nomos.json");
+        var config = File.Exists(file) ? NomosConfig.Load(file) : new NomosConfig();
         config.Languages[Abstractions.Languages.CSharp] = new LanguageConfig { Paradigms = [Paradigms.ObjectOriented, Paradigms.Functional, Paradigms.Structural] };
         return await new AnalysisEngine(Catalog.Filter(d => d.Id == id)).RunAsync(new AnalysisRequest
         {
@@ -87,6 +98,4 @@ public class AnalyzerFixtureTests
         while (!File.Exists(Path.Combine(directory!.FullName, "Nomos.slnx"))) directory = directory.Parent;
         return directory.FullName;
     }
-
-    private static ComponentCatalog BuildCatalog() => ComponentCatalog.Discover(PluginLoader.LoadBuiltIn());
 }

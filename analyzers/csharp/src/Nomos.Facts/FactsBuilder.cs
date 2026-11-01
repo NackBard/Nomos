@@ -222,7 +222,7 @@ internal sealed class FactsBuilder
             foreach (var rule in _options.SupportedRules.Where(r => r.Paradigms.Count > 0 && !ParadigmSigns.Applies(r.Paradigms, active)))
             {
                 var paradigm = rule.Paradigms[0];
-                skipped.Add(new FactsSkippedRule(_options.RuleId(rule.Id), module.Name, "paradigm-not-detected", ParadigmSigns.NotApplicable(paradigm)));
+                skipped.Add(new FactsSkippedRule(rule.Id, module.Name, "paradigm-not-detected", ParadigmSigns.NotApplicable(paradigm)));
             }
         }
         return [.. skipped.OrderBy(s => s.RuleId, StringComparer.Ordinal).ThenBy(s => s.Module, StringComparer.Ordinal)];

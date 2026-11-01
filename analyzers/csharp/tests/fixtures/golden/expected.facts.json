@@ -1,0 +1,991 @@
+{
+  "schemaVersion": "1.0.0",
+  "analyzer": {
+    "name": "nomos-csharp",
+    "version": "0.1.0",
+    "language": "csharp",
+    "semantic": true
+  },
+  "files": [
+    {
+      "path": "Domain/Order.cs",
+      "lines": 11,
+      "loc": 9,
+      "module": "Sample.Domain",
+      "parsed": true
+    },
+    {
+      "path": "Legacy/Old.cs",
+      "lines": 7,
+      "loc": 6,
+      "module": "Sample.Legacy",
+      "parsed": true
+    },
+    {
+      "path": "Services/OrderService.cs",
+      "lines": 51,
+      "loc": 42,
+      "module": "Sample.Services",
+      "parsed": true
+    }
+  ],
+  "modules": [
+    {
+      "id": "Sample.Domain",
+      "name": "Sample.Domain",
+      "files": [
+        "Domain/Order.cs"
+      ],
+      "loc": 9,
+      "metrics": {
+        "abstractness": 0,
+        "ca": 1,
+        "ce": 1,
+        "distance": 0.5,
+        "instability": 0.5
+      },
+      "paradigmEvidence": [
+        {
+          "paradigm": "oop",
+          "kind": "oop.classes",
+          "count": 1,
+          "description": "classes with methods or fields",
+          "examples": [
+            "Sample.Domain.Order"
+          ]
+        },
+        {
+          "paradigm": "oop",
+          "kind": "oop.mutable-state-classes",
+          "count": 1,
+          "description": "classes with mutable instance state",
+          "examples": [
+            "Sample.Domain.Order"
+          ]
+        }
+      ],
+      "health": {
+        "score": 82.6,
+        "categories": [
+          {
+            "category": "Algorithms",
+            "score": 100,
+            "weight": 0.121,
+            "penalty": 0,
+            "findingCount": 0
+          },
+          {
+            "category": "CleanCode",
+            "score": 100,
+            "weight": 0.121,
+            "penalty": 0,
+            "findingCount": 0
+          },
+          {
+            "category": "Design",
+            "score": 22.3,
+            "weight": 0.152,
+            "penalty": 6,
+            "findingCount": 2
+          },
+          {
+            "category": "Maintainability",
+            "score": 100,
+            "weight": 0.152,
+            "penalty": 0,
+            "findingCount": 0
+          },
+          {
+            "category": "Paradigm",
+            "score": 47.2,
+            "weight": 0.091,
+            "penalty": 3,
+            "findingCount": 1
+          },
+          {
+            "category": "Patterns",
+            "score": 86.1,
+            "weight": 0.061,
+            "penalty": 0.6,
+            "findingCount": 1
+          },
+          {
+            "category": "Principles",
+            "score": 100,
+            "weight": 0.121,
+            "penalty": 0,
+            "findingCount": 0
+          },
+          {
+            "category": "Security",
+            "score": 100,
+            "weight": 0.182,
+            "penalty": 0,
+            "findingCount": 0
+          }
+        ],
+        "explanation": [
+          "Weighted mean over 8 categories, normalized by 0.2 KLOC.",
+          "Design: 22.3 (weight 0.152) from 2 finding(s), penalty 6.",
+          "Paradigm: 47.2 (weight 0.091) from 1 finding(s), penalty 3.",
+          "Patterns: 86.1 (weight 0.061) from 1 finding(s), penalty 0.6."
+        ]
+      }
+    },
+    {
+      "id": "Sample.Legacy",
+      "name": "Sample.Legacy",
+      "files": [
+        "Legacy/Old.cs"
+      ],
+      "loc": 6,
+      "metrics": {
+        "abstractness": 0,
+        "ca": 0,
+        "ce": 0,
+        "distance": null,
+        "instability": null
+      },
+      "paradigmEvidence": [
+        {
+          "paradigm": "functional",
+          "kind": "fp.pure-functions",
+          "count": 1,
+          "description": "functions that provably have no effects (conservative)",
+          "examples": [
+            "Sample.Legacy.Old.Many"
+          ]
+        },
+        {
+          "paradigm": "oop",
+          "kind": "oop.classes",
+          "count": 1,
+          "description": "classes with methods or fields",
+          "examples": [
+            "Sample.Legacy.Old"
+          ]
+        }
+      ],
+      "health": {
+        "score": 96.2,
+        "categories": [
+          {
+            "category": "Algorithms",
+            "score": 100,
+            "weight": 0.121,
+            "penalty": 0,
+            "findingCount": 0
+          },
+          {
+            "category": "CleanCode",
+            "score": 68.7,
+            "weight": 0.121,
+            "penalty": 1.5,
+            "findingCount": 6
+          },
+          {
+            "category": "Design",
+            "score": 100,
+            "weight": 0.152,
+            "penalty": 0,
+            "findingCount": 0
+          },
+          {
+            "category": "Maintainability",
+            "score": 100,
+            "weight": 0.152,
+            "penalty": 0,
+            "findingCount": 0
+          },
+          {
+            "category": "Paradigm",
+            "score": 100,
+            "weight": 0.091,
+            "penalty": 0,
+            "findingCount": 0
+          },
+          {
+            "category": "Patterns",
+            "score": 100,
+            "weight": 0.061,
+            "penalty": 0,
+            "findingCount": 0
+          },
+          {
+            "category": "Principles",
+            "score": 100,
+            "weight": 0.121,
+            "penalty": 0,
+            "findingCount": 0
+          },
+          {
+            "category": "Security",
+            "score": 100,
+            "weight": 0.182,
+            "penalty": 0,
+            "findingCount": 0
+          }
+        ],
+        "explanation": [
+          "Weighted mean over 8 categories, normalized by 0.2 KLOC.",
+          "CleanCode: 68.7 (weight 0.121) from 6 finding(s), penalty 1.5."
+        ]
+      }
+    },
+    {
+      "id": "Sample.Services",
+      "name": "Sample.Services",
+      "files": [
+        "Services/OrderService.cs"
+      ],
+      "loc": 42,
+      "metrics": {
+        "abstractness": 0.3333,
+        "ca": 1,
+        "ce": 2,
+        "distance": 0,
+        "instability": 0.6667
+      },
+      "paradigmEvidence": [
+        {
+          "paradigm": "functional",
+          "kind": "fp.pure-functions",
+          "count": 2,
+          "description": "functions that provably have no effects (conservative)",
+          "examples": [
+            "Sample.Services.OrderService.Describe",
+            "Sample.Services.OrderService.Pairs"
+          ]
+        },
+        {
+          "paradigm": "oop",
+          "kind": "oop.abstractions",
+          "count": 1,
+          "description": "interfaces and abstract classes",
+          "examples": [
+            "Sample.Services.INotifier"
+          ]
+        },
+        {
+          "paradigm": "oop",
+          "kind": "oop.classes",
+          "count": 2,
+          "description": "classes with methods or fields",
+          "examples": [
+            "Sample.Services.Notifier",
+            "Sample.Services.OrderService"
+          ]
+        },
+        {
+          "paradigm": "structural",
+          "kind": "str.control-flow",
+          "count": 3,
+          "description": "functions with branches or loops",
+          "examples": [
+            "Sample.Services.OrderService.Describe",
+            "Sample.Services.OrderService.Matches",
+            "Sample.Services.OrderService.Pairs"
+          ]
+        }
+      ],
+      "health": {
+        "score": 84.6,
+        "categories": [
+          {
+            "category": "Algorithms",
+            "score": 74.1,
+            "weight": 0.121,
+            "penalty": 1.2,
+            "findingCount": 2
+          },
+          {
+            "category": "CleanCode",
+            "score": 77.9,
+            "weight": 0.121,
+            "penalty": 1,
+            "findingCount": 1
+          },
+          {
+            "category": "Design",
+            "score": 100,
+            "weight": 0.152,
+            "penalty": 0,
+            "findingCount": 0
+          },
+          {
+            "category": "Maintainability",
+            "score": 100,
+            "weight": 0.152,
+            "penalty": 0,
+            "findingCount": 0
+          },
+          {
+            "category": "Paradigm",
+            "score": 86.1,
+            "weight": 0.091,
+            "penalty": 0.6,
+            "findingCount": 1
+          },
+          {
+            "category": "Patterns",
+            "score": 100,
+            "weight": 0.061,
+            "penalty": 0,
+            "findingCount": 0
+          },
+          {
+            "category": "Principles",
+            "score": 86.1,
+            "weight": 0.121,
+            "penalty": 0.6,
+            "findingCount": 1
+          },
+          {
+            "category": "Security",
+            "score": 63.8,
+            "weight": 0.182,
+            "penalty": 1.8,
+            "findingCount": 1
+          }
+        ],
+        "explanation": [
+          "Weighted mean over 8 categories, normalized by 0.2 KLOC.",
+          "Security: 63.8 (weight 0.182) from 1 finding(s), penalty 1.8.",
+          "Algorithms: 74.1 (weight 0.121) from 2 finding(s), penalty 1.2.",
+          "CleanCode: 77.9 (weight 0.121) from 1 finding(s), penalty 1.",
+          "Principles: 86.1 (weight 0.121) from 1 finding(s), penalty 0.6.",
+          "Paradigm: 86.1 (weight 0.091) from 1 finding(s), penalty 0.6."
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "id": "Sample.Domain.Order",
+      "name": "Order",
+      "module": "Sample.Domain",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "Domain/Order.cs",
+        "startLine": 5,
+        "startColumn": 14,
+        "endLine": 11,
+        "endColumn": 2
+      },
+      "metrics": {
+        "atfd": 0,
+        "blastRadius": 1,
+        "cbo": 2,
+        "dit": 0,
+        "lcom4": null,
+        "lines": 7,
+        "memberCount": 4,
+        "methodCount": 0,
+        "tcc": null,
+        "wmc": 0
+      }
+    },
+    {
+      "id": "Sample.Domain.OrderStatus",
+      "name": "OrderStatus",
+      "module": "Sample.Domain",
+      "kind": "enum",
+      "isAbstract": false,
+      "location": {
+        "file": "Domain/Order.cs",
+        "startLine": 3,
+        "startColumn": 13,
+        "endLine": 3,
+        "endColumn": 47
+      },
+      "metrics": {
+        "blastRadius": 2,
+        "lines": 1,
+        "memberCount": 3,
+        "methodCount": 0
+      }
+    },
+    {
+      "id": "Sample.Legacy.Old",
+      "name": "Old",
+      "module": "Sample.Legacy",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "Legacy/Old.cs",
+        "startLine": 4,
+        "startColumn": 14,
+        "endLine": 7,
+        "endColumn": 2
+      },
+      "metrics": {
+        "atfd": 0,
+        "blastRadius": 0,
+        "cbo": 0,
+        "dit": 0,
+        "lcom4": 1,
+        "lines": 4,
+        "memberCount": 1,
+        "methodCount": 1,
+        "tcc": null,
+        "wmc": 1
+      }
+    },
+    {
+      "id": "Sample.Services.INotifier",
+      "name": "INotifier",
+      "module": "Sample.Services",
+      "kind": "interface",
+      "isAbstract": true,
+      "location": {
+        "file": "Services/OrderService.cs",
+        "startLine": 5,
+        "startColumn": 18,
+        "endLine": 5,
+        "endColumn": 58
+      },
+      "metrics": {
+        "blastRadius": 3,
+        "lines": 1,
+        "memberCount": 1,
+        "methodCount": 1
+      }
+    },
+    {
+      "id": "Sample.Services.Notifier",
+      "name": "Notifier",
+      "module": "Sample.Services",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "Services/OrderService.cs",
+        "startLine": 7,
+        "startColumn": 14,
+        "endLine": 10,
+        "endColumn": 2
+      },
+      "metrics": {
+        "atfd": 0,
+        "blastRadius": 2,
+        "cbo": 1,
+        "dit": 0,
+        "lcom4": 1,
+        "lines": 4,
+        "memberCount": 1,
+        "methodCount": 1,
+        "tcc": null,
+        "wmc": 1
+      }
+    },
+    {
+      "id": "Sample.Services.OrderService",
+      "name": "OrderService",
+      "module": "Sample.Services",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "Services/OrderService.cs",
+        "startLine": 12,
+        "startColumn": 14,
+        "endLine": 51,
+        "endColumn": 2
+      },
+      "metrics": {
+        "atfd": 2,
+        "blastRadius": 0,
+        "cbo": 3,
+        "dit": 0,
+        "lcom4": 4,
+        "lines": 40,
+        "memberCount": 5,
+        "methodCount": 4,
+        "tcc": 0,
+        "wmc": 10
+      }
+    }
+  ],
+  "functions": [
+    {
+      "id": "Sample.Legacy.Old.Many",
+      "name": "Many",
+      "module": "Sample.Legacy",
+      "type": "Sample.Legacy.Old",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Legacy/Old.cs",
+        "startLine": 6,
+        "startColumn": 16,
+        "endLine": 6,
+        "endColumn": 88
+      },
+      "metrics": {
+        "blastRadius": 0,
+        "cyclomatic": 1,
+        "lines": 1,
+        "maxNesting": 0,
+        "parameterCount": 6
+      }
+    },
+    {
+      "id": "Sample.Services.INotifier.Send",
+      "name": "Send",
+      "module": "Sample.Services",
+      "type": "Sample.Services.INotifier",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Services/OrderService.cs",
+        "startLine": 5,
+        "startColumn": 35,
+        "endLine": 5,
+        "endColumn": 56
+      },
+      "metrics": {
+        "blastRadius": 3,
+        "cyclomatic": 1,
+        "lines": 1,
+        "maxNesting": 0,
+        "parameterCount": 1
+      }
+    },
+    {
+      "id": "Sample.Services.Notifier.Send",
+      "name": "Send",
+      "module": "Sample.Services",
+      "type": "Sample.Services.Notifier",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Services/OrderService.cs",
+        "startLine": 9,
+        "startColumn": 17,
+        "endLine": 9,
+        "endColumn": 68
+      },
+      "metrics": {
+        "blastRadius": 2,
+        "cyclomatic": 1,
+        "lines": 1,
+        "maxNesting": 0,
+        "parameterCount": 1
+      }
+    },
+    {
+      "id": "Sample.Services.OrderService.Describe",
+      "name": "Describe",
+      "module": "Sample.Services",
+      "type": "Sample.Services.OrderService",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Services/OrderService.cs",
+        "startLine": 16,
+        "startColumn": 19,
+        "endLine": 24,
+        "endColumn": 6
+      },
+      "metrics": {
+        "blastRadius": 0,
+        "cyclomatic": 3,
+        "lines": 9,
+        "maxNesting": 1,
+        "parameterCount": 1
+      }
+    },
+    {
+      "id": "Sample.Services.OrderService.Matches",
+      "name": "Matches",
+      "module": "Sample.Services",
+      "type": "Sample.Services.OrderService",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Services/OrderService.cs",
+        "startLine": 26,
+        "startColumn": 16,
+        "endLine": 34,
+        "endColumn": 6
+      },
+      "metrics": {
+        "blastRadius": 0,
+        "cyclomatic": 3,
+        "lines": 9,
+        "maxNesting": 2,
+        "parameterCount": 2
+      }
+    },
+    {
+      "id": "Sample.Services.OrderService.Pairs",
+      "name": "Pairs",
+      "module": "Sample.Services",
+      "type": "Sample.Services.OrderService",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Services/OrderService.cs",
+        "startLine": 36,
+        "startColumn": 16,
+        "endLine": 43,
+        "endColumn": 6
+      },
+      "metrics": {
+        "blastRadius": 0,
+        "cyclomatic": 3,
+        "lines": 8,
+        "maxNesting": 2,
+        "parameterCount": 2
+      }
+    },
+    {
+      "id": "Sample.Services.OrderService.Pay",
+      "name": "Pay",
+      "module": "Sample.Services",
+      "type": "Sample.Services.OrderService",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Services/OrderService.cs",
+        "startLine": 46,
+        "startColumn": 17,
+        "endLine": 50,
+        "endColumn": 6
+      },
+      "metrics": {
+        "blastRadius": 0,
+        "cyclomatic": 1,
+        "lines": 5,
+        "maxNesting": 0,
+        "parameterCount": 1
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "from": "Sample.Domain.Order",
+      "to": "Sample.Domain.OrderStatus",
+      "kind": "type-ref",
+      "phase": "runtime",
+      "external": false,
+      "stdlib": false,
+      "count": 1,
+      "location": {
+        "file": "Domain/Order.cs",
+        "startLine": 9,
+        "startColumn": 5,
+        "endLine": 9,
+        "endColumn": 44
+      }
+    },
+    {
+      "from": "Sample.Domain.Order",
+      "to": "Sample.Services.Notifier",
+      "kind": "type-ref",
+      "phase": "runtime",
+      "external": false,
+      "stdlib": false,
+      "count": 1,
+      "location": {
+        "file": "Domain/Order.cs",
+        "startLine": 10,
+        "startColumn": 38,
+        "endLine": 10,
+        "endColumn": 46
+      }
+    },
+    {
+      "from": "Sample.Legacy.Old",
+      "to": "System.Diagnostics.CodeAnalysis.SuppressMessageAttribute",
+      "kind": "type-ref",
+      "phase": "runtime",
+      "external": true,
+      "stdlib": true,
+      "count": 1,
+      "location": {
+        "file": "Legacy/Old.cs",
+        "startLine": 3,
+        "startColumn": 2,
+        "endLine": 3,
+        "endColumn": 67
+      }
+    },
+    {
+      "from": "Sample.Services.Notifier",
+      "to": "Sample.Services.INotifier",
+      "kind": "inheritance",
+      "phase": "runtime",
+      "external": false,
+      "stdlib": false,
+      "count": 1,
+      "location": {
+        "file": "Services/OrderService.cs",
+        "startLine": 7,
+        "startColumn": 1,
+        "endLine": 10,
+        "endColumn": 2
+      }
+    },
+    {
+      "from": "Sample.Services.Notifier",
+      "to": "System.Console",
+      "kind": "call",
+      "phase": "runtime",
+      "external": true,
+      "stdlib": true,
+      "count": 1,
+      "location": {
+        "file": "Services/OrderService.cs",
+        "startLine": 9,
+        "startColumn": 41,
+        "endLine": 9,
+        "endColumn": 67
+      }
+    },
+    {
+      "from": "Sample.Services.OrderService",
+      "to": "Sample.Domain.Order",
+      "kind": "type-ref",
+      "phase": "runtime",
+      "external": false,
+      "stdlib": false,
+      "count": 2,
+      "location": {
+        "file": "Services/OrderService.cs",
+        "startLine": 16,
+        "startColumn": 5,
+        "endLine": 24,
+        "endColumn": 6
+      }
+    },
+    {
+      "from": "Sample.Services.OrderService",
+      "to": "Sample.Domain.OrderStatus",
+      "kind": "call",
+      "phase": "runtime",
+      "external": false,
+      "stdlib": false,
+      "count": 1,
+      "location": {
+        "file": "Services/OrderService.cs",
+        "startLine": 20,
+        "startColumn": 18,
+        "endLine": 20,
+        "endColumn": 33
+      }
+    },
+    {
+      "from": "Sample.Services.OrderService",
+      "to": "Sample.Services.Notifier",
+      "kind": "call",
+      "phase": "runtime",
+      "external": false,
+      "stdlib": false,
+      "count": 2,
+      "location": {
+        "file": "Services/OrderService.cs",
+        "startLine": 48,
+        "startColumn": 24,
+        "endLine": 48,
+        "endColumn": 38
+      }
+    },
+    {
+      "from": "Sample.Services.OrderService",
+      "to": "Sample.Services.Notifier",
+      "kind": "type-ref",
+      "phase": "runtime",
+      "external": false,
+      "stdlib": false,
+      "count": 1,
+      "location": {
+        "file": "Services/OrderService.cs",
+        "startLine": 48,
+        "startColumn": 13,
+        "endLine": 48,
+        "endColumn": 38
+      }
+    },
+    {
+      "from": "Sample.Services.OrderService",
+      "to": "System.Collections.Generic.List<T>",
+      "kind": "call",
+      "phase": "runtime",
+      "external": true,
+      "stdlib": true,
+      "count": 1,
+      "location": {
+        "file": "Services/OrderService.cs",
+        "startLine": 31,
+        "startColumn": 17,
+        "endLine": 31,
+        "endColumn": 39
+      }
+    },
+    {
+      "from": "Sample.Services.OrderService",
+      "to": "System.Collections.Generic.List<T>",
+      "kind": "type-ref",
+      "phase": "runtime",
+      "external": true,
+      "stdlib": true,
+      "count": 1,
+      "location": {
+        "file": "Services/OrderService.cs",
+        "startLine": 26,
+        "startColumn": 5,
+        "endLine": 34,
+        "endColumn": 6
+      }
+    }
+  ],
+  "cycles": [
+    {
+      "level": "module",
+      "members": [
+        "Sample.Domain",
+        "Sample.Services"
+      ]
+    }
+  ],
+  "health": {
+    "score": 85.3,
+    "categories": [
+      {
+        "category": "Algorithms",
+        "score": 79.9,
+        "weight": 0.121,
+        "penalty": 1.2,
+        "findingCount": 2
+      },
+      {
+        "category": "CleanCode",
+        "score": 80.2,
+        "weight": 0.121,
+        "penalty": 2.5,
+        "findingCount": 7
+      },
+      {
+        "category": "Design",
+        "score": 89.3,
+        "weight": 0.152,
+        "penalty": 6,
+        "findingCount": 2
+      },
+      {
+        "category": "Maintainability",
+        "score": 100,
+        "weight": 0.152,
+        "penalty": 0,
+        "findingCount": 0
+      },
+      {
+        "category": "Paradigm",
+        "score": 81.9,
+        "weight": 0.091,
+        "penalty": 3.6,
+        "findingCount": 2
+      },
+      {
+        "category": "Patterns",
+        "score": 98.1,
+        "weight": 0.061,
+        "penalty": 0.6,
+        "findingCount": 1
+      },
+      {
+        "category": "Principles",
+        "score": 89.2,
+        "weight": 0.121,
+        "penalty": 0.6,
+        "findingCount": 1
+      },
+      {
+        "category": "Security",
+        "score": 71.9,
+        "weight": 0.182,
+        "penalty": 1.8,
+        "findingCount": 1
+      }
+    ],
+    "explanation": [
+      "Mean of 3 module score(s), weighted by lines of code (58 total).",
+      "Lowest: Sample.Domain = 82.6 (8 lines).",
+      "Lowest: Sample.Services = 84.6 (45 lines).",
+      "Lowest: Sample.Legacy = 96.2 (5 lines)."
+    ]
+  },
+  "skippedRules": [
+    {
+      "ruleId": "FUN001",
+      "module": "Sample.Domain",
+      "reason": "paradigm-not-detected",
+      "message": "Functional rule not applicable: module shows no functional style"
+    },
+    {
+      "ruleId": "FUN002",
+      "module": "Sample.Domain",
+      "reason": "paradigm-not-detected",
+      "message": "Functional rule not applicable: module shows no functional style"
+    },
+    {
+      "ruleId": "FUN003",
+      "module": "Sample.Domain",
+      "reason": "paradigm-not-detected",
+      "message": "Functional rule not applicable: module shows no functional style"
+    },
+    {
+      "ruleId": "FUN004",
+      "module": "Sample.Domain",
+      "reason": "paradigm-not-detected",
+      "message": "Functional rule not applicable: module shows no functional style"
+    },
+    {
+      "ruleId": "FUN005",
+      "module": "Sample.Domain",
+      "reason": "paradigm-not-detected",
+      "message": "Functional rule not applicable: module shows no functional style"
+    },
+    {
+      "ruleId": "STR001",
+      "module": "Sample.Domain",
+      "reason": "paradigm-not-detected",
+      "message": "Structural rule not applicable: module has no free functions or branching"
+    },
+    {
+      "ruleId": "STR001",
+      "module": "Sample.Legacy",
+      "reason": "paradigm-not-detected",
+      "message": "Structural rule not applicable: module has no free functions or branching"
+    },
+    {
+      "ruleId": "STR002",
+      "module": "Sample.Domain",
+      "reason": "paradigm-not-detected",
+      "message": "Structural rule not applicable: module has no free functions or branching"
+    },
+    {
+      "ruleId": "STR002",
+      "module": "Sample.Legacy",
+      "reason": "paradigm-not-detected",
+      "message": "Structural rule not applicable: module has no free functions or branching"
+    },
+    {
+      "ruleId": "STR003",
+      "module": "Sample.Domain",
+      "reason": "paradigm-not-detected",
+      "message": "Structural rule not applicable: module has no free functions or branching"
+    },
+    {
+      "ruleId": "STR003",
+      "module": "Sample.Legacy",
+      "reason": "paradigm-not-detected",
+      "message": "Structural rule not applicable: module has no free functions or branching"
+    }
+  ],
+  "checks": {
+    "sarifFile": "out.sarif",
+    "resultCount": 16
+  },
+  "diagnostics": []
+}

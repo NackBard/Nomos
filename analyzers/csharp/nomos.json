@@ -1,9 +1,0 @@
-{
-  "languages": { "csharp": { "paradigms": ["oop", "structural"] } },
-  "exclude": ["tests/**"],
-  "layers": [
-    { "name": "Contracts", "patterns": ["Nomos.Abstractions*"], "mayDependOn": [] },
-    { "name": "Platform", "patterns": ["Nomos.Core*", "Nomos.Graph*", "Nomos.Reporting*"], "mayDependOn": ["Contracts"] },
-    { "name": "Plugins", "patterns": ["Nomos.Analyzers*", "Nomos.Languages*"], "mayDependOn": ["Contracts", "Platform"] }
-  ]
-}

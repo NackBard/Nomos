@@ -79,7 +79,9 @@ public sealed class ToyAdapter : ILanguageAdapter
 
 public class EngineTests
 {
-    private static readonly ComponentCatalog Catalog = ComponentCatalog.Discover([typeof(EngineTests).Assembly]);
+    private static readonly ComponentCatalog Catalog = new(
+        [new EveryTypeAnalyzer(), new OtherParadigmAnalyzer(), new OtherLanguageAnalyzer(), new CrashingAnalyzer(), new OptInAnalyzer(), new ModuleListAnalyzer()],
+        [new ToyAdapter()]);
 
     private static Task<AnalysisResult> Run(NomosConfig? config = null, params string[] types) =>
         new AnalysisEngine(Catalog).RunAsync(new AnalysisRequest
@@ -90,7 +92,7 @@ public class EngineTests
         });
 
     [Fact]
-    public void Catalog_DiscoversAnalyzersAdaptersAndTheirMetadata()
+    public void Catalog_ExposesAnalyzerMetadataFromTheAttribute()
     {
         var analyzer = Catalog.Analyzers.Single(a => a.Descriptor.Id == "T001");
         Assert.Equal("Test", analyzer.Descriptor.Category);
@@ -198,9 +200,13 @@ public class EngineTests
     }
 
     [Fact]
+    public void Catalog_RejectsDuplicateIds() =>
+        Assert.Throws<ArgumentException>(() => new ComponentCatalog([new EveryTypeAnalyzer(), new EveryTypeAnalyzer()], []));
+
+    [Fact]
     public void Config_LoadsJsonWithCommentsAndThresholds()
     {
-        var path = Path.Combine(Directory.CreateTempSubdirectory().FullName, NomosConfig.FileName);
+        var path = Path.Combine(Directory.CreateTempSubdirectory().FullName, "nomos.json");
         File.WriteAllText(path, """
             {
               // comment
@@ -220,7 +226,7 @@ public class EngineTests
     [Fact]
     public void Config_ReportsMalformedFiles()
     {
-        var path = Path.Combine(Directory.CreateTempSubdirectory().FullName, NomosConfig.FileName);
+        var path = Path.Combine(Directory.CreateTempSubdirectory().FullName, "nomos.json");
         File.WriteAllText(path, "{ nope");
         Assert.Throws<ConfigurationException>(() => NomosConfig.Load(path));
     }

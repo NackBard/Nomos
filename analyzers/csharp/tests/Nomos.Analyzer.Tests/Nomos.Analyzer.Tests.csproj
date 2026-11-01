@@ -9,6 +9,6 @@
     <PackageReference Include="xunit.runner.visualstudio" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Nomos.Cli\Nomos.Cli.csproj" />
+    <ProjectReference Include="..\..\src\Nomos.Analyzer.CSharp\Nomos.Analyzer.CSharp.csproj" />
   </ItemGroup>
 </Project>

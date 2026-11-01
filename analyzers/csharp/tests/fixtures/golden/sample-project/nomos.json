@@ -1,9 +1,10 @@
 {
-  "languages": { "csharp": { "paradigms": ["oop", "structural"] } },
+  "schemaVersion": "1.0.0",
+  "analyzers": [{ "language": "csharp", "command": ["nomos-csharp"] }],
+  "paradigms": { "csharp": ["oop", "structural"] },
   "layers": [
     { "name": "Domain", "patterns": ["Sample.Domain*"], "mayDependOn": [] },
     { "name": "Services", "patterns": ["Sample.Services*"], "mayDependOn": ["Domain"] }
   ],
-  "analyzers": { "CC005": { "severity": "Minor" } },
-  "suppressions": [ { "id": "CC001", "path": "Legacy/**" } ]
+  "rules": { "CS.NAM001": { "severity": "minor" } }
 }

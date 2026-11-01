@@ -9,15 +9,6 @@
     <PackageReference Include="xunit.runner.visualstudio" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Nomos.Core\Nomos.Core.csproj" />
-    <ProjectReference Include="..\..\src\Nomos.Languages.CSharp\Nomos.Languages.CSharp.csproj" />
-    <ProjectReference Include="..\..\src\Nomos.Analyzers.Principles\Nomos.Analyzers.Principles.csproj" />
-    <ProjectReference Include="..\..\src\Nomos.Analyzers.CleanCode\Nomos.Analyzers.CleanCode.csproj" />
-    <ProjectReference Include="..\..\src\Nomos.Analyzers.Paradigms\Nomos.Analyzers.Paradigms.csproj" />
-    <ProjectReference Include="..\..\src\Nomos.Analyzers.Algorithms\Nomos.Analyzers.Algorithms.csproj" />
-    <ProjectReference Include="..\..\src\Nomos.Analyzers.Design\Nomos.Analyzers.Design.csproj" />
-    <ProjectReference Include="..\..\src\Nomos.Analyzers.Patterns\Nomos.Analyzers.Patterns.csproj" />
-    <ProjectReference Include="..\..\src\Nomos.Analyzers.Maintainability\Nomos.Analyzers.Maintainability.csproj" />
-    <ProjectReference Include="..\..\src\Nomos.Analyzers.Security\Nomos.Analyzers.Security.csproj" />
+    <ProjectReference Include="..\..\src\Nomos.Analyzer.CSharp\Nomos.Analyzer.CSharp.csproj" />
   </ItemGroup>
 </Project>

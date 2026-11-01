@@ -12,7 +12,6 @@ node_modules/
 
 # Nomos output
 nomos-report/
-**/plugins/*.dll
 
 # AI assistant context and local agent settings: kept on the developer's machine only
 CLAUDE.md
@@ -39,3 +38,6 @@ GEMINI.md
 .idea/
 Thumbs.db
 .DS_Store
+
+# Extension working files
+.nomos/

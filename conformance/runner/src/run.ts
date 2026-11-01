@@ -162,7 +162,7 @@ export function runConformance(analyzers: Analyzer[], only?: string): Check[] {
             const second = analyze(analyzer, root, sarifRelative);
             if (second.text !== first.text || fs.readFileSync(sarifFile, "utf8") !== sarifText) errors.push("two runs on the same input differ (output is not deterministic)");
           } else {
-            if (manifest && first.facts.checks === undefined) errors.push("--sarif was passed but facts.checks and the SARIF file are missing (capabilities.sarif is advertised)");
+            if (manifest?.capabilities.sarif !== false && first.facts.checks === undefined) errors.push("--sarif was passed but facts.checks and the SARIF file are missing (capabilities.sarif is advertised)");
             const second = analyze(analyzer, root, sarifRelative);
             if (second.text !== first.text) errors.push("two runs on the same input differ (output is not deterministic)");
           }

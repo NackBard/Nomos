@@ -1,7 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
 import YAML from "yaml";
-import { casesDir, contractsDir, rulesDir } from "./paths.ts";
+import { casesDir, contractsDir, repoRoot, rulesDir } from "./paths.ts";
+import { renderRulesDoc, rulesDocPath } from "./rules-doc.ts";
 import { createAjv, formatErrors, loadValidators, readJson, schemaFiles } from "./schemas.ts";
 
 /** Validates contracts, spec/rules and conformance cases. Returns error messages; empty means success. */
@@ -84,5 +85,14 @@ export function validateRepository(): string[] {
       }
     }
   }
+
+  // 4. The workspace file of this repository and the generated rule catalog.
+  const workspace = path.join(repoRoot, "nomos.json");
+  const validateWorkspace = validators.get("nomos")!;
+  if (!validateWorkspace(readJson(workspace))) {
+    for (const message of formatErrors(validateWorkspace)) errors.push(`nomos.json: ${message}`);
+  }
+  const documented = fs.existsSync(rulesDocPath) ? fs.readFileSync(rulesDocPath, "utf8").replaceAll("\r\n", "\n") : "";
+  if (documented !== renderRulesDoc()) errors.push("docs/ANALYZERS.md is out of date: run npm run rules-doc");
   return errors;
 }
