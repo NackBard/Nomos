@@ -78,6 +78,17 @@ export function validateRepository(): string[] {
           errors.push(`cases/${id}/${language}: expectSarif is true but expected.sarif.json is missing`);
         }
       }
+      for (const language of spec.config ? (spec.languages as string[]) : []) {
+        const config = path.join(dir, language, "nomos.json");
+        if (!fs.existsSync(config)) {
+          errors.push(`cases/${id}/${language}: config is true but nomos.json is missing`);
+          continue;
+        }
+        const validateConfig = validators.get("nomos")!;
+        if (!validateConfig(readJson(config))) {
+          for (const message of formatErrors(validateConfig)) errors.push(`cases/${id}/${language}/nomos.json: ${message}`);
+        }
+      }
       for (const parity of (spec.parity ?? []) as { metric: string; entities: Record<string, string> }[]) {
         for (const language of Object.keys(parity.entities)) {
           if (!spec.languages.includes(language)) errors.push(`cases/${id}/case.json: parity for "${parity.metric}" names language "${language}" that is not in languages`);

@@ -19,7 +19,7 @@ internal static class SpecRules
         {
             using var reader = new StreamReader(assembly.GetManifestResourceStream(name)!);
             var file = deserializer.Deserialize<SpecFile>(reader);
-            foreach (var rule in file.Rules) texts[rule.Id] = new RuleText(rule.Title, rule.Description, rule.Rationale);
+            foreach (var rule in file.Rules) texts[rule.Id] = new RuleText(rule.Title, rule.Description, rule.Rationale, rule.Requires);
         }
         return texts;
     }
@@ -38,5 +38,7 @@ internal static class SpecRules
         public string Description { get; set; } = "";
 
         public string Rationale { get; set; } = "";
+
+        public List<string> Requires { get; set; } = [];
     }
 }

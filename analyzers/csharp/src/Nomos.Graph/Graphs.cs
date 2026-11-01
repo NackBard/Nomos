@@ -136,6 +136,43 @@ public static class BlastRadius
         var others = Math.Max(1, graph.Nodes.Count() - 1);
         return new BlastRadiusResult(node, graph.Predecessors(node).Count(p => p != node), affected, distance.Values.Max(), (double)affected.Count / others);
     }
+
+    /// <summary>
+    /// Counts the transitive dependents of every node in one pass over the condensation of the graph, so that the cost does
+    /// not grow with one walk per node. Memory is one bit per pair of component and node.
+    /// </summary>
+    /// <param name="graph">Dependency graph; an edge A to B means A depends on B.</param>
+    public static IReadOnlyDictionary<string, int> Counts(DirectedGraph graph)
+    {
+        var components = Tarjan.StronglyConnectedComponents(graph);
+        var nodeIndex = graph.Nodes.Select((n, i) => (n, i)).ToDictionary(p => p.n, p => p.i, StringComparer.Ordinal);
+        var componentOf = new Dictionary<string, int>(StringComparer.Ordinal);
+        for (var c = 0; c < components.Count; c++)
+            foreach (var member in components[c]) componentOf[member] = c;
+
+        var words = (nodeIndex.Count + 63) / 64;
+        var reached = new ulong[components.Count][];
+        var counts = new Dictionary<string, int>(StringComparer.Ordinal);
+        // Tarjan emits a component after everything it depends on, so going backwards visits dependents first.
+        for (var c = components.Count - 1; c >= 0; c--)
+        {
+            var bits = reached[c] = new ulong[words];
+            foreach (var member in components[c])
+            {
+                foreach (var dependent in graph.Predecessors(member))
+                {
+                    var other = componentOf[dependent];
+                    if (other == c) continue;
+                    var from = reached[other];
+                    for (var w = 0; w < words; w++) bits[w] |= from[w];
+                    foreach (var outside in components[other]) bits[nodeIndex[outside] / 64] |= 1UL << (nodeIndex[outside] % 64);
+                }
+            }
+            var total = bits.Sum(System.Numerics.BitOperations.PopCount) + components[c].Count - 1;
+            foreach (var member in components[c]) counts[member] = total;
+        }
+        return counts;
+    }
 }
 
 /// <summary>Robert C. Martin's package metrics.</summary>
@@ -161,8 +198,11 @@ public sealed class DependencyGraphs
 {
     private const string CacheKey = "Nomos.Graph.DependencyGraphs";
 
+    private readonly Lazy<IReadOnlyDictionary<string, int>> _blastRadii;
+
     private DependencyGraphs(ProjectModel model)
     {
+        _blastRadii = new(() => BlastRadius.Counts(Types));
         var moduleOf = model.AllTypes.GroupBy(t => t.Id).ToDictionary(g => g.Key, g => g.First().ModuleName);
         foreach (var type in model.AllTypes)
         {
@@ -192,6 +232,9 @@ public sealed class DependencyGraphs
 
     /// <summary>Gets the module-level graph.</summary>
     public DirectedGraph Modules { get; } = new();
+
+    /// <summary>Gets the blast radius of every type by id, computed once.</summary>
+    public IReadOnlyDictionary<string, int> BlastRadii => _blastRadii.Value;
 
     /// <summary>Gets package metrics by module name.</summary>
     public Dictionary<string, PackageMetrics> Packages { get; } = new(StringComparer.Ordinal);

@@ -88,6 +88,8 @@ public static class SizeMetrics
 /// <summary>Measures of a single callable by spec/metrics.md, shared by facts and analyzers.</summary>
 public static class CallableMetrics
 {
+    private static readonly HashSet<string> GrowingCalls = ["Add", "AddRange", "Push", "Enqueue", "Insert", "Append"];
+
     /// <summary>Gets the order of a callable: 1 for plain data, plus the deepest nesting of function types in its signature.</summary>
     /// <param name="callable">The callable.</param>
     public static int HofOrder(Callable callable) =>
@@ -102,6 +104,32 @@ public static class CallableMetrics
     public static IReadOnlyList<string> TestedTypes(Callable callable) =>
         [.. callable.Body.All<TypeTestExpression>().Where(t => t.TestedType is { IsExternal: false, Kind: TypeRefKind.Class or TypeRefKind.Interface or TypeRefKind.Struct })
             .Select(t => t.TestedType!.Name).Distinct(StringComparer.Ordinal)];
+
+    /// <summary>Gets the power of the extra memory a callable needs: growing collections, sized arrays, recursion depth.</summary>
+    /// <param name="callable">The callable.</param>
+    public static int SpaceDegree(Callable callable)
+    {
+        var degree = 0;
+        foreach (var (node, depth) in callable.Body.WithLoopDepth())
+        {
+            if (node is InvocationExpression call && GrowingCalls.Contains(call.Target.Name) && call.Target.IsExternal) degree = Math.Max(degree, depth);
+            else if (node is ObjectCreationExpression { CreatedType.Kind: TypeRefKind.Array } array)
+            {
+                var sized = array.Arguments.Count(a => a is not LiteralExpression);
+                if (sized > 0) degree = Math.Max(degree, sized + depth);
+            }
+        }
+        return callable.Body.All<InvocationExpression>().Any(i => i.Target.Id == callable.Id) ? Math.Max(degree, 1) : degree;
+    }
+
+    /// <summary>Gets whether a node allocates on the heap: a reference-type object, an array or a lambda.</summary>
+    /// <param name="node">The node.</param>
+    public static bool Allocates(IrNode node) => node is LambdaExpression or ObjectCreationExpression { CreatedType.Kind: not TypeRefKind.Struct };
+
+    /// <summary>Gets the deepest loop nesting at which a callable allocates.</summary>
+    /// <param name="callable">The callable.</param>
+    public static int AllocationDepth(Callable callable) =>
+        callable.Body.WithLoopDepth().Where(n => Allocates(n.Node)).Select(n => n.LoopDepth).DefaultIfEmpty(0).Max();
 
     private static int FunctionDepth(TypeRef? type) => type switch
     {
@@ -247,4 +275,20 @@ public static class TypeMetrics
         }
         return result;
     }
+
+    /// <summary>
+    /// Gets the other type a method uses most data of, by ordinal id on a tie; <c>null</c> when it uses none.
+    /// Records and structs do not count: their data is meant to be read (spec/metrics.md).
+    /// </summary>
+    /// <param name="callable">The method.</param>
+    /// <param name="model">The project model.</param>
+    public static (string Owner, IReadOnlySet<string> Members)? MostUsedForeignType(Callable callable, ProjectModel model)
+    {
+        var candidates = ForeignData(callable, model).Where(p => model.FindType(p.Key)?.Kind is not (TypeKind.Record or TypeKind.Struct));
+        return candidates.OrderByDescending(p => p.Value.Count).ThenBy(p => p.Key, StringComparer.Ordinal).Select(p => ((string, IReadOnlySet<string>)?)(p.Key, p.Value)).FirstOrDefault();
+    }
+
+    /// <summary>Gets whether foreignMembers and ownMembers are defined for a callable: an instance method with a body.</summary>
+    /// <param name="callable">The callable.</param>
+    public static bool HasMemberUse(Callable callable) => callable is { Kind: CallableKind.Method, Body: not null } && !callable.Has(Modifiers.Static);
 }

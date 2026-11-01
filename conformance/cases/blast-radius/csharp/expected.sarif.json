@@ -1,0 +1,8 @@
+{
+  "results": [
+    { "ruleId": "DSN006", "file": "Chain.cs", "startLine": 3, "measured": { "metric": "blastRadius", "value": 8, "threshold": 4 } },
+    { "ruleId": "DSN006", "file": "Chain.cs", "startLine": 7, "measured": { "metric": "blastRadius", "value": 7, "threshold": 4 } },
+    { "ruleId": "DSN006", "file": "Chain.cs", "startLine": 12, "measured": { "metric": "blastRadius", "value": 6, "threshold": 4 } },
+    { "ruleId": "DSN006", "file": "Chain.cs", "startLine": 17, "measured": { "metric": "blastRadius", "value": 5, "threshold": 4 } }
+  ]
+}

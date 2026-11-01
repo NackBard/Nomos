@@ -1,0 +1,8 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "complexity-estimates",
+  "title": "Time and space estimates of loops, halving, callees and recursion shapes, allocation depth; ALG001, ALG003 and ALG004 at their default thresholds",
+  "covers": ["timeDegree", "timeLogFactor", "timeExponential", "spaceDegree", "allocationDepth", "ALG001", "ALG003", "ALG004"],
+  "languages": ["csharp"],
+  "expectSarif": true
+}

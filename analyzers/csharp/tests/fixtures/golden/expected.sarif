@@ -1583,7 +1583,12 @@
             "confidence": "medium",
             "explanation": "Estimated from nested loops over inputs of unknown size. Small inputs may make this irrelevant.",
             "module": "Sample.Services",
-            "entity": "Sample.Services.OrderService.Matches"
+            "entity": "Sample.Services.OrderService.Matches",
+            "measured": {
+              "metric": "timeDegree",
+              "value": 2,
+              "threshold": 2
+            }
           }
         },
         {
@@ -1619,7 +1624,12 @@
             "confidence": "medium",
             "explanation": "Estimated from nested loops over inputs of unknown size. Small inputs may make this irrelevant.",
             "module": "Sample.Services",
-            "entity": "Sample.Services.OrderService.Pairs"
+            "entity": "Sample.Services.OrderService.Pairs",
+            "measured": {
+              "metric": "timeDegree",
+              "value": 2,
+              "threshold": 2
+            }
           }
         },
         {

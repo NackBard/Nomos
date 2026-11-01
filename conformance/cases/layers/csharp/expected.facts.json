@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "1.1.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "csharp" },
+  "files": [
+    { "path": "Domain.cs", "lines": 6, "loc": 5 },
+    { "path": "Rich.cs", "lines": 7, "loc": 6 },
+    { "path": "Services.cs", "lines": 6, "loc": 5 },
+    { "path": "Tools.cs", "lines": 6, "loc": 5 },
+    { "path": "Web.cs", "lines": 8, "loc": 7 }
+  ],
+  "modules": [
+    { "id": "App.Domain", "name": "App.Domain", "files": ["Domain.cs"], "loc": 5, "metrics": {}, "paradigmEvidence": [] },
+    { "id": "App.Domain.Domain", "name": "App.Domain.Domain", "files": ["Rich.cs"], "loc": 6, "metrics": {}, "paradigmEvidence": [] },
+    { "id": "App.Services", "name": "App.Services", "files": ["Services.cs"], "loc": 5, "metrics": {}, "paradigmEvidence": [] },
+    { "id": "App.Tools", "name": "App.Tools", "files": ["Tools.cs"], "loc": 5, "metrics": {}, "paradigmEvidence": [] },
+    { "id": "App.Web", "name": "App.Web", "files": ["Web.cs"], "loc": 7, "metrics": {}, "paradigmEvidence": [] }
+  ],
+  "types": [
+    { "id": "App.Domain.Entity", "name": "Entity", "module": "App.Domain", "kind": "class", "isAbstract": false, "location": { "file": "Domain.cs", "startLine": 3 }, "metrics": {} },
+    { "id": "App.Domain.Domain.Rich", "name": "Rich", "module": "App.Domain.Domain", "kind": "class", "isAbstract": false, "location": { "file": "Rich.cs", "startLine": 3 }, "metrics": {} },
+    { "id": "App.Services.Svc", "name": "Svc", "module": "App.Services", "kind": "class", "isAbstract": false, "location": { "file": "Services.cs", "startLine": 3 }, "metrics": {} },
+    { "id": "App.Tools.Tool", "name": "Tool", "module": "App.Tools", "kind": "class", "isAbstract": false, "location": { "file": "Tools.cs", "startLine": 3 }, "metrics": {} },
+    { "id": "App.Web.Page", "name": "Page", "module": "App.Web", "kind": "class", "isAbstract": false, "location": { "file": "Web.cs", "startLine": 3 }, "metrics": {} }
+  ],
+  "functions": [],
+  "dependencies": [
+    { "from": "App.Domain.Entity", "to": "App.Services.Svc", "kind": "type-ref", "phase": "runtime" },
+    { "from": "App.Domain.Domain.Rich", "to": "App.Domain.Entity", "kind": "type-ref", "phase": "runtime" },
+    { "from": "App.Domain.Domain.Rich", "to": "App.Web.Page", "kind": "type-ref", "phase": "runtime" },
+    { "from": "App.Services.Svc", "to": "App.Domain.Entity", "kind": "type-ref", "phase": "runtime" },
+    { "from": "App.Tools.Tool", "to": "App.Web.Page", "kind": "type-ref", "phase": "runtime" },
+    { "from": "App.Web.Page", "to": "App.Domain.Entity", "kind": "type-ref", "phase": "runtime" },
+    { "from": "App.Web.Page", "to": "App.Services.Svc", "kind": "type-ref", "phase": "runtime" },
+    { "from": "App.Web.Page", "to": "App.Tools.Tool", "kind": "type-ref", "phase": "runtime" }
+  ],
+  "cycles": [
+    { "level": "type", "members": ["App.Domain.Entity", "App.Services.Svc"] },
+    { "level": "type", "members": ["App.Tools.Tool", "App.Web.Page"] },
+    { "level": "module", "members": ["App.Domain", "App.Services"] },
+    { "level": "module", "members": ["App.Tools", "App.Web"] }
+  ],
+  "skippedRules": [],
+  "diagnostics": []
+}

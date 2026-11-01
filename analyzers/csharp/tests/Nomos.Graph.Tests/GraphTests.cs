@@ -47,6 +47,42 @@ public class GraphTests
         Assert.Equal(0.6, radius.ShareOfGraph, 3);
     }
 
+    [Theory]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    public void BlastRadiusCounts_AgreeWithTheWalkOnRandomGraphs(int seed)
+    {
+        var random = new Random(seed);
+        var graph = new DirectedGraph();
+        for (var i = 0; i < 300; i++) graph.AddNode($"n{i}");
+        for (var i = 0; i < 700; i++)
+        {
+            var (from, to) = (random.Next(300), random.Next(300));
+            if (from != to) graph.AddEdge($"n{from}", $"n{to}");
+        }
+
+        var counts = BlastRadius.Counts(graph);
+
+        foreach (var node in graph.Nodes) Assert.Equal(BlastRadius.Compute(graph, node).Transitive.Count, counts[node]);
+    }
+
+    [Fact]
+    public void BlastRadiusCounts_HandleLongChainsAndRings()
+    {
+        var graph = new DirectedGraph();
+        for (var i = 0; i < 20_000; i++) graph.AddEdge($"n{i + 1}", $"n{i}");
+        graph.AddEdge("r1", "r2");
+        graph.AddEdge("r2", "r1");
+        graph.AddEdge("r1", "n20000");
+
+        var counts = BlastRadius.Counts(graph);
+
+        Assert.Equal(20_002, counts["n0"]);
+        Assert.Equal(2, counts["n20000"]);
+        Assert.Equal(1, counts["r1"]);
+    }
+
     [Fact]
     public void PackageMetrics_FollowMartinFormulas()
     {

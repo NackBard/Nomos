@@ -48,3 +48,12 @@ test("a result without an explanation is rejected", () => {
   broken.runs[0].results[0].properties.explanation = " ";
   assert.match(checkSarif(JSON.stringify(broken), context(52)).join("\n"), /explanation is empty/);
 });
+
+test("the expected file is compared only for the rules in covers, and a stated measurement must match", () => {
+  const measured = { metric: "lines", value: 52, threshold: 40 };
+  const expected = (m: unknown) => ({ results: [{ ruleId: "CC001", file: "a.cs", startLine: 3, measured: m as any }] });
+  assert.deepEqual(checkSarif(log(measured), { ...context(52), expected: { results: [] }, covers: new Set(["DSN002"]) }), []);
+  assert.deepEqual(checkSarif(log(measured), { ...context(52), expected: expected(measured), covers: new Set(["CC001"]) }), []);
+  assert.deepEqual(checkSarif(log(measured), { ...context(52), expected: { results: [] }, covers: new Set(["CC001"]) }), ["result CC001 a.cs:3: reported but not expected"]);
+  assert.match(checkSarif(log(measured), { ...context(52), expected: expected({ ...measured, threshold: 41 }), covers: new Set(["CC001"]) })[0], /measured is/);
+});

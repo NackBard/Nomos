@@ -1,0 +1,6 @@
+{
+  "results": [
+    { "ruleId": "DSN004", "file": "God.cs", "startLine": 3, "measured": { "metric": "wmc", "value": 8, "threshold": 7 } },
+    { "ruleId": "DSN005", "file": "Printer.cs", "startLine": 14, "measured": { "metric": "foreignMembers", "value": 3, "threshold": 3 } }
+  ]
+}

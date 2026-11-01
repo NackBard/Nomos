@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 import YAML from "yaml";
-import { activatingKinds, checkApplicability, checkParity, compareFacts } from "./compare.ts";
+import { activatingKinds, checkApplicability, checkParity, checkRequiredInputs, compareFacts } from "./compare.ts";
 import type { CaseSpec } from "./compare.ts";
 import { casesDir, repoRoot, rulesDir } from "./paths.ts";
 import { checkSarif } from "./sarif.ts";
@@ -25,7 +25,7 @@ function parseJson(text: string): { value?: any; error?: string } {
   }
 }
 
-interface SpecRule { category: string; paradigms: string[]; title: string; description: string; rationale: string }
+interface SpecRule { category: string; paradigms: string[]; title: string; description: string; rationale: string; requires?: string[] }
 
 function loadSpecRules(): { ids: Set<string>; byId: Map<string, SpecRule> } {
   const ids = new Set<string>();
@@ -33,7 +33,7 @@ function loadSpecRules(): { ids: Set<string>; byId: Map<string, SpecRule> } {
   for (const file of fs.readdirSync(rulesDir).filter((f) => f.endsWith(".yaml"))) {
     for (const rule of YAML.parse(fs.readFileSync(path.join(rulesDir, file), "utf8")).rules) {
       ids.add(rule.id);
-      byId.set(rule.id, { category: rule.category, paradigms: rule.paradigms, title: rule.title, description: rule.description, rationale: rule.rationale });
+      byId.set(rule.id, { category: rule.category, paradigms: rule.paradigms, title: rule.title, description: rule.description, rationale: rule.rationale, requires: rule.requires });
     }
   }
   return { ids, byId };
@@ -82,8 +82,8 @@ function checkManifest(analyzer: Analyzer, validators: ReturnType<typeof loadVal
   return { check: { name: `${analyzer.language}: manifest`, errors }, supported, manifest: valid };
 }
 
-function analyze(analyzer: Analyzer, root: string, sarif?: string): { facts?: any; errors: string[]; text?: string; code?: number } {
-  const run = invoke(analyzer.command, ["analyze", "--root", root, ...(sarif ? ["--sarif", sarif] : [])]);
+function analyze(analyzer: Analyzer, root: string, sarif?: string, config?: string): { facts?: any; errors: string[]; text?: string; code?: number } {
+  const run = invoke(analyzer.command, ["analyze", "--root", root, ...(sarif ? ["--sarif", sarif] : []), ...(config ? ["--config", config] : [])]);
   if (run.code !== 0 && run.code !== 4) return { errors: [`"analyze" exited with ${run.code ?? "no code"} (expected 0 or 4); stderr: ${firstLine(run.stderr)}`] };
   const parsed = parseJson(run.stdout);
   return parsed.error ? { errors: [parsed.error] } : { facts: parsed.value, text: run.stdout, errors: [], code: run.code ?? undefined };
@@ -119,7 +119,8 @@ export function runConformance(analyzers: Analyzer[], only?: string): Check[] {
       const sarifFile = path.join(repoRoot, sarifRelative);
       fs.mkdirSync(path.dirname(sarifFile), { recursive: true });
       fs.rmSync(sarifFile, { force: true });
-      const first = analyze(analyzer, root, sarifRelative);
+      const configFile = spec.config ? path.join(casesDir, id, analyzer.language, "nomos.json") : undefined;
+      const first = analyze(analyzer, root, sarifRelative, configFile);
       errors.push(...first.errors);
       if (first.facts) {
         const validate = validators.get("facts")!;
@@ -137,6 +138,10 @@ export function runConformance(analyzers: Analyzer[], only?: string): Check[] {
             const rule = specRules.byId.get(ruleId);
             return rule ? [{ id: ruleId, paradigms: rule.paradigms }] : [];
           })));
+          errors.push(...checkRequiredInputs(first.facts, configFile ? readJson(configFile) : undefined, [...supported].flatMap((ruleId) => {
+            const rule = specRules.byId.get(ruleId);
+            return rule ? [{ id: ruleId, requires: rule.requires }] : [];
+          })));
           if (first.text!.includes(repoRoot) || first.text!.includes(repoRoot.replaceAll("\\", "/"))) errors.push("output contains an absolute path");
           const manifest = manifests.get(analyzer.language);
           if (manifest && fs.existsSync(sarifFile)) {
@@ -149,12 +154,13 @@ export function runConformance(analyzers: Analyzer[], only?: string): Check[] {
               facts: first.facts,
               specRules: specRules.byId,
               expected: spec.expectSarif && fs.existsSync(expectedFile) ? readJson(expectedFile) : undefined,
+              covers: new Set(spec.covers ?? []),
             }).map((m) => `sarif: ${m}`));
-            const second = analyze(analyzer, root, sarifRelative);
+            const second = analyze(analyzer, root, sarifRelative, configFile);
             if (second.text !== first.text || fs.readFileSync(sarifFile, "utf8") !== sarifText) errors.push("two runs on the same input differ (output is not deterministic)");
           } else {
             if (manifest?.capabilities.sarif !== false && first.facts.checks === undefined) errors.push("--sarif was passed but facts.checks and the SARIF file are missing (capabilities.sarif is advertised)");
-            const second = analyze(analyzer, root, sarifRelative);
+            const second = analyze(analyzer, root, sarifRelative, configFile);
             if (second.text !== first.text) errors.push("two runs on the same input differ (output is not deterministic)");
           }
         }

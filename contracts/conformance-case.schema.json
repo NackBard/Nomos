@@ -1,14 +1,14 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:nomos:contracts:1.0.0:conformance-case",
+  "$id": "urn:nomos:contracts:1.1.0:conformance-case",
   "title": "Conformance case",
-  "description": "Schema of conformance/cases/<id>/case.json. Contract version 1.0.0.",
-  "x-contractVersion": "1.0.0",
+  "description": "Schema of conformance/cases/<id>/case.json. Contract version 1.1.0.",
+  "x-contractVersion": "1.1.0",
   "type": "object",
   "required": ["schemaVersion", "id", "title", "languages"],
   "additionalProperties": false,
   "properties": {
-    "schemaVersion": { "const": "1.0.0" },
+    "schemaVersion": { "enum": ["1.0.0", "1.1.0"], "description": "Minor versions only add optional fields, so cases of 1.0.0 stay valid." },
     "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
     "title": { "type": "string" },
     "covers": { "type": "array", "items": { "type": "string" }, "description": "Metric names or rule ids the case is designed to exercise, e.g. [\"cyclomatic\", \"instability\", \"DSN002\"]." },
@@ -39,7 +39,12 @@
     "expectSarif": {
       "type": "boolean",
       "default": false,
-      "description": "When true, each language folder also has expected.sarif.json (reduced form: ruleId, file, startLine per result) and the analyzer must reproduce it."
+      "description": "When true, each language folder also has expected.sarif.json (reduced form: ruleId, file, startLine per result, optionally measured) and the analyzer must reproduce it for the rules named in covers. Results of other rules are not compared."
+    },
+    "config": {
+      "type": "boolean",
+      "default": false,
+      "description": "Since 1.1.0. When true, each language folder also has nomos.json (contracts/nomos.schema.json) and the harness passes it as --config."
     }
   },
   "$defs": {

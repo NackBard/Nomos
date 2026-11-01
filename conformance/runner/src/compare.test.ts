@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { activatingKinds, checkApplicability, checkParity, compareFacts, toleranceFor, valuesMatch } from "./compare.ts";
+import { activatingKinds, checkApplicability, checkParity, checkRequiredInputs, compareFacts, toleranceFor, valuesMatch } from "./compare.ts";
 import type { CaseSpec } from "./compare.ts";
 
 const spec: CaseSpec = { id: "t", languages: ["csharp", "python"] };
@@ -98,4 +98,14 @@ test("applicability follows the evidence in both directions", () => {
   assert.match(checkApplicability({ modules: [module("fp.lambdas", [])], skippedRules: [] }, activating, rules)[0], /has no paradigm-not-detected record/);
   assert.match(checkApplicability({ modules: [module("fp.higher-order", ["functional"])], skippedRules: [record] }, activating, rules)[0], /recorded as paradigm-not-detected/);
   assert.match(checkApplicability({ modules: [module("fp.lambdas", ["functional"])], skippedRules: [record] }, activating, rules)[0], /activeParadigms functional: reported but not expected/);
+});
+
+test("a rule without its input needs a missing-input record, a rule with it must not have one", () => {
+  const rules = [{ id: "DSN003", requires: ["layer-config"] }, { id: "CC001" }];
+  const record = { ruleId: "DSN003", reason: "missing-input", message: "m" };
+  const layers = { layers: [{ name: "a", patterns: ["*"], mayDependOn: [] }] };
+  assert.deepEqual(checkRequiredInputs(facts({ skippedRules: [record] }), undefined, rules), []);
+  assert.deepEqual(checkRequiredInputs(facts(), layers, rules), []);
+  assert.match(checkRequiredInputs(facts(), undefined, rules)[0], /no missing-input record/);
+  assert.match(checkRequiredInputs(facts({ skippedRules: [record] }), layers, rules)[0], /recorded as missing-input/);
 });

@@ -5,6 +5,7 @@ export interface CaseSpec {
   tolerance?: { default?: Tolerance; metrics?: Record<string, Tolerance> };
   covers?: string[];
   expectSarif?: boolean;
+  config?: boolean;
   parity?: { metric: string; scope: "module" | "type" | "function"; entities: Record<string, string> }[];
 }
 
@@ -135,6 +136,27 @@ export function checkApplicability(facts: any, activating: Map<string, string>, 
       if (!applies && !recorded) errors.push(`module ${module.id} shows none of [${rule.paradigms}] but rule ${rule.id} has no paradigm-not-detected record`);
       if (applies && recorded) errors.push(`module ${module.id} shows a paradigm of rule ${rule.id} but it is recorded as paradigm-not-detected`);
     }
+  }
+  return errors;
+}
+
+/** The inputs of `requires` in spec/rules that a workspace file provides for one rule. */
+function providedInputs(config: any, ruleId: string): Set<string> {
+  const inputs = new Set<string>();
+  if (config?.layers?.length) inputs.add("layer-config");
+  if (config?.rules?.[ruleId]?.threshold?.report !== undefined) inputs.add("coverage-report");
+  return inputs;
+}
+
+/** A rule without its external input has a missing-input record for the whole run, and a rule with it has none. */
+export function checkRequiredInputs(facts: any, config: any, rules: { id: string; requires?: string[] }[]): string[] {
+  const errors: string[] = [];
+  for (const rule of rules.filter((r) => r.requires?.length)) {
+    const provided = providedInputs(config, rule.id);
+    const complete = rule.requires!.every((input) => provided.has(input));
+    const recorded = facts.skippedRules.some((s: any) => s.ruleId === rule.id && s.module === undefined && s.reason === "missing-input");
+    if (!complete && !recorded) errors.push(`rule ${rule.id} lacks [${rule.requires}] but has no missing-input record`);
+    if (complete && recorded) errors.push(`rule ${rule.id} has its input but is recorded as missing-input`);
   }
   return errors;
 }

@@ -1,0 +1,54 @@
+{
+  "schemaVersion": "1.1.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "csharp" },
+  "files": [
+    { "path": "Chain.cs", "lines": 20, "loc": 16 },
+    { "path": "Diamond.cs", "lines": 24, "loc": 20 },
+    { "path": "Ring.cs", "lines": 27, "loc": 22 }
+  ],
+  "modules": [
+    { "id": "Blast.Chain", "name": "Blast.Chain", "files": ["Chain.cs"], "loc": 16, "metrics": {}, "paradigmEvidence": [] },
+    { "id": "Blast.Diamond", "name": "Blast.Diamond", "files": ["Diamond.cs"], "loc": 20, "metrics": {}, "paradigmEvidence": [] },
+    { "id": "Blast.Ring", "name": "Blast.Ring", "files": ["Ring.cs"], "loc": 22, "metrics": {}, "paradigmEvidence": [] }
+  ],
+  "types": [
+    { "id": "Blast.Chain.C1", "name": "C1", "module": "Blast.Chain", "kind": "class", "isAbstract": false, "location": { "file": "Chain.cs", "startLine": 3 }, "metrics": { "lines": 3, "memberCount": 0, "blastRadius": 8 } },
+    { "id": "Blast.Chain.C2", "name": "C2", "module": "Blast.Chain", "kind": "class", "isAbstract": false, "location": { "file": "Chain.cs", "startLine": 7 }, "metrics": { "lines": 4, "memberCount": 1, "blastRadius": 7 } },
+    { "id": "Blast.Chain.C3", "name": "C3", "module": "Blast.Chain", "kind": "class", "isAbstract": false, "location": { "file": "Chain.cs", "startLine": 12 }, "metrics": { "lines": 4, "memberCount": 1, "blastRadius": 6 } },
+    { "id": "Blast.Chain.C4", "name": "C4", "module": "Blast.Chain", "kind": "class", "isAbstract": false, "location": { "file": "Chain.cs", "startLine": 17 }, "metrics": { "lines": 4, "memberCount": 1, "blastRadius": 5 } },
+    { "id": "Blast.Diamond.Bottom", "name": "Bottom", "module": "Blast.Diamond", "kind": "class", "isAbstract": false, "location": { "file": "Diamond.cs", "startLine": 3 }, "metrics": { "lines": 7, "memberCount": 1, "blastRadius": 3 } },
+    { "id": "Blast.Diamond.Left", "name": "Left", "module": "Blast.Diamond", "kind": "class", "isAbstract": false, "location": { "file": "Diamond.cs", "startLine": 11 }, "metrics": { "lines": 3, "memberCount": 0, "blastRadius": 1 } },
+    { "id": "Blast.Diamond.Right", "name": "Right", "module": "Blast.Diamond", "kind": "class", "isAbstract": false, "location": { "file": "Diamond.cs", "startLine": 15 }, "metrics": { "lines": 4, "memberCount": 1, "blastRadius": 1 } },
+    { "id": "Blast.Diamond.Top", "name": "Top", "module": "Blast.Diamond", "kind": "class", "isAbstract": false, "location": { "file": "Diamond.cs", "startLine": 20 }, "metrics": { "lines": 5, "memberCount": 2, "blastRadius": 0 } },
+    { "id": "Blast.Ring.Leaf", "name": "Leaf", "module": "Blast.Ring", "kind": "class", "isAbstract": false, "location": { "file": "Ring.cs", "startLine": 24 }, "metrics": { "lines": 4, "memberCount": 1, "blastRadius": 4 } },
+    { "id": "Blast.Ring.R1", "name": "R1", "module": "Blast.Ring", "kind": "class", "isAbstract": false, "location": { "file": "Ring.cs", "startLine": 3 }, "metrics": { "lines": 4, "memberCount": 1, "blastRadius": 3 } },
+    { "id": "Blast.Ring.R2", "name": "R2", "module": "Blast.Ring", "kind": "class", "isAbstract": false, "location": { "file": "Ring.cs", "startLine": 8 }, "metrics": { "lines": 4, "memberCount": 1, "blastRadius": 3 } },
+    { "id": "Blast.Ring.R3", "name": "R3", "module": "Blast.Ring", "kind": "class", "isAbstract": false, "location": { "file": "Ring.cs", "startLine": 13 }, "metrics": { "lines": 5, "memberCount": 2, "blastRadius": 3 } },
+    { "id": "Blast.Ring.Tail", "name": "Tail", "module": "Blast.Ring", "kind": "class", "isAbstract": false, "location": { "file": "Ring.cs", "startLine": 19 }, "metrics": { "lines": 4, "memberCount": 1, "blastRadius": 0 } }
+  ],
+  "functions": [
+    { "id": "Blast.Diamond.Bottom.Size", "name": "Size", "module": "Blast.Diamond", "type": "Blast.Diamond.Bottom", "kind": "method", "visibility": "public", "location": { "file": "Diamond.cs", "startLine": 5 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 0, "lines": 4, "blastRadius": 3 } }
+  ],
+  "dependencies": [
+    { "from": "Blast.Chain.C2", "to": "Blast.Chain.C1", "kind": "type-ref", "phase": "runtime" },
+    { "from": "Blast.Chain.C3", "to": "Blast.Chain.C2", "kind": "type-ref", "phase": "runtime" },
+    { "from": "Blast.Chain.C4", "to": "Blast.Chain.C3", "kind": "type-ref", "phase": "runtime" },
+    { "from": "Blast.Diamond.Left", "to": "Blast.Diamond.Bottom", "kind": "inheritance", "phase": "runtime" },
+    { "from": "Blast.Diamond.Right", "to": "Blast.Diamond.Bottom", "kind": "type-ref", "phase": "runtime" },
+    { "from": "Blast.Diamond.Top", "to": "Blast.Diamond.Left", "kind": "type-ref", "phase": "runtime" },
+    { "from": "Blast.Diamond.Top", "to": "Blast.Diamond.Right", "kind": "type-ref", "phase": "runtime" },
+    { "from": "Blast.Ring.Leaf", "to": "Blast.Chain.C4", "kind": "type-ref", "phase": "runtime" },
+    { "from": "Blast.Ring.R1", "to": "Blast.Ring.R2", "kind": "type-ref", "phase": "runtime" },
+    { "from": "Blast.Ring.R2", "to": "Blast.Ring.R3", "kind": "type-ref", "phase": "runtime" },
+    { "from": "Blast.Ring.R3", "to": "Blast.Ring.Leaf", "kind": "type-ref", "phase": "runtime" },
+    { "from": "Blast.Ring.R3", "to": "Blast.Ring.R1", "kind": "type-ref", "phase": "runtime" },
+    { "from": "Blast.Ring.Tail", "to": "Blast.Ring.R1", "kind": "type-ref", "phase": "runtime" }
+  ],
+  "cycles": [
+    { "level": "type", "members": ["Blast.Ring.R1", "Blast.Ring.R2", "Blast.Ring.R3"] }
+  ],
+  "skippedRules": [
+    { "ruleId": "DSN003", "reason": "missing-input", "message": "No layers in the configuration" }
+  ],
+  "diagnostics": []
+}

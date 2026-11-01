@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "layers",
+  "title": "DSN003 through nomos.json: upward and skipping dependencies, a pattern that occurs twice in the module id, allowed edges, modules outside all layers",
+  "covers": ["DSN003"],
+  "languages": ["csharp"],
+  "expectSarif": true,
+  "config": true
+}

@@ -4,7 +4,7 @@
 
 Общее ограничение всех этапов: платформа даёт статистику. Пороги приёмки и вердикты не вводятся.
 
-Состояние: этапы 1–4 завершены (D-031, D-032, D-034). Следующий — этап 5.
+Состояние: этапы 1–5 завершены (D-031, D-032, D-034, D-036). Следующий — этап 6.
 
 Как проверить, что всё на месте: `dotnet test Nomos.slnx` в `analyzers/csharp`; `npm run validate`, `npm test`, `npm run selftest`, `npm run csharp` в `conformance/runner`; `npm test`, `npm run check-boundary`, `npm run e2e` в `extension`. CI (`.github/workflows/ci.yml`) зелёный на `main`, он запускается на Ubuntu и Node 22.18 (D-035), его результат смотрит `gh run list`.
 
@@ -51,14 +51,9 @@
 - DSN001–DSN006, включая God class, Feature envy, blast radius; DSN003 по `layers`.
 - Случаи conformance для `blast-radius`, `cycles` на сложных графах.
 
-Отправная точка (на момент завершения этапа 4):
+Завершён, D-036: оценки сложности и `foreignMembers` определены в `spec/metrics.md`, выведены в facts и в `measured` у ALG001, ALG003, ALG004, DSN005; `config` в `case.json` (контракт `conformance-case` 1.1.0); случаи `blast-radius`, `cycles-complex`, `layers`, `design-smells`, `complexity-estimates`; запись `missing-input` у DSN003 и MNT004; blast radius за один проход.
 
-- Уже есть: детекторы ALG001–ALG004 и DSN001–DSN006 с фикстурами и записью в `spec/rules`; метрики `blastRadius`, `atfd`, `tcc`, Мартина в facts; случай `cycles` на простом графе; `layers` в `nomos.json`, которые читает `WorkspaceFile`.
-- `measured` есть у DSN001, DSN004, DSN006. Нет у ALG001, ALG003, ALG004 и DSN005, у которых в spec есть пороги: оценка сложности и `minForeignMembers` пока не определены в `spec/metrics.md` и не выводятся в facts. По D-034 сначала определение в spec и вывод в facts, затем `measured`.
-- Нет случаев conformance с `blast-radius` и `cycles` на сложных графах; DSN003 не проверялся через `nomos.json` в conformance, потому что harness не передаёт `--config`, а в `case.json` нет такого поля. Новое поле — изменение контракта.
-- Blast radius считается обходом на каждый тип, квадратично (D-028); на больших графах это не проверено (D-030).
-
-Перенесено с прошлых этапов, вне состава этапа 5, решать отдельно:
+Перенесено с прошлых этапов, вне состава этапа 6, решать отдельно:
 
 - Балл здоровья нормируется на `LinesOfCode` из IR, а spec требует `loc` модуля (D-034); исправление меняет все баллы.
 - OOP006 смотрит только на классы, записи не учитывает (D-034).
@@ -70,6 +65,8 @@
 - PAT001–PAT007, PAT101–PAT103.
 - MNT001–MNT004 (покрытие из Cobertura/LCOV).
 - SEC001–SEC003 как эвристики, с честной пометкой о границах.
+
+Отправная точка (на момент завершения этапа 5): детекторы PAT, MNT и SEC уже есть в `analyzers/csharp` с фикстурами и записью в `spec/rules`. `measured` нет у правил с порогами вне Algorithms и Design (PRN, PAT, MNT002–MNT004 и др.): сначала определение в `spec/metrics.md` и вывод в facts (D-034). Случаев conformance для этих категорий нет; `case.json` с `config` и `expectSarif` по `covers` теперь позволяет их написать (D-036). Покрытие проверялось только на отсутствие входа: запись `missing-input` у MNT004 есть, путь с настоящим отчётом Cobertura/LCOV через conformance не проходил.
 
 ## Этап 7. Второй язык
 

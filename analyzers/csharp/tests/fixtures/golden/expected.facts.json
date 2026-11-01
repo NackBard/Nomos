@@ -533,13 +533,20 @@
         "endColumn": 88
       },
       "metrics": {
+        "allocationDepth": 0,
         "blastRadius": 0,
         "cyclomatic": 1,
+        "foreignMembers": 0,
         "hofOrder": 1,
         "lambdaNesting": 0,
         "lines": 1,
         "maxNesting": 0,
+        "ownMembers": 0,
         "parameterCount": 6,
+        "spaceDegree": 0,
+        "timeDegree": 0,
+        "timeExponential": 0,
+        "timeLogFactor": 0,
         "typeTests": 0
       }
     },
@@ -558,13 +565,20 @@
         "endColumn": 56
       },
       "metrics": {
+        "allocationDepth": null,
         "blastRadius": 3,
         "cyclomatic": 1,
+        "foreignMembers": null,
         "hofOrder": 1,
         "lambdaNesting": 0,
         "lines": 1,
         "maxNesting": 0,
+        "ownMembers": null,
         "parameterCount": 1,
+        "spaceDegree": null,
+        "timeDegree": null,
+        "timeExponential": null,
+        "timeLogFactor": null,
         "typeTests": 0
       }
     },
@@ -583,13 +597,20 @@
         "endColumn": 68
       },
       "metrics": {
+        "allocationDepth": 0,
         "blastRadius": 2,
         "cyclomatic": 1,
+        "foreignMembers": 0,
         "hofOrder": 1,
         "lambdaNesting": 0,
         "lines": 1,
         "maxNesting": 0,
+        "ownMembers": 0,
         "parameterCount": 1,
+        "spaceDegree": 0,
+        "timeDegree": 0,
+        "timeExponential": 0,
+        "timeLogFactor": 0,
         "typeTests": 0
       }
     },
@@ -608,13 +629,20 @@
         "endColumn": 6
       },
       "metrics": {
+        "allocationDepth": 0,
         "blastRadius": 0,
         "cyclomatic": 3,
+        "foreignMembers": 1,
         "hofOrder": 1,
         "lambdaNesting": 0,
         "lines": 9,
         "maxNesting": 1,
+        "ownMembers": 0,
         "parameterCount": 1,
+        "spaceDegree": 0,
+        "timeDegree": 0,
+        "timeExponential": 0,
+        "timeLogFactor": 0,
         "typeTests": 0
       }
     },
@@ -633,13 +661,20 @@
         "endColumn": 6
       },
       "metrics": {
+        "allocationDepth": 0,
         "blastRadius": 0,
         "cyclomatic": 3,
+        "foreignMembers": 1,
         "hofOrder": 1,
         "lambdaNesting": 0,
         "lines": 9,
         "maxNesting": 2,
+        "ownMembers": 0,
         "parameterCount": 2,
+        "spaceDegree": 0,
+        "timeDegree": 2,
+        "timeExponential": 0,
+        "timeLogFactor": 0,
         "typeTests": 0
       }
     },
@@ -658,13 +693,20 @@
         "endColumn": 6
       },
       "metrics": {
+        "allocationDepth": 0,
         "blastRadius": 0,
         "cyclomatic": 3,
+        "foreignMembers": 0,
         "hofOrder": 1,
         "lambdaNesting": 0,
         "lines": 8,
         "maxNesting": 2,
+        "ownMembers": 0,
         "parameterCount": 2,
+        "spaceDegree": 0,
+        "timeDegree": 2,
+        "timeExponential": 0,
+        "timeLogFactor": 0,
         "typeTests": 0
       }
     },
@@ -683,13 +725,20 @@
         "endColumn": 6
       },
       "metrics": {
+        "allocationDepth": 0,
         "blastRadius": 0,
         "cyclomatic": 1,
+        "foreignMembers": 1,
         "hofOrder": 1,
         "lambdaNesting": 0,
         "lines": 5,
         "maxNesting": 0,
+        "ownMembers": 0,
         "parameterCount": 1,
+        "spaceDegree": 0,
+        "timeDegree": 0,
+        "timeExponential": 0,
+        "timeLogFactor": 0,
         "typeTests": 0
       }
     }
@@ -1003,6 +1052,11 @@
       "module": "Sample.Domain",
       "reason": "paradigm-not-detected",
       "message": "Functional rule not applicable: module shows no functional style"
+    },
+    {
+      "ruleId": "MNT004",
+      "reason": "missing-input",
+      "message": "Rule not applied: no coverage-report in the configuration"
     },
     {
       "ruleId": "STR001",

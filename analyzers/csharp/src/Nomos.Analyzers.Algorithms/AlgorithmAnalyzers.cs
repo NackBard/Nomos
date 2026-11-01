@@ -9,17 +9,20 @@ public sealed class TimeComplexityAnalyzer : AnalyzerBase
     public override void Analyze(AnalysisContext context)
     {
         var reportFrom = context.Options.Int("reportFromDegree", 2);
-        var estimator = new Estimator(context.Model);
+        var estimates = ComplexityEstimates.Time(context.Model);
         foreach (var callable in context.Callables.Where(c => c.Body is not null))
         {
-            var growth = estimator.Estimate(callable);
-            context.Report(new Metric("time-degree", MetricScope.Callable, callable.Id, growth.Exponential ? 99 : growth.Degree));
+            var growth = estimates[callable.Id];
+            context.Report(growth.Exponential
+                ? new Metric("timeExponential", MetricScope.Callable, callable.Id, 1)
+                : new Metric("timeDegree", MetricScope.Callable, callable.Id, growth.Degree));
             if (!growth.Exponential && growth.Degree < reportFrom) continue;
             context.Report(growth.Uncertain ? Confidence.Low : Confidence.Medium, callable.Location, $"{callable.Name} is likely {growth}",
                 growth.Uncertain
                     ? "Estimated from recursion, a while loop or a callee; loop bounds and call counts are not known exactly."
                     : "Estimated from nested loops over inputs of unknown size. Small inputs may make this irrelevant.",
-                symbol: callable.Id, severity: growth.Exponential ? Severity.Major : null);
+                symbol: callable.Id, severity: growth.Exponential ? Severity.Major : null,
+                measured: growth.Exponential ? new Measurement("timeExponential", 1, 1) : new Measurement("timeDegree", growth.Degree, reportFrom));
         }
     }
 }
@@ -74,14 +77,15 @@ public sealed class HotLoopAllocationAnalyzer : AnalyzerBase
         var minDepth = context.Options.Int("minDepthForObjects", 2);
         foreach (var callable in context.Callables)
         {
+            var measured = new Measurement("allocationDepth", CallableMetrics.AllocationDepth(callable), minDepth);
             foreach (var (node, depth) in callable.Body.WithLoopDepth())
             {
                 if (depth >= 1 && node is InvocationExpression { Target.Name: "ToList" or "ToArray" or "ToDictionary" or "ToHashSet" } call)
                     context.Report(Confidence.Medium, call.Location, $"{call.Target.Name} allocates on each loop iteration", "A new collection is built per iteration; moving it out of the loop or reusing a buffer reduces GC pressure.", symbol: callable.Id);
                 else if (depth >= minDepth && node is ObjectCreationExpression { CreatedType.Kind: not TypeRefKind.Struct } creation)
-                    context.Report(Confidence.Low, creation.Location, $"Allocation of {creation.CreatedType.SimpleName} in a nested loop", "Runs once per inner iteration. Whether it matters depends on how hot the loop really is, which static analysis cannot tell.", symbol: callable.Id);
+                    context.Report(Confidence.Low, creation.Location, $"Allocation of {creation.CreatedType.SimpleName} in a nested loop", "Runs once per inner iteration. Whether it matters depends on how hot the loop really is, which static analysis cannot tell.", symbol: callable.Id, measured: measured);
                 else if (depth >= minDepth && node is LambdaExpression lambda)
-                    context.Report(Confidence.Low, lambda.Location, "Lambda in a nested loop", "A capturing lambda allocates a closure per iteration; a non-capturing one is cached.", symbol: callable.Id);
+                    context.Report(Confidence.Low, lambda.Location, "Lambda in a nested loop", "A capturing lambda allocates a closure per iteration; a non-capturing one is cached.", symbol: callable.Id, measured: measured);
             }
         }
     }
@@ -92,31 +96,20 @@ public sealed class HotLoopAllocationAnalyzer : AnalyzerBase
     Description = "Estimates extra memory from collections growing in loops, arrays of non-constant size and recursion depth.")]
 public sealed class SpaceComplexityAnalyzer : AnalyzerBase
 {
-    private static readonly HashSet<string> Growing = ["Add", "AddRange", "Push", "Enqueue", "Insert", "Append"];
-
     /// <inheritdoc />
     public override void Analyze(AnalysisContext context)
     {
         var reportFrom = context.Options.Int("reportFromDegree", 2);
         foreach (var callable in context.Callables.Where(c => c.Body is not null))
         {
-            var degree = 0;
-            foreach (var (node, depth) in callable.Body.WithLoopDepth())
-            {
-                if (node is InvocationExpression call && Growing.Contains(call.Target.Name) && call.Target.IsExternal) degree = Math.Max(degree, depth);
-                else if (node is ObjectCreationExpression { CreatedType.Kind: TypeRefKind.Array } array)
-                {
-                    var sized = array.Arguments.Count(a => a is not LiteralExpression);
-                    if (sized > 0) degree = Math.Max(degree, sized + depth);
-                }
-            }
-            if (callable.Body.All<InvocationExpression>().Any(i => i.Target.Id == callable.Id)) degree = Math.Max(degree, 1);
-            context.Report(new Metric("space-degree", MetricScope.Callable, callable.Id, degree));
+            var degree = CallableMetrics.SpaceDegree(callable);
+            context.Report(new Metric("spaceDegree", MetricScope.Callable, callable.Id, degree));
             if (degree >= reportFrom)
             {
                 var growth = new Growth(degree, 0, false, true);
                 context.Report(Confidence.Low, callable.Location, $"{callable.Name} likely uses {growth} extra memory",
-                    "Estimated from collection growth under nested loops or multi-dimensional allocation sizes.", symbol: callable.Id);
+                    "Estimated from collection growth under nested loops or multi-dimensional allocation sizes.", symbol: callable.Id,
+                    measured: new Measurement("spaceDegree", degree, reportFrom));
             }
         }
     }

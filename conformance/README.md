@@ -15,6 +15,7 @@ conformance/
         src/                       # исходники на этом языке
         expected.facts.json        # ожидаемый facts, проверяется по contracts/facts.schema.json
         expected.sarif.json        # только если case.json: expectSarif = true
+        nomos.json                 # только если case.json: config = true, передаётся как --config
 ```
 
 Один случай — один сценарий, реализованный на каждом языке с одинаковой формой: те же модули, те же зависимости, те же ветвления. Исходники пишутся так, чтобы ожидаемые числа совпадали между языками; места, где язык вносит отличие (например, `object` как корень), описаны в `case.json` и в `expected.facts.json` этого языка.
@@ -25,9 +26,10 @@ conformance/
 2. `<analyzer> analyze --root cases/<id>/<язык>/src` даёт документ, валидный по `facts.schema.json`.
 3. Фактический facts совпадает с `expected.facts.json`: сущности сопоставляются по `id`, метрики — по допускам `case.json` (`spec/metrics.md`, раздел «Допуски»). Лишние сущности — ошибка, отсутствующие — ошибка. Порядок массивов не сравнивается, но вывод обязан быть детерминированным (два запуска побайтово равны).
 4. Для каждого пункта `parity` значение метрики совпадает у всех перечисленных языков.
-5. SARIF проверяется по профилю (`contracts/sarif-profile.md`) для каждого случая; официальная схема SARIF 2.1.0 проверяется, если скачана командой `npm run fetch-sarif-schema` (копии в репозитории нет, D-029). При `expectSarif` множество `(ruleId, файл, startLine)` совпадает с эталоном `expected.sarif.json` вида `{ "results": [{ "ruleId": "CC001", "file": "A.cs", "startLine": 12 }] }`.
+5. SARIF проверяется по профилю (`contracts/sarif-profile.md`) для каждого случая; официальная схема SARIF 2.1.0 проверяется, если скачана командой `npm run fetch-sarif-schema` (копии в репозитории нет, D-029). При `expectSarif` множество `(ruleId, файл, startLine)` правил из `covers` совпадает с эталоном `expected.sarif.json` вида `{ "results": [{ "ruleId": "CC001", "file": "A.cs", "startLine": 12 }] }`; результаты остальных правил не сравниваются. Запись может содержать `measured`, тогда `{ metric, value, threshold }` сравнивается точно.
    Манифест сверяется со spec: парадигмы и категория каждого общего правила равны записи в `spec/rules`.
 6. Применимость: `activeParadigms` следуют из признаков с отметкой «да» в таблицах `spec/paradigms.md`; правило без активной парадигмы имеет запись `paradigm-not-detected`, а правило с активной её не имеет.
+7. Внешние входы: правило с `requires` в `spec/rules`, чьего входа нет в `nomos.json` случая, имеет запись `missing-input`, а правило со входом её не имеет.
 
 ## Запуск
 
@@ -46,7 +48,7 @@ node src/cli.ts run --analyzer "csharp=<команда>" [--case cycles]
 
 ## Набор случаев (план этапа 1)
 
-Готовы (только C#, эталоны посчитаны вручную): `metrics-basic`, `coupling-martin`, `cycles`, `paradigm-evidence`, `oop-cohesion`, `partial-failure`. Остальные — позже.
+Готовы (только C#, эталоны посчитаны вручную) все случаи таблицы, кроме `health`.
 
 Код возврата анализатора в `run` не задаётся в `case.json`: он выводится из эталона. Если в `expected.facts.json` есть файл с `parsed: false`, ожидается код 4 (частичный результат), иначе 0.
 
@@ -54,9 +56,13 @@ node src/cli.ts run --analyzer "csharp=<команда>" [--case cycles]
 |---|---|
 | `metrics-basic` | `lines`, `loc`, `parameterCount`, `cyclomatic`, `maxNesting` на функциях с известной структурой |
 | `coupling-martin` | `ca`, `ce`, `instability`, `abstractness`, `distance` на трёх модулях |
-| `cycles` | `cycles` уровней type и module, ребро `type-only` |
-| `oop-cohesion` | `dit`, `cbo`, `lcom4`, `wmc` |
-| `blast-radius` | `blastRadius` на цепочке и ромбе зависимостей |
+| `cycles` | `cycles` уровней type и module на простом графе |
+| `cycles-complex` | компоненты на сложных графах: общие вершины, хорда, односторонний мост, цикл модулей без цикла типов; DSN002 |
+| `oop-cohesion` | `dit`, `cbo`, `lcom4`, `wmc`, `atfd`, `tcc` |
+| `blast-radius` | `blastRadius` на цепочке, ромбе и кольце с хвостом; функция наследует значение типа; DSN006, запись `missing-input` у DSN003 |
+| `layers` | DSN003 через `nomos.json` |
+| `design-smells` | DSN004, DSN005, `foreignMembers`, `ownMembers` |
+| `complexity-estimates` | `timeDegree`, `timeLogFactor`, `timeExponential`, `spaceDegree`, `allocationDepth`; ALG001, ALG003, ALG004 и их `measured` |
 | `paradigm-evidence` | признаки `oop.*`, `fp.*`, `str.*`; запись `paradigm-not-detected` для модуля без классов |
 | `paradigm-activation` | точные `activeParadigms`: лямбды и глобальное состояние сами по себе ничего не активируют; `disabled-by-config`; `hofOrder`, `lambdaNesting`, `typeTests`, `measured` у OOP003 |
 | `health` | балл здоровья и разбивка при заданных результатах |

@@ -17,8 +17,12 @@ export interface SarifContext {
   facts: any;
   /** Shared rules from spec/rules: SARIF rule texts must be the spec texts. */
   specRules?: Map<string, { title: string; description: string; rationale: string }>;
-  expected?: { results: { ruleId: string; file: string; startLine: number }[] };
+  expected?: { results: { ruleId: string; file: string; startLine: number; measured?: Measured }[] };
+  /** Only results of these rules are compared with the expected file. */
+  covers?: Set<string>;
 }
+
+interface Measured { metric: string; value: number; threshold: number }
 
 /** A measurement must have the shape of the profile and agree with the same metric in the facts. */
 function checkMeasured(where: string, properties: any, uri: string, context: SarifContext): string[] {
@@ -36,6 +40,8 @@ function checkMeasured(where: string, properties: any, uri: string, context: Sar
   }
   return [];
 }
+
+const sortKeys = (m?: Measured) => m && { metric: m.metric, threshold: m.threshold, value: m.value };
 
 export function checkSarif(text: string, context: SarifContext): string[] {
   const errors: string[] = [];
@@ -105,10 +111,18 @@ export function checkSarif(text: string, context: SarifContext): string[] {
   if (context.facts.checks?.resultCount !== results.length) errors.push(`facts.checks.resultCount is ${context.facts.checks?.resultCount}, the file has ${results.length} results`);
 
   if (context.expected) {
-    const actual = new Set(results.map((r) => `${r.ruleId} ${r.locations?.[0]?.physicalLocation?.artifactLocation?.uri}:${r.locations?.[0]?.physicalLocation?.region?.startLine}`));
-    const expected = new Set(context.expected.results.map((r) => `${r.ruleId} ${r.file}:${r.startLine}`));
-    for (const x of [...expected].sort()) if (!actual.has(x)) errors.push(`result ${x}: expected but not reported`);
-    for (const x of [...actual].sort()) if (!expected.has(x)) errors.push(`result ${x}: reported but not expected`);
+    const place = (r: any) => `${r.ruleId} ${r.locations?.[0]?.physicalLocation?.artifactLocation?.uri}:${r.locations?.[0]?.physicalLocation?.region?.startLine}`;
+    const compared = results.filter((r) => context.covers?.has(r.ruleId));
+    const actual = new Map<string, any>(compared.map((r) => [place(r), r]));
+    const expected = new Map(context.expected.results.map((r) => [`${r.ruleId} ${r.file}:${r.startLine}`, r]));
+    for (const [x, r] of [...expected].sort(([a], [b]) => ordinal(a, b))) {
+      const found = actual.get(x);
+      if (!found) errors.push(`result ${x}: expected but not reported`);
+      else if (r.measured && JSON.stringify(sortKeys(found.properties?.measured)) !== JSON.stringify(sortKeys(r.measured))) {
+        errors.push(`result ${x}: measured is ${JSON.stringify(found.properties?.measured)}, expected ${JSON.stringify(r.measured)}`);
+      }
+    }
+    for (const x of [...actual.keys()].sort()) if (!expected.has(x)) errors.push(`result ${x}: reported but not expected`);
   }
   return errors;
 }

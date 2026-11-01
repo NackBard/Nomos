@@ -1,0 +1,42 @@
+{
+  "schemaVersion": "1.1.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "csharp" },
+  "files": [
+    { "path": "Estimates.cs", "lines": 104, "loc": 94 },
+    { "path": "Memory.cs", "lines": 79, "loc": 70 }
+  ],
+  "modules": [
+    { "id": "Alg.Code", "name": "Alg.Code", "files": ["Estimates.cs", "Memory.cs"], "loc": 164, "metrics": {}, "paradigmEvidence": [] }
+  ],
+  "types": [
+    { "id": "Alg.Code.Box", "name": "Box", "module": "Alg.Code", "kind": "class", "isAbstract": false, "location": { "file": "Memory.cs", "startLine": 76 }, "metrics": { "lines": 4, "memberCount": 1 } },
+    { "id": "Alg.Code.Estimates", "name": "Estimates", "module": "Alg.Code", "kind": "class", "isAbstract": false, "location": { "file": "Estimates.cs", "startLine": 3 }, "metrics": { "lines": 102, "memberCount": 10, "methodCount": 10 } },
+    { "id": "Alg.Code.Memory", "name": "Memory", "module": "Alg.Code", "kind": "class", "isAbstract": false, "location": { "file": "Memory.cs", "startLine": 3 }, "metrics": { "lines": 72, "memberCount": 8, "methodCount": 8 } }
+  ],
+  "functions": [
+    { "id": "Alg.Code.Estimates.Constant", "name": "Constant", "module": "Alg.Code", "type": "Alg.Code.Estimates", "kind": "method", "visibility": "public", "location": { "file": "Estimates.cs", "startLine": 5 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 1, "lines": 4, "timeDegree": 0, "timeLogFactor": 0, "timeExponential": 0, "spaceDegree": 0, "allocationDepth": 0 } },
+    { "id": "Alg.Code.Estimates.Linear", "name": "Linear", "module": "Alg.Code", "type": "Alg.Code.Estimates", "kind": "method", "visibility": "public", "location": { "file": "Estimates.cs", "startLine": 10 }, "metrics": { "cyclomatic": 2, "maxNesting": 1, "parameterCount": 1, "lines": 9, "timeDegree": 1, "timeLogFactor": 0, "timeExponential": 0, "spaceDegree": 0, "allocationDepth": 0 } },
+    { "id": "Alg.Code.Estimates.Quadratic", "name": "Quadratic", "module": "Alg.Code", "type": "Alg.Code.Estimates", "kind": "method", "visibility": "public", "location": { "file": "Estimates.cs", "startLine": 20 }, "metrics": { "cyclomatic": 3, "maxNesting": 2, "parameterCount": 2, "lines": 12, "timeDegree": 2, "timeLogFactor": 0, "timeExponential": 0, "spaceDegree": 0, "allocationDepth": 0 } },
+    { "id": "Alg.Code.Estimates.Halving", "name": "Halving", "module": "Alg.Code", "type": "Alg.Code.Estimates", "kind": "method", "visibility": "public", "location": { "file": "Estimates.cs", "startLine": 33 }, "metrics": { "cyclomatic": 2, "maxNesting": 1, "parameterCount": 1, "lines": 9, "timeDegree": 0, "timeLogFactor": 1, "timeExponential": 0, "spaceDegree": 0, "allocationDepth": 0 } },
+    { "id": "Alg.Code.Estimates.LinearLog", "name": "LinearLog", "module": "Alg.Code", "type": "Alg.Code.Estimates", "kind": "method", "visibility": "public", "location": { "file": "Estimates.cs", "startLine": 43 }, "metrics": { "cyclomatic": 2, "maxNesting": 1, "parameterCount": 1, "lines": 9, "timeDegree": 1, "timeLogFactor": 1, "timeExponential": 0, "spaceDegree": 0, "allocationDepth": 0 } },
+    { "id": "Alg.Code.Estimates.Fixed", "name": "Fixed", "module": "Alg.Code", "type": "Alg.Code.Estimates", "kind": "method", "visibility": "public", "location": { "file": "Estimates.cs", "startLine": 53 }, "metrics": { "cyclomatic": 2, "maxNesting": 1, "parameterCount": 0, "lines": 9, "timeDegree": 0, "timeLogFactor": 0, "timeExponential": 0, "spaceDegree": 0, "allocationDepth": 0 } },
+    { "id": "Alg.Code.Estimates.Fib", "name": "Fib", "module": "Alg.Code", "type": "Alg.Code.Estimates", "kind": "method", "visibility": "public", "location": { "file": "Estimates.cs", "startLine": 63 }, "metrics": { "cyclomatic": 2, "maxNesting": 1, "parameterCount": 1, "lines": 8, "timeDegree": null, "timeLogFactor": null, "timeExponential": 1, "spaceDegree": 1, "allocationDepth": 0 } },
+    { "id": "Alg.Code.Estimates.Factorial", "name": "Factorial", "module": "Alg.Code", "type": "Alg.Code.Estimates", "kind": "method", "visibility": "public", "location": { "file": "Estimates.cs", "startLine": 72 }, "metrics": { "cyclomatic": 2, "maxNesting": 1, "parameterCount": 1, "lines": 8, "timeDegree": 1, "timeLogFactor": 0, "timeExponential": 0, "spaceDegree": 1, "allocationDepth": 0 } },
+    { "id": "Alg.Code.Estimates.Search", "name": "Search", "module": "Alg.Code", "type": "Alg.Code.Estimates", "kind": "method", "visibility": "public", "location": { "file": "Estimates.cs", "startLine": 81 }, "metrics": { "cyclomatic": 3, "maxNesting": 1, "parameterCount": 3, "lines": 13, "timeDegree": 0, "timeLogFactor": 1, "timeExponential": 0, "spaceDegree": 1, "allocationDepth": 0 } },
+    { "id": "Alg.Code.Estimates.CubicViaCallee", "name": "CubicViaCallee", "module": "Alg.Code", "type": "Alg.Code.Estimates", "kind": "method", "visibility": "public", "location": { "file": "Estimates.cs", "startLine": 95 }, "metrics": { "cyclomatic": 2, "maxNesting": 1, "parameterCount": 1, "lines": 9, "timeDegree": 3, "timeLogFactor": 0, "timeExponential": 0, "spaceDegree": 0, "allocationDepth": 0 } },
+    { "id": "Alg.Code.Memory.None", "name": "None", "module": "Alg.Code", "type": "Alg.Code.Memory", "kind": "method", "visibility": "public", "location": { "file": "Memory.cs", "startLine": 5 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 1, "lines": 4, "timeDegree": 0, "timeLogFactor": 0, "timeExponential": 0, "spaceDegree": 0, "allocationDepth": 0 } },
+    { "id": "Alg.Code.Memory.Grows", "name": "Grows", "module": "Alg.Code", "type": "Alg.Code.Memory", "kind": "method", "visibility": "public", "location": { "file": "Memory.cs", "startLine": 10 }, "metrics": { "cyclomatic": 2, "maxNesting": 1, "parameterCount": 1, "lines": 9, "timeDegree": 1, "timeLogFactor": 0, "timeExponential": 0, "spaceDegree": 1, "allocationDepth": 0 } },
+    { "id": "Alg.Code.Memory.Grid", "name": "Grid", "module": "Alg.Code", "type": "Alg.Code.Memory", "kind": "method", "visibility": "public", "location": { "file": "Memory.cs", "startLine": 20 }, "metrics": { "cyclomatic": 3, "maxNesting": 2, "parameterCount": 2, "lines": 12, "timeDegree": 2, "timeLogFactor": 0, "timeExponential": 0, "spaceDegree": 2, "allocationDepth": 0 } },
+    { "id": "Alg.Code.Memory.Sized", "name": "Sized", "module": "Alg.Code", "type": "Alg.Code.Memory", "kind": "method", "visibility": "public", "location": { "file": "Memory.cs", "startLine": 33 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 1, "lines": 4, "timeDegree": 0, "timeLogFactor": 0, "timeExponential": 0, "spaceDegree": 1, "allocationDepth": 0 } },
+    { "id": "Alg.Code.Memory.Constant", "name": "Constant", "module": "Alg.Code", "type": "Alg.Code.Memory", "kind": "method", "visibility": "public", "location": { "file": "Memory.cs", "startLine": 38 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 0, "lines": 4, "timeDegree": 0, "timeLogFactor": 0, "timeExponential": 0, "spaceDegree": 0, "allocationDepth": 0 } },
+    { "id": "Alg.Code.Memory.Deep", "name": "Deep", "module": "Alg.Code", "type": "Alg.Code.Memory", "kind": "method", "visibility": "public", "location": { "file": "Memory.cs", "startLine": 43 }, "metrics": { "cyclomatic": 2, "maxNesting": 1, "parameterCount": 1, "lines": 8, "timeDegree": 1, "timeLogFactor": 0, "timeExponential": 0, "spaceDegree": 1, "allocationDepth": 0 } },
+    { "id": "Alg.Code.Memory.NewInNested", "name": "NewInNested", "module": "Alg.Code", "type": "Alg.Code.Memory", "kind": "method", "visibility": "public", "location": { "file": "Memory.cs", "startLine": 52 }, "metrics": { "cyclomatic": 3, "maxNesting": 2, "parameterCount": 2, "lines": 12, "timeDegree": 2, "timeLogFactor": 0, "timeExponential": 0, "spaceDegree": 0, "allocationDepth": 2 } },
+    { "id": "Alg.Code.Memory.NewInLoop", "name": "NewInLoop", "module": "Alg.Code", "type": "Alg.Code.Memory", "kind": "method", "visibility": "public", "location": { "file": "Memory.cs", "startLine": 65 }, "metrics": { "cyclomatic": 2, "maxNesting": 1, "parameterCount": 1, "lines": 9, "timeDegree": 1, "timeLogFactor": 0, "timeExponential": 0, "spaceDegree": 0, "allocationDepth": 1 } }
+  ],
+  "dependencies": [
+    { "from": "Alg.Code.Memory", "to": "Alg.Code.Box", "kind": "call", "phase": "runtime" }
+  ],
+  "cycles": [],
+  "skippedRules": [],
+  "diagnostics": []
+}

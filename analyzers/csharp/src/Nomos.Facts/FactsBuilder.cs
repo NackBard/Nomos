@@ -51,8 +51,8 @@ internal sealed class FactsBuilder
             new FactsAnalyzer(_options.AnalyzerName, _options.AnalyzerVersion, Languages.CSharp, Semantic: true),
             BuildFiles(),
             [.. _model.Modules.OrderBy(m => m.Name, StringComparer.Ordinal).Select(m => BuildModule(m, graphs.Packages[m.Name], evidence[m.Name], moduleHealth.GetValueOrDefault(m.Name)))],
-            [.. _types.Select(t => BuildType(t, unitGraph))],
-            BuildFunctions(unitGraph),
+            [.. _types.Select(t => BuildType(t, graphs))],
+            BuildFunctions(graphs),
             dependencies,
             [.. Cycles("type", unitGraph), .. Cycles("module", moduleGraph)],
             ToHealth(health),
@@ -104,7 +104,7 @@ internal sealed class FactsBuilder
 
     // ---- types ------------------------------------------------------------------------------------------------
 
-    private FactsType BuildType(TypeDecl type, DirectedGraph unitGraph)
+    private FactsType BuildType(TypeDecl type, DependencyGraphs graphs)
     {
         var methods = type.Callables.Where(IsMethodLike).ToList();
         var metrics = new SortedDictionary<string, double?>(StringComparer.Ordinal)
@@ -112,7 +112,7 @@ internal sealed class FactsBuilder
             ["lines"] = type.Location.LineSpan,
             ["memberCount"] = type.Fields.Count + type.Properties.Count + type.Events.Count + methods.Count + type.NestedTypes.Count,
             ["methodCount"] = methods.Count,
-            ["blastRadius"] = BlastRadiusOf(type.Id, unitGraph),
+            ["blastRadius"] = graphs.BlastRadii[type.Id],
         };
         if (type.Kind is TypeKind.Class or TypeKind.Struct or TypeKind.Record)
         {
@@ -132,8 +132,10 @@ internal sealed class FactsBuilder
 
     // ---- functions --------------------------------------------------------------------------------------------
 
-    private IReadOnlyList<FactsFunction> BuildFunctions(DirectedGraph unitGraph) =>
-        [.. _index.Callables().Select(x =>
+    private IReadOnlyList<FactsFunction> BuildFunctions(DependencyGraphs graphs)
+    {
+        var estimates = ComplexityEstimates.Time(_model);
+        return [.. _index.Callables().Select(x =>
         {
             var (callable, module, owner) = x;
             var metrics = new SortedDictionary<string, double?>(StringComparer.Ordinal)
@@ -146,7 +148,9 @@ internal sealed class FactsBuilder
                 ["lambdaNesting"] = CallableMetrics.LambdaNesting(callable),
                 ["typeTests"] = CallableMetrics.TestedTypes(callable).Count,
             };
-            if (owner is not null) metrics["blastRadius"] = BlastRadiusOf(owner.Id, unitGraph);
+            AddEstimates(metrics, callable, estimates);
+            AddMemberUse(metrics, callable, owner);
+            if (owner is not null) metrics["blastRadius"] = graphs.BlastRadii[owner.Id];
             var kind = callable.Kind switch
             {
                 CallableKind.Method => "method",
@@ -156,6 +160,25 @@ internal sealed class FactsBuilder
             };
             return new FactsFunction(_functionIds[callable.Id], callable.Name, module.Name, owner?.Id, kind, VisibilityName(callable.Visibility), Place(callable.Location), metrics);
         }).OrderBy(f => f.Id, StringComparer.Ordinal)];
+    }
+
+    private static void AddEstimates(SortedDictionary<string, double?> metrics, Callable callable, IReadOnlyDictionary<string, Growth> estimates)
+    {
+        var known = estimates.TryGetValue(callable.Id, out var growth);
+        var polynomial = known && !growth.Exponential;
+        metrics["timeDegree"] = polynomial ? growth.Degree : null;
+        metrics["timeLogFactor"] = polynomial ? growth.LogFactor : null;
+        metrics["timeExponential"] = known ? (growth.Exponential ? 1 : 0) : null;
+        metrics["spaceDegree"] = known ? CallableMetrics.SpaceDegree(callable) : null;
+        metrics["allocationDepth"] = known ? CallableMetrics.AllocationDepth(callable) : null;
+    }
+
+    private void AddMemberUse(SortedDictionary<string, double?> metrics, Callable callable, TypeDecl? owner)
+    {
+        var defined = owner is not null && TypeMetrics.HasMemberUse(callable);
+        metrics["foreignMembers"] = defined ? TypeMetrics.MostUsedForeignType(callable, _model)?.Members.Count ?? 0 : null;
+        metrics["ownMembers"] = defined ? TypeMetrics.OwnMembersUsed(callable, owner!).Count : null;
+    }
 
     private static string VisibilityName(Visibility visibility) => visibility switch
     {
@@ -196,8 +219,6 @@ internal sealed class FactsBuilder
         _ => "type-ref",
     };
 
-    private static int BlastRadiusOf(string unit, DirectedGraph graph) => BlastRadius.Compute(graph, unit).Transitive.Count;
-
     private static IEnumerable<FactsCycle> Cycles(string level, DirectedGraph graph) =>
         Tarjan.StronglyConnectedComponents(graph).Where(c => c.Count > 1).OrderBy(c => c[0], StringComparer.Ordinal).Select(c => new FactsCycle(level, c));
 
@@ -221,6 +242,12 @@ internal sealed class FactsBuilder
             skipped.Add(new FactsSkippedRule(rule.Id, null, Disabled, ParadigmSigns.Enabled(rule.Paradigms, enabled).Count == 0 && rule.Paradigms.Count > 0
                 ? $"Rule needs paradigm {string.Join(" or ", rule.Paradigms.Order(StringComparer.Ordinal))}, which is off for this language; 'paradigms' in nomos.json selects them"
                 : "Rule is off by default, by nomos.json or by --rules"));
+
+        foreach (var rule in _options.SupportedRules.Where(r => ran.Contains(r.Id)))
+        {
+            var missing = (_options.RuleTexts?.GetValueOrDefault(rule.Id)?.Requires ?? []).Except(_options.AvailableInputs).Order(StringComparer.Ordinal).ToList();
+            if (missing.Count > 0) skipped.Add(new FactsSkippedRule(rule.Id, null, "missing-input", $"Rule not applied: no {string.Join(", ", missing)} in the configuration"));
+        }
 
         foreach (var module in _model.Modules)
         {

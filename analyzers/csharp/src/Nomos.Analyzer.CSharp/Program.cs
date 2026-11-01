@@ -121,6 +121,7 @@ public static class Program
             SarifFile = sarif,
             ResultCount = result.Findings.Count,
             RuleTexts = SpecRules.Load(),
+            AvailableInputs = AvailableInputs(settings),
         };
         if (sarif is not null)
         {
@@ -131,6 +132,14 @@ public static class Program
         WriteStdout(FactsWriter.Write(result, options));
         // Findings never change the exit code; only an incomplete result does (docs/ARCHITECTURE.md, exit code 4).
         return result.Model.Files.Any(f => f.HasSyntaxErrors) ? Partial : Success;
+    }
+
+    private static HashSet<string> AvailableInputs(NomosConfig settings)
+    {
+        var inputs = new HashSet<string>(StringComparer.Ordinal);
+        if (settings.Layers.Count > 0) inputs.Add("layer-config");
+        if (settings.Analyzers.GetValueOrDefault("MNT004")?.Thresholds.ContainsKey("report") == true) inputs.Add("coverage-report");
+        return inputs;
     }
 
     private static void WriteStdout(string text)

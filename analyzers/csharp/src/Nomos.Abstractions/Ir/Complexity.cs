@@ -1,21 +1,26 @@
-namespace Nomos.Analyzers.Algorithms;
+namespace Nomos.Abstractions.Ir;
 
-/// <summary>A growth estimate: n^Degree * (log n)^LogFactor, or exponential.</summary>
-internal readonly record struct Growth(int Degree, int LogFactor, bool Exponential, bool Uncertain)
+/// <summary>A growth estimate: n^Degree * (log n)^LogFactor, or exponential (spec/metrics.md).</summary>
+/// <param name="Degree">Power of n.</param>
+/// <param name="LogFactor">Power of log n.</param>
+/// <param name="Exponential">Whether the estimate is exponential; the powers then mean nothing.</param>
+/// <param name="Uncertain">Whether the estimate rests on recursion, a while loop or a callee.</param>
+public readonly record struct Growth(int Degree, int LogFactor, bool Exponential, bool Uncertain)
 {
-    public static Growth Constant { get; } = new(0, 0, false, false);
-    public static Growth Linear { get; } = new(1, 0, false, false);
-    public static Growth Logarithmic { get; } = new(0, 1, false, false);
+    internal static Growth Constant { get; } = new(0, 0, false, false);
+    internal static Growth Linear { get; } = new(1, 0, false, false);
+    internal static Growth Logarithmic { get; } = new(0, 1, false, false);
 
-    public Growth Times(Growth other) => new(Degree + other.Degree, LogFactor + other.LogFactor, Exponential || other.Exponential, Uncertain || other.Uncertain);
+    internal Growth Times(Growth other) => new(Degree + other.Degree, LogFactor + other.LogFactor, Exponential || other.Exponential, Uncertain || other.Uncertain);
 
-    public Growth Or(Growth other)
+    internal Growth Or(Growth other)
     {
         var uncertain = Uncertain || other.Uncertain;
         var larger = (Exponential, Degree, LogFactor).CompareTo((other.Exponential, other.Degree, other.LogFactor)) >= 0 ? this : other;
         return larger with { Uncertain = uncertain };
     }
 
+    /// <inheritdoc />
     public override string ToString()
     {
         if (Exponential) return "O(2ⁿ)";
@@ -23,6 +28,24 @@ internal readonly record struct Growth(int Degree, int LogFactor, bool Exponenti
         var log = LogFactor switch { 0 => "", 1 => "log n", _ => $"log^{LogFactor} n" };
         var body = $"{power} {log}".Trim();
         return $"O({(body.Length == 0 ? "1" : body)})";
+    }
+}
+
+/// <summary>Time estimates of a whole model by spec/metrics.md, shared by facts and analyzers.</summary>
+public static class ComplexityEstimates
+{
+    /// <summary>
+    /// Estimates every callable with a body. Callables go in ordinal id order: mutual recursion is cut at the callable
+    /// still being estimated, so another order could give another value and facts could disagree with a finding.
+    /// </summary>
+    /// <param name="model">The project model.</param>
+    public static IReadOnlyDictionary<string, Growth> Time(ProjectModel model)
+    {
+        var estimator = new Estimator(model);
+        var result = new Dictionary<string, Growth>(StringComparer.Ordinal);
+        foreach (var callable in model.Modules.SelectMany(m => m.AllCallables).Where(c => c.Body is not null).OrderBy(c => c.Id, StringComparer.Ordinal))
+            result[callable.Id] = estimator.Estimate(callable);
+        return result;
     }
 }
 

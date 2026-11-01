@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "1.1.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "csharp" },
+  "files": [
+    { "path": "God.cs", "lines": 45, "loc": 40 },
+    { "path": "Order.cs", "lines": 15, "loc": 13 },
+    { "path": "Printer.cs", "lines": 38, "loc": 31 }
+  ],
+  "modules": [
+    { "id": "Smell.Data", "name": "Smell.Data", "files": ["Order.cs"], "loc": 13, "metrics": {}, "paradigmEvidence": [] },
+    { "id": "Smell.Report", "name": "Smell.Report", "files": ["God.cs", "Printer.cs"], "loc": 71, "metrics": {}, "paradigmEvidence": [] }
+  ],
+  "types": [
+    { "id": "Smell.Data.Money", "name": "Money", "module": "Smell.Data", "kind": "struct", "isAbstract": false, "location": { "file": "Order.cs", "startLine": 10 }, "metrics": { "lines": 6, "memberCount": 3 } },
+    { "id": "Smell.Data.Order", "name": "Order", "module": "Smell.Data", "kind": "class", "isAbstract": false, "location": { "file": "Order.cs", "startLine": 3 }, "metrics": { "lines": 6, "memberCount": 3 } },
+    { "id": "Smell.Report.God", "name": "God", "module": "Smell.Report", "kind": "class", "isAbstract": false, "location": { "file": "God.cs", "startLine": 3 }, "metrics": { "lines": 43, "memberCount": 8, "methodCount": 4, "wmc": 8, "atfd": 3, "tcc": 0 } },
+    { "id": "Smell.Report.Printer", "name": "Printer", "module": "Smell.Report", "kind": "class", "isAbstract": false, "location": { "file": "Printer.cs", "startLine": 3 }, "metrics": { "lines": 36, "memberCount": 9, "methodCount": 6, "wmc": 6, "atfd": 6, "tcc": 0 } }
+  ],
+  "functions": [
+    { "id": "Smell.Report.God.One", "name": "One", "module": "Smell.Report", "type": "Smell.Report.God", "kind": "method", "visibility": "public", "location": { "file": "God.cs", "startLine": 10 }, "metrics": { "cyclomatic": 2, "maxNesting": 1, "parameterCount": 1, "lines": 8, "foreignMembers": 1, "ownMembers": 1 } },
+    { "id": "Smell.Report.God.Two", "name": "Two", "module": "Smell.Report", "type": "Smell.Report.God", "kind": "method", "visibility": "public", "location": { "file": "God.cs", "startLine": 19 }, "metrics": { "cyclomatic": 2, "maxNesting": 1, "parameterCount": 1, "lines": 8, "foreignMembers": 1, "ownMembers": 1 } },
+    { "id": "Smell.Report.God.Three", "name": "Three", "module": "Smell.Report", "type": "Smell.Report.God", "kind": "method", "visibility": "public", "location": { "file": "God.cs", "startLine": 28 }, "metrics": { "cyclomatic": 2, "maxNesting": 1, "parameterCount": 1, "lines": 8, "foreignMembers": 1, "ownMembers": 1 } },
+    { "id": "Smell.Report.God.Four", "name": "Four", "module": "Smell.Report", "type": "Smell.Report.God", "kind": "method", "visibility": "public", "location": { "file": "God.cs", "startLine": 37 }, "metrics": { "cyclomatic": 2, "maxNesting": 1, "parameterCount": 1, "lines": 8, "foreignMembers": 1, "ownMembers": 1 } },
+    { "id": "Smell.Report.Printer.Printer", "name": "Printer", "module": "Smell.Report", "type": "Smell.Report.Printer", "kind": "constructor", "visibility": "public", "location": { "file": "Printer.cs", "startLine": 9 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 0, "lines": 4, "foreignMembers": null, "ownMembers": null } },
+    { "id": "Smell.Report.Printer.Envy", "name": "Envy", "module": "Smell.Report", "type": "Smell.Report.Printer", "kind": "method", "visibility": "public", "location": { "file": "Printer.cs", "startLine": 14 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 1, "lines": 4, "foreignMembers": 3, "ownMembers": 0 } },
+    { "id": "Smell.Report.Printer.Balanced", "name": "Balanced", "module": "Smell.Report", "type": "Smell.Report.Printer", "kind": "method", "visibility": "public", "location": { "file": "Printer.cs", "startLine": 19 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 1, "lines": 4, "foreignMembers": 3, "ownMembers": 3 } },
+    { "id": "Smell.Report.Printer.Few", "name": "Few", "module": "Smell.Report", "type": "Smell.Report.Printer", "kind": "method", "visibility": "public", "location": { "file": "Printer.cs", "startLine": 24 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 1, "lines": 4, "foreignMembers": 2, "ownMembers": 0 } },
+    { "id": "Smell.Report.Printer.ReadsMoney", "name": "ReadsMoney", "module": "Smell.Report", "type": "Smell.Report.Printer", "kind": "method", "visibility": "public", "location": { "file": "Printer.cs", "startLine": 29 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 1, "lines": 4, "foreignMembers": 0, "ownMembers": 0 } },
+    { "id": "Smell.Report.Printer.Sum", "name": "Sum", "module": "Smell.Report", "type": "Smell.Report.Printer", "kind": "method", "visibility": "public", "location": { "file": "Printer.cs", "startLine": 34 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 1, "lines": 4, "foreignMembers": null, "ownMembers": null } }
+  ],
+  "dependencies": [
+    { "from": "Smell.Report.God", "to": "Smell.Data.Order", "kind": "type-ref", "phase": "runtime" },
+    { "from": "Smell.Report.Printer", "to": "Smell.Data.Money", "kind": "type-ref", "phase": "runtime" },
+    { "from": "Smell.Report.Printer", "to": "Smell.Data.Order", "kind": "type-ref", "phase": "runtime" }
+  ],
+  "cycles": [],
+  "skippedRules": [],
+  "diagnostics": []
+}

@@ -1,0 +1,5 @@
+{
+  "schemaVersion": "1.0.0",
+  "analyzers": [{ "language": "csharp", "command": ["nomos-csharp"] }],
+  "rules": { "DSN006": { "threshold": { "maxDependents": 4 } } }
+}

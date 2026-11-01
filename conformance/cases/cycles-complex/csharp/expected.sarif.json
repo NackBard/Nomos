@@ -1,0 +1,10 @@
+{
+  "results": [
+    { "ruleId": "DSN002", "file": "A.cs", "startLine": 3 },
+    { "ruleId": "DSN002", "file": "Eight.cs", "startLine": 3 },
+    { "ruleId": "DSN002", "file": "Left.cs", "startLine": 3 },
+    { "ruleId": "DSN002", "file": "Mixed.cs", "startLine": 3 },
+    { "ruleId": "DSN002", "file": "Right.cs", "startLine": 3 },
+    { "ruleId": "DSN002", "file": "Ring.cs", "startLine": 3 }
+  ]
+}

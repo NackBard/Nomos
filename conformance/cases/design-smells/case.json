@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "1.1.0",
+  "id": "design-smells",
+  "title": "God class with lowered thresholds and feature envy: foreignMembers and ownMembers on envy, balance, too few members, a struct, a static method and a constructor",
+  "covers": ["wmc", "atfd", "tcc", "foreignMembers", "ownMembers", "DSN004", "DSN005"],
+  "languages": ["csharp"],
+  "expectSarif": true,
+  "config": true
+}

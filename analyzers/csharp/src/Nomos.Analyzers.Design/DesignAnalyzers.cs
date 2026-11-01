@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using Nomos.Graph;
 
 namespace Nomos.Analyzers.Design;
@@ -93,18 +94,8 @@ public sealed class LayerViolationAnalyzer : AnalyzerBase
     private static LayerRule? LayerOf(AnalysisContext context, string module) =>
         context.Layers.FirstOrDefault(l => l.Patterns.Any(p => WildcardMatches(p, module)));
 
-    private static bool WildcardMatches(string pattern, string value)
-    {
-        var parts = pattern.Split('*');
-        var position = 0;
-        for (var i = 0; i < parts.Length; i++)
-        {
-            var found = value.IndexOf(parts[i], position, StringComparison.OrdinalIgnoreCase);
-            if (found < 0 || (i == 0 && found != 0)) return false;
-            position = found + parts[i].Length;
-        }
-        return parts[^1].Length == 0 || position == value.Length;
-    }
+    private static bool WildcardMatches(string pattern, string value) =>
+        Regex.IsMatch(value, "^" + string.Join(".*", pattern.Split('*').Select(Regex.Escape)) + "$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 }
 
 /// <summary>Detects god classes.</summary>
@@ -143,17 +134,15 @@ public sealed class FeatureEnvyAnalyzer : AnalyzerBase
         var minForeign = context.Options.Int("minForeignMembers", 3);
         foreach (var type in context.Types)
         {
-            // Static methods have no own data to compare against; records and structs are meant to be read.
-            foreach (var callable in type.Callables.Where(c => c.Kind == CallableKind.Method && !c.Has(Modifiers.Static)))
+            // Static methods have no own data to compare against.
+            foreach (var callable in type.Callables.Where(TypeMetrics.HasMemberUse))
             {
-                var foreign = TypeMetrics.ForeignData(callable, context.Model)
-                    .Where(p => context.Model.FindType(p.Key)?.Kind is not (TypeKind.Record or TypeKind.Struct)).ToList();
-                if (foreign.Count == 0) continue;
-                var (owner, members) = foreign.OrderByDescending(p => p.Value.Count).ThenBy(p => p.Key, StringComparer.Ordinal).First();
+                if (TypeMetrics.MostUsedForeignType(callable, context.Model) is not var (owner, members)) continue;
                 var own = TypeMetrics.OwnMembersUsed(callable, type).Count;
                 if (members.Count >= minForeign && members.Count > own)
                     context.Report(Confidence.Medium, callable.Location, $"{callable.Name} is more interested in {context.Model.FindType(owner)?.Name} than in {type.Name}",
-                        $"It uses {members.Count} members of {owner} ({string.Join(", ", members.Order(StringComparer.Ordinal))}) and {own} of its own.", type.ModuleName, callable.Id);
+                        $"It uses {members.Count} members of {owner} ({string.Join(", ", members.Order(StringComparer.Ordinal))}) and {own} of its own.", type.ModuleName, callable.Id,
+                        measured: new Measurement("foreignMembers", members.Count, minForeign));
             }
         }
     }
@@ -171,12 +160,13 @@ public sealed class BlastRadiusAnalyzer : AnalyzerBase
         var graphs = DependencyGraphs.From(context);
         foreach (var type in context.Types)
         {
+            var count = graphs.BlastRadii[type.Id];
+            context.Report(new Metric("blast-radius", MetricScope.Type, type.Id, count, type.ModuleName));
+            if (count <= maxDependents) continue;
             var radius = BlastRadius.Compute(graphs.Types, type.Id);
-            context.Report(new Metric("blast-radius", MetricScope.Type, type.Id, radius.Transitive.Count, type.ModuleName));
-            if (radius.Transitive.Count > maxDependents)
-                context.Report(type, Confidence.Medium, $"Changing {type.Name} can reach {radius.Transitive.Count} types ({radius.ShareOfGraph:P0})",
-                    $"{radius.Direct} direct dependents, up to {radius.MaxDepth} hops away. Stable abstractions at such points limit the spread. Static dependencies overstate real impact when a change keeps the contract.",
-                    measured: new Measurement("blastRadius", radius.Transitive.Count, maxDependents));
+            context.Report(type, Confidence.Medium, $"Changing {type.Name} can reach {count} types ({radius.ShareOfGraph:P0})",
+                $"{radius.Direct} direct dependents, up to {radius.MaxDepth} hops away. Stable abstractions at such points limit the spread. Static dependencies overstate real impact when a change keeps the contract.",
+                measured: new Measurement("blastRadius", count, maxDependents));
         }
     }
 }

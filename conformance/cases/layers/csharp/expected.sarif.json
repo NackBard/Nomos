@@ -1,0 +1,7 @@
+{
+  "results": [
+    { "ruleId": "DSN003", "file": "Domain.cs", "startLine": 5 },
+    { "ruleId": "DSN003", "file": "Rich.cs", "startLine": 6 },
+    { "ruleId": "DSN003", "file": "Web.cs", "startLine": 6 }
+  ]
+}
