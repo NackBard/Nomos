@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "1.2.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "go" },
+  "files": [
+    { "path": "store.go", "lines": 19, "loc": 14 }
+  ],
+  "modules": [
+    { "id": "sec", "name": "sec", "files": ["store.go"], "loc": 14, "metrics": {  }, "paradigmEvidence": [] }
+  ],
+  "types": [
+  ],
+  "functions": [
+    { "id": "sec.Query", "name": "Query", "module": "sec", "kind": "function", "visibility": "public", "location": { "file": "store.go", "startLine": 9 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 1, "lines": 3 } },
+    { "id": "sec.Fixed", "name": "Fixed", "module": "sec", "kind": "function", "visibility": "public", "location": { "file": "store.go", "startLine": 13 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 0, "lines": 3 } },
+    { "id": "sec.Formatted", "name": "Formatted", "module": "sec", "kind": "function", "visibility": "public", "location": { "file": "store.go", "startLine": 17 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 1, "lines": 3 } }
+  ],
+  "dependencies": [
+  ],
+  "cycles": [
+  ],
+  "skippedRules": [
+    { "ruleId": "SEC002", "reason": "not-supported", "message": "m" }
+  ],
+  "diagnostics": []
+}

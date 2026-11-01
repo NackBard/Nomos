@@ -1,0 +1,8 @@
+{
+  "results": [
+    { "ruleId": "SEC001", "file": "store.go", "startLine": 5 },
+    { "ruleId": "SEC001", "file": "store.go", "startLine": 7 },
+    { "ruleId": "SEC003", "file": "store.go", "startLine": 10 },
+    { "ruleId": "SEC003", "file": "store.go", "startLine": 18 }
+  ]
+}

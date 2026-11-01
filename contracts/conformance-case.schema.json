@@ -1,14 +1,14 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:nomos:contracts:1.1.0:conformance-case",
+  "$id": "urn:nomos:contracts:1.2.0:conformance-case",
   "title": "Conformance case",
-  "description": "Schema of conformance/cases/<id>/case.json. Contract version 1.1.0.",
-  "x-contractVersion": "1.1.0",
+  "description": "Schema of conformance/cases/<id>/case.json. Contract version 1.2.0.",
+  "x-contractVersion": "1.2.0",
   "type": "object",
   "required": ["schemaVersion", "id", "title", "languages"],
   "additionalProperties": false,
   "properties": {
-    "schemaVersion": { "enum": ["1.0.0", "1.1.0"], "description": "Minor versions only add optional fields, so cases of 1.0.0 stay valid." },
+    "schemaVersion": { "enum": ["1.0.0", "1.1.0", "1.2.0"], "description": "Minor versions only add optional fields, so cases of older minor versions stay valid." },
     "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
     "title": { "type": "string" },
     "covers": { "type": "array", "items": { "type": "string" }, "description": "Metric names or rule ids the case is designed to exercise, e.g. [\"cyclomatic\", \"instability\", \"DSN002\"]." },
@@ -40,6 +40,19 @@
       "type": "boolean",
       "default": false,
       "description": "When true, each language folder also has expected.sarif.json (reduced form: ruleId, file, startLine per result, optionally measured) and the analyzer must reproduce it for the rules named in covers. Results of other rules are not compared."
+    },
+    "exceptions": {
+      "type": "array",
+      "description": "Since 1.2.0. Languages a case does not apply to, with the reason. An analyzer of a language neither in languages nor here fails the case.",
+      "items": {
+        "type": "object",
+        "required": ["language", "reason"],
+        "additionalProperties": false,
+        "properties": {
+          "language": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+          "reason": { "type": "string", "minLength": 1 }
+        }
+      }
     },
     "config": {
       "type": "boolean",

@@ -1,8 +1,29 @@
 {
-  "schemaVersion": "1.1.0",
+  "schemaVersion": "1.2.0",
   "id": "patterns",
   "title": "Recognized patterns and antipatterns, one shape for each of PAT001-PAT007 and PAT101-PAT103; settableProperties and forwardingMethods",
-  "covers": ["settableProperties", "forwardingMethods", "PAT001", "PAT002", "PAT003", "PAT004", "PAT005", "PAT006", "PAT007", "PAT101", "PAT102", "PAT103"],
-  "languages": ["csharp"],
-  "expectSarif": true
+  "covers": [
+    "settableProperties",
+    "forwardingMethods",
+    "PAT001",
+    "PAT002",
+    "PAT003",
+    "PAT004",
+    "PAT005",
+    "PAT006",
+    "PAT007",
+    "PAT101",
+    "PAT102",
+    "PAT103"
+  ],
+  "languages": [
+    "csharp"
+  ],
+  "expectSarif": true,
+  "exceptions": [
+    {
+      "language": "go",
+      "reason": "PAT rules recognize classes, constructors, properties and events, which Go does not have; they are not in supportedRules of the Go analyzer (D-038)."
+    }
+  ]
 }

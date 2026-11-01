@@ -111,6 +111,9 @@ export function runConformance(analyzers: Analyzer[], only?: string): Check[] {
   for (const id of caseIds) {
     const spec = readJson(path.join(casesDir, id, "case.json")) as CaseSpec;
     const factsByLanguage = new Map<string, any>();
+    for (const analyzer of analyzers.filter((a) => !spec.languages.includes(a.language) && !spec.exceptions?.some((x) => x.language === a.language))) {
+      checks.push({ name: `${analyzer.language}: ${id}`, errors: ["the case has neither sources for this language nor an exception with a reason"] });
+    }
     for (const analyzer of analyzers.filter((a) => spec.languages.includes(a.language))) {
       const errors: string[] = [];
       const root = path.join(casesDir, id, analyzer.language, "src");

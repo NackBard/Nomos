@@ -1,0 +1,5 @@
+{
+  "schemaVersion": "1.0.0",
+  "analyzers": [{ "language": "go", "command": ["nomos-go"] }],
+  "rules": { "DSN004": { "threshold": { "minWmc": 7, "minAtfd": 3, "maxTcc": 0.5 } } }
+}

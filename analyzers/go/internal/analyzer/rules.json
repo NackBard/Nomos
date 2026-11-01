@@ -1,0 +1,850 @@
+[
+  {
+    "id": "ALG001",
+    "category": "Algorithms",
+    "title": "Time complexity estimate",
+    "description": "Estimates growth from loop nesting, known linear calls, recursion shape and project callees.",
+    "rationale": "Always an estimate; input sizes are unknown.",
+    "paradigms": [],
+    "severity": "minor",
+    "confidence": "low",
+    "threshold": {
+      "reportFromDegree": 2
+    }
+  },
+  {
+    "id": "ALG002",
+    "category": "Algorithms",
+    "title": "Quadratic pattern",
+    "description": "List searches, front insertions and string concatenation inside loops.",
+    "rationale": "Typical sources of accidental quadratic time.",
+    "paradigms": [],
+    "severity": "minor",
+    "confidence": "low",
+    "threshold": {}
+  },
+  {
+    "id": "ALG003",
+    "category": "Algorithms",
+    "title": "Allocation in hot loop",
+    "description": "Materializing calls in loops; object creation or closures in nested loops.",
+    "rationale": "Allocation pressure in frequently executed code.",
+    "paradigms": [],
+    "severity": "minor",
+    "confidence": "low",
+    "threshold": {
+      "minDepthForObjects": 2
+    }
+  },
+  {
+    "id": "ALG004",
+    "category": "Algorithms",
+    "title": "Space complexity estimate",
+    "description": "Collections growing in loops, arrays of non-constant size, recursion depth.",
+    "rationale": "Always an estimate; input sizes are unknown.",
+    "paradigms": [],
+    "severity": "minor",
+    "confidence": "low",
+    "threshold": {
+      "reportFromDegree": 2
+    }
+  },
+  {
+    "id": "CC001",
+    "category": "CleanCode",
+    "title": "Long method",
+    "description": "Source lines of a callable.",
+    "rationale": "Long callables are harder to read and test.",
+    "paradigms": [
+      "oop",
+      "structural",
+      "functional"
+    ],
+    "severity": "minor",
+    "confidence": "high",
+    "threshold": {
+      "maxLines": 40
+    }
+  },
+  {
+    "id": "CC002",
+    "category": "CleanCode",
+    "title": "Large class",
+    "description": "Lines and members of a type, over all of its parts.",
+    "rationale": "A large type tends to collect several responsibilities.",
+    "paradigms": [
+      "oop"
+    ],
+    "severity": "minor",
+    "confidence": "high",
+    "threshold": {
+      "maxLines": 400,
+      "maxMembers": 30
+    }
+  },
+  {
+    "id": "CC003",
+    "category": "CleanCode",
+    "title": "Too many parameters",
+    "description": "Parameter count of a callable; constructors have a separate limit because of dependency injection.",
+    "rationale": "Long parameter lists are hard to call correctly.",
+    "paradigms": [
+      "oop",
+      "structural",
+      "functional"
+    ],
+    "severity": "minor",
+    "confidence": "high",
+    "threshold": {
+      "maxParameters": 5,
+      "maxConstructorParameters": 7
+    }
+  },
+  {
+    "id": "CC004",
+    "category": "CleanCode",
+    "title": "Deep nesting",
+    "description": "Nesting depth of branches, loops and guarded blocks; else-if chains stay flat.",
+    "rationale": "Each level adds a condition the reader must hold in mind.",
+    "paradigms": [
+      "oop",
+      "structural",
+      "functional"
+    ],
+    "severity": "minor",
+    "confidence": "high",
+    "threshold": {
+      "maxDepth": 4
+    }
+  },
+  {
+    "id": "CC006",
+    "category": "CleanCode",
+    "title": "Placeholders",
+    "description": "TODO, FIXME, HACK and XXX comments, and bodies that only throw not-implemented.",
+    "rationale": "Marks unfinished work.",
+    "paradigms": [
+      "oop",
+      "structural",
+      "functional"
+    ],
+    "severity": "minor",
+    "confidence": "high",
+    "threshold": {}
+  },
+  {
+    "id": "CC007",
+    "category": "CleanCode",
+    "title": "Dead code",
+    "description": "Unreachable statements, unused locals, private members nothing refers to.",
+    "rationale": "Code that never runs still has to be read.",
+    "paradigms": [
+      "oop",
+      "structural",
+      "functional"
+    ],
+    "severity": "minor",
+    "confidence": "medium",
+    "threshold": {}
+  },
+  {
+    "id": "CC008",
+    "category": "CleanCode",
+    "title": "Commented-out code",
+    "description": "Line comments that end like statements.",
+    "rationale": "Version control keeps history; disabled code is noise.",
+    "paradigms": [
+      "oop",
+      "structural",
+      "functional"
+    ],
+    "severity": "minor",
+    "confidence": "low",
+    "threshold": {}
+  },
+  {
+    "id": "CC009",
+    "category": "CleanCode",
+    "title": "Empty catch",
+    "description": "A catch block with no statements and no comment.",
+    "rationale": "The failure is silently discarded.",
+    "paradigms": [
+      "oop",
+      "structural",
+      "functional"
+    ],
+    "severity": "major",
+    "confidence": "high",
+    "threshold": {}
+  },
+  {
+    "id": "CS.NAM001",
+    "category": "CleanCode",
+    "title": "Naming conventions",
+    "description": "Types, methods and properties in PascalCase, interfaces start with I, parameters in camelCase; one-letter parameters of public methods.",
+    "rationale": "Departures from .NET conventions slow reading. Formerly CC005.",
+    "paradigms": [
+      "oop",
+      "structural",
+      "functional"
+    ],
+    "severity": "info",
+    "confidence": "high",
+    "threshold": {}
+  },
+  {
+    "id": "DSN001",
+    "category": "Design",
+    "title": "Main sequence distance",
+    "description": "Per module Ca, Ce, instability I, abstractness A and distance D (spec/metrics.md).",
+    "rationale": "D near 1 means a module is rigid or useless.",
+    "paradigms": [],
+    "severity": "minor",
+    "confidence": "medium",
+    "threshold": {
+      "maxDistance": 0.7,
+      "minCoupling": 3
+    }
+  },
+  {
+    "id": "DSN002",
+    "category": "Design",
+    "title": "Dependency cycles",
+    "description": "Strongly connected components (Tarjan) in the module graph and the type graph.",
+    "rationale": "Members of a cycle cannot be understood or changed separately.",
+    "paradigms": [],
+    "severity": "major",
+    "confidence": "high",
+    "threshold": {}
+  },
+  {
+    "id": "DSN003",
+    "category": "Design",
+    "title": "Layer violations",
+    "description": "Dependencies on layers that the configuration does not allow.",
+    "rationale": "Layering was declared by the team and is being bypassed.",
+    "paradigms": [],
+    "severity": "major",
+    "confidence": "high",
+    "threshold": {},
+    "requires": [
+      "layer-config"
+    ]
+  },
+  {
+    "id": "DSN004",
+    "category": "Design",
+    "title": "God class",
+    "description": "Lanza and Marinescu detection strategy, high WMC, high ATFD, low TCC.",
+    "rationale": "A class that knows and does too much.",
+    "paradigms": [
+      "oop"
+    ],
+    "severity": "major",
+    "confidence": "medium",
+    "threshold": {
+      "minWmc": 47,
+      "minAtfd": 5,
+      "maxTcc": 0.3333
+    }
+  },
+  {
+    "id": "DSN005",
+    "category": "Design",
+    "title": "Feature envy",
+    "description": "A method using more data of one other type than of its own.",
+    "rationale": "The method probably belongs to the other type.",
+    "paradigms": [
+      "oop"
+    ],
+    "severity": "minor",
+    "confidence": "low",
+    "threshold": {
+      "minForeignMembers": 3
+    }
+  },
+  {
+    "id": "DSN006",
+    "category": "Design",
+    "title": "Blast radius",
+    "description": "Number of types reachable through reversed dependencies (spec/metrics.md).",
+    "rationale": "Shows how far a change can propagate.",
+    "paradigms": [],
+    "severity": "minor",
+    "confidence": "medium",
+    "threshold": {
+      "maxDependents": 20
+    }
+  },
+  {
+    "id": "FUN001",
+    "category": "Paradigm",
+    "title": "Impure function",
+    "description": "A callable that returns a value and also writes state or performs I/O.",
+    "rationale": "Cannot be reasoned about by substitution.",
+    "paradigms": [
+      "functional"
+    ],
+    "severity": "minor",
+    "confidence": "low",
+    "threshold": {}
+  },
+  {
+    "id": "FUN002",
+    "category": "Paradigm",
+    "title": "Side effect in lambda",
+    "description": "A lambda passed to a higher-order function that changes outer variables.",
+    "rationale": "The result depends on evaluation order.",
+    "paradigms": [
+      "functional"
+    ],
+    "severity": "minor",
+    "confidence": "medium",
+    "threshold": {}
+  },
+  {
+    "id": "FUN003",
+    "category": "Paradigm",
+    "title": "Mutable state",
+    "description": "Reassigned locals, mutable instance fields, settable properties.",
+    "rationale": "Mutation makes data flow harder to follow.",
+    "paradigms": [
+      "functional"
+    ],
+    "severity": "minor",
+    "confidence": "high",
+    "threshold": {}
+  },
+  {
+    "id": "FUN004",
+    "category": "Paradigm",
+    "title": "Non-tail recursion",
+    "description": "A self-call whose result is used further.",
+    "rationale": "Cannot be turned into a loop by tail-call elimination.",
+    "paradigms": [
+      "functional"
+    ],
+    "severity": "minor",
+    "confidence": "medium",
+    "threshold": {}
+  },
+  {
+    "id": "FUN005",
+    "category": "Paradigm",
+    "title": "Higher-order depth",
+    "description": "Order of functions (data, functions, functions of functions) and lambda nesting.",
+    "rationale": "High orders and nested lambdas are hard to follow.",
+    "paradigms": [
+      "functional"
+    ],
+    "severity": "minor",
+    "confidence": "medium",
+    "threshold": {
+      "maxOrder": 3,
+      "maxLambdaNesting": 3
+    }
+  },
+  {
+    "id": "MNT001",
+    "category": "Maintainability",
+    "title": "Cyclomatic complexity",
+    "description": "Decision points per callable (spec/metrics.md). Every value is a metric in facts; results are emitted above the limit.",
+    "rationale": "More paths mean more tests and more room for mistakes.",
+    "paradigms": [],
+    "severity": "minor",
+    "confidence": "high",
+    "threshold": {
+      "maxComplexity": 10
+    }
+  },
+  {
+    "id": "MNT002",
+    "category": "Maintainability",
+    "title": "Maintainability index",
+    "description": "MI from Halstead volume, cyclomatic complexity and lines (spec/metrics.md).",
+    "rationale": "A composite index; a hint, not a measurement of quality.",
+    "paradigms": [],
+    "severity": "minor",
+    "confidence": "low",
+    "threshold": {
+      "minIndex": 20
+    }
+  },
+  {
+    "id": "MNT003",
+    "category": "Maintainability",
+    "title": "Duplication",
+    "description": "Type-1 and type-2 token clones (rolling hash over normalized tokens).",
+    "rationale": "A defect fixed in one copy stays in the others.",
+    "paradigms": [],
+    "severity": "minor",
+    "confidence": "medium",
+    "threshold": {
+      "minTokens": 100
+    }
+  },
+  {
+    "id": "MNT004",
+    "category": "Maintainability",
+    "title": "Test coverage",
+    "description": "Line coverage from a Cobertura or LCOV report, per file.",
+    "rationale": "Shows which files tests do not reach.",
+    "paradigms": [],
+    "severity": "minor",
+    "confidence": "high",
+    "threshold": {
+      "report": "",
+      "minCoverage": 50
+    },
+    "requires": [
+      "coverage-report"
+    ]
+  },
+  {
+    "id": "OOP001",
+    "category": "Paradigm",
+    "title": "Encapsulation",
+    "description": "Public mutable fields.",
+    "rationale": "Hands a type's invariants to every caller.",
+    "paradigms": [
+      "oop"
+    ],
+    "severity": "major",
+    "confidence": "high",
+    "threshold": {}
+  },
+  {
+    "id": "OOP002",
+    "category": "Paradigm",
+    "title": "Inheritance depth",
+    "description": "Depth of inheritance tree (DIT).",
+    "rationale": "Deep hierarchies are hard to understand and change.",
+    "paradigms": [
+      "oop"
+    ],
+    "severity": "minor",
+    "confidence": "high",
+    "threshold": {
+      "maxDepth": 4
+    }
+  },
+  {
+    "id": "OOP003",
+    "category": "Paradigm",
+    "title": "Polymorphism",
+    "description": "Several runtime type tests on project types in one callable.",
+    "rationale": "Usually reimplements virtual dispatch.",
+    "paradigms": [
+      "oop"
+    ],
+    "severity": "minor",
+    "confidence": "medium",
+    "threshold": {
+      "minTypeTests": 3
+    }
+  },
+  {
+    "id": "OOP004",
+    "category": "Paradigm",
+    "title": "Cohesion",
+    "description": "LCOM4, groups of methods that share no state.",
+    "rationale": "More than one group suggests a class that could be split.",
+    "paradigms": [
+      "oop"
+    ],
+    "severity": "minor",
+    "confidence": "medium",
+    "threshold": {
+      "maxLcom": 2,
+      "minMethods": 4
+    }
+  },
+  {
+    "id": "OOP005",
+    "category": "Paradigm",
+    "title": "Coupling",
+    "description": "Coupling between objects (CBO), excluding the standard library.",
+    "rationale": "Many dependencies mean many reasons to change.",
+    "paradigms": [
+      "oop"
+    ],
+    "severity": "minor",
+    "confidence": "high",
+    "threshold": {
+      "maxCoupling": 15
+    }
+  },
+  {
+    "id": "OOP006",
+    "category": "Paradigm",
+    "title": "Refused bequest",
+    "description": "A subclass that overrides nothing and touches no inherited member.",
+    "rationale": "Gains nothing from its base class.",
+    "paradigms": [
+      "oop"
+    ],
+    "severity": "minor",
+    "confidence": "low",
+    "threshold": {}
+  },
+  {
+    "id": "PAT001",
+    "category": "Patterns",
+    "title": "Singleton",
+    "description": "A class with only private constructors that exposes a static instance of itself.",
+    "rationale": "Informational: recognizes the pattern; hidden global state is a cost.",
+    "paradigms": [
+      "oop"
+    ],
+    "severity": "info",
+    "confidence": "medium",
+    "threshold": {}
+  },
+  {
+    "id": "PAT002",
+    "category": "Patterns",
+    "title": "Factory",
+    "description": "A method that returns an abstraction and creates several of its concrete subtypes.",
+    "rationale": "Informational: recognizes the pattern.",
+    "paradigms": [
+      "oop"
+    ],
+    "severity": "info",
+    "confidence": "medium",
+    "threshold": {}
+  },
+  {
+    "id": "PAT003",
+    "category": "Patterns",
+    "title": "Strategy",
+    "description": "A context class that receives one of several interchangeable implementations and delegates to it.",
+    "rationale": "Informational: recognizes the pattern.",
+    "paradigms": [
+      "oop"
+    ],
+    "severity": "info",
+    "confidence": "low",
+    "threshold": {}
+  },
+  {
+    "id": "PAT004",
+    "category": "Patterns",
+    "title": "Observer",
+    "description": "A type with events it raises, or a list of observers it notifies in a loop, with subscribe methods.",
+    "rationale": "Informational: recognizes the pattern.",
+    "paradigms": [
+      "oop"
+    ],
+    "severity": "info",
+    "confidence": "medium",
+    "threshold": {}
+  },
+  {
+    "id": "PAT005",
+    "category": "Patterns",
+    "title": "Decorator",
+    "description": "A class that implements an abstraction, wraps an instance of the same abstraction and forwards to it.",
+    "rationale": "Informational: recognizes the pattern.",
+    "paradigms": [
+      "oop"
+    ],
+    "severity": "info",
+    "confidence": "medium",
+    "threshold": {}
+  },
+  {
+    "id": "PAT006",
+    "category": "Patterns",
+    "title": "Repository",
+    "description": "A type named *Repository, or a collection-like API of get, add and remove over one entity.",
+    "rationale": "Informational: recognizes the pattern.",
+    "paradigms": [
+      "oop"
+    ],
+    "severity": "info",
+    "confidence": "low",
+    "threshold": {}
+  },
+  {
+    "id": "PAT007",
+    "category": "Patterns",
+    "title": "Builder",
+    "description": "Fluent methods that return the type itself plus a terminal Build-like method.",
+    "rationale": "Informational: recognizes the pattern.",
+    "paradigms": [
+      "oop"
+    ],
+    "severity": "info",
+    "confidence": "medium",
+    "threshold": {}
+  },
+  {
+    "id": "PAT101",
+    "category": "Patterns",
+    "title": "Service Locator",
+    "description": "Resolving dependencies from a container inside business code.",
+    "rationale": "Hides dependencies from the constructor.",
+    "paradigms": [
+      "oop"
+    ],
+    "severity": "minor",
+    "confidence": "low",
+    "threshold": {
+      "compositionRootSuffixes": [
+        "Program",
+        "Startup",
+        "Factory",
+        "Module",
+        "Registry",
+        "Extensions"
+      ]
+    }
+  },
+  {
+    "id": "PAT102",
+    "category": "Patterns",
+    "title": "Anemic Domain Model",
+    "description": "A domain-named class with settable data and no behavior, while logic lives in services.",
+    "rationale": "Behavior is separated from the data it belongs to.",
+    "paradigms": [
+      "oop"
+    ],
+    "severity": "minor",
+    "confidence": "low",
+    "threshold": {
+      "minProperties": 3,
+      "domainNamespaces": [
+        "Domain",
+        "Model",
+        "Entities"
+      ]
+    }
+  },
+  {
+    "id": "PAT103",
+    "category": "Patterns",
+    "title": "Middle Man",
+    "description": "A class that does almost nothing but forward to one collaborator, without a shared abstraction.",
+    "rationale": "An extra hop with no value of its own.",
+    "paradigms": [
+      "oop"
+    ],
+    "severity": "minor",
+    "confidence": "low",
+    "threshold": {
+      "minMethods": 3
+    }
+  },
+  {
+    "id": "PRN001",
+    "category": "Principles",
+    "title": "Single Responsibility",
+    "description": "Counts constructor dependencies of a class and the project modules it reaches into.",
+    "rationale": "A class with many collaborators likely has several reasons to change.",
+    "paradigms": [
+      "oop"
+    ],
+    "severity": "major",
+    "confidence": "medium",
+    "threshold": {
+      "maxConstructorDependencies": 5,
+      "maxModules": 4,
+      "minMethods": 3
+    }
+  },
+  {
+    "id": "PRN002",
+    "category": "Principles",
+    "title": "Open/Closed",
+    "description": "Finds the same enum or tag switched on in several places.",
+    "rationale": "Adding a value then means editing every switch.",
+    "paradigms": [
+      "oop"
+    ],
+    "severity": "minor",
+    "confidence": "medium",
+    "threshold": {
+      "minOccurrences": 2,
+      "minCases": 3
+    }
+  },
+  {
+    "id": "PRN003",
+    "category": "Principles",
+    "title": "Liskov Substitution",
+    "description": "An override or implementation whose body only throws not-supported or not-implemented.",
+    "rationale": "Such a member cannot stand in for its base type.",
+    "paradigms": [
+      "oop"
+    ],
+    "severity": "major",
+    "confidence": "medium",
+    "threshold": {}
+  },
+  {
+    "id": "PRN004",
+    "category": "Principles",
+    "title": "Interface Segregation",
+    "description": "Interfaces with many members, or whose implementers stub some of them.",
+    "rationale": "Clients are forced to depend on members they do not use.",
+    "paradigms": [
+      "oop"
+    ],
+    "severity": "minor",
+    "confidence": "medium",
+    "threshold": {
+      "maxMembers": 10
+    }
+  },
+  {
+    "id": "PRN005",
+    "category": "Principles",
+    "title": "Dependency Inversion",
+    "description": "Creating a project class that implements a project abstraction, outside composition roots and test classes (a class with test-framework attributes such as Fact, Theory, Test, TestMethod, TestCase).",
+    "rationale": "The caller is bound to the concrete type.",
+    "paradigms": [
+      "oop"
+    ],
+    "severity": "minor",
+    "confidence": "medium",
+    "threshold": {
+      "compositionRootSuffixes": [
+        "Factory",
+        "Builder",
+        "Program",
+        "Startup",
+        "Module",
+        "Registry",
+        "Tests"
+      ]
+    }
+  },
+  {
+    "id": "PRN006",
+    "category": "Principles",
+    "title": "Do not repeat yourself",
+    "description": "Callables whose structure is identical up to local names and literals.",
+    "rationale": "One piece of knowledge is encoded twice.",
+    "paradigms": [],
+    "severity": "minor",
+    "confidence": "medium",
+    "threshold": {
+      "minNodes": 25
+    }
+  },
+  {
+    "id": "PRN007",
+    "category": "Principles",
+    "title": "Keep it simple",
+    "description": "Long boolean conditions and nested ternaries.",
+    "rationale": "Too many decisions are packed into one expression.",
+    "paradigms": [],
+    "severity": "minor",
+    "confidence": "medium",
+    "threshold": {
+      "maxBooleanOperators": 3
+    }
+  },
+  {
+    "id": "PRN008",
+    "category": "Principles",
+    "title": "You are not going to need it",
+    "description": "Non-public abstractions with too few implementers, and unused private parameters.",
+    "rationale": "Generality that nothing uses.",
+    "paradigms": [],
+    "severity": "minor",
+    "confidence": "low",
+    "threshold": {}
+  },
+  {
+    "id": "PRN009",
+    "category": "Principles",
+    "title": "Law of Demeter",
+    "description": "Call chains that walk through several distinct project types.",
+    "rationale": "The caller is coupled to the internal structure of other types.",
+    "paradigms": [
+      "oop"
+    ],
+    "severity": "minor",
+    "confidence": "low",
+    "threshold": {
+      "maxHops": 2
+    },
+    "needsSemantic": true
+  },
+  {
+    "id": "SEC001",
+    "category": "Security",
+    "title": "Hardcoded secret (heuristic)",
+    "description": "String literals assigned to secret-like names, and literals shaped like known credentials.",
+    "rationale": "Not a substitute for a secret scanner.",
+    "paradigms": [],
+    "severity": "major",
+    "confidence": "low",
+    "threshold": {}
+  },
+  {
+    "id": "SEC002",
+    "category": "Security",
+    "title": "Insecure deserialization (heuristic)",
+    "description": "Use of formatters that instantiate arbitrary types from input, or polymorphic type handling.",
+    "rationale": "Heuristic by shape of code, no taint analysis.",
+    "paradigms": [],
+    "severity": "critical",
+    "confidence": "low",
+    "threshold": {}
+  },
+  {
+    "id": "SEC003",
+    "category": "Security",
+    "title": "SQL concatenation (heuristic)",
+    "description": "SQL-looking text concatenated or interpolated with non-constant values.",
+    "rationale": "Heuristic by shape of code, no taint analysis.",
+    "paradigms": [],
+    "severity": "major",
+    "confidence": "low",
+    "threshold": {}
+  },
+  {
+    "id": "STR001",
+    "category": "Paradigm",
+    "title": "Goto",
+    "description": "Uses of goto. Switch-case jumps are not flagged.",
+    "rationale": "Breaks single-entry, single-exit structure of blocks.",
+    "paradigms": [
+      "structural"
+    ],
+    "severity": "minor",
+    "confidence": "high",
+    "threshold": {}
+  },
+  {
+    "id": "STR002",
+    "category": "Paradigm",
+    "title": "Global state",
+    "description": "Non-private static mutable fields and properties, module-level variables.",
+    "rationale": "Acts as a hidden global.",
+    "paradigms": [
+      "structural"
+    ],
+    "severity": "major",
+    "confidence": "medium",
+    "threshold": {}
+  },
+  {
+    "id": "STR003",
+    "category": "Paradigm",
+    "title": "Module size",
+    "description": "Lines of code per module and per file.",
+    "rationale": "Very large modules are hard to navigate.",
+    "paradigms": [
+      "structural"
+    ],
+    "severity": "minor",
+    "confidence": "high",
+    "threshold": {
+      "maxModuleLines": 3000,
+      "maxFileLines": 800
+    }
+  }
+]

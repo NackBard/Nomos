@@ -41,3 +41,5 @@ Thumbs.db
 
 # Extension working files
 .nomos/
+
+analyzers/go/bin/

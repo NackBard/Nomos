@@ -1,0 +1,6 @@
+{
+  "results": [
+    { "ruleId": "DSN004", "file": "report/god.go", "startLine": 5, "measured": { "metric": "wmc", "value": 8, "threshold": 7 } },
+    { "ruleId": "DSN005", "file": "report/printer.go", "startLine": 15, "measured": { "metric": "foreignMembers", "value": 3, "threshold": 3 } }
+  ]
+}

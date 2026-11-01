@@ -1,0 +1,34 @@
+{
+  "schemaVersion": "1.2.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "go" },
+  "files": [
+    { "path": "cohesion.go", "lines": 32, "loc": 25 },
+    { "path": "errors.go", "lines": 11, "loc": 8 }
+  ],
+  "modules": [
+    { "id": "oc", "name": "oc", "files": ["cohesion.go", "errors.go"], "loc": 33, "metrics": {  }, "paradigmEvidence": [] }
+  ],
+  "types": [
+    { "id": "oc.Data", "name": "Data", "module": "oc", "kind": "struct", "isAbstract": false, "location": { "file": "cohesion.go", "startLine": 3 }, "metrics": { "lines": 4, "memberCount": 2, "methodCount": 0, "dit": 0, "cbo": 0, "lcom4": null, "wmc": 0, "atfd": 0, "tcc": null } },
+    { "id": "oc.Mixed", "name": "Mixed", "module": "oc", "kind": "struct", "isAbstract": false, "location": { "file": "cohesion.go", "startLine": 8 }, "metrics": { "lines": 5, "memberCount": 7, "methodCount": 4, "dit": 0, "cbo": 1, "lcom4": 3, "wmc": 4, "atfd": 2, "tcc": 0.1667 } },
+    { "id": "oc.Derived", "name": "Derived", "module": "oc", "kind": "struct", "isAbstract": false, "location": { "file": "cohesion.go", "startLine": 30 }, "metrics": { "lines": 3, "memberCount": 1, "methodCount": 0, "dit": 1, "cbo": 1, "lcom4": null, "wmc": 0, "atfd": 0, "tcc": null } },
+    { "id": "oc.Fail", "name": "Fail", "module": "oc", "kind": "struct", "isAbstract": false, "location": { "file": "errors.go", "startLine": 5 }, "metrics": { "dit": 1, "cbo": 0 } },
+    { "id": "oc.DeepFail", "name": "DeepFail", "module": "oc", "kind": "struct", "isAbstract": false, "location": { "file": "errors.go", "startLine": 9 }, "metrics": { "dit": 2, "cbo": 1 } }
+  ],
+  "functions": [
+    { "id": "oc.Mixed.IncA", "name": "IncA", "module": "oc", "type": "oc.Mixed", "kind": "method", "visibility": "public", "location": { "file": "cohesion.go", "startLine": 14 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 0, "lines": 3 } },
+    { "id": "oc.Mixed.ReadA", "name": "ReadA", "module": "oc", "type": "oc.Mixed", "kind": "method", "visibility": "public", "location": { "file": "cohesion.go", "startLine": 18 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 0, "lines": 3 } },
+    { "id": "oc.Mixed.IncB", "name": "IncB", "module": "oc", "type": "oc.Mixed", "kind": "method", "visibility": "public", "location": { "file": "cohesion.go", "startLine": 22 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 0, "lines": 3 } },
+    { "id": "oc.Mixed.Peek", "name": "Peek", "module": "oc", "type": "oc.Mixed", "kind": "method", "visibility": "public", "location": { "file": "cohesion.go", "startLine": 26 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 0, "lines": 3 } }
+  ],
+  "dependencies": [
+    { "from": "oc.Mixed", "to": "oc.Data", "kind": "type-ref", "phase": "runtime" },
+    { "from": "oc.Derived", "to": "oc.Mixed", "kind": "inheritance", "phase": "runtime" },
+    { "from": "oc.DeepFail", "to": "oc.Fail", "kind": "inheritance", "phase": "runtime" }
+  ],
+  "cycles": [
+  ],
+  "skippedRules": [
+  ],
+  "diagnostics": []
+}

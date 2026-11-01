@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import YAML from "yaml";
 import { casesDir, contractsDir, repoRoot, rulesDir } from "./paths.ts";
+import { goRulesPath, renderGoRules } from "./go-rules.ts";
 import { renderRulesDoc, rulesDocPath } from "./rules-doc.ts";
 import { createAjv, formatErrors, loadValidators, readJson, schemaFiles } from "./schemas.ts";
 
@@ -105,5 +106,7 @@ export function validateRepository(): string[] {
   }
   const documented = fs.existsSync(rulesDocPath) ? fs.readFileSync(rulesDocPath, "utf8").replaceAll("\r\n", "\n") : "";
   if (documented !== renderRulesDoc()) errors.push("docs/ANALYZERS.md is out of date: run npm run rules-doc");
+  const goRules = fs.existsSync(goRulesPath) ? fs.readFileSync(goRulesPath, "utf8").replaceAll("\r\n", "\n") : "";
+  if (goRules !== renderGoRules()) errors.push("analyzers/go/internal/analyzer/rules.json is out of date: run npm run go-rules");
   return errors;
 }

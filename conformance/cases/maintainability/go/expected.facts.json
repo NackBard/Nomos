@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "1.2.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "go" },
+  "files": [
+    { "path": "calc.go", "lines": 5, "loc": 4, "coverage": 25 },
+    { "path": "left.go", "lines": 12, "loc": 11, "coverage": 100 },
+    { "path": "right.go", "lines": 12, "loc": 11 }
+  ],
+  "modules": [
+    { "id": "mnt", "name": "mnt", "files": ["calc.go", "left.go", "right.go"], "loc": 26, "metrics": {  }, "paradigmEvidence": [] }
+  ],
+  "types": [
+    { "id": "mnt.Left", "name": "Left", "module": "mnt", "kind": "struct", "isAbstract": false, "location": { "file": "left.go", "startLine": 3 }, "metrics": { "lines": 10, "memberCount": 8 } },
+    { "id": "mnt.Right", "name": "Right", "module": "mnt", "kind": "struct", "isAbstract": false, "location": { "file": "right.go", "startLine": 3 }, "metrics": { "lines": 10, "memberCount": 8 } }
+  ],
+  "functions": [
+    { "id": "mnt.Add", "name": "Add", "module": "mnt", "kind": "function", "visibility": "public", "location": { "file": "calc.go", "startLine": 3 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 2, "lines": 3, "halsteadVolume": 28.07, "maintainabilityIndex": 79.3 } }
+  ],
+  "dependencies": [
+  ],
+  "cycles": [
+  ],
+  "skippedRules": [
+    { "ruleId": "DSN003", "reason": "missing-input", "message": "m" }
+  ],
+  "diagnostics": []
+}

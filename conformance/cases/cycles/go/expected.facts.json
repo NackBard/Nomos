@@ -1,0 +1,34 @@
+{
+  "schemaVersion": "1.2.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "go" },
+  "files": [
+    { "path": "cyc.go", "lines": 22, "loc": 17 }
+  ],
+  "modules": [
+    { "id": "cyc", "name": "cyc", "files": ["cyc.go"], "loc": 17, "metrics": {  }, "paradigmEvidence": [] }
+  ],
+  "types": [
+    { "id": "cyc.A", "name": "A", "module": "cyc", "kind": "struct", "isAbstract": false, "location": { "file": "cyc.go", "startLine": 3 }, "metrics": { "lines": 3 } },
+    { "id": "cyc.B", "name": "B", "module": "cyc", "kind": "struct", "isAbstract": false, "location": { "file": "cyc.go", "startLine": 7 }, "metrics": { "lines": 3 } },
+    { "id": "cyc.C", "name": "C", "module": "cyc", "kind": "struct", "isAbstract": false, "location": { "file": "cyc.go", "startLine": 11 }, "metrics": { "lines": 3 } },
+    { "id": "cyc.D", "name": "D", "module": "cyc", "kind": "struct", "isAbstract": false, "location": { "file": "cyc.go", "startLine": 15 }, "metrics": { "lines": 4 } },
+    { "id": "cyc.E", "name": "E", "module": "cyc", "kind": "struct", "isAbstract": false, "location": { "file": "cyc.go", "startLine": 20 }, "metrics": { "lines": 3 } }
+  ],
+  "functions": [
+  ],
+  "dependencies": [
+    { "from": "cyc.A", "to": "cyc.B", "kind": "type-ref", "phase": "runtime" },
+    { "from": "cyc.B", "to": "cyc.C", "kind": "type-ref", "phase": "runtime" },
+    { "from": "cyc.C", "to": "cyc.A", "kind": "type-ref", "phase": "runtime" },
+    { "from": "cyc.D", "to": "cyc.E", "kind": "type-ref", "phase": "runtime" },
+    { "from": "cyc.D", "to": "cyc.A", "kind": "type-ref", "phase": "runtime" },
+    { "from": "cyc.E", "to": "cyc.D", "kind": "type-ref", "phase": "runtime" }
+  ],
+  "cycles": [
+    { "level": "type", "members": ["cyc.A", "cyc.B", "cyc.C"] },
+    { "level": "type", "members": ["cyc.D", "cyc.E"] }
+  ],
+  "skippedRules": [
+  ],
+  "diagnostics": []
+}

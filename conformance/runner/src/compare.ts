@@ -6,6 +6,7 @@ export interface CaseSpec {
   covers?: string[];
   expectSarif?: boolean;
   config?: boolean;
+  exceptions?: { language: string; reason: string }[];
   parity?: { metric: string; scope: "module" | "type" | "function"; entities: Record<string, string> }[];
 }
 

@@ -1,8 +1,198 @@
 {
-  "schemaVersion": "1.1.0",
+  "schemaVersion": "1.2.0",
   "id": "complexity-estimates",
   "title": "Time and space estimates of loops, halving, callees and recursion shapes, allocation depth; ALG001, ALG003 and ALG004 at their default thresholds",
-  "covers": ["timeDegree", "timeLogFactor", "timeExponential", "spaceDegree", "allocationDepth", "ALG001", "ALG003", "ALG004"],
-  "languages": ["csharp"],
-  "expectSarif": true
+  "covers": [
+    "timeDegree",
+    "timeLogFactor",
+    "timeExponential",
+    "spaceDegree",
+    "allocationDepth",
+    "ALG001",
+    "ALG003",
+    "ALG004"
+  ],
+  "languages": [
+    "csharp",
+    "go"
+  ],
+  "expectSarif": true,
+  "parity": [
+    {
+      "metric": "timeDegree",
+      "scope": "function",
+      "entities": {
+        "csharp": "Alg.Code.Estimates.Quadratic",
+        "go": "alg.Quadratic"
+      }
+    },
+    {
+      "metric": "timeLogFactor",
+      "scope": "function",
+      "entities": {
+        "csharp": "Alg.Code.Estimates.Quadratic",
+        "go": "alg.Quadratic"
+      }
+    },
+    {
+      "metric": "spaceDegree",
+      "scope": "function",
+      "entities": {
+        "csharp": "Alg.Code.Estimates.Quadratic",
+        "go": "alg.Quadratic"
+      }
+    },
+    {
+      "metric": "timeDegree",
+      "scope": "function",
+      "entities": {
+        "csharp": "Alg.Code.Estimates.Halving",
+        "go": "alg.Halving"
+      }
+    },
+    {
+      "metric": "timeLogFactor",
+      "scope": "function",
+      "entities": {
+        "csharp": "Alg.Code.Estimates.Halving",
+        "go": "alg.Halving"
+      }
+    },
+    {
+      "metric": "spaceDegree",
+      "scope": "function",
+      "entities": {
+        "csharp": "Alg.Code.Estimates.Halving",
+        "go": "alg.Halving"
+      }
+    },
+    {
+      "metric": "timeDegree",
+      "scope": "function",
+      "entities": {
+        "csharp": "Alg.Code.Estimates.LinearLog",
+        "go": "alg.LinearLog"
+      }
+    },
+    {
+      "metric": "timeLogFactor",
+      "scope": "function",
+      "entities": {
+        "csharp": "Alg.Code.Estimates.LinearLog",
+        "go": "alg.LinearLog"
+      }
+    },
+    {
+      "metric": "spaceDegree",
+      "scope": "function",
+      "entities": {
+        "csharp": "Alg.Code.Estimates.LinearLog",
+        "go": "alg.LinearLog"
+      }
+    },
+    {
+      "metric": "timeDegree",
+      "scope": "function",
+      "entities": {
+        "csharp": "Alg.Code.Estimates.Factorial",
+        "go": "alg.Factorial"
+      }
+    },
+    {
+      "metric": "timeLogFactor",
+      "scope": "function",
+      "entities": {
+        "csharp": "Alg.Code.Estimates.Factorial",
+        "go": "alg.Factorial"
+      }
+    },
+    {
+      "metric": "spaceDegree",
+      "scope": "function",
+      "entities": {
+        "csharp": "Alg.Code.Estimates.Factorial",
+        "go": "alg.Factorial"
+      }
+    },
+    {
+      "metric": "timeDegree",
+      "scope": "function",
+      "entities": {
+        "csharp": "Alg.Code.Estimates.Search",
+        "go": "alg.Search"
+      }
+    },
+    {
+      "metric": "timeLogFactor",
+      "scope": "function",
+      "entities": {
+        "csharp": "Alg.Code.Estimates.Search",
+        "go": "alg.Search"
+      }
+    },
+    {
+      "metric": "spaceDegree",
+      "scope": "function",
+      "entities": {
+        "csharp": "Alg.Code.Estimates.Search",
+        "go": "alg.Search"
+      }
+    },
+    {
+      "metric": "timeDegree",
+      "scope": "function",
+      "entities": {
+        "csharp": "Alg.Code.Estimates.CubicViaCallee",
+        "go": "alg.CubicViaCallee"
+      }
+    },
+    {
+      "metric": "timeLogFactor",
+      "scope": "function",
+      "entities": {
+        "csharp": "Alg.Code.Estimates.CubicViaCallee",
+        "go": "alg.CubicViaCallee"
+      }
+    },
+    {
+      "metric": "spaceDegree",
+      "scope": "function",
+      "entities": {
+        "csharp": "Alg.Code.Estimates.CubicViaCallee",
+        "go": "alg.CubicViaCallee"
+      }
+    },
+    {
+      "metric": "timeDegree",
+      "scope": "function",
+      "entities": {
+        "csharp": "Alg.Code.Memory.Grid",
+        "go": "alg.Grid"
+      }
+    },
+    {
+      "metric": "timeLogFactor",
+      "scope": "function",
+      "entities": {
+        "csharp": "Alg.Code.Memory.Grid",
+        "go": "alg.Grid"
+      }
+    },
+    {
+      "metric": "spaceDegree",
+      "scope": "function",
+      "entities": {
+        "csharp": "Alg.Code.Memory.Grid",
+        "go": "alg.Grid"
+      }
+    },
+    {
+      "metric": "allocationDepth",
+      "scope": "function",
+      "entities": {
+        "csharp": "Alg.Code.Memory.NewInNested",
+        "go": "alg.NewInNested"
+      }
+    }
+  ]
 }

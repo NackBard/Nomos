@@ -1,9 +1,65 @@
 {
-  "schemaVersion": "1.1.0",
+  "schemaVersion": "1.2.0",
   "id": "blast-radius",
   "title": "Blast radius on a chain, a diamond and a ring with a tail, joined by one edge; DSN006 with a lowered threshold; a function inherits the radius of its type",
-  "covers": ["blastRadius", "DSN006"],
-  "languages": ["csharp"],
+  "covers": [
+    "blastRadius",
+    "DSN006"
+  ],
+  "languages": [
+    "csharp",
+    "go"
+  ],
   "expectSarif": true,
-  "config": true
+  "config": true,
+  "parity": [
+    {
+      "metric": "blastRadius",
+      "scope": "type",
+      "entities": {
+        "csharp": "Blast.Chain.C1",
+        "go": "blast/chain.C1"
+      }
+    },
+    {
+      "metric": "blastRadius",
+      "scope": "type",
+      "entities": {
+        "csharp": "Blast.Chain.C4",
+        "go": "blast/chain.C4"
+      }
+    },
+    {
+      "metric": "blastRadius",
+      "scope": "type",
+      "entities": {
+        "csharp": "Blast.Diamond.Bottom",
+        "go": "blast/diamond.Bottom"
+      }
+    },
+    {
+      "metric": "blastRadius",
+      "scope": "type",
+      "entities": {
+        "csharp": "Blast.Ring.R2",
+        "go": "blast/ring.R2"
+      }
+    },
+    {
+      "metric": "blastRadius",
+      "scope": "type",
+      "entities": {
+        "csharp": "Blast.Ring.Leaf",
+        "go": "blast/ring.Leaf"
+      }
+    },
+    {
+      "metric": "blastRadius",
+      "scope": "type",
+      "entities": {
+        "csharp": "Blast.Ring.Tail",
+        "go": "blast/ring.Tail"
+      }
+    }
+  ]
 }

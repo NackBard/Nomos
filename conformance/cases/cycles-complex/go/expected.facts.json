@@ -1,0 +1,81 @@
+{
+  "schemaVersion": "1.2.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "go" },
+  "files": [
+    { "path": "dag.go", "lines": 21, "loc": 16 },
+    { "path": "eight.go", "lines": 14, "loc": 11 },
+    { "path": "funcs.go", "lines": 15, "loc": 13 },
+    { "path": "left/left.go", "lines": 12, "loc": 9 },
+    { "path": "mixed.go", "lines": 12, "loc": 9 },
+    { "path": "right/right.go", "lines": 9, "loc": 7 },
+    { "path": "ring.go", "lines": 22, "loc": 17 }
+  ],
+  "modules": [
+    { "id": "cx", "name": "cx", "files": ["dag.go", "eight.go", "funcs.go", "mixed.go", "ring.go"], "loc": 66, "metrics": {  }, "paradigmEvidence": [] },
+    { "id": "cx/left", "name": "left", "files": ["left/left.go"], "loc": 9, "metrics": {  }, "paradigmEvidence": [] },
+    { "id": "cx/right", "name": "right", "files": ["right/right.go"], "loc": 7, "metrics": {  }, "paradigmEvidence": [] }
+  ],
+  "types": [
+    { "id": "cx.Top", "name": "Top", "module": "cx", "kind": "struct", "isAbstract": false, "location": { "file": "dag.go", "startLine": 3 }, "metrics": {  } },
+    { "id": "cx.Mid1", "name": "Mid1", "module": "cx", "kind": "struct", "isAbstract": false, "location": { "file": "dag.go", "startLine": 8 }, "metrics": {  } },
+    { "id": "cx.Mid2", "name": "Mid2", "module": "cx", "kind": "struct", "isAbstract": false, "location": { "file": "dag.go", "startLine": 12 }, "metrics": {  } },
+    { "id": "cx.Bottom", "name": "Bottom", "module": "cx", "kind": "struct", "isAbstract": false, "location": { "file": "dag.go", "startLine": 16 }, "metrics": {  } },
+    { "id": "cx.Self", "name": "Self", "module": "cx", "kind": "struct", "isAbstract": false, "location": { "file": "dag.go", "startLine": 19 }, "metrics": {  } },
+    { "id": "cx.P", "name": "P", "module": "cx", "kind": "struct", "isAbstract": false, "location": { "file": "eight.go", "startLine": 3 }, "metrics": {  } },
+    { "id": "cx.Q", "name": "Q", "module": "cx", "kind": "struct", "isAbstract": false, "location": { "file": "eight.go", "startLine": 7 }, "metrics": {  } },
+    { "id": "cx.S", "name": "S", "module": "cx", "kind": "struct", "isAbstract": false, "location": { "file": "eight.go", "startLine": 12 }, "metrics": {  } },
+    { "id": "cx.N1", "name": "N1", "module": "cx", "kind": "struct", "isAbstract": false, "location": { "file": "ring.go", "startLine": 3 }, "metrics": {  } },
+    { "id": "cx.N2", "name": "N2", "module": "cx", "kind": "struct", "isAbstract": false, "location": { "file": "ring.go", "startLine": 7 }, "metrics": {  } },
+    { "id": "cx.N3", "name": "N3", "module": "cx", "kind": "struct", "isAbstract": false, "location": { "file": "ring.go", "startLine": 12 }, "metrics": {  } },
+    { "id": "cx.N4", "name": "N4", "module": "cx", "kind": "struct", "isAbstract": false, "location": { "file": "ring.go", "startLine": 16 }, "metrics": {  } },
+    { "id": "cx.N5", "name": "N5", "module": "cx", "kind": "struct", "isAbstract": false, "location": { "file": "ring.go", "startLine": 20 }, "metrics": {  } },
+    { "id": "cx.Base", "name": "Base", "module": "cx", "kind": "struct", "isAbstract": false, "location": { "file": "mixed.go", "startLine": 3 }, "metrics": {  } },
+    { "id": "cx.Derived", "name": "Derived", "module": "cx", "kind": "struct", "isAbstract": false, "location": { "file": "mixed.go", "startLine": 10 }, "metrics": {  } },
+    { "id": "cx/left.X1", "name": "X1", "module": "cx/left", "kind": "struct", "isAbstract": false, "location": { "file": "left/left.go", "startLine": 5 }, "metrics": {  } },
+    { "id": "cx/left.X2", "name": "X2", "module": "cx/left", "kind": "struct", "isAbstract": false, "location": { "file": "left/left.go", "startLine": 9 }, "metrics": {  } },
+    { "id": "cx/right.Y1", "name": "Y1", "module": "cx/right", "kind": "struct", "isAbstract": false, "location": { "file": "right/right.go", "startLine": 3 }, "metrics": {  } },
+    { "id": "cx/right.Y2", "name": "Y2", "module": "cx/right", "kind": "struct", "isAbstract": false, "location": { "file": "right/right.go", "startLine": 7 }, "metrics": {  } }
+  ],
+  "functions": [
+    { "id": "cx.Base.Make", "name": "Make", "module": "cx", "type": "cx.Base", "kind": "method", "visibility": "public", "location": { "file": "mixed.go", "startLine": 6 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 0, "lines": 3 } },
+    { "id": "cx.Even", "name": "Even", "module": "cx", "kind": "function", "visibility": "public", "location": { "file": "funcs.go", "startLine": 3 }, "metrics": { "cyclomatic": 2, "maxNesting": 1, "parameterCount": 1, "lines": 6 } },
+    { "id": "cx.Odd", "name": "Odd", "module": "cx", "kind": "function", "visibility": "public", "location": { "file": "funcs.go", "startLine": 10 }, "metrics": { "cyclomatic": 2, "maxNesting": 1, "parameterCount": 1, "lines": 6 } }
+  ],
+  "dependencies": [
+    { "from": "cx.Top", "to": "cx.Mid1", "kind": "type-ref", "phase": "runtime" },
+    { "from": "cx.Top", "to": "cx.Mid2", "kind": "type-ref", "phase": "runtime" },
+    { "from": "cx.Mid1", "to": "cx.Bottom", "kind": "type-ref", "phase": "runtime" },
+    { "from": "cx.Mid2", "to": "cx.Bottom", "kind": "type-ref", "phase": "runtime" },
+    { "from": "cx.P", "to": "cx.Q", "kind": "type-ref", "phase": "runtime" },
+    { "from": "cx.Q", "to": "cx.P", "kind": "type-ref", "phase": "runtime" },
+    { "from": "cx.Q", "to": "cx.S", "kind": "type-ref", "phase": "runtime" },
+    { "from": "cx.S", "to": "cx.Q", "kind": "type-ref", "phase": "runtime" },
+    { "from": "cx.N1", "to": "cx.N2", "kind": "type-ref", "phase": "runtime" },
+    { "from": "cx.N2", "to": "cx.N3", "kind": "type-ref", "phase": "runtime" },
+    { "from": "cx.N2", "to": "cx.N4", "kind": "type-ref", "phase": "runtime" },
+    { "from": "cx.N3", "to": "cx.N4", "kind": "type-ref", "phase": "runtime" },
+    { "from": "cx.N4", "to": "cx.N5", "kind": "type-ref", "phase": "runtime" },
+    { "from": "cx.N5", "to": "cx.N1", "kind": "type-ref", "phase": "runtime" },
+    { "from": "cx.Base", "to": "cx.Derived", "kind": "call", "phase": "runtime" },
+    { "from": "cx.Derived", "to": "cx.Base", "kind": "inheritance", "phase": "runtime" },
+    { "from": "cx.Even", "to": "cx.Odd", "kind": "call", "phase": "runtime" },
+    { "from": "cx.Odd", "to": "cx.Even", "kind": "call", "phase": "runtime" },
+    { "from": "cx/left.X1", "to": "cx/left.X2", "kind": "type-ref", "phase": "runtime" },
+    { "from": "cx/left.X2", "to": "cx/left.X1", "kind": "type-ref", "phase": "runtime" },
+    { "from": "cx/left.X2", "to": "cx/right.Y1", "kind": "type-ref", "phase": "runtime" },
+    { "from": "cx/right.Y1", "to": "cx/right.Y2", "kind": "type-ref", "phase": "runtime" },
+    { "from": "cx/right.Y2", "to": "cx/right.Y1", "kind": "type-ref", "phase": "runtime" },
+    { "from": "cx/left", "to": "cx/right", "kind": "import", "phase": "runtime" }
+  ],
+  "cycles": [
+    { "level": "type", "members": ["cx.Base", "cx.Derived"] },
+    { "level": "type", "members": ["cx.Even", "cx.Odd"] },
+    { "level": "type", "members": ["cx.P", "cx.Q", "cx.S"] },
+    { "level": "type", "members": ["cx.N1", "cx.N2", "cx.N3", "cx.N4", "cx.N5"] },
+    { "level": "type", "members": ["cx/left.X1", "cx/left.X2"] },
+    { "level": "type", "members": ["cx/right.Y1", "cx/right.Y2"] }
+  ],
+  "skippedRules": [
+  ],
+  "diagnostics": []
+}

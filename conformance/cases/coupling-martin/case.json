@@ -1,7 +1,180 @@
 {
-  "schemaVersion": "1.0.0",
+  "schemaVersion": "1.2.0",
   "id": "coupling-martin",
   "title": "Afferent and efferent coupling, instability, abstractness and distance on four modules",
-  "covers": ["ca", "ce", "instability", "abstractness", "distance", "cbo", "dit"],
-  "languages": ["csharp"]
+  "covers": [
+    "ca",
+    "ce",
+    "instability",
+    "abstractness",
+    "distance",
+    "cbo",
+    "dit"
+  ],
+  "languages": [
+    "csharp",
+    "go"
+  ],
+  "parity": [
+    {
+      "metric": "ca",
+      "scope": "module",
+      "entities": {
+        "csharp": "Shop.Domain",
+        "go": "shop/domain"
+      }
+    },
+    {
+      "metric": "ce",
+      "scope": "module",
+      "entities": {
+        "csharp": "Shop.Domain",
+        "go": "shop/domain"
+      }
+    },
+    {
+      "metric": "instability",
+      "scope": "module",
+      "entities": {
+        "csharp": "Shop.Domain",
+        "go": "shop/domain"
+      }
+    },
+    {
+      "metric": "abstractness",
+      "scope": "module",
+      "entities": {
+        "csharp": "Shop.Domain",
+        "go": "shop/domain"
+      }
+    },
+    {
+      "metric": "distance",
+      "scope": "module",
+      "entities": {
+        "csharp": "Shop.Domain",
+        "go": "shop/domain"
+      }
+    },
+    {
+      "metric": "ca",
+      "scope": "module",
+      "entities": {
+        "csharp": "Shop.Infra",
+        "go": "shop/infra"
+      }
+    },
+    {
+      "metric": "ce",
+      "scope": "module",
+      "entities": {
+        "csharp": "Shop.Infra",
+        "go": "shop/infra"
+      }
+    },
+    {
+      "metric": "instability",
+      "scope": "module",
+      "entities": {
+        "csharp": "Shop.Infra",
+        "go": "shop/infra"
+      }
+    },
+    {
+      "metric": "abstractness",
+      "scope": "module",
+      "entities": {
+        "csharp": "Shop.Infra",
+        "go": "shop/infra"
+      }
+    },
+    {
+      "metric": "distance",
+      "scope": "module",
+      "entities": {
+        "csharp": "Shop.Infra",
+        "go": "shop/infra"
+      }
+    },
+    {
+      "metric": "ca",
+      "scope": "module",
+      "entities": {
+        "csharp": "Shop.Services",
+        "go": "shop/services"
+      }
+    },
+    {
+      "metric": "ce",
+      "scope": "module",
+      "entities": {
+        "csharp": "Shop.Services",
+        "go": "shop/services"
+      }
+    },
+    {
+      "metric": "instability",
+      "scope": "module",
+      "entities": {
+        "csharp": "Shop.Services",
+        "go": "shop/services"
+      }
+    },
+    {
+      "metric": "abstractness",
+      "scope": "module",
+      "entities": {
+        "csharp": "Shop.Services",
+        "go": "shop/services"
+      }
+    },
+    {
+      "metric": "distance",
+      "scope": "module",
+      "entities": {
+        "csharp": "Shop.Services",
+        "go": "shop/services"
+      }
+    },
+    {
+      "metric": "ca",
+      "scope": "module",
+      "entities": {
+        "csharp": "Shop.App",
+        "go": "shop/app"
+      }
+    },
+    {
+      "metric": "ce",
+      "scope": "module",
+      "entities": {
+        "csharp": "Shop.App",
+        "go": "shop/app"
+      }
+    },
+    {
+      "metric": "instability",
+      "scope": "module",
+      "entities": {
+        "csharp": "Shop.App",
+        "go": "shop/app"
+      }
+    },
+    {
+      "metric": "abstractness",
+      "scope": "module",
+      "entities": {
+        "csharp": "Shop.App",
+        "go": "shop/app"
+      }
+    },
+    {
+      "metric": "distance",
+      "scope": "module",
+      "entities": {
+        "csharp": "Shop.App",
+        "go": "shop/app"
+      }
+    }
+  ]
 }

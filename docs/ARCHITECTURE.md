@@ -29,12 +29,13 @@ conformance/ ── прогоняет каждый анализатор на э
 | `contracts/` | JSON Schema: manifest, facts, правила, nomos.json, conformance-case; профиль SARIF | только через `schemaVersion` и запись в DECISIONS.md |
 | `spec/` | `rules/*.yaml` — правила как данные; `metrics.md` — формулы; `paradigms.md` — признаки стиля | при добавлении правил и метрик |
 | `analyzers/csharp/` | анализатор C# на Roslyn | |
+| `analyzers/go/` | анализатор Go на `go/parser` и `go/types` | |
 | `analyzers/<язык>/` | будущие анализаторы | |
 | `extension/` | расширение VS Code, только потребитель контрактов | |
 | `conformance/` | фикстуры, эталонные facts, harness | |
 | `docs/` | эта документация | |
 
-Анализатор C# лежит в `analyzers/csharp/` (`src/`, `tests/`, `Nomos.slnx`, `Directory.*`). Точка входа — `src/Nomos.Analyzer.CSharp` (`nomos-csharp`), она говорит по протоколу `manifest`/`analyze`.
+Анализатор Go лежит в `analyzers/go/`, точка входа `cmd/nomos-go`, зависимостей вне стандартной библиотеки нет. Анализатор C# лежит в `analyzers/csharp/` (`src/`, `tests/`, `Nomos.slnx`, `Directory.*`). Точка входа — `src/Nomos.Analyzer.CSharp` (`nomos-csharp`), она говорит по протоколу `manifest`/`analyze`.
 
 ## Контракты
 

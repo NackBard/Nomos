@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "1.2.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "go" },
+  "files": [
+    { "path": "basics.go", "lines": 40, "loc": 33 }
+  ],
+  "modules": [
+    { "id": "metrics", "name": "metrics", "files": ["basics.go"], "loc": 33, "metrics": { "ca": 0, "ce": 0, "instability": null, "abstractness": null, "distance": null }, "paradigmEvidence": [] }
+  ],
+  "types": [
+  ],
+  "functions": [
+    { "id": "metrics.Straight", "name": "Straight", "module": "metrics", "kind": "function", "visibility": "public", "location": { "file": "basics.go", "startLine": 3 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 1, "lines": 3 } },
+    { "id": "metrics.Branches", "name": "Branches", "module": "metrics", "kind": "function", "visibility": "public", "location": { "file": "basics.go", "startLine": 8 }, "metrics": { "cyclomatic": 5, "maxNesting": 1, "parameterCount": 2, "lines": 9 } },
+    { "id": "metrics.Loops", "name": "Loops", "module": "metrics", "kind": "function", "visibility": "public", "location": { "file": "basics.go", "startLine": 18 }, "metrics": { "cyclomatic": 4, "maxNesting": 3, "parameterCount": 2, "lines": 12 } },
+    { "id": "metrics.Switches", "name": "Switches", "module": "metrics", "kind": "function", "visibility": "public", "location": { "file": "basics.go", "startLine": 31 }, "metrics": { "cyclomatic": 3, "maxNesting": 1, "parameterCount": 2, "lines": 10 } }
+  ],
+  "dependencies": [
+  ],
+  "cycles": [
+  ],
+  "skippedRules": [
+  ],
+  "diagnostics": []
+}

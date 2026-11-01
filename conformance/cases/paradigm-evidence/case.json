@@ -1,7 +1,13 @@
 {
-  "schemaVersion": "1.0.0",
+  "schemaVersion": "1.2.0",
   "id": "paradigm-evidence",
   "title": "OOP evidence in a module with classes, and paradigm-not-detected records for a module without any",
-  "covers": ["paradigmEvidence", "skippedRules"],
-  "languages": ["csharp"]
+  "covers": [
+    "paradigmEvidence",
+    "skippedRules"
+  ],
+  "languages": [
+    "csharp",
+    "go"
+  ]
 }

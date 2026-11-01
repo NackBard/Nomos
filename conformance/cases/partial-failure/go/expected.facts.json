@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "1.2.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "go" },
+  "files": [
+    { "path": "broken.go", "lines": 1, "loc": 1, "parsed": false },
+    { "path": "good.go", "lines": 5, "loc": 4 }
+  ],
+  "modules": [
+    { "id": "pf", "name": "pf", "files": ["good.go"], "loc": 4, "metrics": {  }, "paradigmEvidence": [] }
+  ],
+  "types": [
+    { "id": "pf.Ok", "name": "Ok", "module": "pf", "kind": "struct", "isAbstract": false, "location": { "file": "good.go", "startLine": 3 }, "metrics": { "lines": 3, "memberCount": 1 } }
+  ],
+  "functions": [
+  ],
+  "dependencies": [
+  ],
+  "cycles": [
+  ],
+  "skippedRules": [
+  ],
+  "diagnostics": [{ "level": "warning", "message": "m", "file": "broken.go", "code": "syntax-error" }]
+}

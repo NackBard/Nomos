@@ -11,9 +11,11 @@ export async function run(): Promise<void> {
   await vscode.commands.executeCommand("nomos.analyze");
 
   assert.deepEqual(api.errors(), []);
-  const [run] = api.runs();
+  const runs = api.runs();
+  const [run] = runs;
   assert.ok(run, "no analysis run");
-  assert.ok(run.findings.length > 0, "no findings");
+  assert.deepEqual(runs.map((r) => r.language).sort(), ["csharp", "go"], "every analyzer of nomos.json must run");
+  for (const each of runs) assert.ok(each.findings.length > 0, `no findings from ${each.language}`);
 
   const withDiagnostics = vscode.languages.getDiagnostics().filter(([, list]) => list.some((d) => d.source === "nomos"));
   assert.ok(withDiagnostics.length > 0, "no diagnostics were published");
@@ -28,5 +30,5 @@ export async function run(): Promise<void> {
   await vscode.commands.executeCommand("nomos.showGraph");
   await vscode.commands.executeCommand("workbench.view.extension.nomos");
 
-  console.log(`e2e: ${run.findings.length} findings, ${withDiagnostics.length} files with diagnostics, ${lenses.length} lenses in ${entity.location.file}`);
+  console.log(`e2e: ${runs.map((r) => `${r.language} ${r.findings.length}`).join(", ")} findings, ${withDiagnostics.length} files with diagnostics, ${lenses.length} lenses in ${entity.location.file}`);
 }

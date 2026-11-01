@@ -1,9 +1,20 @@
 {
-  "schemaVersion": "1.1.0",
+  "schemaVersion": "1.2.0",
   "id": "health",
   "title": "Health score: normalized by loc, not by physical lines; a finding without a module counts for the module of its file; a clean module; a project weighted by loc",
-  "covers": ["health"],
-  "languages": ["csharp"],
-  "tolerance": { "metrics": { "health": { "absolute": 0.1 } } },
+  "covers": [
+    "health"
+  ],
+  "languages": [
+    "csharp",
+    "go"
+  ],
+  "tolerance": {
+    "metrics": {
+      "health": {
+        "absolute": 0.1
+      }
+    }
+  },
   "config": true
 }

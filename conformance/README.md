@@ -41,6 +41,9 @@ npm test             # самопроверка сравнения
 npm run selftest     # эхо-анализатор: путь успеха harness
 npm run rules-doc    # пересобрать docs/ANALYZERS.md из spec/rules
 npm run csharp       # собранный анализатор C#: dotnet build analyzers/csharp/Nomos.slnx, затем harness на всех случаях
+npm run go           # сборка и все случаи для Go
+npm run all          # оба анализатора и parity между ними
+npm run go-rules     # пересобрать rules.json анализатора Go из spec/rules
 node src/cli.ts run --analyzer "csharp=<команда>" [--case cycles]
 ```
 
@@ -80,4 +83,4 @@ node src/cli.ts run --analyzer "csharp=<команда>" [--case cycles]
 
 ## Новый язык
 
-Анализатор нового языка считается готовым к подключению, когда проходит все существующие случаи. Если случай по природе языка не выразим (например, наследование в языке без классов), в `case.json` фиксируется исключение с причиной.
+Анализатор нового языка считается готовым к подключению, когда проходит все существующие случаи. Если случай по природе языка не выразим, в `case.json` в `exceptions` записывается язык и причина; случай без исходников и без записи падает.

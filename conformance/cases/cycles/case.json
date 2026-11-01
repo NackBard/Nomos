@@ -1,7 +1,13 @@
 {
-  "schemaVersion": "1.0.0",
+  "schemaVersion": "1.2.0",
   "id": "cycles",
   "title": "Strongly connected components at type and module level: a three-module ring, a same-module type pair and a module cycle without a type cycle",
-  "covers": ["cycles", "DSN002"],
-  "languages": ["csharp"]
+  "covers": [
+    "cycles",
+    "DSN002"
+  ],
+  "languages": [
+    "csharp",
+    "go"
+  ]
 }

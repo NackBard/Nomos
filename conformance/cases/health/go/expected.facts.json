@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "1.2.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "go" },
+  "files": [
+    { "path": "big/store.go", "lines": 402, "loc": 300 },
+    { "path": "tiny/box.go", "lines": 5, "loc": 4 }
+  ],
+  "modules": [
+    { "id": "health/big", "name": "big", "files": ["big/store.go"], "loc": 300, "metrics": {  }, "paradigmEvidence": [], "health": { "score": 90.5, "categories": [], "explanation": ["100 * exp(-0.6 / 0.3 / 20)"] } },
+    { "id": "health/tiny", "name": "tiny", "files": ["tiny/box.go"], "loc": 4, "metrics": {  }, "paradigmEvidence": [], "health": { "score": 100, "categories": [], "explanation": ["no findings"] } }
+  ],
+  "types": [
+    { "id": "health/big.Store", "name": "Store", "module": "health/big", "kind": "struct", "isAbstract": false, "location": { "file": "big/store.go", "startLine": 103 }, "metrics": { "memberCount": 288 } },
+    { "id": "health/tiny.Box", "name": "Box", "module": "health/tiny", "kind": "struct", "isAbstract": false, "location": { "file": "tiny/box.go", "startLine": 3 }, "metrics": { "memberCount": 1 } }
+  ],
+  "functions": [
+    { "id": "health/big.Pairs", "name": "Pairs", "module": "health/big", "kind": "function", "visibility": "public", "location": { "file": "big/store.go", "startLine": 394 }, "metrics": { "cyclomatic": 3, "maxNesting": 2, "parameterCount": 2, "lines": 9 } }
+  ],
+  "dependencies": [
+  ],
+  "cycles": [
+  ],
+  "health": { "score": 90.6, "categories": [], "explanation": ["(90.48 * 300 + 100 * 4) / 304"] },
+  "skippedRules": [
+  ],
+  "diagnostics": []
+}

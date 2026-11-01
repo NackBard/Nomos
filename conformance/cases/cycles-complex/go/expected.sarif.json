@@ -1,0 +1,10 @@
+{
+  "results": [
+    { "ruleId": "DSN002", "file": "eight.go", "startLine": 3 },
+    { "ruleId": "DSN002", "file": "funcs.go", "startLine": 3 },
+    { "ruleId": "DSN002", "file": "left/left.go", "startLine": 5 },
+    { "ruleId": "DSN002", "file": "mixed.go", "startLine": 3 },
+    { "ruleId": "DSN002", "file": "right/right.go", "startLine": 3 },
+    { "ruleId": "DSN002", "file": "ring.go", "startLine": 3 }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "schemaVersion": "1.2.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "go" },
+  "files": [
+    { "path": "estimates.go", "lines": 80, "loc": 70 },
+    { "path": "memory.go", "lines": 60, "loc": 51 }
+  ],
+  "modules": [
+    { "id": "alg", "name": "alg", "files": ["estimates.go", "memory.go"], "loc": 121, "metrics": {  }, "paradigmEvidence": [] }
+  ],
+  "types": [
+    { "id": "alg.Box", "name": "Box", "module": "alg", "kind": "struct", "isAbstract": false, "location": { "file": "memory.go", "startLine": 40 }, "metrics": { "lines": 3, "memberCount": 1 } }
+  ],
+  "functions": [
+    { "id": "alg.Constant", "name": "Constant", "module": "alg", "kind": "function", "visibility": "public", "location": { "file": "estimates.go", "startLine": 3 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 1, "lines": 3, "timeDegree": 0, "timeLogFactor": 0, "timeExponential": 0, "spaceDegree": 0, "allocationDepth": 0 } },
+    { "id": "alg.Linear", "name": "Linear", "module": "alg", "kind": "function", "visibility": "public", "location": { "file": "estimates.go", "startLine": 7 }, "metrics": { "cyclomatic": 2, "maxNesting": 1, "parameterCount": 1, "lines": 7, "timeDegree": 1, "timeLogFactor": 0, "timeExponential": 0, "spaceDegree": 0, "allocationDepth": 0 } },
+    { "id": "alg.Quadratic", "name": "Quadratic", "module": "alg", "kind": "function", "visibility": "public", "location": { "file": "estimates.go", "startLine": 15 }, "metrics": { "cyclomatic": 3, "maxNesting": 2, "parameterCount": 2, "lines": 9, "timeDegree": 2, "timeLogFactor": 0, "timeExponential": 0, "spaceDegree": 0, "allocationDepth": 0 } },
+    { "id": "alg.Halving", "name": "Halving", "module": "alg", "kind": "function", "visibility": "public", "location": { "file": "estimates.go", "startLine": 25 }, "metrics": { "cyclomatic": 2, "maxNesting": 1, "parameterCount": 1, "lines": 7, "timeDegree": 0, "timeLogFactor": 1, "timeExponential": 0, "spaceDegree": 0, "allocationDepth": 0 } },
+    { "id": "alg.LinearLog", "name": "LinearLog", "module": "alg", "kind": "function", "visibility": "public", "location": { "file": "estimates.go", "startLine": 33 }, "metrics": { "cyclomatic": 2, "maxNesting": 1, "parameterCount": 1, "lines": 7, "timeDegree": 1, "timeLogFactor": 1, "timeExponential": 0, "spaceDegree": 0, "allocationDepth": 0 } },
+    { "id": "alg.Fixed", "name": "Fixed", "module": "alg", "kind": "function", "visibility": "public", "location": { "file": "estimates.go", "startLine": 41 }, "metrics": { "cyclomatic": 2, "maxNesting": 1, "parameterCount": 0, "lines": 7, "timeDegree": 0, "timeLogFactor": 0, "timeExponential": 0, "spaceDegree": 0, "allocationDepth": 0 } },
+    { "id": "alg.Fib", "name": "Fib", "module": "alg", "kind": "function", "visibility": "public", "location": { "file": "estimates.go", "startLine": 49 }, "metrics": { "cyclomatic": 2, "maxNesting": 1, "parameterCount": 1, "lines": 6, "timeDegree": null, "timeLogFactor": null, "timeExponential": 1, "spaceDegree": 1, "allocationDepth": 0 } },
+    { "id": "alg.Factorial", "name": "Factorial", "module": "alg", "kind": "function", "visibility": "public", "location": { "file": "estimates.go", "startLine": 56 }, "metrics": { "cyclomatic": 2, "maxNesting": 1, "parameterCount": 1, "lines": 6, "timeDegree": 1, "timeLogFactor": 0, "timeExponential": 0, "spaceDegree": 1, "allocationDepth": 0 } },
+    { "id": "alg.Search", "name": "Search", "module": "alg", "kind": "function", "visibility": "public", "location": { "file": "estimates.go", "startLine": 63 }, "metrics": { "cyclomatic": 3, "maxNesting": 1, "parameterCount": 3, "lines": 10, "timeDegree": 0, "timeLogFactor": 1, "timeExponential": 0, "spaceDegree": 1, "allocationDepth": 0 } },
+    { "id": "alg.CubicViaCallee", "name": "CubicViaCallee", "module": "alg", "kind": "function", "visibility": "public", "location": { "file": "estimates.go", "startLine": 74 }, "metrics": { "cyclomatic": 2, "maxNesting": 1, "parameterCount": 1, "lines": 7, "timeDegree": 3, "timeLogFactor": 0, "timeExponential": 0, "spaceDegree": 0, "allocationDepth": 0 } },
+    { "id": "alg.None", "name": "None", "module": "alg", "kind": "function", "visibility": "public", "location": { "file": "memory.go", "startLine": 3 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 1, "lines": 3, "timeDegree": 0, "timeLogFactor": 0, "timeExponential": 0, "spaceDegree": 0, "allocationDepth": 0 } },
+    { "id": "alg.Grows", "name": "Grows", "module": "alg", "kind": "function", "visibility": "public", "location": { "file": "memory.go", "startLine": 7 }, "metrics": { "cyclomatic": 2, "maxNesting": 1, "parameterCount": 1, "lines": 7, "timeDegree": 1, "timeLogFactor": 0, "timeExponential": 0, "spaceDegree": 1, "allocationDepth": 0 } },
+    { "id": "alg.Grid", "name": "Grid", "module": "alg", "kind": "function", "visibility": "public", "location": { "file": "memory.go", "startLine": 15 }, "metrics": { "cyclomatic": 3, "maxNesting": 2, "parameterCount": 2, "lines": 9, "timeDegree": 2, "timeLogFactor": 0, "timeExponential": 0, "spaceDegree": 2, "allocationDepth": 0 } },
+    { "id": "alg.Sized", "name": "Sized", "module": "alg", "kind": "function", "visibility": "public", "location": { "file": "memory.go", "startLine": 25 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 1, "lines": 3, "timeDegree": 0, "timeLogFactor": 0, "timeExponential": 0, "spaceDegree": 1, "allocationDepth": 0 } },
+    { "id": "alg.Literal", "name": "Literal", "module": "alg", "kind": "function", "visibility": "public", "location": { "file": "memory.go", "startLine": 29 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 0, "lines": 3, "timeDegree": 0, "timeLogFactor": 0, "timeExponential": 0, "spaceDegree": 0, "allocationDepth": 0 } },
+    { "id": "alg.Deep", "name": "Deep", "module": "alg", "kind": "function", "visibility": "public", "location": { "file": "memory.go", "startLine": 33 }, "metrics": { "cyclomatic": 2, "maxNesting": 1, "parameterCount": 1, "lines": 6, "timeDegree": 1, "timeLogFactor": 0, "timeExponential": 0, "spaceDegree": 1, "allocationDepth": 0 } },
+    { "id": "alg.NewInNested", "name": "NewInNested", "module": "alg", "kind": "function", "visibility": "public", "location": { "file": "memory.go", "startLine": 44 }, "metrics": { "cyclomatic": 3, "maxNesting": 2, "parameterCount": 2, "lines": 9, "timeDegree": 2, "timeLogFactor": 0, "timeExponential": 0, "spaceDegree": 0, "allocationDepth": 2 } },
+    { "id": "alg.NewInLoop", "name": "NewInLoop", "module": "alg", "kind": "function", "visibility": "public", "location": { "file": "memory.go", "startLine": 54 }, "metrics": { "cyclomatic": 2, "maxNesting": 1, "parameterCount": 1, "lines": 7, "timeDegree": 1, "timeLogFactor": 0, "timeExponential": 0, "spaceDegree": 0, "allocationDepth": 1 } }
+  ],
+  "dependencies": [
+    { "from": "alg.LinearLog", "to": "alg.Halving", "kind": "call", "phase": "runtime" },
+    { "from": "alg.CubicViaCallee", "to": "alg.Quadratic", "kind": "call", "phase": "runtime" },
+    { "from": "alg.NewInNested", "to": "alg.Box", "kind": "call", "phase": "runtime" },
+    { "from": "alg.NewInNested", "to": "alg.Box", "kind": "type-ref", "phase": "runtime" },
+    { "from": "alg.NewInLoop", "to": "alg.Box", "kind": "call", "phase": "runtime" },
+    { "from": "alg.NewInLoop", "to": "alg.Box", "kind": "type-ref", "phase": "runtime" }
+  ],
+  "cycles": [
+  ],
+  "skippedRules": [
+  ],
+  "diagnostics": []
+}

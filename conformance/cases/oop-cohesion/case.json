@@ -1,7 +1,67 @@
 {
-  "schemaVersion": "1.0.0",
+  "schemaVersion": "1.2.0",
   "id": "oop-cohesion",
   "title": "DIT with a base outside the project, CBO without the standard library, LCOM4 and TCC on a class with two state groups, WMC and ATFD",
-  "covers": ["dit", "cbo", "lcom4", "wmc", "atfd", "tcc"],
-  "languages": ["csharp"]
+  "covers": [
+    "dit",
+    "cbo",
+    "lcom4",
+    "wmc",
+    "atfd",
+    "tcc"
+  ],
+  "languages": [
+    "csharp",
+    "go"
+  ],
+  "parity": [
+    {
+      "metric": "lcom4",
+      "scope": "type",
+      "entities": {
+        "csharp": "Oc.Mixed",
+        "go": "oc.Mixed"
+      }
+    },
+    {
+      "metric": "wmc",
+      "scope": "type",
+      "entities": {
+        "csharp": "Oc.Mixed",
+        "go": "oc.Mixed"
+      }
+    },
+    {
+      "metric": "atfd",
+      "scope": "type",
+      "entities": {
+        "csharp": "Oc.Mixed",
+        "go": "oc.Mixed"
+      }
+    },
+    {
+      "metric": "tcc",
+      "scope": "type",
+      "entities": {
+        "csharp": "Oc.Mixed",
+        "go": "oc.Mixed"
+      }
+    },
+    {
+      "metric": "cbo",
+      "scope": "type",
+      "entities": {
+        "csharp": "Oc.Mixed",
+        "go": "oc.Mixed"
+      }
+    },
+    {
+      "metric": "dit",
+      "scope": "type",
+      "entities": {
+        "csharp": "Oc.Mixed",
+        "go": "oc.Mixed"
+      }
+    }
+  ]
 }

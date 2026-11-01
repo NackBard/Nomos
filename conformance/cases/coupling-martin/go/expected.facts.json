@@ -1,0 +1,42 @@
+{
+  "schemaVersion": "1.2.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "go" },
+  "files": [
+    { "path": "app/app.go", "lines": 11, "loc": 9 },
+    { "path": "domain/domain.go", "lines": 8, "loc": 6 },
+    { "path": "infra/infra.go", "lines": 8, "loc": 6 },
+    { "path": "services/services.go", "lines": 8, "loc": 6 }
+  ],
+  "modules": [
+    { "id": "shop/app", "name": "app", "files": ["app/app.go"], "loc": 9, "metrics": { "ca": 0, "ce": 2, "instability": 1, "abstractness": 0, "distance": 0 }, "paradigmEvidence": [] },
+    { "id": "shop/domain", "name": "domain", "files": ["domain/domain.go"], "loc": 6, "metrics": { "ca": 2, "ce": 0, "instability": 0, "abstractness": 0.5, "distance": 0.5 }, "paradigmEvidence": [] },
+    { "id": "shop/infra", "name": "infra", "files": ["infra/infra.go"], "loc": 6, "metrics": { "ca": 1, "ce": 2, "instability": 0.6667, "abstractness": 0, "distance": 0.3333 }, "paradigmEvidence": [] },
+    { "id": "shop/services", "name": "services", "files": ["services/services.go"], "loc": 6, "metrics": { "ca": 1, "ce": 2, "instability": 0.6667, "abstractness": 0, "distance": 0.3333 }, "paradigmEvidence": [] }
+  ],
+  "types": [
+    { "id": "shop/app.Program", "name": "Program", "module": "shop/app", "kind": "struct", "isAbstract": false, "location": { "file": "app/app.go", "startLine": 8 }, "metrics": { "lines": 4, "memberCount": 2 } },
+    { "id": "shop/domain.Repo", "name": "Repo", "module": "shop/domain", "kind": "interface", "isAbstract": true, "location": { "file": "domain/domain.go", "startLine": 3 }, "metrics": { "lines": 2, "memberCount": 0 } },
+    { "id": "shop/domain.Entity", "name": "Entity", "module": "shop/domain", "kind": "struct", "isAbstract": false, "location": { "file": "domain/domain.go", "startLine": 6 }, "metrics": { "lines": 3, "memberCount": 1 } },
+    { "id": "shop/infra.SqlRepo", "name": "SqlRepo", "module": "shop/infra", "kind": "struct", "isAbstract": false, "location": { "file": "infra/infra.go", "startLine": 5 }, "metrics": { "lines": 4, "memberCount": 2 } },
+    { "id": "shop/services.OrderService", "name": "OrderService", "module": "shop/services", "kind": "struct", "isAbstract": false, "location": { "file": "services/services.go", "startLine": 5 }, "metrics": { "lines": 4, "memberCount": 2 } }
+  ],
+  "functions": [
+  ],
+  "dependencies": [
+    { "from": "shop/app.Program", "to": "shop/infra.SqlRepo", "kind": "type-ref", "phase": "runtime" },
+    { "from": "shop/app.Program", "to": "shop/services.OrderService", "kind": "type-ref", "phase": "runtime" },
+    { "from": "shop/infra.SqlRepo", "to": "shop/domain.Repo", "kind": "inheritance", "phase": "runtime" },
+    { "from": "shop/infra.SqlRepo", "to": "shop/domain.Entity", "kind": "type-ref", "phase": "runtime" },
+    { "from": "shop/services.OrderService", "to": "shop/domain.Repo", "kind": "type-ref", "phase": "runtime" },
+    { "from": "shop/services.OrderService", "to": "shop/domain.Entity", "kind": "type-ref", "phase": "runtime" },
+    { "from": "shop/app", "to": "shop/infra", "kind": "import", "phase": "runtime" },
+    { "from": "shop/app", "to": "shop/services", "kind": "import", "phase": "runtime" },
+    { "from": "shop/infra", "to": "shop/domain", "kind": "import", "phase": "runtime" },
+    { "from": "shop/services", "to": "shop/domain", "kind": "import", "phase": "runtime" }
+  ],
+  "cycles": [
+  ],
+  "skippedRules": [
+  ],
+  "diagnostics": []
+}

@@ -1,8 +1,14 @@
 {
-  "schemaVersion": "1.1.0",
+  "schemaVersion": "1.2.0",
   "id": "cycles-complex",
   "title": "Components on harder graphs: two cycles sharing a node, a ring with a chord, two components joined one way, a diamond and a self-reference without a cycle, a cycle of inheritance and a call, a module component with no type cycle",
-  "covers": ["cycles", "DSN002"],
-  "languages": ["csharp"],
+  "covers": [
+    "cycles",
+    "DSN002"
+  ],
+  "languages": [
+    "csharp",
+    "go"
+  ],
   "expectSarif": true
 }

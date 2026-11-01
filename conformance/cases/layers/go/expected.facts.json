@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "1.2.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "go" },
+  "files": [
+    { "path": "domain/domain/rich.go", "lines": 11, "loc": 9 },
+    { "path": "domain/entity.go", "lines": 7, "loc": 5 },
+    { "path": "extra/tool.go", "lines": 4, "loc": 3 },
+    { "path": "services/svc.go", "lines": 4, "loc": 3 },
+    { "path": "tools/tool.go", "lines": 7, "loc": 5 },
+    { "path": "web/page.go", "lines": 13, "loc": 11 }
+  ],
+  "modules": [
+    { "id": "app/domain", "name": "domain", "files": ["domain/entity.go"], "loc": 5, "metrics": {  }, "paradigmEvidence": [] },
+    { "id": "app/domain/domain", "name": "domain", "files": ["domain/domain/rich.go"], "loc": 9, "metrics": {  }, "paradigmEvidence": [] },
+    { "id": "app/extra", "name": "extra", "files": ["extra/tool.go"], "loc": 3, "metrics": {  }, "paradigmEvidence": [] },
+    { "id": "app/services", "name": "services", "files": ["services/svc.go"], "loc": 3, "metrics": {  }, "paradigmEvidence": [] },
+    { "id": "app/tools", "name": "tools", "files": ["tools/tool.go"], "loc": 5, "metrics": {  }, "paradigmEvidence": [] },
+    { "id": "app/web", "name": "web", "files": ["web/page.go"], "loc": 11, "metrics": {  }, "paradigmEvidence": [] }
+  ],
+  "types": [
+    { "id": "app/domain.Entity", "name": "Entity", "module": "app/domain", "kind": "struct", "isAbstract": false, "location": { "file": "domain/entity.go", "startLine": 5 }, "metrics": {  } },
+    { "id": "app/domain/domain.Rich", "name": "Rich", "module": "app/domain/domain", "kind": "struct", "isAbstract": false, "location": { "file": "domain/domain/rich.go", "startLine": 8 }, "metrics": {  } },
+    { "id": "app/extra.Tool", "name": "Tool", "module": "app/extra", "kind": "struct", "isAbstract": false, "location": { "file": "extra/tool.go", "startLine": 3 }, "metrics": {  } },
+    { "id": "app/services.Svc", "name": "Svc", "module": "app/services", "kind": "struct", "isAbstract": false, "location": { "file": "services/svc.go", "startLine": 3 }, "metrics": {  } },
+    { "id": "app/tools.Tool", "name": "Tool", "module": "app/tools", "kind": "struct", "isAbstract": false, "location": { "file": "tools/tool.go", "startLine": 5 }, "metrics": {  } },
+    { "id": "app/web.Page", "name": "Page", "module": "app/web", "kind": "struct", "isAbstract": false, "location": { "file": "web/page.go", "startLine": 9 }, "metrics": {  } }
+  ],
+  "functions": [
+  ],
+  "dependencies": [
+    { "from": "app/domain.Entity", "to": "app/services.Svc", "kind": "type-ref", "phase": "runtime" },
+    { "from": "app/domain/domain.Rich", "to": "app/domain.Entity", "kind": "type-ref", "phase": "runtime" },
+    { "from": "app/domain/domain.Rich", "to": "app/web.Page", "kind": "type-ref", "phase": "runtime" },
+    { "from": "app/tools.Tool", "to": "app/web.Page", "kind": "type-ref", "phase": "runtime" },
+    { "from": "app/web.Page", "to": "app/services.Svc", "kind": "type-ref", "phase": "runtime" },
+    { "from": "app/web.Page", "to": "app/domain.Entity", "kind": "type-ref", "phase": "runtime" },
+    { "from": "app/web.Page", "to": "app/extra.Tool", "kind": "type-ref", "phase": "runtime" },
+    { "from": "app/domain", "to": "app/services", "kind": "import", "phase": "runtime" },
+    { "from": "app/domain/domain", "to": "app/domain", "kind": "import", "phase": "runtime" },
+    { "from": "app/domain/domain", "to": "app/web", "kind": "import", "phase": "runtime" },
+    { "from": "app/tools", "to": "app/web", "kind": "import", "phase": "runtime" },
+    { "from": "app/web", "to": "app/domain", "kind": "import", "phase": "runtime" },
+    { "from": "app/web", "to": "app/extra", "kind": "import", "phase": "runtime" },
+    { "from": "app/web", "to": "app/services", "kind": "import", "phase": "runtime" }
+  ],
+  "cycles": [
+  ],
+  "skippedRules": [
+  ],
+  "diagnostics": []
+}

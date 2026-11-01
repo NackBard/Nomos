@@ -1,0 +1,43 @@
+{
+  "schemaVersion": "1.2.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "go" },
+  "files": [
+    { "path": "data/order.go", "lines": 7, "loc": 6 },
+    { "path": "report/god.go", "lines": 38, "loc": 32 },
+    { "path": "report/printer.go", "lines": 29, "loc": 22 }
+  ],
+  "modules": [
+    { "id": "smell/data", "name": "data", "files": ["data/order.go"], "loc": 6, "metrics": {  }, "paradigmEvidence": [] },
+    { "id": "smell/report", "name": "report", "files": ["report/god.go", "report/printer.go"], "loc": 54, "metrics": {  }, "paradigmEvidence": [] }
+  ],
+  "types": [
+    { "id": "smell/data.Order", "name": "Order", "module": "smell/data", "kind": "struct", "isAbstract": false, "location": { "file": "data/order.go", "startLine": 3 }, "metrics": { "lines": 5, "memberCount": 3 } },
+    { "id": "smell/report.God", "name": "God", "module": "smell/report", "kind": "struct", "isAbstract": false, "location": { "file": "report/god.go", "startLine": 5 }, "metrics": { "lines": 6, "memberCount": 8, "methodCount": 4, "wmc": 8, "atfd": 3, "tcc": 0 } },
+    { "id": "smell/report.Printer", "name": "Printer", "module": "smell/report", "kind": "struct", "isAbstract": false, "location": { "file": "report/printer.go", "startLine": 5 }, "metrics": { "lines": 5, "memberCount": 6, "methodCount": 3, "wmc": 3, "atfd": 3, "tcc": 0 } }
+  ],
+  "functions": [
+    { "id": "smell/report.God.One", "name": "One", "module": "smell/report", "type": "smell/report.God", "kind": "method", "visibility": "public", "location": { "file": "report/god.go", "startLine": 12 }, "metrics": { "cyclomatic": 2, "maxNesting": 1, "parameterCount": 1, "lines": 6, "foreignMembers": 1, "ownMembers": 1 } },
+    { "id": "smell/report.God.Two", "name": "Two", "module": "smell/report", "type": "smell/report.God", "kind": "method", "visibility": "public", "location": { "file": "report/god.go", "startLine": 19 }, "metrics": { "cyclomatic": 2, "maxNesting": 1, "parameterCount": 1, "lines": 6, "foreignMembers": 1, "ownMembers": 1 } },
+    { "id": "smell/report.God.Three", "name": "Three", "module": "smell/report", "type": "smell/report.God", "kind": "method", "visibility": "public", "location": { "file": "report/god.go", "startLine": 26 }, "metrics": { "cyclomatic": 2, "maxNesting": 1, "parameterCount": 1, "lines": 6, "foreignMembers": 1, "ownMembers": 1 } },
+    { "id": "smell/report.God.Four", "name": "Four", "module": "smell/report", "type": "smell/report.God", "kind": "method", "visibility": "public", "location": { "file": "report/god.go", "startLine": 33 }, "metrics": { "cyclomatic": 2, "maxNesting": 1, "parameterCount": 1, "lines": 6, "foreignMembers": 1, "ownMembers": 1 } },
+    { "id": "smell/report.NewPrinter", "name": "NewPrinter", "module": "smell/report", "kind": "function", "visibility": "public", "location": { "file": "report/printer.go", "startLine": 11 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 0, "lines": 3, "foreignMembers": null, "ownMembers": null } },
+    { "id": "smell/report.Printer.Envy", "name": "Envy", "module": "smell/report", "type": "smell/report.Printer", "kind": "method", "visibility": "public", "location": { "file": "report/printer.go", "startLine": 15 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 1, "lines": 3, "foreignMembers": 3, "ownMembers": 0 } },
+    { "id": "smell/report.Printer.Balanced", "name": "Balanced", "module": "smell/report", "type": "smell/report.Printer", "kind": "method", "visibility": "public", "location": { "file": "report/printer.go", "startLine": 19 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 1, "lines": 3, "foreignMembers": 3, "ownMembers": 3 } },
+    { "id": "smell/report.Printer.Few", "name": "Few", "module": "smell/report", "type": "smell/report.Printer", "kind": "method", "visibility": "public", "location": { "file": "report/printer.go", "startLine": 23 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 1, "lines": 3, "foreignMembers": 2, "ownMembers": 0 } },
+    { "id": "smell/report.Sum", "name": "Sum", "module": "smell/report", "kind": "function", "visibility": "public", "location": { "file": "report/printer.go", "startLine": 27 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 1, "lines": 3, "foreignMembers": null, "ownMembers": null } }
+  ],
+  "dependencies": [
+    { "from": "smell/report.God", "to": "smell/data.Order", "kind": "type-ref", "phase": "runtime" },
+    { "from": "smell/report.Printer", "to": "smell/data.Order", "kind": "type-ref", "phase": "runtime" },
+    { "from": "smell/report.NewPrinter", "to": "smell/report.Printer", "kind": "type-ref", "phase": "runtime" },
+    { "from": "smell/report.NewPrinter", "to": "smell/report.Printer", "kind": "call", "phase": "runtime" },
+    { "from": "smell/report.Sum", "to": "smell/data.Order", "kind": "type-ref", "phase": "runtime" },
+    { "from": "smell/report", "to": "smell/data", "kind": "import", "phase": "runtime" }
+  ],
+  "cycles": [
+  ],
+  "skippedRules": [
+    { "ruleId": "DSN003", "reason": "missing-input", "message": "m" }
+  ],
+  "diagnostics": []
+}

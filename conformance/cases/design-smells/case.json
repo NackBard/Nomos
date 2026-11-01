@@ -1,9 +1,86 @@
 {
-  "schemaVersion": "1.1.0",
+  "schemaVersion": "1.2.0",
   "id": "design-smells",
   "title": "God class with lowered thresholds and feature envy: foreignMembers and ownMembers on envy, balance, too few members, a struct, a static method and a constructor",
-  "covers": ["wmc", "atfd", "tcc", "foreignMembers", "ownMembers", "DSN004", "DSN005"],
-  "languages": ["csharp"],
+  "covers": [
+    "wmc",
+    "atfd",
+    "tcc",
+    "foreignMembers",
+    "ownMembers",
+    "DSN004",
+    "DSN005"
+  ],
+  "languages": [
+    "csharp",
+    "go"
+  ],
   "expectSarif": true,
-  "config": true
+  "config": true,
+  "parity": [
+    {
+      "metric": "foreignMembers",
+      "scope": "function",
+      "entities": {
+        "csharp": "Smell.Report.Printer.Envy",
+        "go": "smell/report.Printer.Envy"
+      }
+    },
+    {
+      "metric": "ownMembers",
+      "scope": "function",
+      "entities": {
+        "csharp": "Smell.Report.Printer.Envy",
+        "go": "smell/report.Printer.Envy"
+      }
+    },
+    {
+      "metric": "foreignMembers",
+      "scope": "function",
+      "entities": {
+        "csharp": "Smell.Report.Printer.Balanced",
+        "go": "smell/report.Printer.Balanced"
+      }
+    },
+    {
+      "metric": "ownMembers",
+      "scope": "function",
+      "entities": {
+        "csharp": "Smell.Report.Printer.Balanced",
+        "go": "smell/report.Printer.Balanced"
+      }
+    },
+    {
+      "metric": "foreignMembers",
+      "scope": "function",
+      "entities": {
+        "csharp": "Smell.Report.Printer.Few",
+        "go": "smell/report.Printer.Few"
+      }
+    },
+    {
+      "metric": "wmc",
+      "scope": "type",
+      "entities": {
+        "csharp": "Smell.Report.God",
+        "go": "smell/report.God"
+      }
+    },
+    {
+      "metric": "atfd",
+      "scope": "type",
+      "entities": {
+        "csharp": "Smell.Report.God",
+        "go": "smell/report.God"
+      }
+    },
+    {
+      "metric": "tcc",
+      "scope": "type",
+      "entities": {
+        "csharp": "Smell.Report.God",
+        "go": "smell/report.God"
+      }
+    }
+  ]
 }

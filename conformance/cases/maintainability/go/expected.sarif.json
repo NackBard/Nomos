@@ -1,0 +1,7 @@
+{
+  "results": [
+    { "ruleId": "MNT002", "file": "calc.go", "startLine": 3 },
+    { "ruleId": "MNT003", "file": "right.go", "startLine": 3, "measured": { "metric": "cloneTokens", "value": 21, "threshold": 20 } },
+    { "ruleId": "MNT004", "file": "calc.go", "startLine": 1, "measured": { "metric": "coverage", "value": 25, "threshold": 50 } }
+  ]
+}

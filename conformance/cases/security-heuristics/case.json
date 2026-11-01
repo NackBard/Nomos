@@ -1,8 +1,15 @@
 {
-  "schemaVersion": "1.1.0",
+  "schemaVersion": "1.2.0",
   "id": "security-heuristics",
   "title": "SEC001-SEC003 by the shape of code: a secret-like name, a credential-shaped literal, concatenated and interpolated SQL, a dangerous formatter, and their harmless twins",
-  "covers": ["SEC001", "SEC002", "SEC003"],
-  "languages": ["csharp"],
+  "covers": [
+    "SEC001",
+    "SEC002",
+    "SEC003"
+  ],
+  "languages": [
+    "csharp",
+    "go"
+  ],
   "expectSarif": true
 }

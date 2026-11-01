@@ -4,9 +4,9 @@
 
 Общее ограничение всех этапов: платформа даёт статистику. Пороги приёмки и вердикты не вводятся.
 
-Состояние: этапы 1–6 завершены (D-031, D-032, D-034, D-036, D-037). Следующий — этап 7.
+Состояние: этапы 1–7 завершены (D-031, D-032, D-034, D-036, D-037, D-038). Следующий — этап 8.
 
-Как проверить, что всё на месте: `dotnet test Nomos.slnx` в `analyzers/csharp`; `npm run validate`, `npm test`, `npm run selftest`, `npm run csharp` в `conformance/runner`; `npm test`, `npm run check-boundary`, `npm run e2e` в `extension`. CI (`.github/workflows/ci.yml`) зелёный на `main`, он запускается на Ubuntu и Node 22.18 (D-035), его результат смотрит `gh run list`.
+Как проверить, что всё на месте: `dotnet test Nomos.slnx` в `analyzers/csharp`; `npm run validate`, `npm test`, `npm run selftest`, `npm run all` в `conformance/runner`; `go test ./...` в `analyzers/go`; `npm test`, `npm run check-boundary`, `npm run e2e` в `extension`. CI (`.github/workflows/ci.yml`) зелёный на `main`, он запускается на Ubuntu и Node 22.18 (D-035), его результат смотрит `gh run list`.
 
 ## Этап 1. Контракты, spec, conformance-harness
 
@@ -72,6 +72,8 @@
 - Анализатор на родных средствах языка, всё через те же контракты.
 - Прохождение всех случаев conformance; фиксация исключений в `case.json`.
 - `docs/EXTENDING.md` проверяется на практике и исправляется по итогам.
+
+Завершён, D-038: язык — Go, `analyzers/go` без внешних зависимостей, 28 правил; 16 из 17 случаев на обоих языках, `patterns` — записанное исключение (`exceptions`, контракт `conformance-case` 1.2.0); `parity` в семи случаях, `npm run all`.
 
 ## Этап 8. Отчёты и CI-режим
 

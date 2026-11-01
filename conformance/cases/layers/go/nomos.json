@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "1.0.0",
+  "analyzers": [{ "language": "go", "command": ["nomos-go"] }],
+  "layers": [
+    { "name": "Domain", "patterns": ["*/domain"], "mayDependOn": [] },
+    { "name": "Services", "patterns": ["*/services"], "mayDependOn": ["Domain"] },
+    { "name": "Web", "patterns": ["*/web"], "mayDependOn": ["Services"] }
+  ]
+}

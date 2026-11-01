@@ -3,14 +3,75 @@
   "analyzers": [
     {
       "language": "csharp",
-      "command": ["dotnet", "run", "--project", "analyzers/csharp/src/Nomos.Analyzer.CSharp", "-v", "q", "--"],
-      "exclude": ["analyzers/csharp/tests/**", "conformance/**", "**/node_modules/**"]
+      "command": [
+        "dotnet",
+        "run",
+        "--project",
+        "analyzers/csharp/src/Nomos.Analyzer.CSharp",
+        "-v",
+        "q",
+        "--"
+      ],
+      "exclude": [
+        "analyzers/csharp/tests/**",
+        "conformance/**",
+        "**/node_modules/**"
+      ]
+    },
+    {
+      "language": "go",
+      "command": [
+        "go",
+        "run",
+        "nomos/analyzers/go/cmd/nomos-go"
+      ],
+      "exclude": [
+        "conformance/**",
+        "**/node_modules/**"
+      ]
     }
   ],
   "layers": [
-    { "name": "Contracts", "patterns": ["Nomos.Abstractions*"], "mayDependOn": [] },
-    { "name": "Platform", "patterns": ["Nomos.Core*", "Nomos.Graph*", "Nomos.Facts*", "Nomos.Reporting*"], "mayDependOn": ["Contracts"] },
-    { "name": "Detectors", "patterns": ["Nomos.Analyzers*", "Nomos.Languages*"], "mayDependOn": ["Contracts", "Platform"] },
-    { "name": "Host", "patterns": ["Nomos.Analyzer.CSharp*"], "mayDependOn": ["Contracts", "Platform", "Detectors"] }
+    {
+      "name": "Contracts",
+      "patterns": [
+        "Nomos.Abstractions*"
+      ],
+      "mayDependOn": []
+    },
+    {
+      "name": "Platform",
+      "patterns": [
+        "Nomos.Core*",
+        "Nomos.Graph*",
+        "Nomos.Facts*",
+        "Nomos.Reporting*"
+      ],
+      "mayDependOn": [
+        "Contracts"
+      ]
+    },
+    {
+      "name": "Detectors",
+      "patterns": [
+        "Nomos.Analyzers*",
+        "Nomos.Languages*"
+      ],
+      "mayDependOn": [
+        "Contracts",
+        "Platform"
+      ]
+    },
+    {
+      "name": "Host",
+      "patterns": [
+        "Nomos.Analyzer.CSharp*"
+      ],
+      "mayDependOn": [
+        "Contracts",
+        "Platform",
+        "Detectors"
+      ]
+    }
   ]
 }

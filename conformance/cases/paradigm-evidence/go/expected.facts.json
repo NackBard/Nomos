@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "1.2.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "go" },
+  "files": [
+    { "path": "funcs/funcs.go", "lines": 11, "loc": 8 },
+    { "path": "plain/plain.go", "lines": 8, "loc": 6 },
+    { "path": "shapes/shapes.go", "lines": 13, "loc": 10 }
+  ],
+  "modules": [
+    { "id": "pe/funcs", "name": "funcs", "files": ["funcs/funcs.go"], "loc": 8, "metrics": {  }, "paradigmEvidence": [{ "paradigm": "structural", "kind": "str.free-functions", "count": 2, "description": "d" }, { "paradigm": "structural", "kind": "str.global-state", "count": 1, "description": "d" }, { "paradigm": "functional", "kind": "fp.pure-functions", "count": 1, "description": "d" }], "activeParadigms": ["functional", "structural"] },
+    { "id": "pe/plain", "name": "plain", "files": ["plain/plain.go"], "loc": 6, "metrics": {  }, "paradigmEvidence": [], "activeParadigms": [ ] },
+    { "id": "pe/shapes", "name": "shapes", "files": ["shapes/shapes.go"], "loc": 10, "metrics": {  }, "paradigmEvidence": [{ "paradigm": "oop", "kind": "oop.classes", "count": 2, "description": "d" }, { "paradigm": "oop", "kind": "oop.mutable-state-classes", "count": 2, "description": "d" }, { "paradigm": "oop", "kind": "oop.inheritance", "count": 1, "description": "d" }, { "paradigm": "oop", "kind": "oop.abstractions", "count": 1, "description": "d" }], "activeParadigms": ["oop"] }
+  ],
+  "types": [
+    { "id": "pe/plain.Mode", "name": "Mode", "module": "pe/plain", "kind": "defined", "isAbstract": false, "location": { "file": "plain/plain.go", "startLine": 3 }, "metrics": {  } },
+    { "id": "pe/shapes.Shape", "name": "Shape", "module": "pe/shapes", "kind": "interface", "isAbstract": true, "location": { "file": "shapes/shapes.go", "startLine": 3 }, "metrics": {  } },
+    { "id": "pe/shapes.ShapeBase", "name": "ShapeBase", "module": "pe/shapes", "kind": "struct", "isAbstract": false, "location": { "file": "shapes/shapes.go", "startLine": 6 }, "metrics": {  } },
+    { "id": "pe/shapes.Square", "name": "Square", "module": "pe/shapes", "kind": "struct", "isAbstract": false, "location": { "file": "shapes/shapes.go", "startLine": 10 }, "metrics": {  } }
+  ],
+  "functions": [
+    { "id": "pe/funcs.Add", "name": "Add", "module": "pe/funcs", "kind": "function", "visibility": "public", "location": { "file": "funcs/funcs.go", "startLine": 5 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 2, "lines": 3 } },
+    { "id": "pe/funcs.Bump", "name": "Bump", "module": "pe/funcs", "kind": "function", "visibility": "public", "location": { "file": "funcs/funcs.go", "startLine": 9 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 0, "lines": 3 } }
+  ],
+  "dependencies": [
+    { "from": "pe/shapes.Square", "to": "pe/shapes.ShapeBase", "kind": "inheritance", "phase": "runtime" }
+  ],
+  "cycles": [
+  ],
+  "skippedRules": [
+    { "ruleId": "OOP002", "module": "pe/funcs", "reason": "paradigm-not-detected", "message": "m" },
+    { "ruleId": "OOP002", "module": "pe/plain", "reason": "paradigm-not-detected", "message": "m" },
+    { "ruleId": "STR002", "module": "pe/shapes", "reason": "paradigm-not-detected", "message": "m" }
+  ],
+  "diagnostics": []
+}

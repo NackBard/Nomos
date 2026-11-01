@@ -1,0 +1,7 @@
+{
+  "results": [
+    { "ruleId": "DSN003", "file": "domain/entity.go", "startLine": 6 },
+    { "ruleId": "DSN003", "file": "domain/domain/rich.go", "startLine": 10 },
+    { "ruleId": "DSN003", "file": "web/page.go", "startLine": 11 }
+  ]
+}
