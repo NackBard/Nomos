@@ -1,0 +1,57 @@
+{
+  "name": "nomos",
+  "displayName": "Nomos",
+  "description": "Statistics and observations about code from Nomos analyzers. Findings are heuristics, not verdicts.",
+  "version": "0.1.0",
+  "publisher": "nomos",
+  "private": true,
+  "license": "UNLICENSED",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": ["Linters", "Visualization"],
+  "main": "./out/extension.js",
+  "activationEvents": ["workspaceContains:nomos.json"],
+  "contributes": {
+    "commands": [
+      { "command": "nomos.analyze", "title": "Nomos: Analyze Workspace", "icon": "$(play)" },
+      { "command": "nomos.showGraph", "title": "Nomos: Show Dependency Graph", "icon": "$(type-hierarchy)" }
+    ],
+    "viewsContainers": {
+      "activitybar": [{ "id": "nomos", "title": "Nomos", "icon": "$(telescope)" }]
+    },
+    "views": {
+      "nomos": [
+        { "id": "nomos.findings", "name": "Findings" },
+        { "id": "nomos.paradigms", "name": "Paradigms and Skipped Rules" }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        { "command": "nomos.analyze", "when": "view == nomos.findings", "group": "navigation" },
+        { "command": "nomos.showGraph", "when": "view == nomos.findings", "group": "navigation" }
+      ]
+    },
+    "configuration": {
+      "title": "Nomos",
+      "properties": {
+        "nomos.analyzeOnSave": { "type": "boolean", "default": false, "description": "Run the analyzers after a file is saved." },
+        "nomos.codeLens": { "type": "boolean", "default": true, "description": "Show metrics of functions and types above their declarations." }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "node scripts/copy-contracts.mjs && tsc -p .",
+    "test": "npm run compile && node --test out/test/",
+    "e2e": "npm run compile && node scripts/run-e2e.mjs",
+    "check-boundary": "node scripts/check-boundary.mjs"
+  },
+  "dependencies": {
+    "ajv": "8.17.1"
+  },
+  "devDependencies": {
+    "@types/node": "24.3.0",
+    "@types/vscode": "1.90.0",
+    "typescript": "5.9.2"
+  }
+}

@@ -1,0 +1,4 @@
+out/
+contracts/
+.vscode-test/
+*.vsix
