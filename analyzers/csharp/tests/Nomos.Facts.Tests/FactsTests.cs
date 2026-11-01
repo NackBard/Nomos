@@ -47,6 +47,13 @@ public class FactsTests
         entity.GetProperty("metrics").TryGetProperty(name, out var value) && value.ValueKind != JsonValueKind.Null ? value.GetDouble() : null;
 
     [Fact]
+    public void Lambdas_AreStatistics_AndDoNotActivateTheFunctionalParadigm()
+    {
+        Assert.Empty(ParadigmSigns.ActiveParadigms([new EvidenceItem("functional", "fp.lambdas", 50, "lambdas", [])]));
+        Assert.Equal(["functional"], ParadigmSigns.ActiveParadigms([new EvidenceItem("functional", "fp.higher-order", 1, "functions", [])]));
+    }
+
+    [Fact]
     public async Task IsolatedModule_HasNullInstability_AndNullDistance()
     {
         var facts = await Facts(("a.cs", "namespace A; public class X { }"));

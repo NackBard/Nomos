@@ -16,7 +16,6 @@ public sealed record EvidenceItem(string Paradigm, string Kind, int Count, strin
 /// </summary>
 public static class ParadigmSigns
 {
-    private const int LambdaActivation = 3;
     private static readonly ConditionalWeakTable<ProjectModel, HashSet<string>> PureCache = [];
 
     /// <summary>Collects the evidence of a module.</summary>
@@ -63,7 +62,6 @@ public static class ParadigmSigns
             var activates = item.Kind switch
             {
                 "oop.classes" or "str.free-functions" or "str.control-flow" or "fp.higher-order" or "fp.pure-functions" => true,
-                "fp.lambdas" => item.Count >= LambdaActivation,
                 _ => false,
             };
             if (activates) active.Add(item.Paradigm);
