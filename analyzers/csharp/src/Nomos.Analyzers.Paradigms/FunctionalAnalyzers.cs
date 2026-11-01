@@ -143,29 +143,15 @@ public sealed class HigherOrderDepthAnalyzer : AnalyzerBase
         var maxLambdaNesting = context.Options.Int("maxLambdaNesting", 3);
         foreach (var callable in context.Callables)
         {
-            var order = 1 + callable.Parameters.Select(p => Order(p.Type)).Append(Order(callable.ReturnType)).Max();
-            var nesting = LambdaNesting(callable.Body);
-            context.Report(new Metric("hof-order", MetricScope.Callable, callable.Id, order));
+            var order = CallableMetrics.HofOrder(callable);
+            var nesting = CallableMetrics.LambdaNesting(callable);
+            context.Report(new Metric("hofOrder", MetricScope.Callable, callable.Id, order));
             if (order > maxOrder)
                 context.Report(Confidence.High, callable.Location, $"{callable.Name} is a function of order {order}",
-                    $"The signature nests function types beyond order {maxOrder}.", symbol: callable.Id);
+                    $"The signature nests function types beyond order {maxOrder}.", symbol: callable.Id, measured: new Measurement("hofOrder", order, maxOrder));
             if (nesting > maxLambdaNesting)
                 context.Report(Confidence.High, callable.Location, $"{callable.Name} nests lambdas {nesting} levels deep",
-                    $"Beyond {maxLambdaNesting} levels, captured variables are hard to trace; named functions help.", symbol: callable.Id);
+                    $"Beyond {maxLambdaNesting} levels, captured variables are hard to trace; named functions help.", symbol: callable.Id, measured: new Measurement("lambdaNesting", nesting, maxLambdaNesting));
         }
-    }
-
-    private static int Order(TypeRef? type) => type switch
-    {
-        null => 0,
-        { Kind: TypeRefKind.Function } => 1 + type.TypeArguments.Select(Order).DefaultIfEmpty(0).Max(),
-        _ => type.TypeArguments.Select(Order).DefaultIfEmpty(0).Max(),
-    };
-
-    private static int LambdaNesting(IrNode? node)
-    {
-        if (node is null) return 0;
-        var inner = node.Children.Select(LambdaNesting).DefaultIfEmpty(0).Max();
-        return node is LambdaExpression ? inner + 1 : inner;
     }
 }

@@ -10,7 +10,7 @@ namespace Nomos.Facts;
 /// </summary>
 internal sealed class FactsBuilder
 {
-    private const string SchemaVersion = "1.0.0";
+    private const string SchemaVersion = "1.1.0";
 
     private readonly ProjectModel _model;
     private readonly AnalysisResult _result;
@@ -32,7 +32,7 @@ internal sealed class FactsBuilder
         _typeIds = _index.TypeIds;
         _functionIds = _index.FunctionIds;
         _moduleOfType = _types.ToDictionary(t => t.Id, t => t.ModuleName, StringComparer.Ordinal);
-        _fileSizes = model.Files.ToDictionary(f => f.Path, f => (PhysicalLines(f.Text), f.Tokens.Select(t => t.Line).Distinct().Count()), StringComparer.Ordinal);
+        _fileSizes = model.Files.ToDictionary(f => f.Path, f => (SizeMetrics.Lines(f), SizeMetrics.Loc(f)), StringComparer.Ordinal);
     }
 
     public FactsDocument Build()
@@ -67,20 +67,10 @@ internal sealed class FactsBuilder
 
     // ---- files and modules ------------------------------------------------------------------------------------
 
-    private static int PhysicalLines(string text)
-    {
-        if (text.Length == 0) return 0;
-        var breaks = text.Count(c => c == '\n');
-        return text[^1] == '\n' ? breaks : breaks + 1;
-    }
-
-    private IEnumerable<string> FilesOf(ModuleDecl module) =>
-        module.AllTypes.Select(t => t.Location.FilePath).Concat(module.Functions.Select(f => f.Location.FilePath)).Where(p => p.Length > 0).Distinct(StringComparer.Ordinal).Order(StringComparer.Ordinal);
-
     private IReadOnlyList<FactsFile> BuildFiles()
     {
         var moduleOfFile = _model.Modules
-            .SelectMany(m => FilesOf(m).Select(f => (File: f, Module: m.Name)))
+            .SelectMany(m => SizeMetrics.FilesOf(m).Select(f => (File: f, Module: m.Name)))
             .GroupBy(p => p.File, StringComparer.Ordinal)
             .ToDictionary(g => g.Key, g => g.Select(p => p.Module).Distinct().ToList(), StringComparer.Ordinal);
         return [.. _model.Files.OrderBy(f => f.Path, StringComparer.Ordinal).Select(f =>
@@ -93,7 +83,7 @@ internal sealed class FactsBuilder
 
     private FactsModule BuildModule(ModuleDecl module, PackageMetrics martin, IReadOnlyList<FactsEvidence> evidence, HealthScore? health)
     {
-        var files = FilesOf(module).ToList();
+        var files = SizeMetrics.FilesOf(module).ToList();
         return new FactsModule(
             module.Name,
             module.Name,
@@ -108,6 +98,7 @@ internal sealed class FactsBuilder
                 ["distance"] = Round(martin.Distance),
             },
             evidence,
+            [.. Shown(evidence).Order(StringComparer.Ordinal)],
             health is null ? null : ToHealth(health));
     }
 
@@ -151,6 +142,9 @@ internal sealed class FactsBuilder
                 ["maxNesting"] = ControlFlow.MaxNesting(callable.Body),
                 ["parameterCount"] = callable.Parameters.Count,
                 ["lines"] = callable.Location.LineSpan,
+                ["hofOrder"] = CallableMetrics.HofOrder(callable),
+                ["lambdaNesting"] = CallableMetrics.LambdaNesting(callable),
+                ["typeTests"] = CallableMetrics.TestedTypes(callable).Count,
             };
             if (owner is not null) metrics["blastRadius"] = BlastRadiusOf(owner.Id, unitGraph);
             var kind = callable.Kind switch
@@ -213,19 +207,34 @@ internal sealed class FactsBuilder
         [.. ParadigmSigns.Collect(_model, module).Select(e => new FactsEvidence(e.Paradigm, e.Kind, e.Count, e.Description,
             [.. e.Examples.Select(id => _functionIds.GetValueOrDefault(id, id)).Order(StringComparer.Ordinal)]))];
 
+    private static HashSet<string> Shown(IEnumerable<FactsEvidence> evidence) =>
+        ParadigmSigns.ActiveParadigms(evidence.Select(e => new EvidenceItem(e.Paradigm, e.Kind, e.Count, e.Description, e.Examples)));
+
     private IReadOnlyList<FactsSkippedRule> BuildSkippedRules(Dictionary<string, IReadOnlyList<FactsEvidence>> evidence)
     {
+        const string NotDetected = "paradigm-not-detected";
+        const string Disabled = "disabled-by-config";
+        var enabled = _result.ActiveParadigms.Values.SelectMany(p => p).ToList();
+        var ran = _result.Analyzers.Select(a => a.Id).ToHashSet(StringComparer.Ordinal);
         var skipped = new List<FactsSkippedRule>();
+        foreach (var rule in _options.SupportedRules.Where(r => !ran.Contains(r.Id)))
+            skipped.Add(new FactsSkippedRule(rule.Id, null, Disabled, ParadigmSigns.Enabled(rule.Paradigms, enabled).Count == 0 && rule.Paradigms.Count > 0
+                ? $"Rule needs paradigm {string.Join(" or ", rule.Paradigms.Order(StringComparer.Ordinal))}, which is off for this language; 'paradigms' in nomos.json selects them"
+                : "Rule is off by default, by nomos.json or by --rules"));
+
         foreach (var module in _model.Modules)
         {
-            var active = ParadigmSigns.ActiveParadigms(evidence[module.Name].Select(e => new EvidenceItem(e.Paradigm, e.Kind, e.Count, e.Description, e.Examples)));
-            foreach (var rule in _options.SupportedRules.Where(r => r.Paradigms.Count > 0 && !ParadigmSigns.Applies(r.Paradigms, active)))
+            var shown = Shown(evidence[module.Name]);
+            var active = ParadigmSigns.Enabled(shown, enabled);
+            foreach (var rule in _options.SupportedRules.Where(r => r.Paradigms.Count > 0))
             {
-                var paradigm = rule.Paradigms[0];
-                skipped.Add(new FactsSkippedRule(rule.Id, module.Name, "paradigm-not-detected", ParadigmSigns.NotApplicable(paradigm)));
+                if (!ParadigmSigns.Applies(rule.Paradigms, shown))
+                    skipped.Add(new FactsSkippedRule(rule.Id, module.Name, NotDetected, ParadigmSigns.NotApplicable(rule.Paradigms[0])));
+                else if (ran.Contains(rule.Id) && !ParadigmSigns.Applies(rule.Paradigms, active))
+                    skipped.Add(new FactsSkippedRule(rule.Id, module.Name, Disabled, "Rule not applied: every paradigm the module shows for it is off for this language"));
             }
         }
-        return [.. skipped.OrderBy(s => s.RuleId, StringComparer.Ordinal).ThenBy(s => s.Module, StringComparer.Ordinal)];
+        return [.. skipped.OrderBy(s => s.RuleId, StringComparer.Ordinal).ThenBy(s => s.Module, StringComparer.Ordinal).ThenBy(s => s.Reason, StringComparer.Ordinal)];
     }
 
     // ---- helpers ----------------------------------------------------------------------------------------------

@@ -79,6 +79,7 @@ export function compareFacts(expected: any, actual: any, spec: CaseSpec): string
     const evidence = (list: any[]) => list.map((x) => `${x.kind}=${x.count}`);
     // Evidence is exact only for cases that declare they cover it; elsewhere a language may report more kinds.
     (spec.covers?.includes("paradigmEvidence") ? compareSets : compareSubset)(`module ${id} evidence`, evidence(e.paradigmEvidence), evidence(a.paradigmEvidence), errors);
+    if (e.activeParadigms) compareSets(`module ${id} active paradigm`, e.activeParadigms, a.activeParadigms ?? [], errors);
     if (e.health && a.health && !valuesMatch(e.health.score, a.health.score, toleranceFor(spec, "health"))) {
       errors.push(`module ${id}: health.score is ${a.health.score}, expected ${e.health.score}`);
     }
@@ -115,6 +116,40 @@ export function compareFacts(expected: any, actual: any, spec: CaseSpec): string
     errors.push(`health.score is ${actual.health.score}, expected ${expected.health.score}`);
   }
   return errors;
+}
+
+/**
+ * Applicability by spec/paradigms.md, for every module: the active paradigms follow from the evidence kinds marked as
+ * activating, a rule without any of its paradigms active has a paradigm-not-detected record, and a rule with one has none.
+ */
+export function checkApplicability(facts: any, activating: Map<string, string>, rules: { id: string; paradigms: string[] }[]): string[] {
+  const errors: string[] = [];
+  const known = new Set(activating.values());
+  const scoped = rules.filter((r) => r.paradigms.length > 0 && r.paradigms.every((p) => known.has(p)));
+  for (const module of facts.modules as any[]) {
+    const active = new Set<string>(module.paradigmEvidence.flatMap((e: any) => (activating.has(e.kind) ? [activating.get(e.kind)!] : [])));
+    if (module.activeParadigms) compareSets(`module ${module.id} activeParadigms`, [...active], module.activeParadigms, errors);
+    for (const rule of scoped) {
+      const applies = rule.paradigms.some((p) => active.has(p));
+      const recorded = facts.skippedRules.some((s: any) => s.ruleId === rule.id && s.module === module.id && s.reason === "paradigm-not-detected");
+      if (!applies && !recorded) errors.push(`module ${module.id} shows none of [${rule.paradigms}] but rule ${rule.id} has no paradigm-not-detected record`);
+      if (applies && recorded) errors.push(`module ${module.id} shows a paradigm of rule ${rule.id} but it is recorded as paradigm-not-detected`);
+    }
+  }
+  return errors;
+}
+
+/** The evidence kinds marked "да" in the tables of spec/paradigms.md, as kind to paradigm. */
+export function activatingKinds(paradigmsSpec: string): Map<string, string> {
+  const kinds = new Map<string, string>();
+  let paradigm = "";
+  for (const line of paradigmsSpec.split("\n")) {
+    const heading = /^### (\w+)$/.exec(line);
+    if (heading) paradigm = heading[1];
+    const row = /^\| `([a-z]+\.[a-z0-9-]+)` \|.*\| \*\*да\*\* \|$/.exec(line.trimEnd());
+    if (row) kinds.set(row[1], paradigm);
+  }
+  return kinds;
 }
 
 function entityMetric(facts: any, scope: string, id: string, metric: string): number | null | undefined {

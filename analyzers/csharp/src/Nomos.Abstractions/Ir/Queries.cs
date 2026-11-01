@@ -54,6 +54,70 @@ public static class IrQueries
         type.Callables.Any(c => c.Attributes.Any(a => a.Name is "Fact" or "Theory" or "Test" or "TestMethod" or "TestCase"));
 }
 
+/// <summary>Size measures of files and modules by spec/metrics.md, shared by facts and analyzers.</summary>
+public static class SizeMetrics
+{
+    /// <summary>Gets the physical lines of a file.</summary>
+    /// <param name="file">The file.</param>
+    public static int Lines(SourceFile file)
+    {
+        if (file.Text.Length == 0) return 0;
+        var breaks = file.Text.Count(c => c == '\n');
+        return file.Text[^1] == '\n' ? breaks : breaks + 1;
+    }
+
+    /// <summary>Gets the lines of a file with at least one token that is not a comment.</summary>
+    /// <param name="file">The file.</param>
+    public static int Loc(SourceFile file) => file.Tokens.Select(t => t.Line).Distinct().Count();
+
+    /// <summary>Gets the paths of the files a module has declarations in, in ordinal order.</summary>
+    /// <param name="module">The module.</param>
+    public static IEnumerable<string> FilesOf(ModuleDecl module) =>
+        module.AllTypes.Select(t => t.Location.FilePath).Concat(module.Functions.Select(f => f.Location.FilePath)).Where(p => p.Length > 0).Distinct(StringComparer.Ordinal).Order(StringComparer.Ordinal);
+
+    /// <summary>Gets the source lines of a module: the sum over its files.</summary>
+    /// <param name="module">The module.</param>
+    /// <param name="model">The project model.</param>
+    public static int Loc(ModuleDecl module, ProjectModel model)
+    {
+        var files = FilesOf(module).ToHashSet(StringComparer.Ordinal);
+        return model.Files.Where(f => files.Contains(f.Path)).Sum(Loc);
+    }
+}
+
+/// <summary>Measures of a single callable by spec/metrics.md, shared by facts and analyzers.</summary>
+public static class CallableMetrics
+{
+    /// <summary>Gets the order of a callable: 1 for plain data, plus the deepest nesting of function types in its signature.</summary>
+    /// <param name="callable">The callable.</param>
+    public static int HofOrder(Callable callable) =>
+        1 + callable.Parameters.Select(p => FunctionDepth(p.Type)).Append(FunctionDepth(callable.ReturnType)).Max();
+
+    /// <summary>Gets the deepest nesting of lambdas in a callable.</summary>
+    /// <param name="callable">The callable.</param>
+    public static int LambdaNesting(Callable callable) => LambdaNesting(callable.Body);
+
+    /// <summary>Gets the distinct project types a callable tests at run time.</summary>
+    /// <param name="callable">The callable.</param>
+    public static IReadOnlyList<string> TestedTypes(Callable callable) =>
+        [.. callable.Body.All<TypeTestExpression>().Where(t => t.TestedType is { IsExternal: false, Kind: TypeRefKind.Class or TypeRefKind.Interface or TypeRefKind.Struct })
+            .Select(t => t.TestedType!.Name).Distinct(StringComparer.Ordinal)];
+
+    private static int FunctionDepth(TypeRef? type) => type switch
+    {
+        null => 0,
+        { Kind: TypeRefKind.Function } => 1 + type.TypeArguments.Select(FunctionDepth).DefaultIfEmpty(0).Max(),
+        _ => type.TypeArguments.Select(FunctionDepth).DefaultIfEmpty(0).Max(),
+    };
+
+    private static int LambdaNesting(IrNode? node)
+    {
+        if (node is null) return 0;
+        var inner = node.Children.Select(LambdaNesting).DefaultIfEmpty(0).Max();
+        return node is LambdaExpression ? inner + 1 : inner;
+    }
+}
+
 /// <summary>Object-oriented measures shared by analyzers.</summary>
 public static class TypeMetrics
 {
@@ -138,7 +202,7 @@ public static class TypeMetrics
     /// <param name="model">The project model.</param>
     public static int Dit(TypeDecl type, ProjectModel model)
     {
-        if (type.Kind != TypeKind.Class) return 0;
+        if (type.Kind is not (TypeKind.Class or TypeKind.Record)) return 0;
         var depth = 0;
         var seen = new HashSet<string> { type.Id };
         for (var current = type.BaseType; current is { Id: { } id } && seen.Add(id); current = model.FindType(id)?.BaseType)

@@ -35,6 +35,20 @@ public class AnalyzerFixtureTests
     }
 
     [Theory]
+    [InlineData("FUN005")]
+    [InlineData("OOP003")]
+    [InlineData("STR003")]
+    public async Task ThresholdRule_ReportsWhatItMeasured(string id)
+    {
+        var (directory, text) = Fixture(id, "bad.cs");
+        var result = await Run(id, directory, "bad.cs", text);
+
+        var findings = result.Findings.Where(f => f.AnalyzerId == id).ToList();
+        Assert.NotEmpty(findings);
+        Assert.All(findings, f => Assert.True(f.Measured is { } m && (m.Metric == "typeTests" ? m.Value >= m.Threshold : m.Value > m.Threshold)));
+    }
+
+    [Theory]
     [MemberData(nameof(AnalyzerIds))]
     public async Task BadFixture_Fires_OnEveryExpectedLine(string id)
     {

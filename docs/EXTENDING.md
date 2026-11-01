@@ -15,7 +15,7 @@
 
 3. **Определите модуль языка.** Для C# это namespace, для Python — пакет или файл, для TypeScript — файл или каталог. Решение записывается в `docs/DECISIONS.md`: от него зависят Ca, Ce и циклы.
 
-4. **Объявите парадигмы и признаки.** `manifest.paradigms` — что язык поддерживает; в facts для каждого модуля `paradigmEvidence` по `spec/paradigms.md`. Если язык вводит новую парадигму, сначала добавьте её в `spec/paradigms.md`.
+4. **Объявите парадигмы и признаки.** `manifest.paradigms` — что язык поддерживает; в facts для каждого модуля `paradigmEvidence` и `activeParadigms` по `spec/paradigms.md`. Если язык вводит новую парадигму, сначала добавьте её в `spec/paradigms.md`.
 
 5. **Выберите правила.** Из `spec/rules/*.yaml` реализуйте только то, что можете сделать надёжно, и перечислите в `capabilities.supportedRules`. Остальное — `skippedRules` с причиной `not-supported`. Правила, свойственные только этому языку, добавьте в `spec/rules/<язык>.yaml` с префиксом (`PY.`, `TS.`).
 

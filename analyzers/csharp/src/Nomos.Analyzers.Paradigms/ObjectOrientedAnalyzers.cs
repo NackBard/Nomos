@@ -49,11 +49,11 @@ public sealed class PolymorphismAnalyzer : AnalyzerBase
         var minTests = context.Options.Int("minTypeTests", 3);
         foreach (var callable in context.Callables)
         {
-            var tested = callable.Body.All<TypeTestExpression>().Where(t => t.TestedType is { IsExternal: false, Kind: TypeRefKind.Class or TypeRefKind.Interface or TypeRefKind.Struct })
-                .Select(t => t.TestedType!.Name).Distinct().ToList();
+            var tested = CallableMetrics.TestedTypes(callable);
             if (tested.Count >= minTests)
                 context.Report(Confidence.Medium, callable.Location, $"{callable.Name} branches on {tested.Count} runtime types",
-                    $"It tests for {string.Join(", ", tested)}. A virtual member on their common base would dispatch without the checks.", symbol: callable.Id);
+                    $"It tests for {string.Join(", ", tested)}. A virtual member on their common base would dispatch without the checks.", symbol: callable.Id,
+                    measured: new Measurement("typeTests", tested.Count, minTests));
         }
     }
 }

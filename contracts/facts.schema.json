@@ -1,14 +1,14 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:nomos:contracts:1.0.0:facts",
+  "$id": "urn:nomos:contracts:1.1.0:facts",
   "title": "Analysis facts",
-  "description": "Output of `<analyzer> analyze`. Contract version 1.0.0. Facts are measurements and observations; they carry no verdicts. Findings are reported separately as SARIF (see contracts/sarif-profile.md). Changing this file requires a schemaVersion bump and a record in docs/DECISIONS.md.",
-  "x-contractVersion": "1.0.0",
+  "description": "Output of `<analyzer> analyze`. Contract version 1.1.0. Facts are measurements and observations; they carry no verdicts. Findings are reported separately as SARIF (see contracts/sarif-profile.md). Changing this file requires a schemaVersion bump and a record in docs/DECISIONS.md.",
+  "x-contractVersion": "1.1.0",
   "type": "object",
   "required": ["schemaVersion", "analyzer", "files", "modules", "types", "functions", "dependencies", "skippedRules", "diagnostics"],
   "additionalProperties": false,
   "properties": {
-    "schemaVersion": { "const": "1.0.0" },
+    "schemaVersion": { "enum": ["1.0.0", "1.1.0"], "description": "Minor versions only add optional fields, so documents of 1.0.0 stay valid." },
     "analyzer": {
       "type": "object",
       "required": ["name", "version", "language"],
@@ -63,6 +63,12 @@
             "type": "array",
             "items": { "$ref": "#/$defs/evidence" },
             "description": "Observed signs of paradigms in this module. An empty list means nothing was detected, which is itself a fact."
+          },
+          "activeParadigms": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+            "description": "Since 1.1.0. Paradigms whose activation evidence is present (spec/paradigms.md), ordinal order. Follows from the code alone: configuration does not change it."
           },
           "health": { "$ref": "#/$defs/health" }
         }

@@ -51,13 +51,19 @@ public sealed class ModuleSizeAnalyzer : AnalyzerBase
         var maxFileLines = context.Options.Int("maxFileLines", 800);
         foreach (var module in context.Modules)
         {
-            context.Report(new Metric("loc", MetricScope.Module, module.Name, module.LinesOfCode, module.Name));
+            var loc = SizeMetrics.Loc(module, context.Model);
+            context.Report(new Metric("loc", MetricScope.Module, module.Name, loc, module.Name));
             var first = module.AllTypes.FirstOrDefault();
-            if (module.LinesOfCode > maxModuleLines && first is not null)
-                context.Report(Confidence.High, first.Location, $"Module {module.Name} has {module.LinesOfCode} lines", $"The limit is {maxModuleLines}; a smaller module is easier to understand as a unit.", module.Name);
+            if (loc > maxModuleLines && first is not null)
+                context.Report(Confidence.High, first.Location, $"Module {module.Name} has {loc} lines of code", $"The limit is {maxModuleLines}; a smaller module is easier to understand as a unit.", module.Name,
+                    measured: new Measurement("loc", loc, maxModuleLines));
         }
 
-        foreach (var file in context.Model.Files.Where(f => f.Language == context.Language && f.Lines.Count > maxFileLines))
-            context.Report(Confidence.High, new SourceLocation(file.Path, 1, 1, 1, 1), $"{file.Path} has {file.Lines.Count} lines", $"The limit is {maxFileLines}.");
+        foreach (var file in context.Model.Files.Where(f => f.Language == context.Language))
+        {
+            var lines = SizeMetrics.Lines(file);
+            if (lines > maxFileLines)
+                context.Report(Confidence.High, new SourceLocation(file.Path, 1, 1, 1, 1), $"{file.Path} has {lines} lines", $"The limit is {maxFileLines}.", measured: new Measurement("lines", lines, maxFileLines));
+        }
     }
 }

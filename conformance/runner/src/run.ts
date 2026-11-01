@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 import YAML from "yaml";
-import { checkParity, compareFacts } from "./compare.ts";
+import { activatingKinds, checkApplicability, checkParity, compareFacts } from "./compare.ts";
 import type { CaseSpec } from "./compare.ts";
 import { casesDir, repoRoot, rulesDir } from "./paths.ts";
 import { checkSarif } from "./sarif.ts";
@@ -27,18 +27,16 @@ function parseJson(text: string): { value?: any; error?: string } {
 
 interface SpecRule { category: string; paradigms: string[]; title: string; description: string; rationale: string }
 
-function loadSpecRules(): { ids: Set<string>; oop: Set<string>; byId: Map<string, SpecRule> } {
+function loadSpecRules(): { ids: Set<string>; byId: Map<string, SpecRule> } {
   const ids = new Set<string>();
   const byId = new Map<string, SpecRule>();
-  const oop = new Set<string>();
   for (const file of fs.readdirSync(rulesDir).filter((f) => f.endsWith(".yaml"))) {
     for (const rule of YAML.parse(fs.readFileSync(path.join(rulesDir, file), "utf8")).rules) {
       ids.add(rule.id);
       byId.set(rule.id, { category: rule.category, paradigms: rule.paradigms, title: rule.title, description: rule.description, rationale: rule.rationale });
-      if ((rule.paradigms as string[]).includes("oop")) oop.add(rule.id);
     }
   }
-  return { ids, oop, byId };
+  return { ids, byId };
 }
 
 function firstLine(text: string): string {
@@ -91,23 +89,12 @@ function analyze(analyzer: Analyzer, root: string, sarif?: string): { facts?: an
   return parsed.error ? { errors: [parsed.error] } : { facts: parsed.value, text: run.stdout, errors: [], code: run.code ?? undefined };
 }
 
-function skippedRulesErrors(facts: any, supported: Set<string>, oopRules: Set<string>): string[] {
-  const errors: string[] = [];
-  for (const module of facts.modules as any[]) {
-    if (module.paradigmEvidence.some((e: any) => e.kind === "oop.classes")) continue;
-    for (const ruleId of [...oopRules].filter((r) => supported.has(r)).sort()) {
-      const found = facts.skippedRules.some((s: any) => s.ruleId === ruleId && s.module === module.id && s.reason === "paradigm-not-detected");
-      if (!found) errors.push(`module ${module.id} has no oop.classes but rule ${ruleId} has no paradigm-not-detected record`);
-    }
-  }
-  return errors;
-}
-
 /** Runs every case for every registered analyzer. */
 export function runConformance(analyzers: Analyzer[], only?: string): Check[] {
   const checks: Check[] = [];
   const validators = loadValidators();
   const specRules = loadSpecRules();
+  const activating = activatingKinds(fs.readFileSync(path.join(repoRoot, "spec", "paradigms.md"), "utf8"));
   const caseIds = fs.existsSync(casesDir)
     ? fs.readdirSync(casesDir).filter((d) => fs.existsSync(path.join(casesDir, d, "case.json")) && (!only || d === only)).sort()
     : [];
@@ -145,7 +132,11 @@ export function runConformance(analyzers: Analyzer[], only?: string): Check[] {
           const expectedFacts = readJson(path.join(casesDir, id, analyzer.language, "expected.facts.json"));
           const expectedCode = expectedFacts.files.some((f: any) => f.parsed === false) ? 4 : 0;
           if (first.code !== expectedCode) errors.push(`exit code is ${first.code}, expected ${expectedCode}`);
-          errors.push(...skippedRulesErrors(first.facts, supportedBy.get(analyzer.language) ?? new Set(), specRules.oop));
+          const supported = supportedBy.get(analyzer.language) ?? new Set<string>();
+          errors.push(...checkApplicability(first.facts, activating, [...supported].flatMap((ruleId) => {
+            const rule = specRules.byId.get(ruleId);
+            return rule ? [{ id: ruleId, paradigms: rule.paradigms }] : [];
+          })));
           if (first.text!.includes(repoRoot) || first.text!.includes(repoRoot.replaceAll("\\", "/"))) errors.push("output contains an absolute path");
           const manifest = manifests.get(analyzer.language);
           if (manifest && fs.existsSync(sarifFile)) {

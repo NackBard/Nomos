@@ -1,0 +1,122 @@
+{
+  "schemaVersion": "1.1.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "csharp" },
+  "files": [
+    { "path": "Dispatch.cs", "lines": 36, "loc": 29 },
+    { "path": "Flow.cs", "lines": 12, "loc": 11 },
+    { "path": "Global.cs", "lines": 8, "loc": 6 },
+    { "path": "Hof.cs", "lines": 9, "loc": 8 },
+    { "path": "Lambdas.cs", "lines": 9, "loc": 8 },
+    { "path": "Records.cs", "lines": 5, "loc": 3 }
+  ],
+  "modules": [
+    {
+      "id": "Pa.Dispatch", "name": "Pa.Dispatch", "files": ["Dispatch.cs"], "loc": 29, "metrics": {},
+      "activeParadigms": ["functional", "oop", "structural"],
+      "paradigmEvidence": [
+        { "paradigm": "functional", "kind": "fp.pure-functions", "count": 1, "description": "functions that provably have no effects (conservative)", "examples": ["Pa.Dispatch.Router.Route"] },
+        { "paradigm": "oop", "kind": "oop.classes", "count": 1, "description": "classes with methods or fields", "examples": ["Pa.Dispatch.Router"] },
+        { "paradigm": "structural", "kind": "str.control-flow", "count": 1, "description": "functions with branches or loops", "examples": ["Pa.Dispatch.Router.Route"] }
+      ]
+    },
+    {
+      "id": "Pa.Flow", "name": "Pa.Flow", "files": ["Flow.cs"], "loc": 11, "metrics": {},
+      "activeParadigms": ["oop", "structural"],
+      "paradigmEvidence": [
+        { "paradigm": "oop", "kind": "oop.classes", "count": 1, "description": "classes with methods or fields", "examples": ["Pa.Flow.Gate"] },
+        { "paradigm": "structural", "kind": "str.control-flow", "count": 1, "description": "functions with branches or loops", "examples": ["Pa.Flow.Gate.Log"] }
+      ]
+    },
+    {
+      "id": "Pa.Global", "name": "Pa.Global", "files": ["Global.cs"], "loc": 6, "metrics": {},
+      "activeParadigms": ["oop"],
+      "paradigmEvidence": [
+        { "paradigm": "oop", "kind": "oop.classes", "count": 1, "description": "classes with methods or fields", "examples": ["Pa.Global.Registry"] },
+        { "paradigm": "structural", "kind": "str.global-state", "count": 2, "description": "module-level variables and static mutable state", "examples": ["Pa.Global.Registry.Count", "Pa.Global.Registry.Size"] }
+      ]
+    },
+    {
+      "id": "Pa.Hof", "name": "Pa.Hof", "files": ["Hof.cs"], "loc": 8, "metrics": {},
+      "activeParadigms": ["functional", "oop"],
+      "paradigmEvidence": [
+        { "paradigm": "functional", "kind": "fp.higher-order", "count": 1, "description": "functions taking or returning functions", "examples": ["Pa.Hof.Apply.Twice"] },
+        { "paradigm": "oop", "kind": "oop.classes", "count": 1, "description": "classes with methods or fields", "examples": ["Pa.Hof.Apply"] }
+      ]
+    },
+    {
+      "id": "Pa.Lambdas", "name": "Pa.Lambdas", "files": ["Lambdas.cs"], "loc": 8, "metrics": {},
+      "activeParadigms": ["oop"],
+      "paradigmEvidence": [
+        { "paradigm": "functional", "kind": "fp.lambdas", "count": 2, "description": "lambdas passed as arguments", "examples": ["Pa.Lambdas.Scanner.Scan"] },
+        { "paradigm": "oop", "kind": "oop.classes", "count": 1, "description": "classes with methods or fields", "examples": ["Pa.Lambdas.Scanner"] }
+      ]
+    },
+    {
+      "id": "Pa.Records", "name": "Pa.Records", "files": ["Records.cs"], "loc": 3, "metrics": {},
+      "activeParadigms": ["oop"],
+      "paradigmEvidence": [
+        { "paradigm": "functional", "kind": "fp.immutable-types", "count": 2, "description": "types without mutable state", "examples": ["Pa.Records.Base", "Pa.Records.Child"] },
+        { "paradigm": "oop", "kind": "oop.classes", "count": 2, "description": "classes with methods or fields", "examples": ["Pa.Records.Base", "Pa.Records.Child"] },
+        { "paradigm": "oop", "kind": "oop.inheritance", "count": 1, "description": "project types inheriting project types", "examples": ["Pa.Records.Child"] }
+      ]
+    }
+  ],
+  "types": [
+    { "id": "Pa.Dispatch.A", "name": "A", "module": "Pa.Dispatch", "kind": "class", "isAbstract": false, "location": { "file": "Dispatch.cs", "startLine": 3 }, "metrics": { "lines": 3 } },
+    { "id": "Pa.Dispatch.B", "name": "B", "module": "Pa.Dispatch", "kind": "class", "isAbstract": false, "location": { "file": "Dispatch.cs", "startLine": 7 }, "metrics": { "lines": 3 } },
+    { "id": "Pa.Dispatch.C", "name": "C", "module": "Pa.Dispatch", "kind": "class", "isAbstract": false, "location": { "file": "Dispatch.cs", "startLine": 11 }, "metrics": { "lines": 3 } },
+    { "id": "Pa.Dispatch.Router", "name": "Router", "module": "Pa.Dispatch", "kind": "class", "isAbstract": false, "location": { "file": "Dispatch.cs", "startLine": 15 }, "metrics": { "lines": 22, "methodCount": 1 } },
+    { "id": "Pa.Flow.Gate", "name": "Gate", "module": "Pa.Flow", "kind": "class", "isAbstract": false, "location": { "file": "Flow.cs", "startLine": 3 }, "metrics": { "lines": 10, "methodCount": 1 } },
+    { "id": "Pa.Global.Registry", "name": "Registry", "module": "Pa.Global", "kind": "class", "isAbstract": false, "location": { "file": "Global.cs", "startLine": 3 }, "metrics": { "lines": 6, "memberCount": 2, "methodCount": 0 } },
+    { "id": "Pa.Hof.Apply", "name": "Apply", "module": "Pa.Hof", "kind": "class", "isAbstract": false, "location": { "file": "Hof.cs", "startLine": 3 }, "metrics": { "lines": 7, "methodCount": 1 } },
+    { "id": "Pa.Lambdas.Scanner", "name": "Scanner", "module": "Pa.Lambdas", "kind": "class", "isAbstract": false, "location": { "file": "Lambdas.cs", "startLine": 3 }, "metrics": { "lines": 7, "methodCount": 1 } },
+    { "id": "Pa.Records.Base", "name": "Base", "module": "Pa.Records", "kind": "record", "isAbstract": false, "location": { "file": "Records.cs", "startLine": 3 }, "metrics": { "lines": 1, "dit": 0 } },
+    { "id": "Pa.Records.Child", "name": "Child", "module": "Pa.Records", "kind": "record", "isAbstract": false, "location": { "file": "Records.cs", "startLine": 5 }, "metrics": { "lines": 1, "dit": 1 } }
+  ],
+  "functions": [
+    {
+      "id": "Pa.Dispatch.Router.Route", "name": "Route", "module": "Pa.Dispatch", "type": "Pa.Dispatch.Router", "kind": "method", "visibility": "public",
+      "location": { "file": "Dispatch.cs", "startLine": 17 },
+      "metrics": { "cyclomatic": 4, "maxNesting": 1, "parameterCount": 1, "lines": 19, "hofOrder": 1, "lambdaNesting": 0, "typeTests": 3 }
+    },
+    {
+      "id": "Pa.Flow.Gate.Log", "name": "Log", "module": "Pa.Flow", "type": "Pa.Flow.Gate", "kind": "method", "visibility": "public",
+      "location": { "file": "Flow.cs", "startLine": 5 },
+      "metrics": { "cyclomatic": 2, "maxNesting": 1, "parameterCount": 1, "lines": 7, "hofOrder": 1, "lambdaNesting": 0, "typeTests": 0 }
+    },
+    {
+      "id": "Pa.Hof.Apply.Twice", "name": "Twice", "module": "Pa.Hof", "type": "Pa.Hof.Apply", "kind": "method", "visibility": "public",
+      "location": { "file": "Hof.cs", "startLine": 5 },
+      "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 2, "lines": 4, "hofOrder": 2, "lambdaNesting": 0, "typeTests": 0 }
+    },
+    {
+      "id": "Pa.Lambdas.Scanner.Scan", "name": "Scan", "module": "Pa.Lambdas", "type": "Pa.Lambdas.Scanner", "kind": "method", "visibility": "public",
+      "location": { "file": "Lambdas.cs", "startLine": 5 },
+      "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 1, "lines": 4, "hofOrder": 1, "lambdaNesting": 2, "typeTests": 0 }
+    },
+    {
+      "id": "Pa.Records.Base.Base", "name": "Base", "module": "Pa.Records", "type": "Pa.Records.Base", "kind": "constructor", "visibility": "public",
+      "location": { "file": "Records.cs", "startLine": 3 },
+      "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 1, "lines": 1, "hofOrder": 1, "lambdaNesting": 0, "typeTests": 0 }
+    },
+    {
+      "id": "Pa.Records.Child.Child", "name": "Child", "module": "Pa.Records", "type": "Pa.Records.Child", "kind": "constructor", "visibility": "public",
+      "location": { "file": "Records.cs", "startLine": 5 },
+      "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 2, "lines": 1, "hofOrder": 1, "lambdaNesting": 0, "typeTests": 0 }
+    }
+  ],
+  "dependencies": [
+    { "from": "Pa.Dispatch.Router", "to": "Pa.Dispatch.A", "kind": "type-ref", "phase": "runtime" },
+    { "from": "Pa.Dispatch.Router", "to": "Pa.Dispatch.B", "kind": "type-ref", "phase": "runtime" },
+    { "from": "Pa.Dispatch.Router", "to": "Pa.Dispatch.C", "kind": "type-ref", "phase": "runtime" },
+    { "from": "Pa.Records.Child", "to": "Pa.Records.Base", "kind": "inheritance", "phase": "runtime" }
+  ],
+  "cycles": [],
+  "skippedRules": [
+    { "ruleId": "FUN001", "reason": "disabled-by-config", "message": "functional is off by default for this language" },
+    { "ruleId": "FUN001", "module": "Pa.Lambdas", "reason": "paradigm-not-detected", "message": "lambdas alone do not activate the functional paradigm" },
+    { "ruleId": "STR002", "module": "Pa.Global", "reason": "paradigm-not-detected", "message": "str.global-state does not activate the structural paradigm" },
+    { "ruleId": "STR001", "module": "Pa.Hof", "reason": "paradigm-not-detected", "message": "no free functions and no control flow" }
+  ],
+  "diagnostics": []
+}

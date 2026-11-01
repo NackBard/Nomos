@@ -5,7 +5,7 @@ export type Metrics = Record<string, number | null>;
 
 export interface Entity { id: string; name: string; module: string; location?: Place; metrics: Metrics }
 export interface Evidence { paradigm: string; kind: string; count: number; description?: string; examples?: string[] }
-export interface Module { id: string; name: string; files: string[]; loc: number; metrics: Metrics; paradigmEvidence: Evidence[] }
+export interface Module { id: string; name: string; files: string[]; loc: number; metrics: Metrics; paradigmEvidence: Evidence[]; activeParadigms?: string[] }
 export interface Dependency { from: string; to: string; kind: string; phase: string; external?: boolean; stdlib?: boolean; count?: number }
 export interface Cycle { level: "type" | "module"; members: string[] }
 export interface SkippedRule { ruleId: string; module?: string; reason: string; message: string }

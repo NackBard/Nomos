@@ -73,7 +73,7 @@ public sealed class AnalysisEngine(ComponentCatalog catalog)
             activeParadigms[language] = [.. paradigms.Order(StringComparer.Ordinal)];
             var languageModules = modules.Where(m => m.Language == language).ToList();
             // Paradigm signs per module: a rule bound to paradigms sees only the modules where one of them shows (spec/paradigms.md).
-            var activeIn = languageModules.ToDictionary(m => m.Name, m => ParadigmSigns.ActiveParadigms(ParadigmSigns.Collect(model, m)), StringComparer.Ordinal);
+            var activeIn = languageModules.ToDictionary(m => m.Name, m => ParadigmSigns.Enabled(ParadigmSigns.ActiveParadigms(ParadigmSigns.Collect(model, m)), paradigms), StringComparer.Ordinal);
             var eligible = catalog.Analyzers.Where(a => IsEligible(a.Descriptor, language, paradigms, config)).ToList();
             request.Progress?.Report($"Running {eligible.Count} analyzer(s) on {language}");
 

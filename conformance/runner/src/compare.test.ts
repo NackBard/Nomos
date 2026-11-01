@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { checkParity, compareFacts, toleranceFor, valuesMatch } from "./compare.ts";
+import { activatingKinds, checkApplicability, checkParity, compareFacts, toleranceFor, valuesMatch } from "./compare.ts";
 import type { CaseSpec } from "./compare.ts";
 
 const spec: CaseSpec = { id: "t", languages: ["csharp", "python"] };
@@ -81,4 +81,21 @@ test("parity fails when equivalent entities differ across languages and is skipp
   assert.deepEqual(checkParity(withParity, new Map([["csharp", fn("N.F", 3)], ["python", fn("n.f", 3)]])), []);
   assert.equal(checkParity(withParity, new Map([["csharp", fn("N.F", 3)], ["python", fn("n.f", 4)]])).length, 1);
   assert.deepEqual(checkParity(withParity, new Map([["csharp", fn("N.F", 3)]])), []);
+});
+
+test("the activating kinds are read from the tables of spec/paradigms.md", () => {
+  const kinds = activatingKinds("### oop\n| `oop.classes` | x | **да** |\n| `oop.inheritance` | x | нет |\n### functional\n| `fp.higher-order` | x | **да** |\n");
+  assert.deepEqual([...kinds], [["oop.classes", "oop"], ["fp.higher-order", "functional"]]);
+});
+
+test("applicability follows the evidence in both directions", () => {
+  const activating = new Map([["fp.higher-order", "functional"]]);
+  const rules = [{ id: "FUN001", paradigms: ["functional"] }];
+  const module = (kind: string, activeParadigms: string[]) => ({ id: "M", paradigmEvidence: [{ kind }], activeParadigms });
+  const record = { ruleId: "FUN001", module: "M", reason: "paradigm-not-detected" };
+
+  assert.deepEqual(checkApplicability({ modules: [module("fp.lambdas", [])], skippedRules: [record] }, activating, rules), []);
+  assert.match(checkApplicability({ modules: [module("fp.lambdas", [])], skippedRules: [] }, activating, rules)[0], /has no paradigm-not-detected record/);
+  assert.match(checkApplicability({ modules: [module("fp.higher-order", ["functional"])], skippedRules: [record] }, activating, rules)[0], /recorded as paradigm-not-detected/);
+  assert.match(checkApplicability({ modules: [module("fp.lambdas", ["functional"])], skippedRules: [record] }, activating, rules)[0], /activeParadigms functional: reported but not expected/);
 });

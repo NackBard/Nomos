@@ -1,7 +1,7 @@
 import path from "node:path";
 import * as vscode from "vscode";
 import type { AnalysisRun, Finding } from "../core/model";
-import { describeFinding, formatMetrics, groupFindings } from "../core/views";
+import { describeFinding, formatMetrics, groupFindings, summarizeStyles } from "../core/views";
 
 type Node = vscode.TreeItem & { children?: Node[] };
 
@@ -69,7 +69,17 @@ export class FindingsTree extends Tree {
   }
 }
 
-/** Paradigm evidence per module and the rules that were not applied, with reasons. */
+function styleNode(run: AnalysisRun): Node {
+  const summary = summarizeStyles(run.facts);
+  const children = summary.paradigms.map((p) => leaf(p.paradigm, `${p.modules} of ${summary.total}`));
+  for (const style of summary.styles) {
+    children.push(branch(style.paradigms.join(" + ") || "no active paradigm", String(style.modules.length), style.modules.map((m) => leaf(m)), "symbol-class"));
+  }
+  if (summary.unreported.length) children.push(branch("Not reported by the analyzer", String(summary.unreported.length), summary.unreported.map((m) => leaf(m)), "question"));
+  return branch(`Modules by style (${run.language})`, `${summary.total} modules`, children, "graph");
+}
+
+/** Modules by style, then paradigm evidence per module and the rules that were not applied, with reasons. */
 export class ParadigmsTree extends Tree {
   update(runs: AnalysisRun[]): void {
     this.refresh(runs.flatMap((run) => {
@@ -78,12 +88,12 @@ export class ParadigmsTree extends Tree {
         const skipped = run.facts.skippedRules.filter((s) => s.module === m.id).map((s) => leaf(s.ruleId, s.reason, s.message));
         const children = [...evidence];
         if (skipped.length) children.push(branch("Skipped rules", String(skipped.length), skipped, "circle-slash"));
-        const shown = [...new Set(m.paradigmEvidence.map((e) => e.paradigm))].sort().join(", ");
-        return branch(m.name, shown || "no paradigm evidence", children, "symbol-namespace");
+        const shown = m.activeParadigms ? m.activeParadigms.join(", ") || "no active paradigm" : "not reported";
+        return branch(m.name, shown, children, "symbol-namespace");
       });
       const general = run.facts.skippedRules.filter((s) => !s.module).map((s) => leaf(s.ruleId, s.reason, s.message));
       if (general.length) modules.push(branch("Skipped for the whole project", String(general.length), general, "circle-slash"));
-      return modules;
+      return [styleNode(run), ...modules];
     }));
   }
 }

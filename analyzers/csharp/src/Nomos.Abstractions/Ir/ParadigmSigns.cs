@@ -34,13 +34,15 @@ public static class ParadigmSigns
         Add(result, Paradigms.ObjectOriented, "oop.mutable-state-classes", "classes with mutable instance state",
             types.Where(t => IsClassLike(t) && HasMutableInstanceState(t)).Select(t => t.Id));
         Add(result, Paradigms.ObjectOriented, "oop.inheritance", "project types inheriting project types",
-            types.Where(t => t.Kind == TypeKind.Class && model.FindType(t.BaseType?.Id) is not null).Select(t => t.Id));
+            types.Where(t => t.Kind is TypeKind.Class or TypeKind.Record && model.FindType(t.BaseType?.Id) is not null).Select(t => t.Id));
         Add(result, Paradigms.ObjectOriented, "oop.abstractions", "interfaces and abstract classes", types.Where(t => t.IsAbstract).Select(t => t.Id));
 
         Add(result, Paradigms.Structural, "str.free-functions", "functions outside types", module.Functions.Select(f => f.Id));
         Add(result, Paradigms.Structural, "str.control-flow", "functions with branches or loops", callables.Where(HasControlFlow).Select(c => c.Id));
         Add(result, Paradigms.Structural, "str.global-state", "module-level variables and static mutable state",
-            module.Globals.Select(g => g.Id).Concat(types.SelectMany(t => t.Fields.Where(f => f.IsStatic && !f.IsReadOnly && !f.IsConstant).Select(f => f.Id))));
+            module.Globals.Select(g => g.Id)
+                .Concat(types.SelectMany(t => t.Fields.Where(f => f.IsStatic && !f.IsReadOnly && !f.IsConstant).Select(f => f.Id)))
+                .Concat(types.SelectMany(t => t.Properties.Where(p => p.IsStatic && p.SetterVisibility is not null).Select(p => p.Id))));
 
         var lambdaOwners = callables.SelectMany(c => c.Body.All<InvocationExpression>().SelectMany(i => i.Arguments.OfType<LambdaExpression>()).Select(_ => c.Id)).ToList();
         Add(result, Paradigms.Functional, "fp.lambdas", "lambdas passed as arguments", lambdaOwners, count: lambdaOwners.Count);
@@ -80,6 +82,15 @@ public static class ParadigmSigns
         ruleParadigms.Count == 0 || ruleParadigms.Any(p => active.Contains(p) || !HasEvidence(p));
 
     private static bool HasEvidence(string paradigm) => paradigm is Paradigms.ObjectOriented or Paradigms.Functional or Paradigms.Structural;
+
+    /// <summary>Narrows the paradigms a module shows to those the configuration left on: a switched-off paradigm applies no rule.</summary>
+    /// <param name="shown">Paradigms the module shows.</param>
+    /// <param name="enabled">Paradigms enabled for the language.</param>
+    public static HashSet<string> Enabled(IEnumerable<string> shown, IEnumerable<string> enabled)
+    {
+        var on = enabled.ToHashSet(StringComparer.OrdinalIgnoreCase);
+        return [.. shown.Where(on.Contains)];
+    }
 
     /// <summary>Explains why a rule was skipped for a module without its paradigm.</summary>
     /// <param name="paradigm">The paradigm of the rule.</param>

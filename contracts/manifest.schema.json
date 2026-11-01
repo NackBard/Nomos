@@ -1,9 +1,9 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:nomos:contracts:1.0.0:manifest",
+  "$id": "urn:nomos:contracts:1.1.0:manifest",
   "title": "Analyzer manifest",
-  "description": "Output of `<analyzer> manifest`. Contract version 1.0.0. Changing this file requires a schemaVersion bump and a record in docs/DECISIONS.md.",
-  "x-contractVersion": "1.0.0",
+  "description": "Output of `<analyzer> manifest`. Contract version 1.1.0. Changing this file requires a schemaVersion bump and a record in docs/DECISIONS.md.",
+  "x-contractVersion": "1.1.0",
   "type": "object",
   "required": ["name", "language", "version", "schemaVersion", "paradigms", "capabilities", "rules"],
   "additionalProperties": false,
@@ -11,7 +11,7 @@
     "name": { "type": "string", "minLength": 1, "description": "Analyzer name, e.g. nomos-csharp." },
     "language": { "$ref": "#/$defs/languageId", "description": "Language this analyzer handles." },
     "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+([-+][0-9A-Za-z.-]+)?$", "description": "Analyzer build version (semver)." },
-    "schemaVersion": { "const": "1.0.0", "description": "Version of the contracts this analyzer speaks. Must equal x-contractVersion of the schemas it was built for." },
+    "schemaVersion": { "enum": ["1.0.0", "1.1.0"], "description": "Version of the contracts this analyzer speaks. Must equal x-contractVersion of the schemas it was built for." },
     "paradigms": {
       "type": "array",
       "uniqueItems": true,

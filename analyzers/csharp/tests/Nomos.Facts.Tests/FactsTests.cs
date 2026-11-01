@@ -13,7 +13,9 @@ public class FactsTests
 
     private static readonly FactsOptions Options = new("test-analyzer", "1.2.3", [OopRule, NamingRule]);
 
-    private static async Task<AnalysisResult> Analyze(IReadOnlyList<Finding>? findings = null, params (string Path, string Text)[] sources)
+    private static async Task<AnalysisResult> Analyze(IReadOnlyList<Finding>? findings = null, params (string Path, string Text)[] sources) => await Analyze(null, null, findings, sources);
+
+    private static async Task<AnalysisResult> Analyze(IReadOnlyList<string>? enabled, IReadOnlyList<AnalyzerDescriptor>? ran, IReadOnlyList<Finding>? findings, params (string Path, string Text)[] sources)
     {
         var adapted = await new CSharpLanguageAdapter().LoadAsync([.. sources.Select(s => new SourceInput(s.Path, s.Text))], CancellationToken.None);
         return new AnalysisResult
@@ -21,12 +23,12 @@ public class FactsTests
             ProjectName = "t",
             ToolVersion = "0",
             Languages = ["csharp"],
-            ActiveParadigms = new Dictionary<string, IReadOnlyList<string>>(),
+            ActiveParadigms = new Dictionary<string, IReadOnlyList<string>> { ["csharp"] = enabled ?? ["oop"] },
             FileCount = adapted.Files.Count,
             Findings = findings ?? [],
             Suppressed = [],
             Metrics = [],
-            Analyzers = [],
+            Analyzers = ran ?? [OopRule, NamingRule],
             Modules = [],
             Health = new HealthScore(100, [], []),
             Diagnostics = [],
@@ -51,6 +53,45 @@ public class FactsTests
     {
         Assert.Empty(ParadigmSigns.ActiveParadigms([new EvidenceItem("functional", "fp.lambdas", 50, "lambdas", [])]));
         Assert.Equal(["functional"], ParadigmSigns.ActiveParadigms([new EvidenceItem("functional", "fp.higher-order", 1, "functions", [])]));
+    }
+
+    [Fact]
+    public async Task ConfiguredOffRules_AreRecorded_NotDroppedSilently()
+    {
+        var functional = new AnalyzerDescriptor("FUN001", "Impure function", "Paradigm", "Effects.", Severity.Minor, [], ["functional"]);
+        var mixed = new AnalyzerDescriptor("CC001", "Function length", "CleanCode", "Size.", Severity.Minor, [], ["functional", "structural"]);
+        var options = Options with { SupportedRules = [functional, mixed] };
+        var source = ("a.cs", "namespace A; public class X { public static int Id(int a) { return a; } }");
+
+        var result = await Analyze(["oop"], [mixed], null, source);
+        var skipped = JsonDocument.Parse(FactsWriter.Write(result, options)).RootElement.GetProperty("skippedRules").EnumerateArray()
+            .Select(s => (Rule: s.GetProperty("ruleId").GetString(), Module: s.TryGetProperty("module", out var m) ? m.GetString() : null, Reason: s.GetProperty("reason").GetString())).ToList();
+
+        Assert.Equal([("CC001", "A", "disabled-by-config"), ("FUN001", null, "disabled-by-config")], skipped);
+    }
+
+    [Fact]
+    public async Task Modules_ListActiveParadigms_ButNotLambdaOnlyEvidence()
+    {
+        var facts = await Facts(("a.cs", "namespace A; public class X { public int[] F(int[] v) { System.Array.Sort(v, (a, b) => a - b); return v; } }"));
+
+        Assert.Equal(["oop"], Entity(facts, "modules", "A").GetProperty("activeParadigms").EnumerateArray().Select(p => p.GetString()));
+    }
+
+    [Theory]
+    [InlineData("public static int Plain(int a) { return a; }", 1, 0, 0)]
+    [InlineData("public static int Take(System.Func<int, int> f) { return f(1); }", 2, 0, 0)]
+    [InlineData("public static int Take(System.Func<System.Func<int>, int> f) { return 0; }", 3, 0, 0)]
+    [InlineData("public static void Each(int[] v) { System.Array.ForEach(v, a => System.Array.ForEach(v, b => { })); }", 1, 2, 0)]
+    [InlineData("public class P { } public class Q { } public static bool Test(object o) { return o is P || o is Q || o is P; }", 1, 0, 2)]
+    public async Task CallableMetrics_AreInTheFacts(string member, int order, int nesting, int typeTests)
+    {
+        var facts = await Facts(("a.cs", $"namespace A; public class X {{ {member} }}"));
+        var function = facts.GetProperty("functions").EnumerateArray().Single();
+
+        Assert.Equal(order, Metric(function, "hofOrder"));
+        Assert.Equal(nesting, Metric(function, "lambdaNesting"));
+        Assert.Equal(typeTests, Metric(function, "typeTests"));
     }
 
     [Fact]

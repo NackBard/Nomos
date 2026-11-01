@@ -35,6 +35,29 @@ export function describeFinding(f: Finding): string {
   return `${f.ruleId} ${f.ruleTitle}: ${f.message}\n\nHeuristic, ${f.confidence} confidence.\n\n${f.explanation}${measured}`;
 }
 
+export interface StyleSummary {
+  /** All modules of the run. */
+  total: number;
+  /** Modules per paradigm; a module counts once for each paradigm active in it. */
+  paradigms: { paradigm: string; modules: number }[];
+  /** Modules per exact set of active paradigms; an empty set means no paradigm is active. */
+  styles: { paradigms: string[]; modules: string[] }[];
+  /** Modules of an analyzer of contract 1.0.0, which does not report active paradigms. */
+  unreported: string[];
+}
+
+/** Counts modules by style. It reads what the analyzer reports and judges nothing: no style is better than another. */
+export function summarizeStyles(facts: Facts): StyleSummary {
+  const reported = facts.modules.filter((m) => m.activeParadigms);
+  const counts = groupBy(reported.flatMap((m) => m.activeParadigms!), (p) => p);
+  return {
+    total: facts.modules.length,
+    paradigms: counts.map((c) => ({ paradigm: c.key, modules: c.items.length })),
+    styles: groupBy(reported, (m) => m.activeParadigms!.join(" + ")).map((s) => ({ paradigms: s.items[0].activeParadigms!, modules: s.items.map((m) => m.id) })),
+    unreported: facts.modules.filter((m) => !m.activeParadigms).map((m) => m.id),
+  };
+}
+
 export interface Lens { line: number; text: string }
 
 // All names below are metrics of spec/metrics.md, common to every language.

@@ -19,7 +19,7 @@ export function validateRepository(): string[] {
       errors.push(`contracts/${file}: ${(e as Error).message}`);
       continue;
     }
-    if (schema["x-contractVersion"] !== "1.0.0" || !String(schema.$id).includes(`:${schema["x-contractVersion"]}:`)) {
+    if (!/^1\.\d+\.\d+$/.test(schema["x-contractVersion"]) || !String(schema.$id).includes(`:${schema["x-contractVersion"]}:`)) {
       errors.push(`contracts/${file}: $id and x-contractVersion must carry the same version`);
     }
   }

@@ -27,7 +27,7 @@ conformance/
 4. Для каждого пункта `parity` значение метрики совпадает у всех перечисленных языков.
 5. SARIF проверяется по профилю (`contracts/sarif-profile.md`) для каждого случая; официальная схема SARIF 2.1.0 проверяется, если скачана командой `npm run fetch-sarif-schema` (копии в репозитории нет, D-029). При `expectSarif` множество `(ruleId, файл, startLine)` совпадает с эталоном `expected.sarif.json` вида `{ "results": [{ "ruleId": "CC001", "file": "A.cs", "startLine": 12 }] }`.
    Манифест сверяется со spec: парадигмы и категория каждого общего правила равны записи в `spec/rules`.
-6. `skippedRules`: для каждого правила ООП на модуле без классов есть запись `paradigm-not-detected`.
+6. Применимость: `activeParadigms` следуют из признаков с отметкой «да» в таблицах `spec/paradigms.md`; правило без активной парадигмы имеет запись `paradigm-not-detected`, а правило с активной её не имеет.
 
 ## Запуск
 
@@ -58,6 +58,7 @@ node src/cli.ts run --analyzer "csharp=<команда>" [--case cycles]
 | `oop-cohesion` | `dit`, `cbo`, `lcom4`, `wmc` |
 | `blast-radius` | `blastRadius` на цепочке и ромбе зависимостей |
 | `paradigm-evidence` | признаки `oop.*`, `fp.*`, `str.*`; запись `paradigm-not-detected` для модуля без классов |
+| `paradigm-activation` | точные `activeParadigms`: лямбды и глобальное состояние сами по себе ничего не активируют; `disabled-by-config`; `hofOrder`, `lambdaNesting`, `typeTests`, `measured` у OOP003 |
 | `health` | балл здоровья и разбивка при заданных результатах |
 | `partial-failure` | файл с синтаксической ошибкой: код возврата 4, `parsed: false`, `diagnostics` |
 

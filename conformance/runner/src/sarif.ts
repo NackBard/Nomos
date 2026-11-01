@@ -21,14 +21,15 @@ export interface SarifContext {
 }
 
 /** A measurement must have the shape of the profile and agree with the same metric in the facts. */
-function checkMeasured(where: string, properties: any, context: SarifContext): string[] {
+function checkMeasured(where: string, properties: any, uri: string, context: SarifContext): string[] {
   const m = properties.measured;
   if (typeof m?.metric !== "string" || typeof m?.value !== "number" || typeof m?.threshold !== "number") {
     return [`${where}: properties.measured must be { metric, value, threshold } with a string and two numbers`];
   }
-  const owner = properties.entity !== undefined
-    ? context.entities.get(properties.entity)
-    : context.facts.modules.find((x: any) => x.id === properties.module)?.metrics;
+  const module = context.facts.modules.find((x: any) => x.id === properties.module);
+  const file = context.facts.files?.find((x: any) => x.path === uri);
+  // Without an entity the measure belongs to the module, or to the file for sizes of a whole file (`lines`).
+  const owner = properties.entity !== undefined ? context.entities.get(properties.entity) : { ...module?.metrics, loc: module?.loc, lines: file?.lines };
   const known = owner?.[m.metric];
   if (typeof known === "number" && Math.abs(known - m.value) > 0.001) {
     return [`${where}: measured ${m.metric} is ${m.value}, the facts say ${known}`];
@@ -85,10 +86,10 @@ export function checkSarif(text: string, context: SarifContext): string[] {
     if (typeof properties.explanation !== "string" || properties.explanation.trim() === "") errors.push(`${where}: properties.explanation is empty (every result is a heuristic and must explain itself)`);
     if (!result.partialFingerprints?.["nomos/v1"]) errors.push(`${where}: partialFingerprints["nomos/v1"] is missing`);
     if (properties.entity !== undefined && !context.entities.has(properties.entity)) errors.push(`${where}: properties.entity ${JSON.stringify(properties.entity)} is not an entity of the facts`);
-    if (properties.measured !== undefined) errors.push(...checkMeasured(where, properties, context));
-
     const physical = result.locations?.[0]?.physicalLocation;
     const uri: string = physical?.artifactLocation?.uri ?? "";
+    if (properties.measured !== undefined) errors.push(...checkMeasured(where, properties, uri, context));
+
     const line: number = physical?.region?.startLine;
     if (!uri || uri.includes("\\") || uri.startsWith("/") || /^[A-Za-z]:/.test(uri)) errors.push(`${where}: uri ${JSON.stringify(uri)} must be relative with forward slashes`);
     if (!Number.isInteger(line) || line < 1) errors.push(`${where}: region.startLine is missing`);

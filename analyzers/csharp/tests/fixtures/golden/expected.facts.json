@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "1.0.0",
+  "schemaVersion": "1.1.0",
   "analyzer": {
     "name": "nomos-csharp",
     "version": "0.1.0",
@@ -63,6 +63,9 @@
             "Sample.Domain.Order"
           ]
         }
+      ],
+      "activeParadigms": [
+        "oop"
       ],
       "health": {
         "score": 82.6,
@@ -165,6 +168,10 @@
             "Sample.Legacy.Old"
           ]
         }
+      ],
+      "activeParadigms": [
+        "functional",
+        "oop"
       ],
       "health": {
         "score": 96.2,
@@ -287,6 +294,11 @@
             "Sample.Services.OrderService.Pairs"
           ]
         }
+      ],
+      "activeParadigms": [
+        "functional",
+        "oop",
+        "structural"
       ],
       "health": {
         "score": 84.6,
@@ -523,9 +535,12 @@
       "metrics": {
         "blastRadius": 0,
         "cyclomatic": 1,
+        "hofOrder": 1,
+        "lambdaNesting": 0,
         "lines": 1,
         "maxNesting": 0,
-        "parameterCount": 6
+        "parameterCount": 6,
+        "typeTests": 0
       }
     },
     {
@@ -545,9 +560,12 @@
       "metrics": {
         "blastRadius": 3,
         "cyclomatic": 1,
+        "hofOrder": 1,
+        "lambdaNesting": 0,
         "lines": 1,
         "maxNesting": 0,
-        "parameterCount": 1
+        "parameterCount": 1,
+        "typeTests": 0
       }
     },
     {
@@ -567,9 +585,12 @@
       "metrics": {
         "blastRadius": 2,
         "cyclomatic": 1,
+        "hofOrder": 1,
+        "lambdaNesting": 0,
         "lines": 1,
         "maxNesting": 0,
-        "parameterCount": 1
+        "parameterCount": 1,
+        "typeTests": 0
       }
     },
     {
@@ -589,9 +610,12 @@
       "metrics": {
         "blastRadius": 0,
         "cyclomatic": 3,
+        "hofOrder": 1,
+        "lambdaNesting": 0,
         "lines": 9,
         "maxNesting": 1,
-        "parameterCount": 1
+        "parameterCount": 1,
+        "typeTests": 0
       }
     },
     {
@@ -611,9 +635,12 @@
       "metrics": {
         "blastRadius": 0,
         "cyclomatic": 3,
+        "hofOrder": 1,
+        "lambdaNesting": 0,
         "lines": 9,
         "maxNesting": 2,
-        "parameterCount": 2
+        "parameterCount": 2,
+        "typeTests": 0
       }
     },
     {
@@ -633,9 +660,12 @@
       "metrics": {
         "blastRadius": 0,
         "cyclomatic": 3,
+        "hofOrder": 1,
+        "lambdaNesting": 0,
         "lines": 8,
         "maxNesting": 2,
-        "parameterCount": 2
+        "parameterCount": 2,
+        "typeTests": 0
       }
     },
     {
@@ -655,9 +685,12 @@
       "metrics": {
         "blastRadius": 0,
         "cyclomatic": 1,
+        "hofOrder": 1,
+        "lambdaNesting": 0,
         "lines": 5,
         "maxNesting": 0,
-        "parameterCount": 1
+        "parameterCount": 1,
+        "typeTests": 0
       }
     }
   ],
@@ -918,9 +951,19 @@
   "skippedRules": [
     {
       "ruleId": "FUN001",
+      "reason": "disabled-by-config",
+      "message": "Rule needs paradigm functional, which is off for this language; 'paradigms' in nomos.json selects them"
+    },
+    {
+      "ruleId": "FUN001",
       "module": "Sample.Domain",
       "reason": "paradigm-not-detected",
       "message": "Functional rule not applicable: module shows no functional style"
+    },
+    {
+      "ruleId": "FUN002",
+      "reason": "disabled-by-config",
+      "message": "Rule needs paradigm functional, which is off for this language; 'paradigms' in nomos.json selects them"
     },
     {
       "ruleId": "FUN002",
@@ -930,15 +973,30 @@
     },
     {
       "ruleId": "FUN003",
+      "reason": "disabled-by-config",
+      "message": "Rule needs paradigm functional, which is off for this language; 'paradigms' in nomos.json selects them"
+    },
+    {
+      "ruleId": "FUN003",
       "module": "Sample.Domain",
       "reason": "paradigm-not-detected",
       "message": "Functional rule not applicable: module shows no functional style"
     },
     {
       "ruleId": "FUN004",
+      "reason": "disabled-by-config",
+      "message": "Rule needs paradigm functional, which is off for this language; 'paradigms' in nomos.json selects them"
+    },
+    {
+      "ruleId": "FUN004",
       "module": "Sample.Domain",
       "reason": "paradigm-not-detected",
       "message": "Functional rule not applicable: module shows no functional style"
+    },
+    {
+      "ruleId": "FUN005",
+      "reason": "disabled-by-config",
+      "message": "Rule needs paradigm functional, which is off for this language; 'paradigms' in nomos.json selects them"
     },
     {
       "ruleId": "FUN005",

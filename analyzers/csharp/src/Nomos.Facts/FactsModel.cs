@@ -27,6 +27,7 @@ internal sealed record FactsModule(
     int Loc,
     SortedDictionary<string, double?> Metrics,
     IReadOnlyList<FactsEvidence> ParadigmEvidence,
+    IReadOnlyList<string> ActiveParadigms,
     FactsHealth? Health);
 
 internal sealed record FactsEvidence(string Paradigm, string Kind, int Count, string Description, IReadOnlyList<string> Examples);

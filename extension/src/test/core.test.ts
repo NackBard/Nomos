@@ -6,7 +6,7 @@ import { ContractError, checkContract } from "../core/contracts";
 import type { AnalysisRun, Facts, Finding } from "../core/model";
 import { AnalyzerError, analyze, readManifest, readWorkspace } from "../core/runner";
 import { readFindings } from "../core/sarif";
-import { buildGraph, describeFinding, formatMetrics, groupFindings, lensesFor } from "../core/views";
+import { buildGraph, describeFinding, formatMetrics, groupFindings, lensesFor, summarizeStyles } from "../core/views";
 
 const facts: Facts = {
   schemaVersion: "1.0.0",
@@ -35,6 +35,20 @@ const facts: Facts = {
 const finding = (over: Partial<Finding>): Finding => ({
   ruleId: "R1", ruleTitle: "Rule", category: "Cat", level: "warning", severity: "minor", confidence: "low", message: "m", explanation: "because",
   file: "a.toy", startLine: 1, startColumn: 1, endLine: 1, endColumn: 2, module: "A", ...over,
+});
+
+test("modules are counted by style, and evidence alone does not make a style", () => {
+  const module = (id: string, activeParadigms?: string[]) => ({ id, name: id, files: [], loc: 1, metrics: {}, paradigmEvidence: [{ paradigm: "functional", kind: "fp.lambdas", count: 9 }], activeParadigms });
+  const summary = summarizeStyles({ ...facts, modules: [module("A", ["oop"]), module("B", ["functional", "oop"]), module("C", ["oop"]), module("D", []), module("E")] });
+
+  assert.equal(summary.total, 5);
+  assert.deepEqual(summary.paradigms, [{ paradigm: "functional", modules: 1 }, { paradigm: "oop", modules: 3 }]);
+  assert.deepEqual(summary.styles, [
+    { paradigms: [], modules: ["D"] },
+    { paradigms: ["functional", "oop"], modules: ["B"] },
+    { paradigms: ["oop"], modules: ["A", "C"] },
+  ]);
+  assert.deepEqual(summary.unreported, ["E"]);
 });
 
 test("an unknown major version is rejected with a readable message", () => {
