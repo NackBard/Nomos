@@ -2,7 +2,7 @@ import { randomBytes } from "node:crypto";
 import path from "node:path";
 import * as vscode from "vscode";
 import type { AnalysisRun } from "../core/model";
-import { buildGraph } from "../core/views";
+import { buildGraph, neighbourGroup } from "../core/views";
 import type { GraphLevel } from "../core/views";
 
 let panel: vscode.WebviewPanel | undefined;
@@ -62,6 +62,13 @@ export function refreshGraph(): void {
   send();
 }
 
+/** Shows code in the group next to the graph, reusing its preview tab; with no such group the graph's group is split. */
+export async function openNextToGraph(file: vscode.Uri, line: number, graph: vscode.ViewColumn | undefined): Promise<vscode.TextEditor> {
+  const groups = vscode.window.tabGroups.all.map((g) => g.viewColumn);
+  const viewColumn = neighbourGroup(groups, graph) ?? vscode.ViewColumn.Beside;
+  return vscode.window.showTextDocument(file, { selection: new vscode.Range(line, 0, line, 0), viewColumn, preview: true });
+}
+
 /** Opens the graph in a tab of its own, next to the code; the page asks for a level and receives only data from facts. */
 export function showGraph(context: vscode.ExtensionContext, runs: () => AnalysisRun[], preserveFocus = false): void {
   runsOf = runs;
@@ -85,7 +92,7 @@ export function showGraph(context: vscode.ExtensionContext, runs: () => Analysis
       const run = runs().find((r) => r.language === message.language);
       if (!run) return;
       const line = Math.max((message.line ?? 1) - 1, 0);
-      await vscode.window.showTextDocument(vscode.Uri.file(path.join(run.root, message.file)), { selection: new vscode.Range(line, 0, line, 0), viewColumn: panel?.viewColumn === vscode.ViewColumn.One ? vscode.ViewColumn.Beside : vscode.ViewColumn.One });
+      await openNextToGraph(vscode.Uri.file(path.join(run.root, message.file)), line, panel?.viewColumn);
     }
   });
 }

@@ -3,7 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { ContractError, checkContract, parseJson } from "./contracts";
 import type { AnalysisRun, AnalyzerConfig, Facts, Workspace } from "./model";
-import { readFindings } from "./sarif";
+import { readFindings, readRuleTitles } from "./sarif";
 
 export const WorkspaceFileName = "nomos.json";
 const DefaultTimeoutSeconds = 300;
@@ -86,6 +86,7 @@ export async function analyze(config: AnalyzerConfig, folder: string, workspace:
   if (exit.code !== SuccessCode && exit.code !== PartialCode) throw failure(config, "analyze", exit);
   const facts = checkContract<Facts>("facts", parseJson(exit.stdout, `${config.language} facts`), `${config.language} facts`);
   if (facts.analyzer.language !== config.language) throw new ContractError(`facts language "${facts.analyzer.language}" differs from nomos.json "${config.language}"`);
-  const findings = wantsSarif ? readFindings(parseJson(fs.readFileSync(sarifFile, "utf8"), `${config.language} SARIF`), `${config.language} SARIF`) : [];
-  return { language: config.language, root, facts, findings, partial: exit.code === PartialCode };
+  const sarif = wantsSarif ? parseJson(fs.readFileSync(sarifFile, "utf8"), `${config.language} SARIF`) : undefined;
+  const findings = wantsSarif ? readFindings(sarif, `${config.language} SARIF`) : [];
+  return { language: config.language, root, facts, findings, partial: exit.code === PartialCode, ruleTitles: readRuleTitles(sarif) };
 }

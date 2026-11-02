@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import * as vscode from "vscode";
 import type { NomosApi } from "../extension";
+import { openNextToGraph } from "../ui/graphPanel";
 
 /** Runs inside a real VS Code on the folder given by scripts/run-e2e.mjs. */
 export async function run(): Promise<void> {
@@ -30,8 +31,24 @@ export async function run(): Promise<void> {
   assert.ok(lenses.some((l) => l.command?.title.includes("cyclomatic")), "no metric lens");
 
   await vscode.commands.executeCommand("nomos.showGraph");
+  // The tab list catches up with a new panel a moment after the command returns.
+  const graphGroup = async (): Promise<vscode.ViewColumn> => {
+    for (let attempt = 0; attempt < 100; attempt++) {
+      const group = vscode.window.tabGroups.all.find((g) => g.tabs.some((t) => t.label === "Nomos: Dependency Graph"));
+      if (group) return group.viewColumn;
+      await new Promise((resolve) => setTimeout(resolve, 50));
+    }
+    throw new Error("the graph tab did not appear");
+  };
+  await openNextToGraph(uri, 0, await graphGroup());
+  const groups = vscode.window.tabGroups.all.length;
+  const shown = await openNextToGraph(uri, 5, await graphGroup());
+  assert.equal(Math.abs(shown.viewColumn! - await graphGroup()), 1, "code must open in the group next to the graph");
+  assert.equal(vscode.window.tabGroups.all.length, groups, "a split screen must not get another group");
   await vscode.commands.executeCommand("workbench.view.extension.nomos");
   await vscode.commands.executeCommand("nomos.openGraphWindow");
+  const fromWindow = await openNextToGraph(uri, 5, await graphGroup());
+  assert.equal(Math.abs(fromWindow.viewColumn! - await graphGroup()), 1, "code must open next to the graph in a separate window too");
   const graphTabs = vscode.window.tabGroups.all.flatMap((g) => g.tabs).filter((t) => t.label === "Nomos: Dependency Graph");
   assert.equal(graphTabs.length, 1, "the graph must stay a single tab");
 

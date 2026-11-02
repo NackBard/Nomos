@@ -1,7 +1,7 @@
 import path from "node:path";
 import * as vscode from "vscode";
-import type { AnalysisRun, Finding } from "../core/model";
-import { describeFinding, formatMetrics, groupFindings, summarizeStyles } from "../core/views";
+import type { AnalysisRun, Finding, Module, SkippedRule } from "../core/model";
+import { describeFinding, formatMetrics, groupFindings, groupSkipped, summarizeStyles } from "../core/views";
 
 type Node = vscode.TreeItem & { children?: Node[] };
 
@@ -69,31 +69,52 @@ export class FindingsTree extends Tree {
   }
 }
 
-function styleNode(run: AnalysisRun): Node {
-  const summary = summarizeStyles(run.facts);
-  const children = summary.paradigms.map((p) => leaf(p.paradigm, `${p.modules} of ${summary.total}`));
-  for (const style of summary.styles) {
-    children.push(branch(style.paradigms.join(" + ") || "no active paradigm", String(style.modules.length), style.modules.map((m) => leaf(m)), "symbol-class"));
-  }
-  if (summary.unreported.length) children.push(branch("Not reported by the analyzer", String(summary.unreported.length), summary.unreported.map((m) => leaf(m)), "question"));
-  return branch(`Modules by style (${run.language})`, `${summary.total} modules`, children, "graph");
+function count(n: number, noun: string): string {
+  return `${n} ${noun}${n === 1 ? "" : "s"}`;
 }
 
-/** Modules by style, then paradigm evidence per module and the rules that were not applied, with reasons. */
+/** One row per reason, in the analyzer's words; the rules it covers are one level down. */
+function skipNodes(skipped: SkippedRule[], titles: Map<string, string>): Node[] {
+  return groupSkipped(skipped).map((group) => {
+    const node = branch(group.message, count(group.rules.length, "rule"), group.rules.map((id) => leaf(id, titles.get(id))), "circle-slash");
+    node.tooltip = group.message;
+    return node;
+  });
+}
+
+/** What the module shows and which rules it did not get. No skips are said aloud, so an absent reason is not a mystery. */
+function moduleNode(module: Module, skipped: SkippedRule[], everywhere: number, titles: Map<string, string>): Node {
+  const own = skipped.filter((s) => s.module === module.id);
+  const reasons = skipNodes(own, titles);
+  if (!reasons.length) {
+    const none = leaf("No rules skipped in this module", undefined, everywhere ? `Rules skipped for the whole project are listed separately (${everywhere}).` : undefined);
+    none.iconPath = new vscode.ThemeIcon("check");
+    reasons.push(none);
+  }
+  const evidence = module.paradigmEvidence.map((e) => leaf(e.description ?? e.kind, `${e.count} · ${e.paradigm}`, [e.kind, ...(e.examples ?? [])].join("\n")));
+  const description = own.length ? `${count(new Set(own.map((s) => s.ruleId)).size, "rule")} skipped` : undefined;
+  return branch(module.name, description, [...reasons, ...evidence], "symbol-namespace");
+}
+
+/** Language, then style, then module: a module is listed once, under the style its code shows. */
+function languageNode(run: AnalysisRun, titles: Map<string, string>): Node {
+  const { modules, skippedRules } = run.facts;
+  const summary = summarizeStyles(run.facts);
+  const general = skippedRules.filter((s) => !s.module);
+  const generalRules = new Set(general.map((s) => s.ruleId)).size;
+  const nodes = (ids: string[]) => ids.map((id) => moduleNode(modules.find((m) => m.id === id)!, skippedRules, generalRules, titles));
+  const children = summary.styles.map((style) => branch(style.paradigms.join(" + ") || "no active paradigm", count(style.modules.length, "module"), nodes(style.modules), "symbol-class"));
+  if (summary.unreported.length) children.push(branch("Not reported by the analyzer", count(summary.unreported.length, "module"), nodes(summary.unreported), "question"));
+  if (general.length) children.push(branch("Skipped for the whole project", count(generalRules, "rule"), skipNodes(general, titles), "circle-slash"));
+  const node = branch(run.language, count(summary.total, "module"), children, "graph");
+  node.collapsibleState = vscode.TreeItemCollapsibleState.Expanded;
+  return node;
+}
+
+/** Styles of the code and the rules that were not applied, with reasons. It reads facts and judges nothing. */
 export class ParadigmsTree extends Tree {
   update(runs: AnalysisRun[]): void {
-    this.refresh(runs.flatMap((run) => {
-      const modules = run.facts.modules.map((m) => {
-        const evidence = m.paradigmEvidence.map((e) => leaf(e.kind, String(e.count), [e.description, ...(e.examples ?? [])].filter(Boolean).join("\n")));
-        const skipped = run.facts.skippedRules.filter((s) => s.module === m.id).map((s) => leaf(s.ruleId, s.reason, s.message));
-        const children = [...evidence];
-        if (skipped.length) children.push(branch("Skipped rules", String(skipped.length), skipped, "circle-slash"));
-        const shown = m.activeParadigms ? m.activeParadigms.join(", ") || "no active paradigm" : "not reported";
-        return branch(m.name, shown, children, "symbol-namespace");
-      });
-      const general = run.facts.skippedRules.filter((s) => !s.module).map((s) => leaf(s.ruleId, s.reason, s.message));
-      if (general.length) modules.push(branch("Skipped for the whole project", String(general.length), general, "circle-slash"));
-      return [styleNode(run), ...modules];
-    }));
+    const titles = new Map(runs.flatMap((run) => Object.entries(run.ruleTitles ?? {})));
+    this.refresh(runs.map((run) => languageNode(run, titles)));
   }
 }

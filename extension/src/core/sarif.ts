@@ -3,6 +3,15 @@ import type { Finding } from "./model";
 
 const NoModule = "(no module)";
 
+/** Rule titles of the SARIF catalog: it lists the rules the analyzer knows, whether or not they fired. */
+export function readRuleTitles(log: any): Record<string, string> {
+  const titles: Record<string, string> = {};
+  for (const run of log?.runs ?? []) {
+    for (const rule of run.tool?.driver?.rules ?? []) if (rule.name) titles[rule.id] = rule.name;
+  }
+  return titles;
+}
+
 /** Flattens a SARIF log written by contracts/sarif-profile.md. A result without an explanation breaks the profile. */
 export function readFindings(log: any, source: string): Finding[] {
   if (log?.version !== "2.1.0" || !Array.isArray(log.runs)) throw new ContractError(`${source}: not a SARIF 2.1.0 log`);

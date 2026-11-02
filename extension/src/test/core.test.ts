@@ -5,8 +5,8 @@ import test from "node:test";
 import { ContractError, checkContract } from "../core/contracts";
 import type { AnalysisRun, Facts, Finding } from "../core/model";
 import { AnalyzerError, analyze, readManifest, readWorkspace } from "../core/runner";
-import { readFindings } from "../core/sarif";
-import { buildGraph, describeFinding, formatMetrics, groupFindings, lensesFor, summarizeStyles } from "../core/views";
+import { readFindings, readRuleTitles } from "../core/sarif";
+import { buildGraph, describeFinding, formatMetrics, groupFindings, groupSkipped, lensesFor, neighbourGroup, summarizeStyles } from "../core/views";
 
 const facts: Facts = {
   schemaVersion: "1.0.0",
@@ -35,6 +35,33 @@ const facts: Facts = {
 const finding = (over: Partial<Finding>): Finding => ({
   ruleId: "R1", ruleTitle: "Rule", category: "Cat", level: "warning", severity: "minor", confidence: "low", message: "m", explanation: "because",
   file: "a.toy", startLine: 1, startColumn: 1, endLine: 1, endColumn: 2, module: "A", ...over,
+});
+
+test("skipped rules are joined by reason, once each", () => {
+  const groups = groupSkipped([
+    { ruleId: "B2", module: "A", reason: "paradigm-not-detected", message: "no classes" },
+    { ruleId: "A1", module: "B", reason: "paradigm-not-detected", message: "no classes" },
+    { ruleId: "A1", module: "A", reason: "paradigm-not-detected", message: "no classes" },
+    { ruleId: "C3", reason: "missing-input", message: "no report" },
+  ]);
+  assert.deepEqual(groups, [
+    { reason: "missing-input", message: "no report", rules: ["C3"] },
+    { reason: "paradigm-not-detected", message: "no classes", rules: ["A1", "B2"] },
+  ]);
+});
+
+test("rule titles come from the SARIF catalog, fired or not", () => {
+  assert.deepEqual(readRuleTitles({ runs: [{ tool: { driver: { rules: [{ id: "A1", name: "First" }, { id: "B2" }] } } }] }), { A1: "First" });
+  assert.deepEqual(readRuleTitles(undefined), {});
+});
+
+test("code opens in the group next to the graph", () => {
+  assert.equal(neighbourGroup([1, 2], 2), 1);
+  assert.equal(neighbourGroup([1, 2], 1), 2);
+  assert.equal(neighbourGroup([1, 2, 3], 3), 2);
+  assert.equal(neighbourGroup([1, 2, 3], 2), 1);
+  assert.equal(neighbourGroup([1], 1), undefined);
+  assert.equal(neighbourGroup([1, 2], undefined), undefined);
 });
 
 test("modules are counted by style, and evidence alone does not make a style", () => {

@@ -59,4 +59,4 @@ export interface AnalyzerConfig {
 export interface Workspace { schemaVersion: string; analyzers: AnalyzerConfig[]; root?: string }
 
 /** The result of one analyzer run: partial means exit code 4, some files were not parsed. */
-export interface AnalysisRun { language: string; root: string; facts: Facts; findings: Finding[]; partial: boolean }
+export interface AnalysisRun { language: string; root: string; facts: Facts; findings: Finding[]; partial: boolean; ruleTitles?: Record<string, string> }

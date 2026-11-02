@@ -1,4 +1,4 @@
-import type { AnalysisRun, Cycle, Entity, Facts, Finding } from "./model";
+import type { AnalysisRun, Cycle, Entity, Facts, Finding, SkippedRule } from "./model";
 
 export interface Group<T> { key: string; items: T[] }
 
@@ -56,6 +56,28 @@ export function summarizeStyles(facts: Facts): StyleSummary {
     styles: groupBy(reported, (m) => m.activeParadigms!.join(" + ")).map((s) => ({ paradigms: s.items[0].activeParadigms!, modules: s.items.map((m) => m.id) })),
     unreported: facts.modules.filter((m) => !m.activeParadigms).map((m) => m.id),
   };
+}
+
+export interface SkipReason { reason: string; message: string; rules: string[] }
+
+/** Joins skipped rules that share a reason: analyzers repeat one message for each rule. */
+export function groupSkipped(skipped: SkippedRule[]): SkipReason[] {
+  return groupBy(skipped, (s) => `${s.reason}\u0000${s.message}`).map((g) => ({
+    reason: g.items[0].reason,
+    message: g.items[0].message,
+    rules: [...new Set(g.items.map((s) => s.ruleId))].sort(compare),
+  }));
+}
+
+/**
+ * The group to open code in, next to the graph: the one before it, or after it when the graph comes first.
+ * Undefined means the graph has the only group. Groups of a separate window are in the same list.
+ */
+export function neighbourGroup(groups: number[], graph: number | undefined): number | undefined {
+  const sorted = [...groups].sort((a, b) => a - b);
+  const index = graph === undefined ? -1 : sorted.indexOf(graph);
+  if (index < 0) return undefined;
+  return index > 0 ? sorted[index - 1] : sorted[1];
 }
 
 export interface Lens { line: number; text: string }
