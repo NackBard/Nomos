@@ -3,7 +3,7 @@
 export interface Place { file: string; startLine: number; startColumn?: number; endLine?: number; endColumn?: number }
 export type Metrics = Record<string, number | null>;
 
-export interface Entity { id: string; name: string; module: string; location?: Place; metrics: Metrics }
+export interface Entity { id: string; name: string; module: string; kind?: string; isAbstract?: boolean; type?: string; location?: Place; metrics: Metrics }
 export interface Evidence { paradigm: string; kind: string; count: number; description?: string; examples?: string[] }
 export interface Module { id: string; name: string; files: string[]; loc: number; metrics: Metrics; paradigmEvidence: Evidence[]; activeParadigms?: string[] }
 export interface Dependency { from: string; to: string; kind: string; phase: string; external?: boolean; stdlib?: boolean; count?: number }

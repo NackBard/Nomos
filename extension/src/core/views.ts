@@ -1,4 +1,4 @@
-import type { AnalysisRun, Cycle, Entity, Facts, Finding, SkippedRule } from "./model";
+import type { AnalysisRun, Cycle, Entity, Facts, Finding, Module, SkippedRule } from "./model";
 
 export interface Group<T> { key: string; items: T[] }
 
@@ -95,10 +95,27 @@ export function lensesFor(facts: Facts, file: string): Lens[] {
   return [...lensesOf(facts.types, TypeMetrics, file), ...lensesOf(facts.functions, FunctionMetrics, file)].sort((a, b) => a.line - b.line);
 }
 
-export interface GraphNode { id: string; label: string; language: string; cycle: boolean; size: number; layer: number; file?: string; line?: number }
-export interface GraphEdge { from: string; to: string; weight: number; cycle: boolean }
-export interface Graph { nodes: GraphNode[]; edges: GraphEdge[] }
+export type NodeShape = "circle" | "triangle" | "diamond" | "square" | "rounded" | "hexagon" | "pentagon" | "dot";
+export interface GraphNode { id: string; label: string; language: string; cycle: boolean; size: number; layer: number; role: "module" | "type"; shape: NodeShape; kind?: string; file?: string; line?: number }
+/** One edge per kind of dependency between two nodes. A pair names the two modules this edge opens, when it joins modules. */
+export interface GraphEdge { from: string; to: string; kind: string; weight: number; cycle: boolean; pair?: [string, string] }
+/** Groups are set for the two modules of a pair: the layer of a node then says which module it is from. */
+export interface Graph { nodes: GraphNode[]; edges: GraphEdge[]; groups?: string[] }
 export type GraphLevel = "module" | "type";
+
+// Keys are the open set of kinds in the facts contract; anything else gets the pentagon.
+const KindShapes: Record<string, NodeShape> = { class: "circle", struct: "square", record: "rounded", enum: "hexagon", interface: "diamond", protocol: "diamond", trait: "diamond" };
+
+/** The drawn form of a type. An abstract class differs from a class, an interface is abstract by nature. */
+export function shapeOf(kind: string | undefined, isAbstract: boolean | undefined): NodeShape {
+  const shape = (kind && KindShapes[kind]) || "pentagon";
+  return isAbstract && shape !== "diamond" ? "triangle" : shape;
+}
+
+function typeKindLabel(type: Entity): string {
+  const kind = type.kind ?? "type";
+  return type.isAbstract && shapeOf(type.kind, true) === "triangle" ? `abstract ${kind}` : kind;
+}
 
 function cycleMembers(cycles: Cycle[] | undefined, level: GraphLevel): Set<string>[] {
   return (cycles ?? []).filter((c) => c.level === level).map((c) => new Set(c.members));
@@ -147,37 +164,119 @@ function dependencyLayers(ids: string[], edges: GraphEdge[]): Map<string, number
   return layers;
 }
 
-/** Builds the graph of one level from facts; dependencies on external targets stay out, as in spec/metrics.md. */
-export function buildGraph(runs: AnalysisRun[], level: GraphLevel): Graph {
+class EdgeSet {
+  private readonly edges = new Map<string, GraphEdge>();
+
+  add(from: string, to: string, kind: string, count: number | undefined, cycle: boolean, pair?: [string, string]): void {
+    const key = `${from}\u0000${to}\u0000${kind}`;
+    const edge = this.edges.get(key);
+    if (edge) edge.weight += count ?? 1;
+    else this.edges.set(key, { from, to, kind, weight: count ?? 1, cycle, pair });
+  }
+
+  list(): GraphEdge[] {
+    return [...this.edges.values()];
+  }
+}
+
+function withLayers(nodes: GraphNode[], edges: GraphEdge[]): Graph {
+  const layers = dependencyLayers(nodes.map((n) => n.id), edges);
+  for (const node of nodes) node.layer = layers.get(node.id)!;
+  return { nodes, edges };
+}
+
+function moduleNode(m: Module, language: string, cycle: boolean): GraphNode {
+  return { id: m.id, label: m.name, language, cycle, size: m.loc, layer: 0, role: "module", shape: "circle" };
+}
+
+/** The graph of modules from facts; dependencies on external targets stay out, as in spec/metrics.md. */
+export function buildGraph(runs: AnalysisRun[]): Graph {
   const nodes: GraphNode[] = [];
-  const weights = new Map<string, GraphEdge>();
+  const edges = new EdgeSet();
   for (const { language, facts } of runs) {
-    const cycles = cycleMembers(facts.cycles, level);
-    const inCycle = (id: string) => cycles.some((c) => c.has(id));
-    const moduleOf = new Map(facts.types.map((t) => [t.id, t.module]));
-    const functionOwner = new Map(facts.functions.map((f) => [f.id, f.module]));
-    const known = new Set(level === "module" ? facts.modules.map((m) => m.id) : facts.types.map((t) => t.id));
-
-    if (level === "module") {
-      for (const m of facts.modules) nodes.push({ id: m.id, label: m.name, language, cycle: inCycle(m.id), size: m.loc, layer: 0, file: m.files[0] });
-    } else {
-      for (const t of facts.types) nodes.push({ id: t.id, label: t.name, language, cycle: inCycle(t.id), size: t.metrics.lines ?? 1, layer: 0, file: t.location?.file, line: t.location?.startLine });
-    }
-
-    const unit = (id: string) => (level === "module" ? moduleOf.get(id) ?? functionOwner.get(id) : id);
+    const cycles = cycleMembers(facts.cycles, "module");
+    const known = new Set(facts.modules.map((m) => m.id));
+    for (const m of facts.modules) nodes.push(moduleNode(m, language, cycles.some((c) => c.has(m.id))));
+    const owners = new Map([...facts.types, ...facts.functions].map((e) => [e.id, e.module]));
+    const unit = (id: string) => (known.has(id) ? id : owners.get(id));
     for (const dependency of facts.dependencies) {
       if (dependency.external) continue;
       const from = unit(dependency.from);
       const to = unit(dependency.to);
-      if (!from || !to || from === to || !known.has(from) || !known.has(to)) continue;
-      const key = `${from}\u0000${to}`;
-      const edge = weights.get(key);
-      if (edge) edge.weight += dependency.count ?? 1;
-      else weights.set(key, { from, to, weight: dependency.count ?? 1, cycle: cycles.some((c) => c.has(from) && c.has(to)) });
+      if (!from || !to || from === to) continue;
+      edges.add(from, to, dependency.kind, dependency.count, cycles.some((c) => c.has(from) && c.has(to)), [from, to]);
     }
   }
-  const edges = [...weights.values()];
-  const layers = dependencyLayers(nodes.map((n) => n.id), edges);
-  for (const node of nodes) node.layer = layers.get(node.id)!;
-  return { nodes, edges };
+  return withLayers(nodes, edges.list());
+}
+
+/**
+ * The types of one module with a line to each other module they touch or, with a peer, only the links between the types of the two.
+ * Members fold into their type; a free function has no type to fold into and is drawn on its own when it has links.
+ * Undefined means the module is gone from the facts.
+ */
+export function buildFocus(runs: AnalysisRun[], module: string, peer?: string): Graph | undefined {
+  const run = runs.find((r) => r.facts.modules.some((m) => m.id === module));
+  if (!run || (peer && !run.facts.modules.some((m) => m.id === peer))) return undefined;
+  const { language, facts } = run;
+  const typeCycles = cycleMembers(facts.cycles, "type");
+  const moduleCycles = cycleMembers(facts.cycles, "module");
+  const inTypeCycle = (id: string) => typeCycles.some((c) => c.has(id));
+  const linked = (a: string, b: string) => typeCycles.some((c) => c.has(a) && c.has(b));
+  const modulesLinked = (a: string, b: string) => moduleCycles.some((c) => c.has(a) && c.has(b));
+  const unitNode = new Map<string, () => GraphNode>();
+  const unitModule = new Map<string, string>();
+  const unitOf = new Map<string, string>();
+
+  for (const t of facts.types) {
+    unitOf.set(t.id, t.id);
+    unitModule.set(t.id, t.module);
+    unitNode.set(t.id, () => ({ id: t.id, label: t.name, language, cycle: inTypeCycle(t.id), size: t.metrics.lines ?? 1, layer: 0, role: "type", shape: shapeOf(t.kind, t.isAbstract), kind: typeKindLabel(t), file: t.location?.file, line: t.location?.startLine }));
+  }
+  for (const f of facts.functions) {
+    if (f.type) {
+      unitOf.set(f.id, f.type);
+      continue;
+    }
+    unitOf.set(f.id, f.id);
+    unitModule.set(f.id, f.module);
+    unitNode.set(f.id, () => ({ id: f.id, label: f.name, language, cycle: false, size: 1, layer: 0, role: "type", shape: "dot", kind: "function", file: f.location?.file, line: f.location?.startLine }));
+  }
+
+  const edges = new EdgeSet();
+  const shown = new Set<string>(peer ? [] : facts.types.filter((t) => t.module === module).map((t) => t.id));
+  const peers = new Set<string>();
+  for (const dependency of facts.dependencies) {
+    if (dependency.external) continue;
+    const from = unitOf.get(dependency.from);
+    const to = unitOf.get(dependency.to);
+    if (!from || !to || from === to) continue;
+    const a = unitModule.get(from);
+    const b = unitModule.get(to);
+    if (!a || !b) continue;
+    if (peer) {
+      if ((a !== module || b !== peer) && (a !== peer || b !== module)) continue;
+      edges.add(from, to, dependency.kind, dependency.count, linked(from, to));
+      shown.add(from).add(to);
+    } else if (a === module && b === module) {
+      edges.add(from, to, dependency.kind, dependency.count, linked(from, to));
+      shown.add(from).add(to);
+    } else if (a === module) {
+      edges.add(from, b, dependency.kind, dependency.count, modulesLinked(a, b), [module, b]);
+      shown.add(from);
+      peers.add(b);
+    } else if (b === module) {
+      edges.add(a, to, dependency.kind, dependency.count, modulesLinked(a, b), [module, a]);
+      shown.add(to);
+      peers.add(a);
+    }
+  }
+
+  const nodes = [...shown].sort(compare).map((id) => unitNode.get(id)!());
+  if (peer) {
+    for (const node of nodes) node.layer = unitModule.get(node.id) === module ? 0 : 1;
+    return { nodes, edges: edges.list(), groups: [module, peer] };
+  }
+  for (const m of facts.modules) if (peers.has(m.id)) nodes.push(moduleNode(m, language, modulesLinked(module, m.id)));
+  return withLayers(nodes, edges.list());
 }

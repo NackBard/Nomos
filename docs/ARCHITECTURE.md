@@ -145,7 +145,7 @@ node ci/src/cli.ts --workspace nomos.json --out .nomos --baseline baseline.json 
 | Дерево проблем | SARIF, сгруппированный по модулю и категории; рядом метрики из facts |
 | Diagnostics | SARIF (`level`, `message`, `region`) |
 | CodeLens | метрики функций и типов из facts |
-| Граф | `modules`/`types`, `dependencies`, `cycles` из facts; webview |
+| Граф | `modules`/`types`, `dependencies`, `cycles` из facts; webview: модули, типы выбранного модуля, связи типов двух модулей (D-045) |
 | Признаки парадигм | `paradigmEvidence`, `activeParadigms`, `skippedRules` |
 
 Запрещено: ветвления по языку, разбор исходников, знание о Roslyn или иных парсерах. Если расширению чего-то не хватает, это расширение контракта (см. правила изменения).

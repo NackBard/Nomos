@@ -6,7 +6,7 @@ import { ContractError, checkContract } from "../core/contracts";
 import type { AnalysisRun, Facts, Finding } from "../core/model";
 import { AnalyzerError, analyze, readManifest, readWorkspace } from "../core/runner";
 import { readFindings, readRuleTitles } from "../core/sarif";
-import { buildGraph, describeFinding, formatMetrics, groupFindings, groupSkipped, lensesFor, neighbourGroup, summarizeStyles } from "../core/views";
+import { buildFocus, buildGraph, describeFinding, formatMetrics, groupFindings, groupSkipped, lensesFor, neighbourGroup, shapeOf, summarizeStyles } from "../core/views";
 
 const facts: Facts = {
   schemaVersion: "1.0.0",
@@ -119,17 +119,77 @@ test("lenses are per file and ordered by line", () => {
 
 test("the module graph folds types and functions, drops external and self edges", () => {
   const run: AnalysisRun = { language: "toy", root: ".", facts, findings: [], partial: false };
-  const graph = buildGraph([run], "module");
+  const graph = buildGraph([run]);
   assert.deepEqual(graph.edges.map((e) => [e.from, e.to, e.weight]), [["A", "B", 3], ["B", "A", 1]]);
   assert.equal(graph.nodes.some((n) => n.cycle), false);
 });
 
+const focusFacts = {
+  ...facts,
+  modules: ["A", "B", "C"].map((id) => ({ id, name: id, files: [], loc: 1, metrics: {}, paradigmEvidence: [] })),
+  types: [
+    { id: "A.X", name: "X", module: "A", kind: "class", metrics: {} },
+    { id: "A.Z", name: "Z", module: "A", kind: "interface", isAbstract: true, metrics: {} },
+    { id: "B.Y", name: "Y", module: "B", kind: "struct", metrics: {} },
+    { id: "C.W", name: "W", module: "C", kind: "enum", metrics: {} },
+  ],
+  functions: [
+    { id: "A.X.run", name: "run", module: "A", type: "A.X", metrics: {} },
+    { id: "B.free", name: "free", module: "B", metrics: {} },
+  ],
+  dependencies: [
+    { from: "A.X", to: "A.Z", kind: "inheritance", phase: "runtime" },
+    { from: "A.X.run", to: "B.Y", kind: "call", phase: "runtime", count: 2 },
+    { from: "A.X", to: "B.Y", kind: "call", phase: "runtime" },
+    { from: "A.X", to: "B.Y", kind: "type-ref", phase: "runtime" },
+    { from: "B.free", to: "A.Z", kind: "call", phase: "runtime" },
+    { from: "A.Z", to: "C.W", kind: "type-ref", phase: "runtime" },
+    { from: "B.Y", to: "C.W", kind: "type-ref", phase: "runtime" },
+    { from: "A.X", to: "System.String", kind: "type-ref", phase: "runtime", external: true },
+  ],
+  cycles: [],
+} as unknown as Facts;
+const focusRun: AnalysisRun = { language: "toy", root: ".", facts: focusFacts, findings: [], partial: false };
+
+test("a module shows its types and one line per kind to each other module", () => {
+  const graph = buildFocus([focusRun], "A")!;
+  assert.deepEqual(graph.nodes.map((n) => [n.id, n.role]), [["A.X", "type"], ["A.Z", "type"], ["B", "module"], ["C", "module"]]);
+  assert.deepEqual(graph.edges.map((e) => [e.from, e.to, e.kind, e.weight, e.pair]), [
+    ["A.X", "A.Z", "inheritance", 1, undefined],
+    ["A.X", "B", "call", 3, ["A", "B"]],
+    ["A.X", "B", "type-ref", 1, ["A", "B"]],
+    ["B", "A.Z", "call", 1, ["A", "B"]],
+    ["A.Z", "C", "type-ref", 1, ["A", "C"]],
+  ]);
+});
+
+test("a pair of modules shows only the links between their types, in two groups", () => {
+  const graph = buildFocus([focusRun], "A", "B")!;
+  assert.deepEqual(graph.groups, ["A", "B"]);
+  assert.deepEqual(graph.nodes.map((n) => [n.id, n.layer, n.shape]), [["A.X", 0, "circle"], ["A.Z", 0, "diamond"], ["B.Y", 1, "square"], ["B.free", 1, "dot"]]);
+  assert.deepEqual(graph.edges.map((e) => [e.from, e.to, e.kind]), [["A.X", "B.Y", "call"], ["A.X", "B.Y", "type-ref"], ["B.free", "A.Z", "call"]]);
+  assert.ok(graph.edges.every((e) => !e.pair));
+});
+
+test("a module missing from facts has no focus", () => {
+  assert.equal(buildFocus([focusRun], "Gone"), undefined);
+  assert.equal(buildFocus([focusRun], "A", "Gone"), undefined);
+});
+
 test("the type graph marks cycles", () => {
   const run: AnalysisRun = { language: "toy", root: ".", facts, findings: [], partial: false };
-  const graph = buildGraph([run], "type");
-  assert.ok(graph.nodes.every((n) => n.cycle));
-  assert.ok(graph.edges.every((e) => e.cycle));
-  assert.equal(graph.edges.length, 2);
+  const graph = buildFocus([run], "A", "B")!;
+  assert.ok(graph.nodes.filter((n) => n.shape !== "dot").every((n) => n.cycle));
+  assert.ok(graph.edges.filter((e) => e.from === "A.X").every((e) => e.cycle));
+});
+
+test("the shape follows the kind of a type, and abstract classes stand apart", () => {
+  assert.equal(shapeOf("class", false), "circle");
+  assert.equal(shapeOf("class", true), "triangle");
+  assert.equal(shapeOf("interface", true), "diamond");
+  assert.equal(shapeOf("enum", false), "hexagon");
+  assert.equal(shapeOf("defined", false), "pentagon");
+  assert.equal(shapeOf(undefined, undefined), "pentagon");
 });
 
 test("graph layers grow with dependency depth, and a cycle shares one layer", () => {
@@ -146,7 +206,7 @@ test("graph layers grow with dependency depth, and a cycle shares one layer", ()
     ],
     cycles: [],
   } as Facts;
-  const graph = buildGraph([{ language: "toy", root: ".", facts: chain, findings: [], partial: false }], "module");
+  const graph = buildGraph([{ language: "toy", root: ".", facts: chain, findings: [], partial: false }]);
   assert.deepEqual(Object.fromEntries(graph.nodes.map((n) => [n.id, n.layer])), { Top: 3, Mid: 2, Loop1: 1, Loop2: 1, Base: 0 });
 });
 

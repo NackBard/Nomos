@@ -1,4 +1,4 @@
-// Draws the dependency graph with a small force layout. Everything shown comes from facts.
+// Draws the dependency graph in columns by dependency depth. Everything shown comes from facts.
 (function () {
   const vscode = acquireVsCodeApi();
   const svg = document.getElementById("graph");
@@ -11,8 +11,14 @@
   let view = { x: 0, y: 0, k: 1 };
   let root;
   let marks = [];
+  let focused = false;
   // Above this many nodes labels appear only near the pointer until the view is zoomed in.
   const CROWDED = 60;
+  // Distance between columns and rows of the layout; a node never grows past half a row, so nodes cannot touch.
+  const COLUMN = 210;
+  const ROW = 34;
+  const LARGEST = ROW / 2 - 2;
+  const LABELS = 300;
 
   function element(name, attributes, parent) {
     const node = document.createElementNS(ns, name);
@@ -21,44 +27,129 @@
     return node;
   }
 
-  function layout(nodes, edges) {
-    const count = Math.max(nodes.length, 1);
-    nodes.forEach((n, i) => {
-      const angle = i * 2.399963;
-      const radius = 18 * Math.sqrt(i + 1);
-      n.x = radius * Math.cos(angle);
-      n.y = radius * Math.sin(angle);
-    });
-    const index = new Map(nodes.map((n) => [n.id, n]));
-    const links = edges.map((e) => [index.get(e.from), index.get(e.to)]);
-    const iterations = count > 300 ? 120 : 260;
-    for (let step = 0; step < iterations; step++) {
-      const cooling = 1 - step / iterations;
-      for (const n of nodes) { n.dx = -n.x * 0.01; n.dy = -n.y * 0.01; }
-      for (let i = 0; i < count; i++) {
-        for (let j = i + 1; j < count; j++) {
-          const a = nodes[i], b = nodes[j];
-          const dx = a.x - b.x || 0.1, dy = a.y - b.y || 0.1;
-          const force = 1800 / Math.max(dx * dx + dy * dy, 25);
-          a.dx += dx * force; a.dy += dy * force;
-          b.dx -= dx * force; b.dy -= dy * force;
+  // Parts of the graph that share no edge, largest first; lone nodes are returned apart, they have no order to show.
+  function components(nodes, around) {
+    const seen = new Set();
+    const groups = [];
+    const lone = [];
+    for (const start of nodes) {
+      if (seen.has(start.id)) continue;
+      seen.add(start.id);
+      const members = [start];
+      for (const member of members) {
+        for (const next of around.get(member.id)) {
+          if (!seen.has(next.id)) { seen.add(next.id); members.push(next); }
         }
       }
-      for (const [a, b] of links) {
-        const dx = b.x - a.x, dy = b.y - a.y;
-        a.dx += dx * 0.02; a.dy += dy * 0.02;
-        b.dx -= dx * 0.02; b.dy -= dy * 0.02;
-      }
-      for (const n of nodes) {
-        n.x += Math.max(-20, Math.min(20, n.dx)) * cooling;
-        n.y += Math.max(-20, Math.min(20, n.dy)) * cooling;
+      if (members.length === 1) lone.push(start);
+      else groups.push(members);
+    }
+    groups.sort((a, b) => b.length - a.length);
+    return { groups, lone };
+  }
+
+  // Orders each column by the mean position of the neighbours, which removes most crossings.
+  function orderColumns(columns, around) {
+    const place = new Map();
+    const remember = (column) => column.forEach((n, i) => place.set(n.id, i - (column.length - 1) / 2));
+    columns.forEach(remember);
+    const score = (node) => {
+      const known = around.get(node.id).map((n) => place.get(n.id));
+      return known.length ? known.reduce((sum, p) => sum + p, 0) / known.length : place.get(node.id);
+    };
+    for (let sweep = 0; sweep < 12; sweep++) {
+      const order = sweep % 2 ? [...columns].reverse() : columns;
+      for (const column of order) {
+        const scores = new Map(column.map((n) => [n.id, score(n)]));
+        column.sort((a, b) => scores.get(a.id) - scores.get(b.id));
+        remember(column);
       }
     }
+  }
+
+  // Dependencies on the left, dependents on the right, as in the legend. A column taller than rows is folded sideways, keeping its order.
+  function placeGroup(members, around, rows, top) {
+    const columns = [];
+    for (const node of members) (columns[node.layer] ??= []).push(node);
+    const filled = columns.filter(Boolean);
+    orderColumns(filled, around);
+    let left = 0;
+    let height = 0;
+    for (const column of filled) {
+      const wide = Math.ceil(column.length / rows);
+      height = Math.max(height, Math.ceil(column.length / wide));
+    }
+    for (const column of filled) {
+      const wide = Math.ceil(column.length / rows);
+      const tall = Math.ceil(column.length / wide);
+      column.forEach((node, i) => {
+        node.x = left + (i % wide) * COLUMN;
+        node.y = top + ((height - tall) / 2 + Math.floor(i / wide)) * ROW;
+      });
+      left += wide * COLUMN;
+    }
+    return { width: left, height };
+  }
+
+  function layout(nodes, edges, aspect) {
+    const index = new Map(nodes.map((n) => [n.id, n]));
+    const around = new Map(nodes.map((n) => [n.id, []]));
+    for (const edge of edges) {
+      const a = index.get(edge.from), b = index.get(edge.to);
+      around.get(a.id).push(b);
+      around.get(b.id).push(a);
+    }
+    const { groups, lone } = components(nodes, around);
+    const rows = Math.max(6, Math.round(Math.sqrt(nodes.length * COLUMN / (ROW * aspect))));
+    let top = 0;
+    let width = COLUMN * 4;
+    for (const group of groups) {
+      const size = placeGroup(group, around, rows, top);
+      top += (size.height + 1) * ROW;
+      width = Math.max(width, size.width);
+    }
+    const perRow = Math.max(1, Math.floor(width / COLUMN));
+    lone.forEach((node, i) => {
+      node.x = (i % perRow) * COLUMN;
+      node.y = top + Math.floor(i / perRow) * ROW;
+    });
+    // Columns are wider than rows are tall, so a short graph is stretched to use the height of the page.
+    const ys = nodes.map((n) => n.y);
+    const tall = Math.max(...ys) - Math.min(...ys) + ROW;
+    const stretch = Math.min(3, (Math.max(...nodes.map((n) => n.x)) + LABELS) / aspect / tall);
+    if (stretch > 1) for (const node of nodes) node.y *= stretch;
     return index;
   }
 
+  function polygon(x, y, r, corners, turn) {
+    const points = [];
+    for (let i = 0; i < corners; i++) {
+      const angle = turn + (i * 2 * Math.PI) / corners;
+      points.push(`${x + r * Math.cos(angle)} ${y + r * Math.sin(angle)}`);
+    }
+    return `M${points.join("L")}Z`;
+  }
+
+  function roundSquare(x, y, r) {
+    const side = r * 0.9, corner = r * 0.4;
+    return `M${x - side + corner} ${y - side}H${x + side - corner}Q${x + side} ${y - side} ${x + side} ${y - side + corner}V${y + side - corner}Q${x + side} ${y + side} ${x + side - corner} ${y + side}H${x - side + corner}Q${x - side} ${y + side} ${x - side} ${y + side - corner}V${y - side + corner}Q${x - side} ${y - side} ${x - side + corner} ${y - side}Z`;
+  }
+
+  function shapePath(shape, x, y, r) {
+    switch (shape) {
+      case "triangle": return polygon(x, y, r * 1.2, 3, -Math.PI / 2);
+      case "diamond": return polygon(x, y, r * 1.25, 4, 0);
+      case "square": return polygon(x, y, r * 1.2, 4, Math.PI / 4);
+      case "rounded": return roundSquare(x, y, r);
+      case "hexagon": return polygon(x, y, r * 1.1, 6, 0);
+      case "pentagon": return polygon(x, y, r * 1.1, 5, -Math.PI / 2);
+      case "dot": return `M${x - r / 2} ${y}a${r / 2} ${r / 2} 0 1 0 ${r} 0a${r / 2} ${r / 2} 0 1 0 ${-r} 0Z`;
+      default: return `M${x - r} ${y}a${r} ${r} 0 1 0 ${2 * r} 0a${r} ${r} 0 1 0 ${-2 * r} 0Z`;
+    }
+  }
+
   function radius(node) {
-    return 7 + Math.min(11, Math.sqrt(Math.max(node.size, 1)) / 2);
+    return 5 + Math.min(6, Math.sqrt(Math.max(node.size, 1)) / 3);
   }
 
   function apply() {
@@ -67,8 +158,9 @@
     const size = 1 / Math.min(view.k, 1);
     root.classList.toggle("quiet", marks.length > CROWDED && view.k < 1);
     for (const { node, circle, label } of marks) {
-      const r = radius(node) * size;
-      circle.setAttribute("r", r);
+      const r = node.role === "module" && focused ? LARGEST : Math.min(radius(node) * size, LARGEST);
+      circle.setAttribute("d", shapePath(node.shape, node.x, node.y, r));
+      circle.setAttribute("data-r", r);
       circle.setAttribute("stroke-width", (node.cycle ? 3 : 1) * size);
       label.setAttribute("x", node.x + r + 3 * size);
       label.setAttribute("y", node.y + 4 * size);
@@ -76,8 +168,9 @@
     }
   }
 
-  function showLegend(nodes) {
-    legend.replaceChildren("Depth:");
+  function showLegend(graph) {
+    const { nodes, edges, groups } = graph;
+    legend.replaceChildren();
     const add = (mark, text) => {
       const entry = document.createElement("span");
       const dot = entry.appendChild(document.createElement("i"));
@@ -85,11 +178,25 @@
       entry.append(text);
       legend.appendChild(entry);
     };
-    const deepest = Math.max(...nodes.map((n) => n.layer));
-    for (let layer = 0; layer <= Math.min(deepest, colors - 1); layer++) {
-      add(`layer-${layer}`, layer === colors - 1 && deepest >= colors ? `${layer}+` : `${layer}`);
+    if (groups) {
+      groups.forEach((name, i) => add(`layer-${i}`, name));
+    } else {
+      legend.append("Depth:");
+      const deepest = Math.max(...nodes.map((n) => n.layer));
+      for (let layer = 0; layer <= Math.min(deepest, colors - 1); layer++) {
+        add(`layer-${layer}`, layer === colors - 1 && deepest >= colors ? `${layer}+` : `${layer}`);
+      }
     }
     if (nodes.some((n) => n.cycle)) add("cycle", "cycle");
+    for (const kind of [...new Set(edges.map((e) => e.kind))].sort()) add(`kind kind-${kind}`, kind);
+    const shapes = new Map(nodes.filter((n) => n.kind).map((n) => [n.kind, n.shape]));
+    for (const kind of [...shapes.keys()].sort()) {
+      const entry = document.createElement("span");
+      const icon = element("svg", { viewBox: "0 0 24 24" }, entry);
+      element("path", { d: shapePath(shapes.get(kind), 12, 12, 9) }, icon);
+      entry.append(kind);
+      legend.appendChild(entry);
+    }
   }
 
   function highlight(id, items) {
@@ -100,25 +207,47 @@
     }
   }
 
-  function draw(level, graph) {
-    buttons.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.level === level)));
+  function title(level, focus) {
+    if (level !== "type") return "Click a module to see its types, a line to see the types it joins";
+    return focus.peer ? `${focus.module} ↔ ${focus.peer}` : focus.module;
+  }
+
+  function draw(level, focus, graph) {
+    buttons.forEach((b) => {
+      b.setAttribute("aria-pressed", String(b.dataset.level === level));
+      if (b.dataset.level === "type") b.disabled = !focus;
+    });
+    focused = level === "type";
     svg.replaceChildren();
     const cyclic = graph.nodes.filter((n) => n.cycle).length;
-    info.textContent = `${graph.nodes.length} nodes, ${graph.edges.length} edges, ${cyclic} in cycles`;
+    info.textContent = `${title(level, focus)}: ${graph.nodes.length} nodes, ${graph.edges.length} edges, ${cyclic} in cycles`;
     root = element("g", {}, svg);
     marks = [];
     legend.replaceChildren();
     if (!graph.nodes.length) {
-      info.textContent = "No data yet: run Nomos: Analyze Workspace.";
+      info.textContent = focused ? `${title(level, focus)}: no links between types` : "No data yet: run Nomos: Analyze Workspace.";
       return;
     }
-    showLegend(graph.nodes);
-    const index = layout(graph.nodes, graph.edges);
+    showLegend(graph);
+    const box = svg.getBoundingClientRect();
+    const top = bar.getBoundingClientRect().bottom;
+    const index = layout(graph.nodes, graph.edges, box.width / Math.max(box.height - top, 1) || 1.5);
     const items = [];
+    const slots = new Map();
     for (const edge of graph.edges) {
       const a = index.get(edge.from), b = index.get(edge.to);
-      const line = element("line", { x1: a.x, y1: a.y, x2: b.x, y2: b.y, class: edge.cycle ? "cycle" : "" }, root);
-      element("title", {}, line).textContent = `${edge.from} → ${edge.to} (${edge.weight})`;
+      const bend = Math.max(Math.abs(b.x - a.x) / 2, 40);
+      const near = a.x <= b.x ? bend : -bend;
+      // Edges of different kinds between the same nodes fan out, so that each color stays visible.
+      const key = [edge.from, edge.to].sort().join("\u0000");
+      const slot = slots.get(key) ?? 0;
+      slots.set(key, slot + 1);
+      const fan = (slot % 2 ? 1 : -1) * Math.ceil(slot / 2) * 12;
+      const d = `M${a.x} ${a.y}C${a.x + near} ${a.y + fan} ${b.x - near} ${b.y + fan} ${b.x} ${b.y}`;
+      const line = element("path", { d, class: `edge kind-${edge.kind}${edge.cycle ? " cycle" : ""}` }, root);
+      const hit = element("path", { d, class: edge.pair ? "hit open" : "hit" }, root);
+      element("title", {}, hit).textContent = `${edge.from} → ${edge.to}: ${edge.kind} (${edge.weight})`;
+      if (edge.pair) hit.addEventListener("click", () => vscode.postMessage({ type: "focus", module: edge.pair[0], peer: edge.pair[1] }));
       items.push({ element: line, ids: new Set([edge.from, edge.to]) });
     }
     for (const node of graph.nodes) {
@@ -127,23 +256,23 @@
         if (edge.from === node.id) neighbours.add(edge.to);
         if (edge.to === node.id) neighbours.add(edge.from);
       }
-      const color = `layer-${Math.min(node.layer, colors - 1)}`;
-      const circle = element("circle", { cx: node.x, cy: node.y, class: node.cycle ? `${color} cycle` : color }, root);
-      element("title", {}, circle).textContent = `${node.id} (layer ${node.layer})`;
-      const label = element("text", {}, root);
+      const peer = focused && node.role === "module";
+      const color = peer ? "peer" : `layer-${Math.min(node.layer, colors - 1)}`;
+      const circle = element("path", { class: `node ${color}${node.cycle ? " cycle" : ""}` }, root);
+      element("title", {}, circle).textContent = node.kind ? `${node.id} (${node.kind})` : node.id;
+      const label = element("text", peer ? { class: "peer" } : {}, root);
       label.textContent = node.label;
       marks.push({ node, circle, label });
       items.push({ element: circle, ids: neighbours }, { element: label, ids: neighbours });
       circle.addEventListener("mouseenter", () => highlight(node.id, items));
       circle.addEventListener("mouseleave", () => highlight(null, items));
-      circle.addEventListener("click", () => vscode.postMessage({ type: "open", language: node.language, file: node.file, line: node.line }));
+      circle.addEventListener("click", () => vscode.postMessage(node.role === "module" ? { type: "focus", module: node.id } : { type: "open", language: node.language, file: node.file, line: node.line }));
     }
-    const box = svg.getBoundingClientRect();
     const xs = graph.nodes.map((n) => n.x), ys = graph.nodes.map((n) => n.y);
-    const top = bar.getBoundingClientRect().bottom;
-    const width = Math.max(...xs) - Math.min(...xs) + 240, height = Math.max(...ys) - Math.min(...ys) + 80;
+    // Labels hang to the right of the nodes, so the margin is on that side.
+    const width = Math.max(...xs) - Math.min(...xs) + LABELS + 40, height = Math.max(...ys) - Math.min(...ys) + 80;
     view.k = Math.min(box.width / width, (box.height - top) / height, 1.5);
-    view.x = box.width / 2 - view.k * (Math.max(...xs) + Math.min(...xs)) / 2;
+    view.x = box.width / 2 - view.k * (Math.max(...xs) + Math.min(...xs) + LABELS) / 2;
     view.y = (box.height + top) / 2 - view.k * (Math.max(...ys) + Math.min(...ys)) / 2;
     apply();
   }
@@ -169,7 +298,7 @@
 
   buttons.forEach((b) => b.addEventListener("click", () => vscode.postMessage({ type: "level", level: b.dataset.level })));
   window.addEventListener("message", (event) => {
-    if (event.data.type === "graph") draw(event.data.level, event.data.graph);
+    if (event.data.type === "graph") draw(event.data.level, event.data.focus, event.data.graph);
   });
   vscode.postMessage({ type: "level", level: "module" });
 })();

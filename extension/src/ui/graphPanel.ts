@@ -2,16 +2,20 @@ import { randomBytes } from "node:crypto";
 import path from "node:path";
 import * as vscode from "vscode";
 import type { AnalysisRun } from "../core/model";
-import { buildGraph, neighbourGroup } from "../core/views";
+import { buildFocus, buildGraph, neighbourGroup } from "../core/views";
 import type { GraphLevel } from "../core/views";
 
 let panel: vscode.WebviewPanel | undefined;
 let level: GraphLevel = "module";
+// The types level always shows one module or a pair of them; it stays remembered while the modules are shown.
+let focus: { module: string; peer?: string } | undefined;
 let runsOf: () => AnalysisRun[] = () => [];
 let stale = false;
 
 // Medium tones that read on light and dark themes. Red stays for cycles; the last color covers all deeper layers.
 const LAYER_COLORS = ["#2f9e8f", "#3f8fdc", "#7a6fe0", "#c060c8", "#e0a020", "#8a9a2c", "#c07a50", "#8a94a6"];
+// One color per kind of dependency in the facts contract.
+const EDGE_COLORS: Record<string, string> = { inheritance: "#e0559a", call: "#e0a020", "type-ref": "#3f9fe0", import: "#38b070" };
 
 function page(webview: vscode.Webview, script: vscode.Uri): string {
   const nonce = randomBytes(16).toString("hex");
@@ -26,12 +30,17 @@ function page(webview: vscode.Webview, script: vscode.Uri): string {
   #bar { position: fixed; top: 0; left: 0; right: 0; padding: 8px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; background: var(--vscode-editor-background); }
   button { color: var(--vscode-button-secondaryForeground); background: var(--vscode-button-secondaryBackground); border: 0; padding: 4px 10px; cursor: pointer; }
   button[aria-pressed="true"] { color: var(--vscode-button-foreground); background: var(--vscode-button-background); }
-  svg { width: 100%; height: 100%; display: block; cursor: grab; }
-  line { stroke: var(--vscode-foreground); stroke-opacity: .25; vector-effect: non-scaling-stroke; }
-  line.cycle { stroke: var(--vscode-errorForeground); stroke-opacity: .9; }
-  circle { cursor: pointer; stroke: var(--vscode-editor-background); }
-  circle.cycle { stroke: var(--vscode-errorForeground); }
-  text { fill: var(--vscode-foreground); pointer-events: none; }
+  button:disabled { opacity: .5; cursor: default; }
+  #graph { width: 100%; height: 100%; display: block; cursor: grab; }
+  .edge { fill: none; stroke: var(--vscode-foreground); stroke-opacity: .6; pointer-events: none; vector-effect: non-scaling-stroke; }
+  .edge.cycle { stroke-dasharray: 6 3; stroke-width: 2; stroke-opacity: .9; }
+  .hit { fill: none; stroke: transparent; stroke-width: 12; pointer-events: stroke; vector-effect: non-scaling-stroke; }
+  .hit.open { cursor: pointer; }
+  .node { cursor: pointer; stroke: var(--vscode-editor-background); }
+  .node.cycle { stroke: var(--vscode-errorForeground); }
+  .node.peer { fill: var(--vscode-descriptionForeground); }
+  text.peer { font-weight: 600; }
+  text { fill: var(--vscode-foreground); pointer-events: none; paint-order: stroke; stroke: var(--vscode-editor-background); stroke-width: 3px; }
   .dim { opacity: .12; }
   .quiet text { display: none; }
   .quiet text.near { display: block; }
@@ -39,7 +48,10 @@ function page(webview: vscode.Webview, script: vscode.Uri): string {
   #legend span { display: flex; gap: 4px; align-items: center; }
   #legend i { width: 10px; height: 10px; border-radius: 50%; }
   #legend i.cycle { box-sizing: border-box; border: 2px solid var(--vscode-errorForeground); }
+  #legend i.kind { width: 14px; height: 3px; border-radius: 0; }
+  #legend svg { width: 12px; height: 12px; fill: var(--vscode-foreground); }
 ${LAYER_COLORS.map((color, i) => `  .layer-${i} { fill: ${color}; background: ${color}; }`).join("\n")}
+${Object.entries(EDGE_COLORS).map(([kind, color]) => `  .kind-${kind} { stroke: ${color}; background: ${color}; }`).join("\n")}
 </style>
 </head>
 <body>
@@ -54,7 +66,14 @@ function send(): void {
   if (!panel) return;
   // A hidden page has no size to fit the graph to, so it gets the data when it is shown.
   stale = !panel.visible;
-  if (!stale) void panel.webview.postMessage({ type: "graph", level, graph: buildGraph(runsOf(), level) });
+  if (stale) return;
+  const shown = focus && buildFocus(runsOf(), focus.module, focus.peer);
+  if (!shown) {
+    focus = undefined;
+    level = "module";
+  }
+  const graph = level === "type" && shown ? shown : buildGraph(runsOf());
+  void panel.webview.postMessage({ type: "graph", level, focus, graph });
 }
 
 /** Shows fresh facts in the open graph, if there is one. */
@@ -84,9 +103,14 @@ export function showGraph(context: vscode.ExtensionContext, runs: () => Analysis
   panel.onDidChangeViewState(() => {
     if (stale) send();
   });
-  panel.webview.onDidReceiveMessage(async (message: { type: string; level?: GraphLevel; language?: string; file?: string; line?: number }) => {
+  panel.webview.onDidReceiveMessage(async (message: { type: string; level?: GraphLevel; module?: string; peer?: string; language?: string; file?: string; line?: number }) => {
     if (message.type === "level") {
-      level = message.level!;
+      level = message.level === "type" && focus ? "type" : "module";
+      if (level === "type" && focus) focus = { module: focus.module };
+      send();
+    } else if (message.type === "focus" && message.module) {
+      focus = { module: message.module, peer: message.peer };
+      level = "type";
       send();
     } else if (message.type === "open" && message.file) {
       const run = runs().find((r) => r.language === message.language);
