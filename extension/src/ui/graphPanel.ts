@@ -6,6 +6,9 @@ import { buildGraph } from "../core/views";
 import type { GraphLevel } from "../core/views";
 
 let panel: vscode.WebviewPanel | undefined;
+let level: GraphLevel = "module";
+let runsOf: () => AnalysisRun[] = () => [];
+let stale = false;
 
 // Medium tones that read on light and dark themes. Red stays for cycles; the last color covers all deeper layers.
 const LAYER_COLORS = ["#2f9e8f", "#3f8fdc", "#7a6fe0", "#c060c8", "#e0a020", "#8a9a2c", "#c07a50", "#8a94a6"];
@@ -47,24 +50,48 @@ ${LAYER_COLORS.map((color, i) => `  .layer-${i} { fill: ${color}; background: ${
 </html>`;
 }
 
-/** Opens the graph; the page asks for a level and receives only data from facts. */
-export function showGraph(context: vscode.ExtensionContext, runs: () => AnalysisRun[]): void {
+function send(): void {
+  if (!panel) return;
+  // A hidden page has no size to fit the graph to, so it gets the data when it is shown.
+  stale = !panel.visible;
+  if (!stale) void panel.webview.postMessage({ type: "graph", level, graph: buildGraph(runsOf(), level) });
+}
+
+/** Shows fresh facts in the open graph, if there is one. */
+export function refreshGraph(): void {
+  send();
+}
+
+/** Opens the graph in a tab of its own, next to the code; the page asks for a level and receives only data from facts. */
+export function showGraph(context: vscode.ExtensionContext, runs: () => AnalysisRun[], preserveFocus = false): void {
+  runsOf = runs;
   if (panel) {
-    panel.reveal();
+    panel.reveal(undefined, preserveFocus);
     return;
   }
   const media = vscode.Uri.joinPath(context.extensionUri, "media");
-  panel = vscode.window.createWebviewPanel("nomos.graph", "Nomos: Dependency Graph", vscode.ViewColumn.Active, { enableScripts: true, localResourceRoots: [media], retainContextWhenHidden: true });
+  panel = vscode.window.createWebviewPanel("nomos.graph", "Nomos: Dependency Graph", { viewColumn: vscode.ViewColumn.Beside, preserveFocus }, { enableScripts: true, localResourceRoots: [media], retainContextWhenHidden: true });
   panel.webview.html = page(panel.webview, panel.webview.asWebviewUri(vscode.Uri.joinPath(media, "graph.js")));
+  panel.iconPath = vscode.Uri.joinPath(media, "icon.svg");
   panel.onDidDispose(() => (panel = undefined));
+  panel.onDidChangeViewState(() => {
+    if (stale) send();
+  });
   panel.webview.onDidReceiveMessage(async (message: { type: string; level?: GraphLevel; language?: string; file?: string; line?: number }) => {
     if (message.type === "level") {
-      void panel?.webview.postMessage({ type: "graph", level: message.level, graph: buildGraph(runs(), message.level!) });
+      level = message.level!;
+      send();
     } else if (message.type === "open" && message.file) {
       const run = runs().find((r) => r.language === message.language);
       if (!run) return;
       const line = Math.max((message.line ?? 1) - 1, 0);
-      await vscode.window.showTextDocument(vscode.Uri.file(path.join(run.root, message.file)), { selection: new vscode.Range(line, 0, line, 0), viewColumn: vscode.ViewColumn.Beside });
+      await vscode.window.showTextDocument(vscode.Uri.file(path.join(run.root, message.file)), { selection: new vscode.Range(line, 0, line, 0), viewColumn: panel?.viewColumn === vscode.ViewColumn.One ? vscode.ViewColumn.Beside : vscode.ViewColumn.One });
     }
   });
+}
+
+/** Moves the graph out of the main window, which keeps the whole screen for the code. */
+export async function openGraphWindow(context: vscode.ExtensionContext, runs: () => AnalysisRun[]): Promise<void> {
+  showGraph(context, runs);
+  await vscode.commands.executeCommand("workbench.action.moveEditorToNewWindow");
 }

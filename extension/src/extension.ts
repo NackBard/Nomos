@@ -4,7 +4,7 @@ import * as vscode from "vscode";
 import type { AnalysisRun, Finding } from "./core/model";
 import { WorkspaceFileName, analyze, readWorkspace } from "./core/runner";
 import { lensesFor } from "./core/views";
-import { showGraph } from "./ui/graphPanel";
+import { openGraphWindow, refreshGraph, showGraph } from "./ui/graphPanel";
 import { FindingsTree, ParadigmsTree, locationOf } from "./ui/trees";
 
 /** What the end-to-end test reads; the extension has no other public surface. */
@@ -78,6 +78,7 @@ export function activate(context: vscode.ExtensionContext): NomosApi {
     findings.update(runs);
     paradigms.update(runs);
     lenses.refresh();
+    refreshGraph();
 
     const total = runs.reduce((sum, run) => sum + run.findings.length, 0);
     const scores = runs.filter((r) => r.facts.health).map((r) => `${r.language} ${r.facts.health!.score}`).join(", ");
@@ -123,13 +124,21 @@ export function activate(context: vscode.ExtensionContext): NomosApi {
     if (partial.length) void vscode.window.showWarningMessage(`Nomos: partial result for ${partial.join(", ")}: some files were not parsed. See the Nomos output.`);
   }
 
+  // The side bar icon opens the graph next to the code; there is nothing to draw before the first analysis.
+  const findingsView = vscode.window.createTreeView("nomos.findings", { treeDataProvider: findings });
+  findingsView.onDidChangeVisibility(({ visible }) => {
+    if (!visible) return;
+    showGraph(context, () => runs, true);
+    if (!runs.length && !running) void analyzeAll();
+  });
+
   context.subscriptions.push(
-    output, diagnostics, status,
-    vscode.window.registerTreeDataProvider("nomos.findings", findings),
+    output, diagnostics, status, findingsView,
     vscode.window.registerTreeDataProvider("nomos.paradigms", paradigms),
     vscode.languages.registerCodeLensProvider({ scheme: "file" }, lenses),
     vscode.commands.registerCommand("nomos.analyze", analyzeAll),
     vscode.commands.registerCommand("nomos.showGraph", () => showGraph(context, () => runs)),
+    vscode.commands.registerCommand("nomos.openGraphWindow", () => openGraphWindow(context, () => runs)),
     vscode.workspace.onDidSaveTextDocument((document) => {
       const own = path.basename(document.uri.fsPath) === WorkspaceFileName || path.basename(path.dirname(document.uri.fsPath)) === ".nomos";
       if (!own && vscode.workspace.getConfiguration("nomos").get<boolean>("analyzeOnSave", false)) void analyzeAll();

@@ -28,6 +28,11 @@
         "command": "nomos.showGraph",
         "title": "Nomos: Show Dependency Graph",
         "icon": "$(type-hierarchy)"
+      },
+      {
+        "command": "nomos.openGraphWindow",
+        "title": "Nomos: Open Dependency Graph in New Window",
+        "icon": "$(empty-window)"
       }
     ],
     "viewsContainers": {
@@ -35,7 +40,7 @@
         {
           "id": "nomos",
           "title": "Nomos",
-          "icon": "$(telescope)"
+          "icon": "media/icon.svg"
         }
       ]
     },
@@ -61,6 +66,13 @@
         {
           "command": "nomos.showGraph",
           "when": "view == nomos.findings",
+          "group": "navigation"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "nomos.openGraphWindow",
+          "when": "activeWebviewPanelId == nomos.graph",
           "group": "navigation"
         }
       ]

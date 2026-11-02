@@ -31,6 +31,9 @@ export async function run(): Promise<void> {
 
   await vscode.commands.executeCommand("nomos.showGraph");
   await vscode.commands.executeCommand("workbench.view.extension.nomos");
+  await vscode.commands.executeCommand("nomos.openGraphWindow");
+  const graphTabs = vscode.window.tabGroups.all.flatMap((g) => g.tabs).filter((t) => t.label === "Nomos: Dependency Graph");
+  assert.equal(graphTabs.length, 1, "the graph must stay a single tab");
 
   console.log(`e2e: ${runs.map((r) => `${r.language} ${r.findings.length}`).join(", ")} findings, ${withDiagnostics.length} files with diagnostics, ${lenses.length} lenses in ${entity.location.file}`);
 }
