@@ -73,13 +73,56 @@ export function lensesFor(facts: Facts, file: string): Lens[] {
   return [...lensesOf(facts.types, TypeMetrics, file), ...lensesOf(facts.functions, FunctionMetrics, file)].sort((a, b) => a.line - b.line);
 }
 
-export interface GraphNode { id: string; label: string; language: string; cycle: boolean; size: number; file?: string; line?: number }
+export interface GraphNode { id: string; label: string; language: string; cycle: boolean; size: number; layer: number; file?: string; line?: number }
 export interface GraphEdge { from: string; to: string; weight: number; cycle: boolean }
 export interface Graph { nodes: GraphNode[]; edges: GraphEdge[] }
 export type GraphLevel = "module" | "type";
 
 function cycleMembers(cycles: Cycle[] | undefined, level: GraphLevel): Set<string>[] {
   return (cycles ?? []).filter((c) => c.level === level).map((c) => new Set(c.members));
+}
+
+/**
+ * Longest dependency path from each node: 0 depends on nothing shown, members of a cycle share a layer.
+ * Tarjan's algorithm finishes a component after everything it depends on, so one pass is enough.
+ */
+function dependencyLayers(ids: string[], edges: GraphEdge[]): Map<string, number> {
+  const targets = new Map<string, string[]>(ids.map((id) => [id, []]));
+  for (const edge of edges) targets.get(edge.from)?.push(edge.to);
+  const order = new Map<string, number>();
+  const low = new Map<string, number>();
+  const stack: string[] = [];
+  const open = new Set<string>();
+  const layers = new Map<string, number>();
+
+  const visit = (id: string): void => {
+    order.set(id, order.size);
+    low.set(id, order.get(id)!);
+    stack.push(id);
+    open.add(id);
+    for (const next of targets.get(id)!) {
+      if (!order.has(next)) {
+        visit(next);
+        low.set(id, Math.min(low.get(id)!, low.get(next)!));
+      } else if (open.has(next)) {
+        low.set(id, Math.min(low.get(id)!, order.get(next)!));
+      }
+    }
+    if (low.get(id) !== order.get(id)) return;
+    const members = stack.splice(stack.lastIndexOf(id));
+    const inside = new Set(members);
+    let layer = 0;
+    for (const member of members) {
+      open.delete(member);
+      for (const next of targets.get(member)!) {
+        if (!inside.has(next)) layer = Math.max(layer, layers.get(next)! + 1);
+      }
+    }
+    for (const member of members) layers.set(member, layer);
+  };
+
+  for (const id of ids) if (!order.has(id)) visit(id);
+  return layers;
 }
 
 /** Builds the graph of one level from facts; dependencies on external targets stay out, as in spec/metrics.md. */
@@ -94,9 +137,9 @@ export function buildGraph(runs: AnalysisRun[], level: GraphLevel): Graph {
     const known = new Set(level === "module" ? facts.modules.map((m) => m.id) : facts.types.map((t) => t.id));
 
     if (level === "module") {
-      for (const m of facts.modules) nodes.push({ id: m.id, label: m.name, language, cycle: inCycle(m.id), size: m.loc, file: m.files[0] });
+      for (const m of facts.modules) nodes.push({ id: m.id, label: m.name, language, cycle: inCycle(m.id), size: m.loc, layer: 0, file: m.files[0] });
     } else {
-      for (const t of facts.types) nodes.push({ id: t.id, label: t.name, language, cycle: inCycle(t.id), size: t.metrics.lines ?? 1, file: t.location?.file, line: t.location?.startLine });
+      for (const t of facts.types) nodes.push({ id: t.id, label: t.name, language, cycle: inCycle(t.id), size: t.metrics.lines ?? 1, layer: 0, file: t.location?.file, line: t.location?.startLine });
     }
 
     const unit = (id: string) => (level === "module" ? moduleOf.get(id) ?? functionOwner.get(id) : id);
@@ -111,5 +154,8 @@ export function buildGraph(runs: AnalysisRun[], level: GraphLevel): Graph {
       else weights.set(key, { from, to, weight: dependency.count ?? 1, cycle: cycles.some((c) => c.has(from) && c.has(to)) });
     }
   }
-  return { nodes, edges: [...weights.values()] };
+  const edges = [...weights.values()];
+  const layers = dependencyLayers(nodes.map((n) => n.id), edges);
+  for (const node of nodes) node.layer = layers.get(node.id)!;
+  return { nodes, edges };
 }

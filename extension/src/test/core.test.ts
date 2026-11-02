@@ -105,6 +105,24 @@ test("the type graph marks cycles", () => {
   assert.equal(graph.edges.length, 2);
 });
 
+test("graph layers grow with dependency depth, and a cycle shares one layer", () => {
+  const dependency = (from: string, to: string) => ({ from, to, kind: "call", phase: "runtime" });
+  const module = (id: string) => ({ id, name: id, files: [], loc: 1, metrics: {}, paradigmEvidence: [] });
+  const chain = {
+    ...facts,
+    modules: ["Top", "Mid", "Loop1", "Loop2", "Base"].map(module),
+    types: ["Top", "Mid", "Loop1", "Loop2", "Base"].map((id) => ({ id: `${id}.T`, name: "T", module: id, metrics: {} })),
+    functions: [],
+    dependencies: [
+      dependency("Top.T", "Mid.T"), dependency("Top.T", "Base.T"), dependency("Mid.T", "Loop1.T"),
+      dependency("Loop1.T", "Loop2.T"), dependency("Loop2.T", "Loop1.T"), dependency("Loop2.T", "Base.T"),
+    ],
+    cycles: [],
+  } as Facts;
+  const graph = buildGraph([{ language: "toy", root: ".", facts: chain, findings: [], partial: false }], "module");
+  assert.deepEqual(Object.fromEntries(graph.nodes.map((n) => [n.id, n.layer])), { Top: 3, Mid: 2, Loop1: 1, Loop2: 1, Base: 0 });
+});
+
 // A stand-in analyzer: the extension must work through the protocol alone, whatever the language.
 function fakeAnalyzer(folder: string, exitCode: number): string[] {
   const script = path.join(folder, "fake.js");
