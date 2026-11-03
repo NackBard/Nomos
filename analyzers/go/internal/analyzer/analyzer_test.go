@@ -1,6 +1,7 @@
 package analyzer
 
 import (
+	"encoding/json"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -95,5 +96,22 @@ func TestNestedModulesKeepTheirImportPaths(t *testing.T) {
 	}
 	if p.Types["example.com/app/core.T"] == nil {
 		t.Fatalf("modules: %v", p.Modules[0].ID)
+	}
+}
+
+func TestManifestDeclaresTheFilesItReads(t *testing.T) {
+	text, err := Manifest()
+	if err != nil {
+		t.Fatal(err)
+	}
+	var manifest struct {
+		SchemaVersion string   `json:"schemaVersion"`
+		Files         []string `json:"files"`
+	}
+	if err := json.Unmarshal(text, &manifest); err != nil {
+		t.Fatal(err)
+	}
+	if manifest.SchemaVersion != "1.2.0" || !reflect.DeepEqual(manifest.Files, []string{"**/*.go"}) {
+		t.Errorf("manifest: schemaVersion %q, files %v", manifest.SchemaVersion, manifest.Files)
 	}
 }

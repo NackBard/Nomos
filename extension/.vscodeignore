@@ -3,3 +3,6 @@ scripts/**
 out/test/**
 tsconfig.json
 **/*.map
+*.vsix
+out/e2e/**
+.vscode-test/**

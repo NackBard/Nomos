@@ -95,6 +95,8 @@
   },
   "scripts": {
     "compile": "node scripts/copy-contracts.mjs && tsc -p .",
+    "vscode:prepublish": "npm run compile",
+    "package": "node scripts/package.mjs",
     "test": "npm run compile && node --test \"out/test/**/*.test.js\"",
     "e2e": "npm run compile && node scripts/run-e2e.mjs",
     "check-boundary": "node scripts/check-boundary.mjs"
@@ -105,6 +107,7 @@
   "devDependencies": {
     "@types/node": "24.3.0",
     "@types/vscode": "1.90.0",
+    "@vscode/vsce": "4.0.0",
     "typescript": "5.9.2"
   }
 }

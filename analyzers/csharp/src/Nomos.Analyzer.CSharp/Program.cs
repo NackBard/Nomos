@@ -20,7 +20,7 @@ public static class Program
     private const int BadInput = 3;
     private const int Partial = 4;
     private const string Name = "nomos-csharp";
-    private const string SchemaVersion = "1.1.0";
+    private const string SchemaVersion = "1.2.0";
 
     /// <summary>Runs the analyzer.</summary>
     /// <param name="args">Command-line arguments.</param>
@@ -66,6 +66,7 @@ public static class Program
             version = Version,
             schemaVersion = SchemaVersion,
             paradigms = new[] { Paradigms.Functional, Paradigms.ObjectOriented, Paradigms.Structural },
+            files = new[] { "**/*.cs" },
             capabilities = new
             {
                 semantic = true,

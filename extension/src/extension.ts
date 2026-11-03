@@ -1,7 +1,9 @@
 import fs from "node:fs";
 import path from "node:path";
 import * as vscode from "vscode";
-import type { AnalysisRun, Finding } from "./core/model";
+import { BundleFolderName, implicitWorkspace, launchConfig, readRegistry, selectBundled } from "./core/bundle";
+import type { RuntimeRequirement } from "./core/bundle";
+import type { AnalysisRun, AnalyzerConfig, Finding, Workspace } from "./core/model";
 import { WorkspaceFileName, analyze, readWorkspace } from "./core/runner";
 import { lensesFor } from "./core/views";
 import { openGraphWindow, refreshGraph, showGraph } from "./ui/graphPanel";
@@ -17,7 +19,17 @@ const severities: Record<Finding["level"], vscode.DiagnosticSeverity> = {
 };
 
 function workspaceFolders(): string[] {
-  return (vscode.workspace.workspaceFolders ?? []).map((f) => f.uri.fsPath).filter((f) => fs.existsSync(path.join(f, WorkspaceFileName)));
+  return (vscode.workspace.workspaceFolders ?? []).map((f) => f.uri.fsPath);
+}
+
+/** One analyzer to run in one folder; preparing it may ask for a runtime, so it is deferred and fails on its own. */
+interface Planned { language: string; folder: string; prepare(): Promise<{ config: AnalyzerConfig; workspace: Workspace }> }
+
+async function hasFiles(folder: string, globs: string[]): Promise<boolean> {
+  for (const glob of globs) {
+    if ((await vscode.workspace.findFiles(new vscode.RelativePattern(folder, glob), undefined, 1)).length) return true;
+  }
+  return false;
 }
 
 function toDiagnostic(finding: Finding): vscode.Diagnostic {
@@ -62,8 +74,55 @@ export function activate(context: vscode.ExtensionContext): NomosApi {
   const findings = new FindingsTree();
   const paradigms = new ParadigmsTree();
   const lenses = new MetricLens(() => runs);
+  const bundleFolder = context.asAbsolutePath(BundleFolderName);
+  const storage = context.globalStorageUri.fsPath;
+  const runtimes = new Map<string, Promise<string>>();
 
-  function publish(): void {
+  /** Asks the extension that provides a runtime for its path, installing that extension on the person's consent. */
+  function runtimePath(requirement: RuntimeRequirement, language: string): Promise<string> {
+    const key = requirement.extension + "\n" + requirement.command;
+    const known = runtimes.get(key);
+    if (known) return known;
+    const pending = (async () => {
+      if (!vscode.extensions.getExtension(requirement.extension)) {
+        const install = "Install";
+        const choice = await vscode.window.showInformationMessage(
+          `Nomos needs ${requirement.name} to analyze the ${language} files of this workspace. The extension ${requirement.extension} provides it.`, install);
+        if (choice !== install) throw new Error(`${language}: skipped, ${requirement.name} is not available (the extension ${requirement.extension} was not installed)`);
+        await vscode.commands.executeCommand("workbench.extensions.installExtension", requirement.extension);
+      }
+      const result = await vscode.commands.executeCommand<Record<string, unknown> | undefined>(
+        requirement.command, { ...requirement.argument, requestingExtensionId: context.extension.id });
+      const value = result?.[requirement.resultField];
+      if (typeof value !== "string" || !value) throw new Error(`${language}: ${requirement.extension} did not provide ${requirement.name}`);
+      return value;
+    })();
+    runtimes.set(key, pending);
+    pending.catch(() => runtimes.delete(key));
+    return pending;
+  }
+
+  /** nomos.json decides when present; otherwise the bundled analyzers that find their files (D-046). */
+  async function plan(folder: string): Promise<Planned[]> {
+    if (fs.existsSync(path.join(folder, WorkspaceFileName))) {
+      const workspace = readWorkspace(folder);
+      return workspace.analyzers.map((config) => ({ language: config.language, folder, prepare: async () => ({ config, workspace }) }));
+    }
+    const registry = readRegistry(bundleFolder);
+    if (!registry) return [];
+    const selected = await selectBundled(registry, (globs) => hasFiles(folder, globs));
+    return selected.map((analyzer) => ({
+      language: analyzer.language,
+      folder,
+      prepare: async () => {
+        const runtime = analyzer.runtime ? await runtimePath(analyzer.runtime, analyzer.language) : undefined;
+        const config = launchConfig(analyzer, bundleFolder, storage, runtime);
+        return { config, workspace: implicitWorkspace(config) };
+      },
+    }));
+  }
+
+  function publish(planned = runs.length): void {
     diagnostics.clear();
     const byFile = new Map<string, vscode.Diagnostic[]>();
     for (const run of runs) {
@@ -82,8 +141,14 @@ export function activate(context: vscode.ExtensionContext): NomosApi {
 
     const total = runs.reduce((sum, run) => sum + run.findings.length, 0);
     const scores = runs.filter((r) => r.facts.health).map((r) => `${r.language} ${r.facts.health!.score}`).join(", ");
-    status.text = `$(telescope) Nomos: ${total} findings${scores ? ` · health ${scores}` : ""}`;
-    status.tooltip = "Statistics for your own analysis, not a verdict. Click to analyze again.";
+    if (planned === 0) {
+      // "0 findings" here would read as a clean result although nothing ran.
+      status.text = "$(telescope) Nomos: nothing to analyze";
+      status.tooltip = "No folder has a nomos.json or files that a bundled analyzer reads. Click to analyze again.";
+    } else {
+      status.text = `$(telescope) Nomos: ${total} findings${scores ? ` · health ${scores}` : ""}`;
+      status.tooltip = "Statistics for your own analysis, not a verdict. Click to analyze again.";
+    }
     status.show();
   }
 
@@ -93,13 +158,15 @@ export function activate(context: vscode.ExtensionContext): NomosApi {
     running = controller;
     const fresh: AnalysisRun[] = [];
     const failures: string[] = [];
+    let planned = 0;
     await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: "Nomos: analyzing" }, async () => {
       for (const folder of workspaceFolders()) {
         try {
-          const workspace = readWorkspace(folder);
-          for (const analyzer of workspace.analyzers) {
+          for (const item of await plan(folder)) {
+            planned++;
             try {
-              const run = await analyze(analyzer, folder, workspace, controller.signal);
+              const { config, workspace } = await item.prepare();
+              const run = await analyze(config, folder, workspace, controller.signal);
               fresh.push(run);
               for (const d of run.facts.diagnostics) output.appendLine(`${run.language}: ${d.level}: ${d.file ? `${d.file}: ` : ""}${d.message}`);
             } catch (e) {
@@ -107,6 +174,7 @@ export function activate(context: vscode.ExtensionContext): NomosApi {
             }
           }
         } catch (e) {
+          planned++;
           failures.push((e as Error).message);
         }
       }
@@ -115,7 +183,7 @@ export function activate(context: vscode.ExtensionContext): NomosApi {
     running = undefined;
     runs = fresh;
     errors = failures;
-    publish();
+    publish(planned);
     for (const message of failures) {
       output.appendLine(`error: ${message}`);
       void vscode.window.showErrorMessage(`Nomos: ${message}`);

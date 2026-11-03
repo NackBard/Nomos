@@ -16,12 +16,18 @@ export async function run(): Promise<void> {
   const [run] = runs;
   assert.ok(run, "no analysis run");
   const folder = vscode.workspace.workspaceFolders![0].uri;
-  const workspace = JSON.parse(Buffer.from(await vscode.workspace.fs.readFile(vscode.Uri.joinPath(folder, "nomos.json"))).toString("utf8")) as { analyzers: { language: string }[] };
-  assert.deepEqual(runs.map((r) => r.language).sort(), workspace.analyzers.map((a) => a.language).sort(), "every analyzer of nomos.json must run");
-  for (const each of runs) assert.ok(each.findings.length > 0, `no findings from ${each.language}`);
-
+  const workspaceFile = vscode.Uri.joinPath(folder, "nomos.json");
+  const configured = await vscode.workspace.fs.stat(workspaceFile).then(() => true, () => false);
   const withDiagnostics = vscode.languages.getDiagnostics().filter(([, list]) => list.some((d) => d.source === "nomos"));
-  assert.ok(withDiagnostics.length > 0, "no diagnostics were published");
+  if (configured) {
+    const workspace = JSON.parse(Buffer.from(await vscode.workspace.fs.readFile(workspaceFile)).toString("utf8")) as { analyzers: { language: string }[] };
+    assert.deepEqual(runs.map((r) => r.language).sort(), workspace.analyzers.map((a) => a.language).sort(), "every analyzer of nomos.json must run");
+    for (const each of runs) assert.ok(each.findings.length > 0, `no findings from ${each.language}`);
+    assert.ok(withDiagnostics.length > 0, "no diagnostics were published");
+  } else {
+    // Without nomos.json the bundled analyzers run (D-046); a small clean project may have no findings.
+    for (const each of runs) assert.ok(each.facts.files.length > 0, `${each.language} analyzed no files`);
+  }
 
   const entity = run.facts.functions.find((f) => f.location);
   assert.ok(entity?.location);
@@ -52,5 +58,5 @@ export async function run(): Promise<void> {
   const graphTabs = vscode.window.tabGroups.all.flatMap((g) => g.tabs).filter((t) => t.label === "Nomos: Dependency Graph");
   assert.equal(graphTabs.length, 1, "the graph must stay a single tab");
 
-  console.log(`e2e: ${runs.map((r) => `${r.language} ${r.findings.length}`).join(", ")} findings, ${withDiagnostics.length} files with diagnostics, ${lenses.length} lenses in ${entity.location.file}`);
+  console.log(`e2e (${configured ? "nomos.json" : "bundled analyzers"}): ${runs.map((r) => `${r.language} ${r.findings.length}`).join(", ")} findings, ${withDiagnostics.length} files with diagnostics, ${lenses.length} lenses in ${entity.location.file}`);
 }

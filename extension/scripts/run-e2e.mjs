@@ -1,4 +1,4 @@
-// Starts the installed VS Code with this extension on a folder holding nomos.json (default: the repository).
+// Starts the installed VS Code with this extension on a folder (default: the repository, which holds nomos.json).
 // Usage: npm run e2e [-- <folder>]. VSCODE_EXE overrides the executable.
 import { spawnSync } from "node:child_process";
 import fs from "node:fs";
@@ -21,12 +21,32 @@ function findCode() {
 const env = { ...process.env };
 delete env.ELECTRON_RUN_AS_NODE;
 const profile = fs.mkdtempSync(path.join(os.tmpdir(), "nomos-e2e-"));
+
+// A folder without nomos.json runs the bundled analyzers (npm run package -- --bundle-only builds them, D-046).
+// Those may need a runtime from another extension, so it is installed into the test profile instead of disabling extensions.
+const bundled = !fs.existsSync(path.join(folder, "nomos.json"));
+const extensionsDir = path.join(profile, "extensions");
+const isolation = [`--extensions-dir=${extensionsDir}`];
+if (bundled) {
+  const registry = path.join(extension, "bundle", "analyzers.json");
+  if (!fs.existsSync(registry)) throw new Error(`${folder} has no nomos.json and the extension has no bundle; run: npm run package -- --bundle-only`);
+  const runtimes = [...new Set(JSON.parse(fs.readFileSync(registry, "utf8")).analyzers.flatMap((a) => (a.runtime ? [a.runtime.extension] : [])))];
+  const cli = spawnSync(process.platform === "win32" ? "where" : "which", ["code"], { encoding: "utf8" }).stdout.split(/\r?\n/).find(Boolean);
+  for (const id of runtimes) {
+    // The CLI script is a .cmd on Windows, which only starts through a shell; the arguments are fixed here.
+    const install = spawnSync(process.platform === "win32" ? `"${cli}"` : cli, [`--extensions-dir="${extensionsDir}"`, "--install-extension", id], { env, stdio: "inherit", shell: process.platform === "win32" });
+    if (install.status !== 0) throw new Error(`could not install ${id} into the test profile`);
+  }
+} else {
+  isolation.push("--disable-extensions");
+}
+
 const result = spawnSync(findCode(), [
   folder,
   `--extensionDevelopmentPath=${extension}`,
   `--extensionTestsPath=${path.join(extension, "out", "e2e", "index.js")}`,
   `--user-data-dir=${profile}`,
-  "--disable-extensions",
+  ...isolation,
   "--disable-workspace-trust",
   "--skip-welcome",
   "--skip-release-notes",

@@ -6,7 +6,7 @@
 
 Все выводы — эвристики: у каждой находки есть уровень уверенности и объяснение. Платформа даёт статистику для анализа разработчиком, порогов приёмки нет.
 
-Устройство (D-020): отдельные анализаторы по языкам, контракты в `contracts/`, расширение VS Code в `extension/`. См. [ARCHITECTURE](docs/ARCHITECTURE.md) и [ROADMAP](docs/ROADMAP.md).
+Устройство (D-020): отдельные анализаторы по языкам, контракты в `contracts/`, расширение VS Code в `extension/`. См. [ARCHITECTURE](docs/ARCHITECTURE.md) и [ROADMAP](docs/ROADMAP.md). Расширение несёт анализаторы C# и Go с собой и работает в любой папке, `nomos.json` необязателен: `npm run package -- --target win32-x64` в `extension/` собирает `.vsix` (D-046).
 
 ## Быстрый старт
 

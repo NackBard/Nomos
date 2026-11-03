@@ -2,6 +2,8 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import test from "node:test";
+import { RegistryFileName, implicitWorkspace, launchConfig, readRegistry, selectBundled } from "../core/bundle";
+import type { RuntimeRequirement } from "../core/bundle";
 import { ContractError, checkContract } from "../core/contracts";
 import type { AnalysisRun, Facts, Finding } from "../core/model";
 import { AnalyzerError, analyze, readManifest, readWorkspace } from "../core/runner";
@@ -219,6 +221,7 @@ function fakeAnalyzer(folder: string, exitCode: number): string[] {
     const [command, ...args] = process.argv.slice(2);
     if (command === "manifest") console.log(JSON.stringify({ name: "fake", language: "toy", version: "1.0.0", schemaVersion: "1.0.0", paradigms: [], capabilities: { semantic: false, supportedRules: [] }, rules: [] }));
     else {
+      fs.writeFileSync(${JSON.stringify(path.join(folder, "last-args.json"))}, JSON.stringify(args));
       fs.writeFileSync(args[args.indexOf("--sarif") + 1], ${JSON.stringify(JSON.stringify(sarif))});
       if (${exitCode} !== 0 && ${exitCode} !== 4) { console.error("boom"); process.exit(${exitCode}); }
       console.log(JSON.stringify({ schemaVersion: "1.0.0", analyzer: { name: "fake", version: "1.0.0", language: "toy" }, files: [], modules: [], types: [], functions: [], dependencies: [], skippedRules: [], diagnostics: [] }));
@@ -252,5 +255,47 @@ test("exit code 4 is a partial result, other codes are reported with their meani
 test("a command that cannot start is a readable error", async () => {
   const { folder, workspace } = workspaceWith(0);
   await assert.rejects(readManifest({ language: "toy", command: ["no-such-program-nomos"] }, folder), /cannot start/);
+  await assert.rejects(readManifest({ language: "toy", command: [process.execPath], cwd: "missing" }, folder), /working directory .*missing does not exist/);
   assert.equal(workspace.analyzers.length, 1);
+});
+
+function temporaryFolder(): string {
+  return fs.mkdtempSync(path.join(fs.realpathSync(process.env.TEMP ?? process.env.TMPDIR ?? "/tmp"), "nomos-"));
+}
+
+test("a build without bundled analyzers has no registry", () => {
+  assert.equal(readRegistry(temporaryFolder()), undefined);
+});
+
+test("without nomos.json the bundled analyzers whose files exist run on their defaults", async () => {
+  const bundle = temporaryFolder();
+  const [, script] = fakeAnalyzer(bundle, 0);
+  fs.renameSync(script, path.join(bundle, "toy.js"));
+  // The runtime stands in for a program another extension provides; here it is Node itself.
+  const runtime: RuntimeRequirement = { name: "Toy runtime", extension: "toy.runtime", command: "toy.acquire", argument: {}, resultField: "path" };
+  fs.writeFileSync(path.join(bundle, RegistryFileName), JSON.stringify({
+    analyzers: [
+      { language: "toy", command: ["${runtime}", "${bundle}/toy.js"], files: ["**/*.toy"], runtime },
+      { language: "other", command: ["${bundle}/other"], files: ["**/*.other"] },
+    ],
+  }));
+  const registry = readRegistry(bundle)!;
+  const asked: string[][] = [];
+  const selected = await selectBundled(registry, async (globs) => (asked.push(globs), globs.includes("**/*.toy")));
+  assert.deepEqual(asked, [["**/*.toy"], ["**/*.other"]]);
+  assert.deepEqual(selected.map((a) => a.language), ["toy"]);
+
+  // VS Code hands out the storage path without creating the folder.
+  const storage = path.join(temporaryFolder(), "globalStorage", "nomos.nomos");
+  assert.throws(() => launchConfig(selected[0], bundle, storage), /Toy runtime is required/);
+  const config = launchConfig(selected[0], bundle, storage, process.execPath);
+  assert.deepEqual(config.command, [process.execPath, `${bundle}/toy.js`]);
+
+  const project = temporaryFolder();
+  const run = await analyze(config, project, implicitWorkspace(config));
+  assert.equal(run.root, project);
+  const args = JSON.parse(fs.readFileSync(path.join(bundle, "last-args.json"), "utf8")) as string[];
+  assert.equal(args.includes("--config"), false);
+  assert.equal(fs.existsSync(path.join(storage, ".nomos", "toy.sarif")), true);
+  assert.equal(fs.existsSync(path.join(project, ".nomos")), false);
 });

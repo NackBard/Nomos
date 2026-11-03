@@ -20,7 +20,7 @@ const (
 	Language        = "go"
 	Version         = "0.1.0"
 	factsVersion    = "1.2.0"
-	manifestVersion = "1.1.0"
+	manifestVersion = "1.2.0"
 )
 
 // Coverage is line coverage from a Cobertura or LCOV report (spec/metrics.md).
@@ -116,6 +116,7 @@ func Manifest() ([]byte, error) {
 	return encode(map[string]any{
 		"name": Name, "language": Language, "version": Version, "schemaVersion": manifestVersion,
 		"paradigms":    []string{"functional", "oop", "structural"},
+		"files":        []string{"**/*.go"},
 		"capabilities": map[string]any{"semantic": true, "supportedRules": Supported, "partialAnalysis": false, "sarif": true},
 		"rules":        rules,
 	})

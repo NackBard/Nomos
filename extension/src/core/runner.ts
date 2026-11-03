@@ -31,8 +31,14 @@ interface Exit { code: number | null; stdout: string; stderr: string }
 function run(config: AnalyzerConfig, folder: string, args: string[], signal?: AbortSignal): Promise<Exit> {
   return new Promise((resolve, reject) => {
     const [command, ...fixed] = config.command;
+    const cwd = config.cwd ? path.resolve(folder, config.cwd) : folder;
+    // spawn reports a missing working directory as a missing program; name the real cause.
+    if (!fs.existsSync(cwd)) {
+      reject(new AnalyzerError(`${config.language}: cannot start "${command}": the working directory ${cwd} does not exist`));
+      return;
+    }
     const child = spawn(command, [...fixed, ...args], {
-      cwd: config.cwd ? path.resolve(folder, config.cwd) : folder,
+      cwd,
       env: { ...process.env, ...config.env },
       signal,
     });
@@ -63,7 +69,7 @@ export async function readManifest(config: AnalyzerConfig, folder: string, signa
   const exit = await run(config, folder, ["manifest"], signal);
   if (exit.code !== SuccessCode) throw failure(config, "manifest", exit);
   const manifest = checkContract<Manifest>("manifest", parseJson(exit.stdout, `${config.language} manifest`), `${config.language} manifest`);
-  if (manifest.language !== config.language) throw new ContractError(`manifest language "${manifest.language}" differs from nomos.json "${config.language}"`);
+  if (manifest.language !== config.language) throw new ContractError(`manifest language "${manifest.language}" differs from the configured "${config.language}"`);
   return manifest;
 }
 
@@ -75,7 +81,9 @@ export async function analyze(config: AnalyzerConfig, folder: string, workspace:
   const sarifRelative = path.posix.join(".nomos", `${config.language}.sarif`);
   const sarifFile = path.join(workingDirectory, sarifRelative);
   const wantsSarif = manifest.capabilities.sarif !== false;
-  const args = ["analyze", "--root", root, "--config", path.join(folder, WorkspaceFileName)];
+  const workspaceFile = path.join(folder, WorkspaceFileName);
+  // Without nomos.json (bundled analyzers, D-046) the analyzer runs on its defaults.
+  const args = ["analyze", "--root", root, ...(fs.existsSync(workspaceFile) ? ["--config", workspaceFile] : [])];
   if (wantsSarif) {
     fs.mkdirSync(path.dirname(sarifFile), { recursive: true });
     fs.rmSync(sarifFile, { force: true });
@@ -85,7 +93,7 @@ export async function analyze(config: AnalyzerConfig, folder: string, workspace:
   const exit = await run(config, folder, args, signal);
   if (exit.code !== SuccessCode && exit.code !== PartialCode) throw failure(config, "analyze", exit);
   const facts = checkContract<Facts>("facts", parseJson(exit.stdout, `${config.language} facts`), `${config.language} facts`);
-  if (facts.analyzer.language !== config.language) throw new ContractError(`facts language "${facts.analyzer.language}" differs from nomos.json "${config.language}"`);
+  if (facts.analyzer.language !== config.language) throw new ContractError(`facts language "${facts.analyzer.language}" differs from the configured "${config.language}"`);
   const sarif = wantsSarif ? parseJson(fs.readFileSync(sarifFile, "utf8"), `${config.language} SARIF`) : undefined;
   const findings = wantsSarif ? readFindings(sarif, `${config.language} SARIF`) : [];
   return { language: config.language, root, facts, findings, partial: exit.code === PartialCode, ruleTitles: readRuleTitles(sarif) };

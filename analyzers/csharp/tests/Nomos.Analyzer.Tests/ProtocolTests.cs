@@ -59,6 +59,8 @@ public class ProtocolTests
         var rules = manifest.RootElement.GetProperty("capabilities").GetProperty("supportedRules").EnumerateArray().Select(r => r.GetString()).ToList();
         Assert.Contains("CS.NAM001", rules);
         Assert.DoesNotContain("CC005", rules);
+        Assert.Equal("1.2.0", manifest.RootElement.GetProperty("schemaVersion").GetString());
+        Assert.Equal(["**/*.cs"], manifest.RootElement.GetProperty("files").EnumerateArray().Select(f => f.GetString()));
     }
 
     [Theory]
