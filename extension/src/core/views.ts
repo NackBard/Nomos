@@ -97,8 +97,11 @@ export function lensesFor(facts: Facts, file: string): Lens[] {
 
 export type NodeShape = "circle" | "triangle" | "diamond" | "square" | "rounded" | "hexagon" | "pentagon" | "dot";
 export interface GraphNode { id: string; label: string; language: string; cycle: boolean; size: number; layer: number; role: "module" | "type"; shape: NodeShape; kind?: string; file?: string; line?: number }
-/** One edge per kind of dependency between two nodes. A pair names the two modules this edge opens, when it joins modules. */
-export interface GraphEdge { from: string; to: string; kind: string; weight: number; cycle: boolean; pair?: [string, string] }
+/**
+ * One edge per kind of dependency between two nodes. A pair names the two modules this edge opens, when it joins modules.
+ * Via names the types behind a folded module at the far end of the edge, in order: what is called, used or inherited there, or who does it.
+ */
+export interface GraphEdge { from: string; to: string; kind: string; weight: number; cycle: boolean; pair?: [string, string]; via?: string[] }
 /** Groups are set for the two modules of a pair: the layer of a node then says which module it is from. */
 export interface Graph { nodes: GraphNode[]; edges: GraphEdge[]; groups?: string[] }
 export type GraphLevel = "module" | "type";
@@ -166,15 +169,21 @@ function dependencyLayers(ids: string[], edges: GraphEdge[]): Map<string, number
 
 class EdgeSet {
   private readonly edges = new Map<string, GraphEdge>();
+  private readonly via = new Map<GraphEdge, Set<string>>();
 
-  add(from: string, to: string, kind: string, count: number | undefined, cycle: boolean, pair?: [string, string]): void {
+  add(from: string, to: string, kind: string, count: number | undefined, cycle: boolean, pair?: [string, string], via?: string): void {
     const key = `${from}\u0000${to}\u0000${kind}`;
-    const edge = this.edges.get(key);
+    let edge = this.edges.get(key);
     if (edge) edge.weight += count ?? 1;
-    else this.edges.set(key, { from, to, kind, weight: count ?? 1, cycle, pair });
+    else this.edges.set(key, (edge = { from, to, kind, weight: count ?? 1, cycle, pair }));
+    if (via !== undefined) {
+      const names = this.via.get(edge) ?? new Set<string>();
+      this.via.set(edge, names.add(via));
+    }
   }
 
   list(): GraphEdge[] {
+    for (const [edge, names] of this.via) edge.via = [...names].sort(compare);
     return [...this.edges.values()];
   }
 }
@@ -243,6 +252,8 @@ export function buildFocus(runs: AnalysisRun[], module: string, peer?: string): 
     unitNode.set(f.id, () => ({ id: f.id, label: f.name, language, cycle: false, size: 1, layer: 0, role: "type", shape: "dot", kind: "function", file: f.location?.file, line: f.location?.startLine }));
   }
 
+  const names = new Map([...facts.types, ...facts.functions].map((e) => [e.id, e.name]));
+  const nameOf = (unit: string) => names.get(unit) ?? unit;
   const edges = new EdgeSet();
   const shown = new Set<string>(peer ? [] : facts.types.filter((t) => t.module === module).map((t) => t.id));
   const peers = new Set<string>();
@@ -262,11 +273,11 @@ export function buildFocus(runs: AnalysisRun[], module: string, peer?: string): 
       edges.add(from, to, dependency.kind, dependency.count, linked(from, to));
       shown.add(from).add(to);
     } else if (a === module) {
-      edges.add(from, b, dependency.kind, dependency.count, modulesLinked(a, b), [module, b]);
+      edges.add(from, b, dependency.kind, dependency.count, modulesLinked(a, b), [module, b], nameOf(to));
       shown.add(from);
       peers.add(b);
     } else if (b === module) {
-      edges.add(a, to, dependency.kind, dependency.count, modulesLinked(a, b), [module, a]);
+      edges.add(a, to, dependency.kind, dependency.count, modulesLinked(a, b), [module, a], nameOf(from));
       shown.add(to);
       peers.add(a);
     }

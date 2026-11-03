@@ -4,6 +4,7 @@ import * as vscode from "vscode";
 import type { AnalysisRun } from "../core/model";
 import { buildFocus, buildGraph, neighbourGroup } from "../core/views";
 import type { GraphLevel } from "../core/views";
+import { graphPage } from "./graphPage";
 
 let panel: vscode.WebviewPanel | undefined;
 let level: GraphLevel = "module";
@@ -12,54 +13,8 @@ let focus: { module: string; peer?: string } | undefined;
 let runsOf: () => AnalysisRun[] = () => [];
 let stale = false;
 
-// Medium tones that read on light and dark themes. Red stays for cycles; the last color covers all deeper layers.
-const LAYER_COLORS = ["#2f9e8f", "#3f8fdc", "#7a6fe0", "#c060c8", "#e0a020", "#8a9a2c", "#c07a50", "#8a94a6"];
-// One color per kind of dependency in the facts contract.
-const EDGE_COLORS: Record<string, string> = { inheritance: "#e0559a", call: "#e0a020", "type-ref": "#3f9fe0", import: "#38b070" };
-
 function page(webview: vscode.Webview, script: vscode.Uri): string {
-  const nonce = randomBytes(16).toString("hex");
-  return `<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'nonce-${nonce}'; script-src 'nonce-${nonce}'">
-<title>Nomos graph</title>
-<style nonce="${nonce}">
-  html, body { height: 100%; margin: 0; overflow: hidden; color: var(--vscode-foreground); background: var(--vscode-editor-background); font: 12px var(--vscode-font-family); }
-  #bar { position: fixed; top: 0; left: 0; right: 0; padding: 8px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; background: var(--vscode-editor-background); }
-  button { color: var(--vscode-button-secondaryForeground); background: var(--vscode-button-secondaryBackground); border: 0; padding: 4px 10px; cursor: pointer; }
-  button[aria-pressed="true"] { color: var(--vscode-button-foreground); background: var(--vscode-button-background); }
-  button:disabled { opacity: .5; cursor: default; }
-  #graph { width: 100%; height: 100%; display: block; cursor: grab; }
-  .edge { fill: none; stroke: var(--vscode-foreground); stroke-opacity: .6; pointer-events: none; vector-effect: non-scaling-stroke; }
-  .edge.cycle { stroke-dasharray: 6 3; stroke-width: 2; stroke-opacity: .9; }
-  .hit { fill: none; stroke: transparent; stroke-width: 12; pointer-events: stroke; vector-effect: non-scaling-stroke; }
-  .hit.open { cursor: pointer; }
-  .node { cursor: pointer; stroke: var(--vscode-editor-background); }
-  .node.cycle { stroke: var(--vscode-errorForeground); }
-  .node.peer { fill: var(--vscode-descriptionForeground); }
-  text.peer { font-weight: 600; }
-  text { fill: var(--vscode-foreground); pointer-events: none; paint-order: stroke; stroke: var(--vscode-editor-background); stroke-width: 3px; }
-  .dim { opacity: .12; }
-  .quiet text { display: none; }
-  .quiet text.near { display: block; }
-  #legend { display: flex; gap: 8px; flex-wrap: wrap; }
-  #legend span { display: flex; gap: 4px; align-items: center; }
-  #legend i { width: 10px; height: 10px; border-radius: 50%; }
-  #legend i.cycle { box-sizing: border-box; border: 2px solid var(--vscode-errorForeground); }
-  #legend i.kind { width: 14px; height: 3px; border-radius: 0; }
-  #legend svg { width: 12px; height: 12px; fill: var(--vscode-foreground); }
-${LAYER_COLORS.map((color, i) => `  .layer-${i} { fill: ${color}; background: ${color}; }`).join("\n")}
-${Object.entries(EDGE_COLORS).map(([kind, color]) => `  .kind-${kind} { stroke: ${color}; background: ${color}; }`).join("\n")}
-</style>
-</head>
-<body>
-<div id="bar"><button data-level="module">Modules</button><button data-level="type">Types</button><span id="info"></span><div id="legend" data-colors="${LAYER_COLORS.length}"></div></div>
-<svg id="graph"></svg>
-<script nonce="${nonce}" src="${webview.asWebviewUri(script)}"></script>
-</body>
-</html>`;
+  return graphPage(randomBytes(16).toString("hex"), webview.asWebviewUri(script).toString());
 }
 
 function send(): void {
@@ -97,7 +52,7 @@ export function showGraph(context: vscode.ExtensionContext, runs: () => Analysis
   }
   const media = vscode.Uri.joinPath(context.extensionUri, "media");
   panel = vscode.window.createWebviewPanel("nomos.graph", "Nomos: Dependency Graph", { viewColumn: vscode.ViewColumn.Beside, preserveFocus }, { enableScripts: true, localResourceRoots: [media], retainContextWhenHidden: true });
-  panel.webview.html = page(panel.webview, panel.webview.asWebviewUri(vscode.Uri.joinPath(media, "graph.js")));
+  panel.webview.html = page(panel.webview, vscode.Uri.joinPath(media, "graph.js"));
   panel.iconPath = vscode.Uri.joinPath(media, "icon.svg");
   panel.onDidDispose(() => (panel = undefined));
   panel.onDidChangeViewState(() => {

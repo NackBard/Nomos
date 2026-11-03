@@ -163,6 +163,8 @@ test("a module shows its types and one line per kind to each other module", () =
     ["B", "A.Z", "call", 1, ["A", "B"]],
     ["A.Z", "C", "type-ref", 1, ["A", "C"]],
   ]);
+  // A line into a folded module names what it reaches there, a line out of one names who comes from there.
+  assert.deepEqual(graph.edges.map((e) => e.via), [undefined, ["Y"], ["Y"], ["free"], ["W"]]);
 });
 
 test("a pair of modules shows only the links between their types, in two groups", () => {
@@ -170,7 +172,7 @@ test("a pair of modules shows only the links between their types, in two groups"
   assert.deepEqual(graph.groups, ["A", "B"]);
   assert.deepEqual(graph.nodes.map((n) => [n.id, n.layer, n.shape]), [["A.X", 0, "circle"], ["A.Z", 0, "diamond"], ["B.Y", 1, "square"], ["B.free", 1, "dot"]]);
   assert.deepEqual(graph.edges.map((e) => [e.from, e.to, e.kind]), [["A.X", "B.Y", "call"], ["A.X", "B.Y", "type-ref"], ["B.free", "A.Z", "call"]]);
-  assert.ok(graph.edges.every((e) => !e.pair));
+  assert.ok(graph.edges.every((e) => !e.pair && !e.via));
 });
 
 test("a module missing from facts has no focus", () => {
