@@ -164,7 +164,7 @@ node ci/src/cli.ts --workspace nomos.json --out .nomos --baseline baseline.json 
 | Функция | Источник |
 |---|---|
 | Дерево проблем | SARIF, сгруппированный по модулю и категории; рядом метрики из facts |
-| Diagnostics | SARIF (`level`, `message`, `region`) |
+| Diagnostics | SARIF (`message`, `region`; `level` — только при `nomos.diagnostics: level`, по умолчанию подсказки, D-054) |
 | CodeLens | метрики функций и типов из facts |
 | Граф | `modules`/`types`, `dependencies`, `cycles` из facts; webview: модули, типы выбранного модуля, связи типов двух модулей (D-045) |
 | Признаки парадигм | `paradigmEvidence`, `activeParadigms`, `skippedRules` |

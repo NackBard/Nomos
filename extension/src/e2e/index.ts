@@ -26,6 +26,17 @@ export async function run(): Promise<void> {
     assert.deepEqual(runs.map((r) => r.language).sort(), workspace.analyzers.map((a) => a.language).sort(), "every analyzer of nomos.json must run");
     for (const each of runs) assert.ok(each.findings.length > 0, `no findings from ${each.language}`);
     assert.ok(withDiagnostics.length > 0, "no diagnostics were published");
+    // Findings are faint hints by default; the setting changes their look without a new analysis.
+    assert.ok(withDiagnostics.every(([, list]) => list.every((d) => d.source !== "nomos" || d.severity === vscode.DiagnosticSeverity.Hint)), "findings must be hints by default");
+    const settings = vscode.workspace.getConfiguration("nomos");
+    await settings.update("diagnostics", "off", vscode.ConfigurationTarget.Global);
+    try {
+      const left = vscode.languages.getDiagnostics().filter(([, list]) => list.some((d) => d.source === "nomos"));
+      assert.equal(left.length, 0, "diagnostics must be gone when the setting is off");
+    } finally {
+      await settings.update("diagnostics", undefined, vscode.ConfigurationTarget.Global);
+    }
+    assert.ok(vscode.languages.getDiagnostics().some(([, list]) => list.some((d) => d.source === "nomos")), "diagnostics must come back");
   } else {
     // Without nomos.json the bundled analyzers run (D-046); a small clean project may have no findings.
     for (const each of runs) assert.ok(each.facts.files.length > 0, `${each.language} analyzed no files`);

@@ -9,5 +9,10 @@
   "view.paradigms": "Paradigms and Skipped Rules",
   "config.analyzeOnSave": "Run the analyzers after a file is saved.",
   "config.codeLens": "Show metrics of functions and types above their declarations.",
+  "config.diagnostics": "How findings look in the editor. The Findings view lists them in every case.",
+  "config.diagnostics.hint": "Faint dots under the code; not in the Problems panel.",
+  "config.diagnostics.information": "Blue underlines, listed in the Problems panel.",
+  "config.diagnostics.level": "By the analyzer's level: yellow warnings, red errors, in the Problems panel.",
+  "config.diagnostics.off": "Not in the editor, only in the Findings view.",
   "config.practices": "Practices whose rules run in a folder without `nomos.json` (ids from **Nomos: Choose Practices**). `null` runs every practice. Metrics are shown either way. In a folder with `nomos.json`, its `practices` field decides."
 }

@@ -116,6 +116,23 @@
           "default": true,
           "description": "%config.codeLens%"
         },
+        "nomos.diagnostics": {
+          "type": "string",
+          "enum": [
+            "hint",
+            "information",
+            "level",
+            "off"
+          ],
+          "enumDescriptions": [
+            "%config.diagnostics.hint%",
+            "%config.diagnostics.information%",
+            "%config.diagnostics.level%",
+            "%config.diagnostics.off%"
+          ],
+          "default": "hint",
+          "description": "%config.diagnostics%"
+        },
         "nomos.practices": {
           "type": [
             "array",

@@ -26,6 +26,16 @@ const severities: Record<Finding["level"], vscode.DiagnosticSeverity> = {
   note: vscode.DiagnosticSeverity.Information,
 };
 
+/** How findings look in the editor (`nomos.diagnostics`); undefined means they are not shown there, only in the tree. */
+function diagnosticSeverity(finding: Finding): vscode.DiagnosticSeverity | undefined {
+  switch (vscode.workspace.getConfiguration("nomos").get<string>("diagnostics", "hint")) {
+    case "off": return undefined;
+    case "information": return vscode.DiagnosticSeverity.Information;
+    case "level": return severities[finding.level];
+    default: return vscode.DiagnosticSeverity.Hint;
+  }
+}
+
 function workspaceFolders(): string[] {
   return (vscode.workspace.workspaceFolders ?? []).map((f) => f.uri.fsPath);
 }
@@ -51,9 +61,9 @@ async function hasFiles(folder: string, globs: string[]): Promise<boolean> {
   return false;
 }
 
-function toDiagnostic(finding: Finding, t: Translate): vscode.Diagnostic {
+function toDiagnostic(finding: Finding, severity: vscode.DiagnosticSeverity, t: Translate): vscode.Diagnostic {
   const { range } = locationOf(finding);
-  const diagnostic = new vscode.Diagnostic(range, t("{0} (heuristic, {1} confidence)", finding.message, confidenceText(finding.confidence, t)), severities[finding.level]);
+  const diagnostic = new vscode.Diagnostic(range, t("{0} (heuristic, {1} confidence)", finding.message, confidenceText(finding.confidence, t)), severity);
   diagnostic.source = "nomos";
   diagnostic.code = finding.ruleId;
   return diagnostic;
@@ -158,18 +168,25 @@ export function activate(context: vscode.ExtensionContext): NomosApi {
     }));
   }
 
-  function publish(planned = runs.length): void {
+  /** Findings in the editor; the setting only changes how they look, so a change needs no new analysis. */
+  function showDiagnostics(): void {
     diagnostics.clear();
     const byFile = new Map<string, vscode.Diagnostic[]>();
     for (const run of runs) {
       for (const finding of run.findings) {
+        const severity = diagnosticSeverity(finding);
+        if (severity === undefined) return;
         const uri = vscode.Uri.file(path.join(run.root, finding.file));
         const list = byFile.get(uri.toString()) ?? [];
-        list.push(toDiagnostic({ ...finding, file: uri.fsPath }, t));
+        list.push(toDiagnostic({ ...finding, file: uri.fsPath }, severity, t));
         byFile.set(uri.toString(), list);
       }
     }
     for (const [uri, list] of byFile) diagnostics.set(vscode.Uri.parse(uri), list);
+  }
+
+  function publish(planned = runs.length): void {
+    showDiagnostics();
     findings.update(runs, texts);
     paradigms.update(runs, texts);
     lenses.refresh();
@@ -280,6 +297,7 @@ export function activate(context: vscode.ExtensionContext): NomosApi {
     vscode.commands.registerCommand("nomos.exportClassDiagram", (target?: DiagramTarget) => exportClassDiagram(runs, target)),
     vscode.workspace.onDidChangeConfiguration((event) => {
       if (event.affectsConfiguration("nomos.practices")) void analyzeAll();
+      if (event.affectsConfiguration("nomos.diagnostics")) showDiagnostics();
     }),
     vscode.workspace.onDidSaveTextDocument((document) => {
       const own = path.basename(document.uri.fsPath) === WorkspaceFileName || path.basename(path.dirname(document.uri.fsPath)) === ".nomos";

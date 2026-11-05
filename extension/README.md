@@ -6,7 +6,7 @@ Statistics and observations about your code: metrics per function, type and modu
 
 Open the Nomos icon in the activity bar. The extension looks at the folder, starts the bundled analyzers whose files it finds, and shows:
 
-- findings in the Problems panel and in the side bar, grouped by module;
+- findings in the side bar, grouped by module, and as faint hints in the editor (`nomos.diagnostics` turns them into underlines in the Problems panel or hides them);
 - metrics above declarations (CodeLens);
 - the dependency graph next to the code: modules by dependency depth, types of the selected module;
 - which paradigms each module shows and which rules were skipped, with the reason.
