@@ -246,7 +246,7 @@ internal sealed class FactsBuilder
         foreach (var rule in _options.SupportedRules.Where(r => !ran.Contains(r.Id)))
             skipped.Add(new FactsSkippedRule(rule.Id, null, Disabled, ParadigmSigns.Enabled(rule.Paradigms, enabled).Count == 0 && rule.Paradigms.Count > 0
                 ? $"Rule needs paradigm {string.Join(" or ", rule.Paradigms.Order(StringComparer.Ordinal))}, which is off for this language; 'paradigms' in nomos.json selects them"
-                : "Rule is off by default, by nomos.json or by --rules"));
+                : _options.DisabledReasons.GetValueOrDefault(rule.Id) ?? "Rule is off by default, by nomos.json or by --rules"));
 
         foreach (var rule in _options.SupportedRules.Where(r => ran.Contains(r.Id)))
         {

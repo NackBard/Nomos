@@ -35,6 +35,26 @@ func SpecRules() []SpecRule {
 	return rules
 }
 
+// SpecPractice is one practice of spec/practices.yaml; practices.json is generated from it (npm run spec-json in conformance/runner).
+type SpecPractice struct {
+	ID          string   `json:"id"`
+	Title       string   `json:"title"`
+	Description string   `json:"description"`
+	Rules       []string `json:"rules"`
+}
+
+//go:embed practices.json
+var practicesFile []byte
+
+// SpecPractices reads the embedded practice catalog.
+func SpecPractices() []SpecPractice {
+	var practices []SpecPractice
+	if err := json.Unmarshal(practicesFile, &practices); err != nil {
+		panic(err)
+	}
+	return practices
+}
+
 // RuleConfig is an entry of rules in the workspace file.
 type RuleConfig struct {
 	Enabled   *bool          `json:"enabled"`
@@ -67,6 +87,7 @@ type Config struct {
 	} `json:"analyzers"`
 	SchemaVersion string                `json:"schemaVersion"`
 	Rules         map[string]RuleConfig `json:"rules"`
+	Practices     *[]string             `json:"practices"`
 	Paradigms     map[string][]string   `json:"paradigms"`
 	Layers        []Layer               `json:"layers"`
 	Scoring       Scoring               `json:"scoring"`
@@ -91,6 +112,17 @@ func LoadConfig(path string) (*Config, error) {
 		if !strings.HasPrefix(config.SchemaVersion, "1.") {
 			return nil, ConfigError{fmt.Sprintf("%s: expected schemaVersion 1.x, found '%s'", path, config.SchemaVersion)}
 		}
+		if config.Practices != nil {
+			known := map[string]bool{}
+			for _, practice := range SpecPractices() {
+				known[practice.ID] = true
+			}
+			for _, id := range *config.Practices {
+				if !known[id] {
+					return nil, ConfigError{fmt.Sprintf("%s: unknown practice '%s'", path, id)}
+				}
+			}
+		}
 	}
 	fill := func(target *map[string]float64, defaults map[string]float64) {
 		if *target == nil {
@@ -111,6 +143,32 @@ func LoadConfig(path string) (*Config, error) {
 		config.Scoring.MinKloc = 0.2
 	}
 	return config, nil
+}
+
+// OutsidePractices gives, for each rule outside the practices the workspace file selects, the message recorded
+// in skippedRules (D-051). Nil when the file selects no practices: every rule runs.
+func (c *Config) OutsidePractices() map[string]string {
+	if c.Practices == nil {
+		return nil
+	}
+	selected := set(*c.Practices...)
+	owners := map[string][]string{}
+	for _, practice := range SpecPractices() {
+		for _, rule := range practice.Rules {
+			owners[rule] = append(owners[rule], practice.ID)
+		}
+	}
+	outside := map[string]string{}
+	for rule, practices := range owners {
+		chosen := false
+		for _, practice := range practices {
+			chosen = chosen || selected[practice]
+		}
+		if !chosen {
+			outside[rule] = "Rule belongs to practice " + strings.Join(sortedStrings(practices), " or ") + ", which is not selected; 'practices' in nomos.json selects them"
+		}
+	}
+	return outside
 }
 
 // EnabledParadigms follows D-011: the functional style is opt-in, like in the C# analyzer.

@@ -24,6 +24,9 @@ public sealed record FactsOptions(string AnalyzerName, string AnalyzerVersion, I
     /// <summary>Gets the external inputs this run has, in the terms of <c>requires</c> in spec/rules.</summary>
     public IReadOnlySet<string> AvailableInputs { get; init; } = new HashSet<string>();
 
+    /// <summary>Gets why configuration turned rules off, by rule id, when it is more specific than the general message (practices, D-051).</summary>
+    public IReadOnlyDictionary<string, string> DisabledReasons { get; init; } = new Dictionary<string, string>();
+
     /// <summary>Gets the number of results in that SARIF file.</summary>
     public int ResultCount { get; init; }
 }

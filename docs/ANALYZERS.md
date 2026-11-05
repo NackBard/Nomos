@@ -1,6 +1,6 @@
 # Каталог правил
 
-Файл сформирован из `spec/rules/*.yaml` командой `npm run rules-doc` (`conformance/runner`). Правки вносятся в spec; `npm run validate` проверяет, что файл не устарел.
+Файл сформирован из `spec/rules/*.yaml` и `spec/practices.yaml` командой `npm run rules-doc` (`conformance/runner`). Правки вносятся в spec; `npm run validate` проверяет, что файл не устарел.
 
 Любой результат — эвристика с уровнем уверенности и объяснением. Порог — чувствительность детектора, а не граница приёмки. Какие правила реализует анализатор, сообщает его `manifest`.
 
@@ -104,3 +104,21 @@
 | SEC001 | Hardcoded secret (heuristic) | major | — | String literals assigned to secret-like names, and literals shaped like known credentials. | — |
 | SEC002 | Insecure deserialization (heuristic) | critical | — | Use of formatters that instantiate arbitrary types from input, or polymorphic type handling. | — |
 | SEC003 | SQL concatenation (heuristic) | major | — | SQL-looking text concatenated or interpolated with non-constant values. | — |
+
+## Практики
+
+Практика — набор правил, который можно выбрать: `practices` в `nomos.json` или команда «Nomos: Choose Practices» в VS Code (D-051). Правила вне выбранных практик не запускаются и записываются в `skippedRules` как `disabled-by-config`; метрики выводятся всегда. Правило может входить в несколько практик.
+
+| Id | Название | Что смотрит | Правила |
+|---|---|---|---|
+| solid | SOLID | Single responsibility, open/closed, Liskov substitution, interface segregation and dependency inversion in classes. | PRN001, PRN002, PRN003, PRN004, PRN005 |
+| simplicity | Simplicity | Do not repeat yourself, keep it simple, you are not going to need it, and the law of Demeter. | PRN006, PRN007, PRN008, PRN009 |
+| clean-code | Clean Code | Size and shape of functions and classes, placeholders, dead and commented-out code, empty catch blocks, naming. | CC001, CC002, CC003, CC004, CC006, CC007, CC008, CC009, CS.NAM001 |
+| oop | Object-oriented design | Encapsulation, inheritance, polymorphism, cohesion and coupling of classes, god classes and feature envy. | OOP001, OOP002, OOP003, OOP004, OOP005, OOP006, DSN004, DSN005 |
+| functional | Functional style | Purity, side effects in lambdas, mutable state, recursion and depth of higher-order functions. | FUN001, FUN002, FUN003, FUN004, FUN005 |
+| structural | Structured programming | Goto, global state and module size. | STR001, STR002, STR003 |
+| architecture | Architecture | Distance from the main sequence, dependency cycles, layer violations, god classes, feature envy and blast radius. | DSN001, DSN002, DSN003, DSN004, DSN005, DSN006 |
+| maintainability | Maintainability | Cyclomatic complexity, maintainability index, duplication and test coverage. | MNT001, MNT002, MNT003, MNT004 |
+| performance | Performance | Estimates of time and space complexity, quadratic patterns and allocations in hot loops. | ALG001, ALG002, ALG003, ALG004 |
+| patterns | Design patterns | Recognized patterns (singleton, factory, strategy, observer, decorator, repository, builder) and anti-patterns (service locator, anemic model, middle man). | PAT001, PAT002, PAT003, PAT004, PAT005, PAT006, PAT007, PAT101, PAT102, PAT103 |
+| security | Security | Hardcoded secrets, insecure deserialization and SQL built by concatenation, as heuristics. | SEC001, SEC002, SEC003 |

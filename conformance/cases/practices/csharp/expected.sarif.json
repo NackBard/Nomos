@@ -1,0 +1,5 @@
+{
+  "results": [
+    { "ruleId": "SEC003", "file": "Shop.cs", "startLine": 9 }
+  ]
+}

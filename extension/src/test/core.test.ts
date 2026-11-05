@@ -2,11 +2,13 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import test from "node:test";
-import { RegistryFileName, implicitWorkspace, launchConfig, readRegistry, selectBundled } from "../core/bundle";
+import { RegistryFileName, implicitWorkspace, launchConfig, readRegistry, selectBundled, writeWorkspaceFile } from "../core/bundle";
 import type { RuntimeRequirement } from "../core/bundle";
 import { ContractError, checkContract } from "../core/contracts";
 import type { AnalysisRun, Facts, Finding } from "../core/model";
-import { AnalyzerError, analyze, readManifest, readWorkspace } from "../core/runner";
+import { choiceToStore, describePractices, readPractices } from "../core/practices";
+import type { Practice } from "../core/practices";
+import { AnalyzerError, analyze, readManifest, readWorkspace, writePractices } from "../core/runner";
 import { readFindings, readRuleTitles } from "../core/sarif";
 import { buildFocus, buildGraph, describeFinding, formatMetrics, groupFindings, groupSkipped, lensesFor, neighbourGroup, shapeOf, summarizeStyles } from "../core/views";
 
@@ -311,4 +313,53 @@ test("without nomos.json the bundled analyzers whose files exist run on their de
   assert.equal(args.includes("--config"), false);
   assert.equal(fs.existsSync(path.join(storage, ".nomos", "toy.sarif")), true);
   assert.equal(fs.existsSync(path.join(project, ".nomos")), false);
+});
+
+const catalog: Practice[] = [
+  { id: "solid", title: "SOLID", description: "d", rules: ["PRN001"] },
+  { id: "security", title: "Security", description: "d", rules: ["SEC001"] },
+];
+
+test("the practice catalog of the package lists practices with their rules", () => {
+  const practices = readPractices(path.join(__dirname, "..", "..", "practices.json"));
+  assert.ok(practices.length > 0);
+  for (const practice of practices) assert.ok(practice.id && practice.title && practice.rules.length, practice.id);
+});
+
+test("choosing every practice stores nothing, so practices of a later version are on too", () => {
+  assert.equal(choiceToStore(catalog, ["security", "solid"]), undefined);
+  assert.deepEqual(choiceToStore(catalog, ["security"]), ["security"]);
+  assert.deepEqual(choiceToStore(catalog, []), []);
+  assert.equal(describePractices(catalog, undefined), "all practices");
+  assert.equal(describePractices(catalog, ["security"]), "Security");
+  assert.match(describePractices(catalog, []), /no rule runs/);
+});
+
+test("without nomos.json the chosen practices reach the analyzer through a workspace file in the storage", async () => {
+  const bundle = temporaryFolder();
+  const [, script] = fakeAnalyzer(bundle, 0);
+  const storage = path.join(temporaryFolder(), "globalStorage");
+  const config = { language: "toy", command: [process.execPath, script], cwd: storage };
+  fs.mkdirSync(storage, { recursive: true });
+  assert.deepEqual(implicitWorkspace(config), { schemaVersion: "1.0.0", analyzers: [config] });
+  const workspace = implicitWorkspace(config, ["security"]);
+  const file = writeWorkspaceFile(workspace, storage, "folder-toy");
+  assert.equal(path.dirname(path.dirname(file)), storage);
+  checkContract("nomos", JSON.parse(fs.readFileSync(file, "utf8")), "generated workspace file");
+
+  const project = temporaryFolder();
+  await analyze(config, project, workspace, undefined, file);
+  const args = JSON.parse(fs.readFileSync(path.join(bundle, "last-args.json"), "utf8")) as string[];
+  assert.equal(args[args.indexOf("--config") + 1], file);
+  assert.equal(fs.existsSync(path.join(project, "nomos.json")), false);
+});
+
+test("the choice is written into nomos.json, raising its version for the new field", () => {
+  const { folder } = workspaceWith(0);
+  writePractices(folder, ["solid"]);
+  const written = readWorkspace(folder);
+  assert.equal(written.schemaVersion, "1.1.0");
+  assert.deepEqual(written.practices, ["solid"]);
+  writePractices(folder, undefined);
+  assert.equal(readWorkspace(folder).practices, undefined);
 });

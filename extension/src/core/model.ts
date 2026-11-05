@@ -56,7 +56,8 @@ export interface AnalyzerConfig {
   timeoutSeconds?: number;
 }
 
-export interface Workspace { schemaVersion: string; analyzers: AnalyzerConfig[]; root?: string }
+/** The fields of nomos.json the extension reads or writes; practices since 1.1.0 (D-051). */
+export interface Workspace { schemaVersion: string; analyzers: AnalyzerConfig[]; root?: string; practices?: string[] }
 
 /** The result of one analyzer run: partial means exit code 4, some files were not parsed. */
 export interface AnalysisRun { language: string; root: string; facts: Facts; findings: Finding[]; partial: boolean; ruleTitles?: Record<string, string> }

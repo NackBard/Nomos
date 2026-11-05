@@ -1,4 +1,4 @@
 import fs from "node:fs";
-import { goRulesPath, renderGoRules } from "./go-rules.ts";
+import { generatedFiles } from "./go-rules.ts";
 
-fs.writeFileSync(goRulesPath, renderGoRules());
+for (const { file, content } of generatedFiles()) fs.writeFileSync(file, content);

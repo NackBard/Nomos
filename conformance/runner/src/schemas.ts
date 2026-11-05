@@ -4,7 +4,7 @@ import { Ajv2020 } from "ajv/dist/2020.js";
 import type { ValidateFunction } from "ajv/dist/2020.js";
 import { contractsDir } from "./paths.ts";
 
-export type SchemaName = "manifest" | "facts" | "rule" | "nomos" | "conformance-case";
+export type SchemaName = "manifest" | "facts" | "rule" | "practice" | "nomos" | "conformance-case";
 
 export function readJson(file: string): any {
   return JSON.parse(fs.readFileSync(file, "utf8").replace(/^﻿/, ""));

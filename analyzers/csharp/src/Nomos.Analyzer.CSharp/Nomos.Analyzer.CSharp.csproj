@@ -10,6 +10,7 @@
   <ItemGroup>
     <!-- The rules are data (spec/rules): titles, descriptions and rationale are read from here, not duplicated in code. -->
     <EmbeddedResource Include="..\..\..\..\spec\rules\*.yaml" LogicalName="spec/rules/%(Filename)%(Extension)" />
+    <EmbeddedResource Include="..\..\..\..\spec\practices.yaml" LogicalName="spec/practices.yaml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Nomos.Core\Nomos.Core.csproj" />

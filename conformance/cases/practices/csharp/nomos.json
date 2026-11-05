@@ -1,0 +1,6 @@
+{
+  "schemaVersion": "1.1.0",
+  "analyzers": [{ "language": "csharp", "command": ["nomos-csharp"] }],
+  "practices": ["security"],
+  "rules": { "SEC001": { "enabled": false } }
+}

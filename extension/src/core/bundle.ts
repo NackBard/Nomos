@@ -56,9 +56,24 @@ export async function selectBundled(registry: Registry, hasFiles: (globs: string
   return selected;
 }
 
-/** The workspace an analyzer sees without nomos.json: the folder itself, default settings. */
-export function implicitWorkspace(config: AnalyzerConfig): Workspace {
-  return { schemaVersion: "1.0.0", analyzers: [config] };
+/**
+ * The workspace an analyzer sees without nomos.json: the folder itself, default settings, plus the practices chosen
+ * in the VS Code settings (D-050). `practices` in nomos.json appeared in 1.1.0.
+ */
+export function implicitWorkspace(config: AnalyzerConfig, practices?: string[]): Workspace {
+  return practices === undefined ? { schemaVersion: "1.0.0", analyzers: [config] } : { schemaVersion: "1.1.0", analyzers: [config], practices };
+}
+
+/**
+ * Writes the workspace file an analyzer gets through --config when there is no nomos.json, into the extension's storage.
+ * `key` tells folders and languages apart; the file is rewritten before every run.
+ */
+export function writeWorkspaceFile(workspace: Workspace, storage: string, key: string): string {
+  const folder = path.join(storage, "workspaces");
+  fs.mkdirSync(folder, { recursive: true });
+  const file = path.join(folder, `${key}.json`);
+  fs.writeFileSync(file, JSON.stringify(workspace, null, 2) + "\n");
+  return file;
 }
 
 /**

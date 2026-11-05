@@ -1,10 +1,12 @@
 import fs from "node:fs";
 import path from "node:path";
 import * as vscode from "vscode";
-import { BundleFolderName, implicitWorkspace, launchConfig, readRegistry, selectBundled } from "./core/bundle";
+import { createHash } from "node:crypto";
+import { BundleFolderName, implicitWorkspace, launchConfig, readRegistry, selectBundled, writeWorkspaceFile } from "./core/bundle";
 import type { RuntimeRequirement } from "./core/bundle";
 import type { AnalysisRun, AnalyzerConfig, Finding, Workspace } from "./core/model";
-import { WorkspaceFileName, analyze, readWorkspace } from "./core/runner";
+import { PracticesFileName, choiceToStore, describePractices, readPractices } from "./core/practices";
+import { WorkspaceFileName, analyze, readWorkspace, writePractices } from "./core/runner";
 import { lensesFor } from "./core/views";
 import { openGraphWindow, refreshGraph, showGraph } from "./ui/graphPanel";
 import { FindingsTree, ParadigmsTree, locationOf } from "./ui/trees";
@@ -23,7 +25,18 @@ function workspaceFolders(): string[] {
 }
 
 /** One analyzer to run in one folder; preparing it may ask for a runtime, so it is deferred and fails on its own. */
-interface Planned { language: string; folder: string; prepare(): Promise<{ config: AnalyzerConfig; workspace: Workspace }> }
+interface Planned { language: string; folder: string; prepare(): Promise<{ config: AnalyzerConfig; workspace: Workspace; configFile?: string }> }
+
+/** Practices chosen for a folder without nomos.json (D-050); undefined means every practice. */
+function settingPractices(folder: string): string[] | undefined {
+  const value = vscode.workspace.getConfiguration("nomos", vscode.Uri.file(folder)).get<string[] | null>("practices");
+  return Array.isArray(value) ? value : undefined;
+}
+
+/** The practices that apply in a folder: nomos.json decides when present, the setting otherwise. */
+function folderPractices(folder: string): string[] | undefined {
+  return fs.existsSync(path.join(folder, WorkspaceFileName)) ? readWorkspace(folder).practices : settingPractices(folder);
+}
 
 async function hasFiles(folder: string, globs: string[]): Promise<boolean> {
   for (const glob of globs) {
@@ -77,6 +90,9 @@ export function activate(context: vscode.ExtensionContext): NomosApi {
   const bundleFolder = context.asAbsolutePath(BundleFolderName);
   const storage = context.globalStorageUri.fsPath;
   const runtimes = new Map<string, Promise<string>>();
+  const catalog = readPractices(context.asAbsolutePath(PracticesFileName));
+  /** Practices per analyzed folder, for the status bar tooltip. */
+  let practiceLines: string[] = [];
 
   /** Asks the extension that provides a runtime for its path, installing that extension on the person's consent. */
   function runtimePath(requirement: RuntimeRequirement, language: string): Promise<string> {
@@ -117,7 +133,12 @@ export function activate(context: vscode.ExtensionContext): NomosApi {
       prepare: async () => {
         const runtime = analyzer.runtime ? await runtimePath(analyzer.runtime, analyzer.language) : undefined;
         const config = launchConfig(analyzer, bundleFolder, storage, runtime);
-        return { config, workspace: implicitWorkspace(config) };
+        const practices = settingPractices(folder);
+        const workspace = implicitWorkspace(config, practices);
+        if (practices === undefined) return { config, workspace };
+        // Without nomos.json the chosen practices reach the analyzer through a workspace file of our own (D-050).
+        const key = createHash("sha256").update(folder).digest("hex").slice(0, 16) + "-" + analyzer.language;
+        return { config, workspace, configFile: writeWorkspaceFile(workspace, storage, key) };
       },
     }));
   }
@@ -147,7 +168,7 @@ export function activate(context: vscode.ExtensionContext): NomosApi {
       status.tooltip = "No folder has a nomos.json or files that a bundled analyzer reads. Click to analyze again.";
     } else {
       status.text = `$(telescope) Nomos: ${total} findings${scores ? ` · health ${scores}` : ""}`;
-      status.tooltip = "Statistics for your own analysis, not a verdict. Click to analyze again.";
+      status.tooltip = ["Statistics for your own analysis, not a verdict. Click to analyze again.", ...practiceLines].join("\n");
     }
     status.show();
   }
@@ -159,14 +180,16 @@ export function activate(context: vscode.ExtensionContext): NomosApi {
     const fresh: AnalysisRun[] = [];
     const failures: string[] = [];
     let planned = 0;
+    const lines: string[] = [];
     await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: "Nomos: analyzing" }, async () => {
       for (const folder of workspaceFolders()) {
         try {
+          lines.push(`Practices${workspaceFolders().length > 1 ? ` in ${path.basename(folder)}` : ""}: ${describePractices(catalog, folderPractices(folder))}`);
           for (const item of await plan(folder)) {
             planned++;
             try {
-              const { config, workspace } = await item.prepare();
-              const run = await analyze(config, folder, workspace, controller.signal);
+              const { config, workspace, configFile } = await item.prepare();
+              const run = await analyze(config, folder, workspace, controller.signal, configFile);
               fresh.push(run);
               for (const d of run.facts.diagnostics) output.appendLine(`${run.language}: ${d.level}: ${d.file ? `${d.file}: ` : ""}${d.message}`);
             } catch (e) {
@@ -183,6 +206,7 @@ export function activate(context: vscode.ExtensionContext): NomosApi {
     running = undefined;
     runs = fresh;
     errors = failures;
+    practiceLines = lines;
     publish(planned);
     for (const message of failures) {
       output.appendLine(`error: ${message}`);
@@ -190,6 +214,34 @@ export function activate(context: vscode.ExtensionContext): NomosApi {
     }
     const partial = fresh.filter((r) => r.partial).map((r) => r.language);
     if (partial.length) void vscode.window.showWarningMessage(`Nomos: partial result for ${partial.join(", ")}: some files were not parsed. See the Nomos output.`);
+  }
+
+  /** Lets the person tick the practices to look at; the choice goes to nomos.json when the folder has one, else to the settings. */
+  async function choosePractices(): Promise<void> {
+    const folders = vscode.workspace.workspaceFolders ?? [];
+    const target = folders.length > 1 ? await vscode.window.showWorkspaceFolderPick({ placeHolder: "Folder whose practices to choose" }) : folders[0];
+    if (!target) return;
+    const folder = target.uri.fsPath;
+    const hasFile = fs.existsSync(path.join(folder, WorkspaceFileName));
+    const current = new Set(folderPractices(folder) ?? catalog.map((p) => p.id));
+    const items = catalog.map((p) => ({ label: p.title, description: p.id, detail: p.description, picked: current.has(p.id), id: p.id }));
+    const picked = await vscode.window.showQuickPick(items, {
+      canPickMany: true,
+      title: "Nomos: practices to look at",
+      placeHolder: "Rules of unticked practices do not run; metrics are shown either way",
+    });
+    if (!picked) return;
+    const chosen = choiceToStore(catalog, picked.map((p) => p.id));
+    if (hasFile) {
+      const write = "Write to nomos.json";
+      const answer = await vscode.window.showInformationMessage(`${path.basename(folder)} has nomos.json, which decides its practices. Write the choice into it?`, { modal: true }, write);
+      if (answer !== write) return;
+      writePractices(folder, chosen);
+      await analyzeAll();
+    } else {
+      // The configuration listener runs the analysis.
+      await vscode.workspace.getConfiguration("nomos", target.uri).update("practices", chosen, vscode.ConfigurationTarget.WorkspaceFolder);
+    }
   }
 
   // The side bar icon opens the graph next to the code; there is nothing to draw before the first analysis.
@@ -207,6 +259,10 @@ export function activate(context: vscode.ExtensionContext): NomosApi {
     vscode.commands.registerCommand("nomos.analyze", analyzeAll),
     vscode.commands.registerCommand("nomos.showGraph", () => showGraph(context, () => runs)),
     vscode.commands.registerCommand("nomos.openGraphWindow", () => openGraphWindow(context, () => runs)),
+    vscode.commands.registerCommand("nomos.choosePractices", choosePractices),
+    vscode.workspace.onDidChangeConfiguration((event) => {
+      if (event.affectsConfiguration("nomos.practices")) void analyzeAll();
+    }),
     vscode.workspace.onDidSaveTextDocument((document) => {
       const own = path.basename(document.uri.fsPath) === WorkspaceFileName || path.basename(path.dirname(document.uri.fsPath)) === ".nomos";
       if (!own && vscode.workspace.getConfiguration("nomos").get<boolean>("analyzeOnSave", false)) void analyzeAll();

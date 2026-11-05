@@ -313,6 +313,7 @@ func Analyze(p *Project, options Options) (*Result, error) {
 
 	rules := SpecRules()
 	supported := set(Supported...)
+	outsidePractices := config.OutsidePractices()
 	skips := []skipped{}
 	categories := map[string]bool{}
 	inputs := map[string]bool{"layer-config": len(config.Layers) > 0, "coverage-report": r.coverage != nil}
@@ -323,15 +324,22 @@ func Analyze(p *Project, options Options) (*Result, error) {
 			}
 			continue
 		}
-		off := config.Rules[rule.ID].Enabled != nil && !*config.Rules[rule.ID].Enabled || (options.Selected != nil && !options.Selected[rule.ID])
+		explicit := config.Rules[rule.ID].Enabled
+		byConfig := explicit != nil && !*explicit || (options.Selected != nil && !options.Selected[rule.ID])
+		// An explicit rules.<id>.enabled wins over the practices (D-051).
+		practiceMessage, outside := outsidePractices[rule.ID]
+		outside = outside && explicit == nil
+		off := byConfig || outside
 		anyEnabled := len(rule.Paradigms) == 0
 		for _, paradigm := range rule.Paradigms {
 			anyEnabled = anyEnabled || enabled[paradigm]
 		}
 		if !anyEnabled {
 			skips = append(skips, skipped{rule.ID, "", "disabled-by-config", "Rule needs paradigm " + strings.Join(sortedStrings(rule.Paradigms), " or ") + ", which is off for this language; 'paradigms' in nomos.json selects them"})
-		} else if off {
+		} else if byConfig {
 			skips = append(skips, skipped{rule.ID, "", "disabled-by-config", "Rule is off by nomos.json or by --rules"})
+		} else if outside {
+			skips = append(skips, skipped{rule.ID, "", "disabled-by-config", practiceMessage})
 		}
 		if off || !anyEnabled {
 			continue

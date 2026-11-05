@@ -105,7 +105,8 @@ public static class Program
             return BadInput;
         }
 
-        var settings = config is null ? new NomosConfig() : WorkspaceFile.Load(config);
+        var workspace = config is null ? null : WorkspaceFile.Read(config);
+        var settings = workspace?.Config ?? new NomosConfig();
         var catalog = BuiltInComponents.Catalog();
         var selected = rules?.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
         var unknown = selected?.FirstOrDefault(id => catalog.Analyzers.All(a => a.Descriptor.Id != id));
@@ -128,6 +129,10 @@ public static class Program
             ResultCount = result.Findings.Count,
             RuleTexts = SpecRules.Load(),
             AvailableInputs = inputs,
+            // --rules names what runs; a rule it leaves out is off by --rules, whatever its practice.
+            DisabledReasons = (workspace?.OutsidePractices ?? new Dictionary<string, string>())
+                .Where(o => selected is null || selected.Contains(o.Key, StringComparer.Ordinal))
+                .ToDictionary(o => o.Key, o => o.Value, StringComparer.Ordinal),
             Coverage = coverage,
         };
         if (sarif is not null)

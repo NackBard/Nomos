@@ -115,3 +115,63 @@ func TestManifestDeclaresTheFilesItReads(t *testing.T) {
 		t.Errorf("manifest: schemaVersion %q, files %v", manifest.SchemaVersion, manifest.Files)
 	}
 }
+
+func writeConfig(t *testing.T, text string) string {
+	t.Helper()
+	path := filepath.Join(t.TempDir(), "nomos.json")
+	if err := os.WriteFile(path, []byte(text), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	return path
+}
+
+func TestPracticesTurnOffTheRulesOutsideThem(t *testing.T) {
+	config, err := LoadConfig(writeConfig(t, `{"schemaVersion":"1.1.0","analyzers":[],"practices":["security","oop"]}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	outside := config.OutsidePractices()
+	if _, off := outside["SEC001"]; off {
+		t.Error("SEC001 is in the selected practice security")
+	}
+	if _, off := outside["DSN004"]; off {
+		t.Error("DSN004 is in oop as well as in architecture; one selected practice is enough")
+	}
+	if outside["CC001"] != "Rule belongs to practice clean-code, which is not selected; 'practices' in nomos.json selects them" {
+		t.Errorf("CC001: %q", outside["CC001"])
+	}
+	if outside["DSN001"] == "" {
+		t.Error("DSN001 belongs only to architecture, which is not selected")
+	}
+}
+
+func TestWithoutPracticesEveryRuleRuns(t *testing.T) {
+	config, err := LoadConfig(writeConfig(t, `{"schemaVersion":"1.0.0","analyzers":[]}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if config.OutsidePractices() != nil {
+		t.Error("no practices in the file means no rule is outside them")
+	}
+}
+
+func TestAnUnknownPracticeIsAConfigError(t *testing.T) {
+	_, err := LoadConfig(writeConfig(t, `{"schemaVersion":"1.1.0","analyzers":[],"practices":["tidy"]}`))
+	if _, ok := err.(ConfigError); !ok {
+		t.Fatalf("expected ConfigError, got %v", err)
+	}
+}
+
+func TestEveryRuleBelongsToAPractice(t *testing.T) {
+	owned := map[string]bool{}
+	for _, practice := range SpecPractices() {
+		for _, rule := range practice.Rules {
+			owned[rule] = true
+		}
+	}
+	for _, rule := range SpecRules() {
+		if !owned[rule.ID] {
+			t.Errorf("%s belongs to no practice", rule.ID)
+		}
+	}
+}

@@ -26,6 +26,22 @@ export function readWorkspace(folder: string): Workspace {
   return checkContract<Workspace>("nomos", parseJson(fs.readFileSync(file, "utf8"), WorkspaceFileName), WorkspaceFileName);
 }
 
+/**
+ * Writes the chosen practices into the folder's nomos.json: undefined removes the field, so every rule runs.
+ * The file is rewritten with two-space indentation; `practices` needs schemaVersion 1.1.0, so 1.0.0 is raised to it.
+ */
+export function writePractices(folder: string, practices: string[] | undefined): void {
+  const file = path.join(folder, WorkspaceFileName);
+  const workspace = parseJson(fs.readFileSync(file, "utf8"), WorkspaceFileName) as Record<string, unknown>;
+  if (practices === undefined) {
+    delete workspace.practices;
+  } else {
+    workspace.practices = practices;
+    if (workspace.schemaVersion === "1.0.0") workspace.schemaVersion = "1.1.0";
+  }
+  fs.writeFileSync(file, JSON.stringify(workspace, null, 2) + "\n");
+}
+
 interface Exit { code: number | null; stdout: string; stderr: string }
 
 function run(config: AnalyzerConfig, folder: string, args: string[], signal?: AbortSignal): Promise<Exit> {
@@ -88,16 +104,19 @@ export async function readManifest(config: AnalyzerConfig, folder: string, signa
   return manifest;
 }
 
-/** Runs one analyzer over the workspace root. The SARIF path is relative so facts carry no absolute path. */
-export async function analyze(config: AnalyzerConfig, folder: string, workspace: Workspace, signal?: AbortSignal): Promise<AnalysisRun> {
+/**
+ * Runs one analyzer over the workspace root. The SARIF path is relative so facts carry no absolute path.
+ * `configFile` is the workspace file to pass with --config; by default the folder's nomos.json, if there is one.
+ */
+export async function analyze(config: AnalyzerConfig, folder: string, workspace: Workspace, signal?: AbortSignal, configFile?: string): Promise<AnalysisRun> {
   const manifest = await readManifest(config, folder, signal);
   const workingDirectory = config.cwd ? path.resolve(folder, config.cwd) : folder;
   const root = path.resolve(folder, workspace.root ?? ".");
   const sarifRelative = path.posix.join(".nomos", `${config.language}.sarif`);
   const sarifFile = path.join(workingDirectory, sarifRelative);
   const wantsSarif = manifest.capabilities.sarif !== false;
-  const workspaceFile = path.join(folder, WorkspaceFileName);
-  // Without nomos.json (bundled analyzers, D-046) the analyzer runs on its defaults.
+  const workspaceFile = configFile ?? path.join(folder, WorkspaceFileName);
+  // Without nomos.json and without chosen practices (bundled analyzers, D-046) the analyzer runs on its defaults.
   const args = ["analyze", "--root", root, ...(fs.existsSync(workspaceFile) ? ["--config", workspaceFile] : [])];
   if (wantsSarif) {
     fs.mkdirSync(path.dirname(sarifFile), { recursive: true });

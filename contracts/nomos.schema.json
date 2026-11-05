@@ -1,14 +1,14 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:nomos:contracts:1.0.0:nomos",
+  "$id": "urn:nomos:contracts:1.1.0:nomos",
   "title": "nomos.json",
-  "description": "Workspace file read by the extension and the CI runner: which analyzers exist and how to start them. Contract version 1.0.0. The extension never looks inside an analyzer.",
-  "x-contractVersion": "1.0.0",
+  "description": "Workspace file read by the extension and the CI runner: which analyzers exist and how to start them. Contract version 1.1.0. The extension never looks inside an analyzer.",
+  "x-contractVersion": "1.1.0",
   "type": "object",
   "required": ["schemaVersion", "analyzers"],
   "additionalProperties": false,
   "properties": {
-    "schemaVersion": { "const": "1.0.0" },
+    "schemaVersion": { "enum": ["1.0.0", "1.1.0"], "description": "Minor versions only add optional fields, so files of older minor versions stay valid." },
     "analyzers": {
       "type": "array",
       "minItems": 1,
@@ -33,6 +33,12 @@
       }
     },
     "root": { "type": "string", "default": ".", "description": "Analysis root relative to the nomos.json folder." },
+    "practices": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+      "description": "Since 1.1.0. Ids of spec/practices.yaml: only rules of these practices run, the others are recorded in skippedRules as disabled-by-config. Absent: every rule runs. An explicit rules.<id>.enabled wins over practices. Metrics are output either way."
+    },
     "rules": {
       "type": "object",
       "description": "Per-rule overrides keyed by rule id.",

@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "1.2.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "go" },
+  "files": [ { "path": "store.go", "lines": 11, "loc": 8 } ],
+  "modules": [
+    { "id": "prac", "name": "prac", "files": ["store.go"], "loc": 8, "metrics": {}, "paradigmEvidence": [] }
+  ],
+  "types": [],
+  "functions": [
+    { "id": "prac.Find", "name": "Find", "module": "prac", "kind": "function", "visibility": "public", "location": { "file": "store.go", "startLine": 5 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 1, "lines": 3 } },
+    { "id": "prac.Sum", "name": "Sum", "module": "prac", "kind": "function", "visibility": "public", "location": { "file": "store.go", "startLine": 9 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 6, "lines": 3 } }
+  ],
+  "dependencies": [],
+  "cycles": [],
+  "skippedRules": [
+    { "ruleId": "CC003", "reason": "disabled-by-config", "message": "outside the selected practice security" },
+    { "ruleId": "DSN001", "reason": "disabled-by-config", "message": "outside the selected practice security" },
+    { "ruleId": "SEC001", "reason": "disabled-by-config", "message": "switched off by rules in nomos.json" }
+  ],
+  "diagnostics": []
+}

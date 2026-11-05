@@ -116,4 +116,42 @@ public class ProtocolTests
         using var off = JsonDocument.Parse(File.ReadAllText(Path.Combine(output, "off.sarif")));
         Assert.Equal(0, off.RootElement.GetProperty("runs")[0].GetProperty("results").GetArrayLength());
     }
+
+    [Fact]
+    public void Practices_KeepTheirRules_AndRecordTheOthersAsDisabledByConfig()
+    {
+        var output = Directory.CreateTempSubdirectory().FullName;
+        var config = Path.Combine(output, "nomos.json");
+        File.WriteAllText(config, """
+            { "schemaVersion": "1.1.0", "analyzers": [{ "language": "csharp", "command": ["x"] }], "practices": ["security"], "rules": { "CS.NAM001": { "enabled": true } } }
+            """);
+
+        var (code, stdout) = Run(output, "analyze", "--root", Sample, "--config", config, "--sarif", "practices.sarif");
+
+        Assert.Equal(0, code);
+        using var sarif = JsonDocument.Parse(File.ReadAllText(Path.Combine(output, "practices.sarif")));
+        var ids = sarif.RootElement.GetProperty("runs")[0].GetProperty("results").EnumerateArray().Select(r => r.GetProperty("ruleId").GetString()).Distinct().Order(StringComparer.Ordinal);
+        Assert.Equal(["CS.NAM001", "SEC001"], ids);
+        using var facts = JsonDocument.Parse(stdout);
+        var skipped = facts.RootElement.GetProperty("skippedRules").EnumerateArray()
+            .Where(r => !r.TryGetProperty("module", out _)).ToDictionary(r => r.GetProperty("ruleId").GetString()!, r => r);
+        Assert.Equal("disabled-by-config", skipped["CC001"].GetProperty("reason").GetString());
+        Assert.Equal("Rule belongs to practice clean-code, which is not selected; 'practices' in nomos.json selects them", skipped["CC001"].GetProperty("message").GetString());
+        Assert.Equal("Rule belongs to practice architecture or oop, which is not selected; 'practices' in nomos.json selects them", skipped["DSN004"].GetProperty("message").GetString());
+        Assert.False(skipped.ContainsKey("SEC001"));
+        Assert.False(skipped.ContainsKey("CS.NAM001"));
+    }
+
+    [Fact]
+    public void UnknownPractice_ReturnsThree()
+    {
+        var output = Directory.CreateTempSubdirectory().FullName;
+        var config = Path.Combine(output, "nomos.json");
+        File.WriteAllText(config, """{ "schemaVersion": "1.1.0", "analyzers": [], "practices": ["tidy"] }""");
+
+        var (code, stdout) = Run(output, "analyze", "--root", Sample, "--config", config);
+
+        Assert.Equal(3, code);
+        Assert.Empty(stdout);
+    }
 }

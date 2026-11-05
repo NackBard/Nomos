@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import YAML from "yaml";
-import { repoRoot, rulesDir } from "./paths.ts";
+import { practicesFile, repoRoot, rulesDir } from "./paths.ts";
 
 export const rulesDocPath = path.join(repoRoot, "docs", "ANALYZERS.md");
 
@@ -14,7 +14,7 @@ export function renderRulesDoc(): string {
   const lines = [
     "# Каталог правил",
     "",
-    "Файл сформирован из `spec/rules/*.yaml` командой `npm run rules-doc` (`conformance/runner`). Правки вносятся в spec; `npm run validate` проверяет, что файл не устарел.",
+    "Файл сформирован из `spec/rules/*.yaml` и `spec/practices.yaml` командой `npm run rules-doc` (`conformance/runner`). Правки вносятся в spec; `npm run validate` проверяет, что файл не устарел.",
     "",
     "Любой результат — эвристика с уровнем уверенности и объяснением. Порог — чувствительность детектора, а не граница приёмки. Какие правила реализует анализатор, сообщает его `manifest`.",
     "",
@@ -38,5 +38,16 @@ export function renderRulesDoc(): string {
     }
     lines.push("");
   }
+  const practices = YAML.parse(fs.readFileSync(practicesFile, "utf8")).practices as { id: string; title: string; description: string; rules: string[] }[];
+  lines.push(
+    "## Практики",
+    "",
+    "Практика — набор правил, который можно выбрать: `practices` в `nomos.json` или команда «Nomos: Choose Practices» в VS Code (D-051). Правила вне выбранных практик не запускаются и записываются в `skippedRules` как `disabled-by-config`; метрики выводятся всегда. Правило может входить в несколько практик.",
+    "",
+    "| Id | Название | Что смотрит | Правила |",
+    "|---|---|---|---|",
+    ...practices.map((p) => `| ${p.id} | ${cell(p.title)} | ${cell(p.description)} | ${p.rules.join(", ")} |`),
+    "",
+  );
   return lines.join("\n");
 }

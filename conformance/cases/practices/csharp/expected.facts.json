@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "1.2.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "csharp" },
+  "files": [ { "path": "Shop.cs", "lines": 16, "loc": 13 } ],
+  "modules": [
+    { "id": "Prac.Code", "name": "Prac.Code", "files": ["Shop.cs"], "loc": 13, "metrics": {}, "paradigmEvidence": [] }
+  ],
+  "types": [
+    { "id": "Prac.Code.Shop", "name": "Shop", "module": "Prac.Code", "kind": "class", "isAbstract": false, "location": { "file": "Shop.cs", "startLine": 3 }, "metrics": { "lines": 14, "memberCount": 3, "methodCount": 2 } }
+  ],
+  "functions": [
+    { "id": "Prac.Code.Shop.Find", "name": "Find", "module": "Prac.Code", "type": "Prac.Code.Shop", "kind": "method", "visibility": "public", "location": { "file": "Shop.cs", "startLine": 7 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 1, "lines": 4 } },
+    { "id": "Prac.Code.Shop.Sum", "name": "Sum", "module": "Prac.Code", "type": "Prac.Code.Shop", "kind": "method", "visibility": "public", "location": { "file": "Shop.cs", "startLine": 12 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 6, "lines": 4 } }
+  ],
+  "dependencies": [],
+  "cycles": [],
+  "skippedRules": [
+    { "ruleId": "CC003", "reason": "disabled-by-config", "message": "outside the selected practice security" },
+    { "ruleId": "DSN001", "reason": "disabled-by-config", "message": "outside the selected practice security" },
+    { "ruleId": "SEC001", "reason": "disabled-by-config", "message": "switched off by rules in nomos.json" }
+  ],
+  "diagnostics": []
+}

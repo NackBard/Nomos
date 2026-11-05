@@ -150,10 +150,14 @@ function providedInputs(config: any, ruleId: string): Set<string> {
   return inputs;
 }
 
-/** A rule without its external input has a missing-input record for the whole run, and a rule with it has none. */
+/**
+ * A rule without its external input has a missing-input record for the whole run, and a rule with it has none.
+ * A rule the configuration switched off does not run, so whether it has its input does not matter (practices, D-051).
+ */
 export function checkRequiredInputs(facts: any, config: any, rules: { id: string; requires?: string[] }[]): string[] {
   const errors: string[] = [];
-  for (const rule of rules.filter((r) => r.requires?.length)) {
+  const off = (id: string) => facts.skippedRules.some((s: any) => s.ruleId === id && s.module === undefined && s.reason === "disabled-by-config");
+  for (const rule of rules.filter((r) => r.requires?.length && !off(r.id))) {
     const provided = providedInputs(config, rule.id);
     const complete = rule.requires!.every((input) => provided.has(input));
     const recorded = facts.skippedRules.some((s: any) => s.ruleId === rule.id && s.module === undefined && s.reason === "missing-input");

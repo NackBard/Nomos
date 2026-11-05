@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "1.2.0",
+  "id": "practices",
+  "title": "practices in nomos.json (D-051): a rule of the selected practice runs, a rule outside it and a rule switched off explicitly are recorded as disabled-by-config and report nothing",
+  "covers": [
+    "CC003",
+    "SEC001",
+    "SEC003"
+  ],
+  "languages": [
+    "csharp",
+    "go"
+  ],
+  "expectSarif": true,
+  "config": true
+}

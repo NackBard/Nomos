@@ -33,6 +33,11 @@
         "command": "nomos.openGraphWindow",
         "title": "Nomos: Open Dependency Graph in New Window",
         "icon": "$(empty-window)"
+      },
+      {
+        "command": "nomos.choosePractices",
+        "title": "Nomos: Choose Practices",
+        "icon": "$(checklist)"
       }
     ],
     "viewsContainers": {
@@ -68,6 +73,11 @@
           "command": "nomos.showGraph",
           "when": "view == nomos.findings",
           "group": "navigation"
+        },
+        {
+          "command": "nomos.choosePractices",
+          "when": "view == nomos.findings",
+          "group": "navigation"
         }
       ],
       "editor/title": [
@@ -90,6 +100,19 @@
           "type": "boolean",
           "default": true,
           "description": "Show metrics of functions and types above their declarations."
+        },
+        "nomos.practices": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true,
+          "default": null,
+          "scope": "resource",
+          "markdownDescription": "Practices whose rules run in a folder without `nomos.json` (ids from **Nomos: Choose Practices**). `null` runs every practice. Metrics are shown either way. In a folder with `nomos.json`, its `practices` field decides."
         }
       }
     }

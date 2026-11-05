@@ -108,4 +108,6 @@ test("a rule without its input needs a missing-input record, a rule with it must
   assert.deepEqual(checkRequiredInputs(facts(), layers, rules), []);
   assert.match(checkRequiredInputs(facts(), undefined, rules)[0], /no missing-input record/);
   assert.match(checkRequiredInputs(facts({ skippedRules: [record] }), layers, rules)[0], /recorded as missing-input/);
+  // A rule the configuration switched off, by practices for example, does not run and needs no record.
+  assert.deepEqual(checkRequiredInputs(facts({ skippedRules: [{ ruleId: "DSN003", reason: "disabled-by-config", message: "m" }] }), undefined, rules), []);
 });

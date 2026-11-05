@@ -1,8 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
 import YAML from "yaml";
-import { casesDir, contractsDir, repoRoot, rulesDir } from "./paths.ts";
-import { goRulesPath, renderGoRules } from "./go-rules.ts";
+import { casesDir, contractsDir, practicesFile, repoRoot, rulesDir } from "./paths.ts";
+import { generatedFiles } from "./go-rules.ts";
 import { renderRulesDoc, rulesDocPath } from "./rules-doc.ts";
 import { createAjv, formatErrors, loadValidators, readJson, schemaFiles } from "./schemas.ts";
 
@@ -44,6 +44,27 @@ export function validateRepository(): string[] {
         errors.push(`spec/rules/${file}: rule ${rule.id} of language "${document.language}" must carry a language prefix`);
       }
       if (!document.language && prefixed) errors.push(`spec/rules/${file}: ${rule.id} has a language prefix but the file sets no language`);
+    }
+  }
+
+  // 2a. spec/practices.yaml: valid, every id known, every rule in at least one practice (D-051).
+  const practices = YAML.parse(fs.readFileSync(practicesFile, "utf8"));
+  const validatePractices = validators.get("practice")!;
+  if (!validatePractices(practices)) {
+    for (const message of formatErrors(validatePractices)) errors.push(`spec/practices.yaml: ${message}`);
+  } else {
+    const ids = new Set<string>();
+    const covered = new Set<string>();
+    for (const practice of practices.practices) {
+      if (ids.has(practice.id)) errors.push(`spec/practices.yaml: practice ${practice.id} is defined twice`);
+      ids.add(practice.id);
+      for (const rule of practice.rules) {
+        if (!seen.has(rule)) errors.push(`spec/practices.yaml: practice ${practice.id} names rule ${rule}, which spec/rules does not define`);
+        covered.add(rule);
+      }
+    }
+    for (const rule of [...seen.keys()].sort()) {
+      if (!covered.has(rule)) errors.push(`spec/practices.yaml: rule ${rule} belongs to no practice`);
     }
   }
 
@@ -106,7 +127,9 @@ export function validateRepository(): string[] {
   }
   const documented = fs.existsSync(rulesDocPath) ? fs.readFileSync(rulesDocPath, "utf8").replaceAll("\r\n", "\n") : "";
   if (documented !== renderRulesDoc()) errors.push("docs/ANALYZERS.md is out of date: run npm run rules-doc");
-  const goRules = fs.existsSync(goRulesPath) ? fs.readFileSync(goRulesPath, "utf8").replaceAll("\r\n", "\n") : "";
-  if (goRules !== renderGoRules()) errors.push("analyzers/go/internal/analyzer/rules.json is out of date: run npm run go-rules");
+  for (const { file, content } of generatedFiles()) {
+    const current = fs.existsSync(file) ? fs.readFileSync(file, "utf8").replaceAll("\r\n", "\n") : "";
+    if (current !== content) errors.push(`${path.relative(repoRoot, file).replaceAll("\\", "/")} is out of date: run npm run spec-json`);
+  }
   return errors;
 }
