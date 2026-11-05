@@ -19,6 +19,9 @@ export interface UmlMember {
   isStatic: boolean;
   isAbstract: boolean;
   stereotype?: string;
+  /** Where an operation is declared, relative to the analyzer root: a click on its line opens it. Attributes have none. */
+  file?: string;
+  line?: number;
 }
 
 export interface UmlClass {
@@ -66,6 +69,7 @@ function operation(f: FunctionEntity): UmlMember {
   return {
     text: `${sign}${f.name}(${parameters})${type ? `: ${type}` : ""}`,
     sign, name: f.name, type, parameters, operation: true, isStatic: f.isStatic === true, isAbstract: f.isAbstract === true,
+    ...(f.location ? { file: f.location.file, line: f.location.startLine } : {}),
   };
 }
 

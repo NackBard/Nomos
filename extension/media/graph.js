@@ -339,7 +339,7 @@
       y += BOX_PAD / 2;
       for (const m of compartment(part)) {
         const cls = m.more ? "more" : `${m.isStatic ? "static" : ""}${m.isAbstract ? " abstract" : ""}`.trim();
-        lines.push({ text: m.text, y: (y += BOX_LINE), cls: `member ${cls}`, font: code });
+        lines.push({ text: m.text, y: (y += BOX_LINE), cls: `member ${cls}`, font: code, member: m.more ? undefined : m });
       }
       y += BOX_PAD;
     }
@@ -354,7 +354,7 @@
     return { w, h: Math.max(y, header), header, lines, separators };
   }
 
-  function drawClass(node, parent) {
+  function drawClass(node, parent, open) {
     const { w, h, header, lines, separators } = node.box;
     const layer = Math.min(node.layer, colors - 1);
     const g = element("g", { class: `class${node.cycle ? " cycle" : ""}`, transform: `translate(${node.x - w / 2} ${node.y - h / 2})` }, parent);
@@ -362,6 +362,16 @@
     element("path", { class: `band layer-${layer}`, d: `M0 ${header}V3Q0 0 3 0H${w - 3}Q${w} 0 ${w} 3V${header}Z` }, g);
     for (const y of separators) element("path", { class: `separator box-${layer}`, d: `M0 ${y}H${w}` }, g);
     for (const line of lines) {
+      // An operation with a place is its own target: its line opens the method, the rest of the box opens the class.
+      const at = line.member?.file ? line.member : undefined;
+      if (at) {
+        const row = element("rect", { class: "row", x: 1, y: line.y - BOX_LINE + 1, width: w - 2, height: BOX_LINE }, g);
+        element("title", {}, row).textContent = line.member.text;
+        row.addEventListener("click", (event) => {
+          event.stopPropagation();
+          open({ file: at.file, line: at.line });
+        });
+      }
       const centred = !line.cls.startsWith("member");
       const text = element("text", { class: line.cls, x: centred ? w / 2 : BOX_PAD, y: line.y - 3.5 }, g);
       text.textContent = line.text;
@@ -737,14 +747,14 @@
       }
       const peer = focused && node.role === "module";
       const color = peer ? "peer" : `layer-${Math.min(node.layer, colors - 1)}`;
-      const open = () => vscode.postMessage(node.role === "module" ? { type: "focus", module: node.id } : { type: "open", language: node.language, file: node.file, line: node.line });
+      const open = (at) => vscode.postMessage(node.role === "module" ? { type: "focus", module: node.id } : { type: "open", language: node.language, file: at?.file ?? node.file, line: at?.line ?? node.line });
       if (node.box) {
-        const box = drawClass(node, root);
+        const box = drawClass(node, root, open);
         boxes.push(box);
         items.push({ element: box, ids: neighbours });
         box.addEventListener("mouseenter", () => { highlight(node.id, items); describe(node, graph); });
         box.addEventListener("mouseleave", () => highlight(null, items));
-        box.addEventListener("click", open);
+        box.addEventListener("click", () => open());
         continue;
       }
       const circle = element("path", { class: `node ${color}${node.cycle ? " cycle" : ""}` }, root);
@@ -755,7 +765,7 @@
       items.push({ element: circle, ids: neighbours }, { element: label, ids: neighbours });
       circle.addEventListener("mouseenter", () => { highlight(node.id, items); describe(node, graph); });
       circle.addEventListener("mouseleave", () => highlight(null, items));
-      circle.addEventListener("click", open);
+      circle.addEventListener("click", () => open());
     }
     // Waypoints may take rows below or above the nodes; the view fits them too.
     const points = [...graph.nodes, ...routes.flat()];

@@ -77,6 +77,10 @@ test("compartments: members in order, operations by line without accessors, sign
   assert.deepEqual(s.attributes.map((m) => m.text), ["+«embed» B", "-items: List<C>", "+Count: int"]);
   assert.equal(s.attributes[2].isStatic, true);
   assert.deepEqual(s.operations.map((m) => m.text), ["+S()", "+Run(n: int, string): (int, error)"]);
+  // A click on an operation opens it: each one keeps its own place, attributes have none.
+  assert.deepEqual(s.operations.map((m) => [m.file, m.line]), s.operations.map((m) => { const f = facts.functions.find((x) => x.type === "M.S" && x.name === m.name)!; return [f.location!.file, f.location!.startLine]; }));
+  assert.ok(s.operations.every((m) => m.line !== undefined));
+  assert.ok(s.attributes.every((m) => m.file === undefined));
   const i = classDiagram(facts, ids, "M").classes.find((c) => c.id === "M.I")!;
   assert.equal(i.isInterface, true);
   assert.equal(i.operations[0].isAbstract, true);

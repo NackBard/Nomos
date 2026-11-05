@@ -75,6 +75,8 @@ export function graphPage(nonce: string, script: string, strings: GraphStrings, 
   .class.cycle .box { stroke: var(--vscode-errorForeground); stroke-width: 3; }
   .class .band { fill-opacity: .28; stroke: none; }
   .class .separator { fill: none; stroke-width: 1; }
+  .class .row { fill: transparent; stroke: none; }
+  .class .row:hover { fill: var(--vscode-list-hoverBackground); }
   .class text { text-anchor: start; stroke: none; paint-order: normal; font-family: var(--vscode-editor-font-family, monospace); font-size: 11px; pointer-events: none; }
   .class text.name { text-anchor: middle; font-weight: 600; font-size: 12px; }
   .class text.stereotype { text-anchor: middle; fill: var(--vscode-descriptionForeground); }
