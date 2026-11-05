@@ -254,6 +254,17 @@ test("exit code 4 is a partial result, other codes are reported with their meani
   await assert.rejects(analyze(failed.config, failed.folder, failed.workspace), (e: Error) => e instanceof AnalyzerError && /exited with 3 \(the input is not usable\): boom/.test(e.message));
 });
 
+test("a failure names the error lines of stdout when stderr only summarizes", async () => {
+  const { folder } = workspaceWith(0);
+  const script = path.join(folder, "build-fails.js");
+  fs.writeFileSync(script, `
+    console.log("Restoring...\\r\\nx.cs(1,2): error CS1002: ; expected\\r\\nx.cs(1,2): error CS1002: ; expected");
+    console.error("Build failed. Fix the build errors and run again.");
+    process.exit(1);`);
+  await assert.rejects(readManifest({ language: "toy", command: [process.execPath, script] }, folder), (e: Error) =>
+    e.message === `toy: "manifest" exited with 1 (unexpected analyzer error): Build failed. Fix the build errors and run again. | x.cs(1,2): error CS1002: ; expected`);
+});
+
 test("a command that cannot start is a readable error", async () => {
   const { folder, workspace } = workspaceWith(0);
   await assert.rejects(readManifest({ language: "toy", command: ["no-such-program-nomos"] }, folder), /cannot start/);

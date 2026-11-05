@@ -59,9 +59,24 @@ function run(config: AnalyzerConfig, folder: string, args: string[], signal?: Ab
   });
 }
 
+const MaxCauseLines = 3;
+
+/**
+ * The first stderr line, then the error lines of stdout. A command that builds the analyzer before
+ * running it may print the real cause to stdout and only a summary to stderr.
+ */
+function failureDetail(exit: Exit): string {
+  const lines = (text: string) => text.split(/\r?\n/).map((l) => l.trim()).filter((l) => l.length > 0);
+  const summary = lines(exit.stderr).slice(0, 1);
+  const causes = [...new Set(lines(exit.stdout).filter((l) => /\berror\b/i.test(l)))]
+    .filter((l) => !summary.includes(l))
+    .slice(0, MaxCauseLines);
+  return [...summary, ...causes].join(" | ");
+}
+
 function failure(config: AnalyzerConfig, command: string, exit: Exit): AnalyzerError {
   const meaning = exit.code === null ? "stopped or timed out" : codeMeaning[exit.code] ?? "unknown exit code";
-  const detail = exit.stderr.trim().split("\n")[0];
+  const detail = failureDetail(exit);
   return new AnalyzerError(`${config.language}: "${command}" exited with ${exit.code} (${meaning})${detail ? `: ${detail}` : ""}`);
 }
 
