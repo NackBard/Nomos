@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "1.2.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "javascript" },
+  "files": [
+    { "path": "basics.js", "lines": 38, "loc": 32 }
+  ],
+  "modules": [
+    { "id": "basics", "name": "basics", "files": ["basics.js"], "loc": 32, "metrics": { "ca": 0, "ce": 0, "instability": null, "abstractness": null, "distance": null }, "paradigmEvidence": [] }
+  ],
+  "types": [
+  ],
+  "functions": [
+    { "id": "basics.straight", "name": "straight", "module": "basics", "kind": "function", "visibility": "public", "location": { "file": "basics.js", "startLine": 1 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 1, "lines": 3 } },
+    { "id": "basics.branches", "name": "branches", "module": "basics", "kind": "function", "visibility": "public", "location": { "file": "basics.js", "startLine": 6 }, "metrics": { "cyclomatic": 5, "maxNesting": 1, "parameterCount": 2, "lines": 9 } },
+    { "id": "basics.loops", "name": "loops", "module": "basics", "kind": "function", "visibility": "public", "location": { "file": "basics.js", "startLine": 16 }, "metrics": { "cyclomatic": 4, "maxNesting": 3, "parameterCount": 2, "lines": 12 } },
+    { "id": "basics.switches", "name": "switches", "module": "basics", "kind": "function", "visibility": "public", "location": { "file": "basics.js", "startLine": 29 }, "metrics": { "cyclomatic": 3, "maxNesting": 1, "parameterCount": 2, "lines": 10 } }
+  ],
+  "dependencies": [
+  ],
+  "cycles": [
+  ],
+  "skippedRules": [
+  ],
+  "diagnostics": []
+}

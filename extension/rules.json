@@ -75,6 +75,10 @@
         "text": "Each iteration scans the sequence. A map built once makes the lookup constant-time.",
         "ru": "Каждая итерация просматривает последовательность. map, построенный один раз, даёт поиск за постоянное время."
       },
+      "searchSet": {
+        "text": "Each iteration scans the array. A Set or Map built once makes the lookup constant-time.",
+        "ru": "Каждая итерация просматривает массив. Set или Map, построенные один раз, дают поиск за постоянное время."
+      },
       "frontCall": {
         "text": "Likely quadratic: {0}(0) inside a loop",
         "ru": "Вероятно квадратичное время: {0}(0) внутри цикла"
@@ -91,6 +95,10 @@
         "text": "Every element shifts on each call. Appending and reversing once avoids this.",
         "ru": "При каждом вызове сдвигаются все элементы. Добавление в конец и один разворот этого избегают."
       },
+      "frontInsertPush": {
+        "text": "Every element shifts on each call. Pushing and reversing once avoids this.",
+        "ru": "При каждом вызове сдвигаются все элементы. Добавление через push и один разворот в конце этого избегают."
+      },
       "concat": {
         "text": "Likely quadratic: String concatenation inside a loop",
         "ru": "Вероятно квадратичное время: конкатенация строк внутри цикла"
@@ -102,6 +110,10 @@
       "concatBuilder": {
         "text": "Each step copies the whole string so far. strings.Builder grows in amortized constant time.",
         "ru": "Каждый шаг копирует всю накопленную строку. strings.Builder растёт за амортизированное постоянное время."
+      },
+      "concatJoin": {
+        "text": "Each step copies the whole string so far. Collecting the parts in an array and joining once avoids this.",
+        "ru": "Каждый шаг копирует всю накопленную строку. Сбор частей в массив и одно соединение через join этого избегают."
       }
     }
   },
@@ -160,6 +172,10 @@
       "literalClosure": {
         "text": "A capturing literal allocates a closure per iteration.",
         "ru": "Захватывающий литерал создаёт замыкание на каждой итерации."
+      },
+      "lambdaObject": {
+        "text": "Every evaluation of a lambda creates a new function object.",
+        "ru": "Каждое вычисление лямбды создаёт новый объект-функцию."
       }
     }
   },

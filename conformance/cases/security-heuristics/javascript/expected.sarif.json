@@ -1,0 +1,8 @@
+{
+  "results": [
+    { "ruleId": "SEC001", "file": "store.js", "startLine": 1 },
+    { "ruleId": "SEC001", "file": "store.js", "startLine": 3 },
+    { "ruleId": "SEC003", "file": "store.js", "startLine": 6 },
+    { "ruleId": "SEC003", "file": "store.js", "startLine": 14 }
+  ]
+}

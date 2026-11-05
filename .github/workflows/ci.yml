@@ -38,6 +38,12 @@ jobs:
         run: |
           go vet ./...
           go test ./...
+      - name: Analyzer TypeScript and JavaScript
+        working-directory: analyzers/typescript
+        run: |
+          npm ci
+          npm run typecheck
+          npm test
       - name: Conformance and parity
         working-directory: conformance/runner
         run: npm run all

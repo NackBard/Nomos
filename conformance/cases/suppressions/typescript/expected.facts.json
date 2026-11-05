@@ -1,0 +1,152 @@
+{
+  "schemaVersion": "1.2.0",
+  "analyzer": {
+    "name": "hand-computed",
+    "version": "0.0.0",
+    "language": "typescript"
+  },
+  "files": [
+    {
+      "path": "code.ts",
+      "lines": 11,
+      "loc": 5
+    },
+    {
+      "path": "whole/whole.ts",
+      "lines": 2,
+      "loc": 1
+    }
+  ],
+  "modules": [
+    {
+      "id": "code",
+      "name": "code",
+      "files": [
+        "code.ts"
+      ],
+      "loc": 5,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "whole/whole",
+      "name": "whole",
+      "files": [
+        "whole/whole.ts"
+      ],
+      "loc": 1,
+      "metrics": {},
+      "paradigmEvidence": []
+    }
+  ],
+  "types": [],
+  "functions": [
+    {
+      "id": "code.reported",
+      "name": "reported",
+      "module": "code",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "code.ts",
+        "startLine": 1
+      },
+      "metrics": {
+        "cyclomatic": 3,
+        "maxNesting": 2,
+        "parameterCount": 1,
+        "lines": 1
+      }
+    },
+    {
+      "id": "code.next",
+      "name": "next",
+      "module": "code",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "code.ts",
+        "startLine": 4
+      },
+      "metrics": {
+        "cyclomatic": 3,
+        "maxNesting": 2,
+        "parameterCount": 1,
+        "lines": 1
+      }
+    },
+    {
+      "id": "code.same",
+      "name": "same",
+      "module": "code",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "code.ts",
+        "startLine": 6
+      },
+      "metrics": {
+        "cyclomatic": 3,
+        "maxNesting": 2,
+        "parameterCount": 1,
+        "lines": 1
+      }
+    },
+    {
+      "id": "code.otherRule",
+      "name": "otherRule",
+      "module": "code",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "code.ts",
+        "startLine": 9
+      },
+      "metrics": {
+        "cyclomatic": 3,
+        "maxNesting": 2,
+        "parameterCount": 1,
+        "lines": 1
+      }
+    },
+    {
+      "id": "code.reasoned",
+      "name": "reasoned",
+      "module": "code",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "code.ts",
+        "startLine": 11
+      },
+      "metrics": {
+        "cyclomatic": 3,
+        "maxNesting": 2,
+        "parameterCount": 1,
+        "lines": 1
+      }
+    },
+    {
+      "id": "whole/whole.pairs",
+      "name": "pairs",
+      "module": "whole/whole",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "whole/whole.ts",
+        "startLine": 2
+      },
+      "metrics": {
+        "cyclomatic": 3,
+        "maxNesting": 2,
+        "parameterCount": 1,
+        "lines": 1,
+        "timeDegree": 2
+      }
+    }
+  ],
+  "dependencies": [],
+  "cycles": [],
+  "skippedRules": [],
+  "diagnostics": []
+}

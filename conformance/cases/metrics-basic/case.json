@@ -20,7 +20,9 @@
   ],
   "languages": [
     "csharp",
-    "go"
+    "go",
+    "typescript",
+    "javascript"
   ],
   "parity": [
     {
@@ -28,7 +30,9 @@
       "scope": "function",
       "entities": {
         "csharp": "Metrics.Basics.Straight",
-        "go": "metrics.Straight"
+        "go": "metrics.Straight",
+        "typescript": "basics.straight",
+        "javascript": "basics.straight"
       }
     },
     {
@@ -36,7 +40,9 @@
       "scope": "function",
       "entities": {
         "csharp": "Metrics.Basics.Straight",
-        "go": "metrics.Straight"
+        "go": "metrics.Straight",
+        "typescript": "basics.straight",
+        "javascript": "basics.straight"
       }
     },
     {
@@ -44,7 +50,9 @@
       "scope": "function",
       "entities": {
         "csharp": "Metrics.Basics.Straight",
-        "go": "metrics.Straight"
+        "go": "metrics.Straight",
+        "typescript": "basics.straight",
+        "javascript": "basics.straight"
       }
     },
     {
@@ -52,7 +60,9 @@
       "scope": "function",
       "entities": {
         "csharp": "Metrics.Basics.Branches",
-        "go": "metrics.Branches"
+        "go": "metrics.Branches",
+        "typescript": "basics.branches",
+        "javascript": "basics.branches"
       }
     },
     {
@@ -60,7 +70,9 @@
       "scope": "function",
       "entities": {
         "csharp": "Metrics.Basics.Branches",
-        "go": "metrics.Branches"
+        "go": "metrics.Branches",
+        "typescript": "basics.branches",
+        "javascript": "basics.branches"
       }
     },
     {
@@ -68,7 +80,9 @@
       "scope": "function",
       "entities": {
         "csharp": "Metrics.Basics.Branches",
-        "go": "metrics.Branches"
+        "go": "metrics.Branches",
+        "typescript": "basics.branches",
+        "javascript": "basics.branches"
       }
     },
     {
@@ -76,7 +90,9 @@
       "scope": "function",
       "entities": {
         "csharp": "Metrics.Basics.Loops",
-        "go": "metrics.Loops"
+        "go": "metrics.Loops",
+        "typescript": "basics.loops",
+        "javascript": "basics.loops"
       }
     },
     {
@@ -84,7 +100,9 @@
       "scope": "function",
       "entities": {
         "csharp": "Metrics.Basics.Loops",
-        "go": "metrics.Loops"
+        "go": "metrics.Loops",
+        "typescript": "basics.loops",
+        "javascript": "basics.loops"
       }
     },
     {
@@ -92,7 +110,9 @@
       "scope": "function",
       "entities": {
         "csharp": "Metrics.Basics.Loops",
-        "go": "metrics.Loops"
+        "go": "metrics.Loops",
+        "typescript": "basics.loops",
+        "javascript": "basics.loops"
       }
     }
   ]

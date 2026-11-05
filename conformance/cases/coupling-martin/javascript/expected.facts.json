@@ -1,0 +1,42 @@
+{
+  "schemaVersion": "1.2.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "javascript" },
+  "files": [
+    { "path": "app.js", "lines": 7, "loc": 6 },
+    { "path": "domain.js", "lines": 5, "loc": 4 },
+    { "path": "infra.js", "lines": 5, "loc": 4 },
+    { "path": "services.js", "lines": 6, "loc": 5 }
+  ],
+  "modules": [
+    { "id": "app", "name": "app", "files": ["app.js"], "loc": 6, "metrics": { "ca": 0, "ce": 2, "instability": 1, "abstractness": 0, "distance": 0 }, "paradigmEvidence": [] },
+    { "id": "domain", "name": "domain", "files": ["domain.js"], "loc": 4, "metrics": { "ca": 2, "ce": 0, "instability": 0, "abstractness": 0, "distance": 1 }, "paradigmEvidence": [] },
+    { "id": "infra", "name": "infra", "files": ["infra.js"], "loc": 4, "metrics": { "ca": 1, "ce": 2, "instability": 0.6667, "abstractness": 0, "distance": 0.3333 }, "paradigmEvidence": [] },
+    { "id": "services", "name": "services", "files": ["services.js"], "loc": 5, "metrics": { "ca": 1, "ce": 2, "instability": 0.6667, "abstractness": 0, "distance": 0.3333 }, "paradigmEvidence": [] }
+  ],
+  "types": [
+    { "id": "app.Program", "name": "Program", "module": "app", "kind": "class", "isAbstract": false, "location": { "file": "app.js", "startLine": 4 }, "metrics": { "lines": 4, "memberCount": 2, "cbo": 2, "dit": 0 } },
+    { "id": "domain.Repo", "name": "Repo", "module": "domain", "kind": "class", "isAbstract": false, "location": { "file": "domain.js", "startLine": 1 }, "metrics": { "lines": 1, "memberCount": 0, "cbo": 0, "dit": 0 } },
+    { "id": "domain.Entity", "name": "Entity", "module": "domain", "kind": "class", "isAbstract": false, "location": { "file": "domain.js", "startLine": 3 }, "metrics": { "lines": 3, "memberCount": 1, "cbo": 0, "dit": 0 } },
+    { "id": "infra.SqlRepo", "name": "SqlRepo", "module": "infra", "kind": "class", "isAbstract": false, "location": { "file": "infra.js", "startLine": 3 }, "metrics": { "lines": 3, "memberCount": 1, "cbo": 2, "dit": 1 } },
+    { "id": "services.OrderService", "name": "OrderService", "module": "services", "kind": "class", "isAbstract": false, "location": { "file": "services.js", "startLine": 3 }, "metrics": { "lines": 4, "memberCount": 2, "cbo": 2, "dit": 0 } }
+  ],
+  "functions": [
+  ],
+  "dependencies": [
+    { "from": "app.Program", "to": "services.OrderService", "kind": "call", "phase": "runtime" },
+    { "from": "app.Program", "to": "infra.SqlRepo", "kind": "call", "phase": "runtime" },
+    { "from": "infra.SqlRepo", "to": "domain.Repo", "kind": "inheritance", "phase": "runtime" },
+    { "from": "infra.SqlRepo", "to": "domain.Entity", "kind": "call", "phase": "runtime" },
+    { "from": "services.OrderService", "to": "domain.Repo", "kind": "call", "phase": "runtime" },
+    { "from": "services.OrderService", "to": "domain.Entity", "kind": "call", "phase": "runtime" },
+    { "from": "app", "to": "infra", "kind": "import", "phase": "runtime" },
+    { "from": "app", "to": "services", "kind": "import", "phase": "runtime" },
+    { "from": "infra", "to": "domain", "kind": "import", "phase": "runtime" },
+    { "from": "services", "to": "domain", "kind": "import", "phase": "runtime" }
+  ],
+  "cycles": [
+  ],
+  "skippedRules": [
+  ],
+  "diagnostics": []
+}

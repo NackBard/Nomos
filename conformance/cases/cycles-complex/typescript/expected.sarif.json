@@ -1,0 +1,11 @@
+{
+  "results": [
+    { "ruleId": "DSN002", "file": "eight.ts", "startLine": 1 },
+    { "ruleId": "DSN002", "file": "funcs.ts", "startLine": 1 },
+    { "ruleId": "DSN002", "file": "left.ts", "startLine": 3 },
+    { "ruleId": "DSN002", "file": "mixed.ts", "startLine": 1 },
+    { "ruleId": "DSN002", "file": "ping.ts", "startLine": 1 },
+    { "ruleId": "DSN002", "file": "right.ts", "startLine": 1 },
+    { "ruleId": "DSN002", "file": "ring.ts", "startLine": 1 }
+  ]
+}

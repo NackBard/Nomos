@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "1.2.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "typescript" },
+  "files": [
+    { "path": "dispatch.ts", "lines": 20, "loc": 17 },
+    { "path": "flow.ts", "lines": 5, "loc": 5 },
+    { "path": "global.ts", "lines": 3, "loc": 2 },
+    { "path": "hof.ts", "lines": 3, "loc": 3 },
+    { "path": "lambdas.ts", "lines": 7, "loc": 7 }
+  ],
+  "modules": [
+    { "id": "dispatch", "name": "dispatch", "files": ["dispatch.ts"], "loc": 17, "metrics": {  }, "paradigmEvidence": [{ "paradigm": "oop", "kind": "oop.classes", "count": 1, "description": "d" }, { "paradigm": "oop", "kind": "oop.mutable-state-classes", "count": 1, "description": "d" }, { "paradigm": "structural", "kind": "str.free-functions", "count": 1, "description": "d" }, { "paradigm": "structural", "kind": "str.control-flow", "count": 1, "description": "d" }, { "paradigm": "functional", "kind": "fp.pure-functions", "count": 1, "description": "d" }], "activeParadigms": ["functional", "oop", "structural"] },
+    { "id": "flow", "name": "flow", "files": ["flow.ts"], "loc": 5, "metrics": {  }, "paradigmEvidence": [{ "paradigm": "structural", "kind": "str.free-functions", "count": 1, "description": "d" }, { "paradigm": "structural", "kind": "str.control-flow", "count": 1, "description": "d" }], "activeParadigms": ["structural"] },
+    { "id": "global", "name": "global", "files": ["global.ts"], "loc": 2, "metrics": {  }, "paradigmEvidence": [{ "paradigm": "structural", "kind": "str.global-state", "count": 2, "description": "d" }], "activeParadigms": [ ] },
+    { "id": "hof", "name": "hof", "files": ["hof.ts"], "loc": 3, "metrics": {  }, "paradigmEvidence": [{ "paradigm": "structural", "kind": "str.free-functions", "count": 1, "description": "d" }, { "paradigm": "functional", "kind": "fp.higher-order", "count": 1, "description": "d" }], "activeParadigms": ["functional", "structural"] },
+    { "id": "lambdas", "name": "lambdas", "files": ["lambdas.ts"], "loc": 7, "metrics": {  }, "paradigmEvidence": [{ "paradigm": "structural", "kind": "str.free-functions", "count": 1, "description": "d" }, { "paradigm": "functional", "kind": "fp.lambdas", "count": 2, "description": "d" }], "activeParadigms": ["structural"] }
+  ],
+  "types": [
+    { "id": "dispatch.A", "name": "A", "module": "dispatch", "kind": "class", "isAbstract": false, "location": { "file": "dispatch.ts", "startLine": 1 }, "metrics": {  } },
+    { "id": "dispatch.B", "name": "B", "module": "dispatch", "kind": "class", "isAbstract": false, "location": { "file": "dispatch.ts", "startLine": 5 }, "metrics": {  } },
+    { "id": "dispatch.C", "name": "C", "module": "dispatch", "kind": "class", "isAbstract": false, "location": { "file": "dispatch.ts", "startLine": 7 }, "metrics": {  } }
+  ],
+  "functions": [
+    { "id": "dispatch.route", "name": "route", "module": "dispatch", "kind": "function", "visibility": "public", "location": { "file": "dispatch.ts", "startLine": 9 }, "metrics": { "cyclomatic": 4, "maxNesting": 1, "parameterCount": 1, "lines": 12, "typeTests": 3 } },
+    { "id": "flow.log", "name": "log", "module": "flow", "kind": "function", "visibility": "public", "location": { "file": "flow.ts", "startLine": 1 }, "metrics": { "cyclomatic": 2, "maxNesting": 1, "parameterCount": 1, "lines": 5 } },
+    { "id": "hof.twice", "name": "twice", "module": "hof", "kind": "function", "visibility": "public", "location": { "file": "hof.ts", "startLine": 1 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 2, "lines": 3, "hofOrder": 2 } },
+    { "id": "lambdas.scan", "name": "scan", "module": "lambdas", "kind": "function", "visibility": "public", "location": { "file": "lambdas.ts", "startLine": 1 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 1, "lines": 7, "lambdaNesting": 2 } }
+  ],
+  "dependencies": [
+    { "from": "dispatch.route", "to": "dispatch.A", "kind": "type-ref", "phase": "runtime" },
+    { "from": "dispatch.route", "to": "dispatch.B", "kind": "type-ref", "phase": "runtime" },
+    { "from": "dispatch.route", "to": "dispatch.C", "kind": "type-ref", "phase": "runtime" }
+  ],
+  "cycles": [
+  ],
+  "skippedRules": [
+    { "ruleId": "FUN005", "reason": "disabled-by-config", "message": "m" },
+    { "ruleId": "OOP002", "module": "flow", "reason": "paradigm-not-detected", "message": "m" }
+  ],
+  "diagnostics": []
+}

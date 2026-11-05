@@ -1,0 +1,266 @@
+{
+  "schemaVersion": "1.2.0",
+  "analyzer": {
+    "name": "hand-computed",
+    "version": "0.0.0",
+    "language": "javascript"
+  },
+  "files": [
+    {
+      "path": "domain/domain/rich.js",
+      "lines": 7,
+      "loc": 6
+    },
+    {
+      "path": "domain/entity.js",
+      "lines": 5,
+      "loc": 4
+    },
+    {
+      "path": "extra/tool.js",
+      "lines": 1,
+      "loc": 1
+    },
+    {
+      "path": "services/svc.js",
+      "lines": 1,
+      "loc": 1
+    },
+    {
+      "path": "tools/tool.js",
+      "lines": 7,
+      "loc": 5
+    },
+    {
+      "path": "web/page.js",
+      "lines": 9,
+      "loc": 8
+    }
+  ],
+  "modules": [
+    {
+      "id": "domain/entity",
+      "name": "entity",
+      "files": [
+        "domain/entity.js"
+      ],
+      "loc": 4,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "domain/domain/rich",
+      "name": "rich",
+      "files": [
+        "domain/domain/rich.js"
+      ],
+      "loc": 6,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "extra/tool",
+      "name": "tool",
+      "files": [
+        "extra/tool.js"
+      ],
+      "loc": 1,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "services/svc",
+      "name": "svc",
+      "files": [
+        "services/svc.js"
+      ],
+      "loc": 1,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "tools/tool",
+      "name": "tool",
+      "files": [
+        "tools/tool.js"
+      ],
+      "loc": 5,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "web/page",
+      "name": "page",
+      "files": [
+        "web/page.js"
+      ],
+      "loc": 8,
+      "metrics": {},
+      "paradigmEvidence": []
+    }
+  ],
+  "types": [
+    {
+      "id": "domain/entity.Entity",
+      "name": "Entity",
+      "module": "domain/entity",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "domain/entity.js",
+        "startLine": 3
+      },
+      "metrics": {}
+    },
+    {
+      "id": "domain/domain/rich.Rich",
+      "name": "Rich",
+      "module": "domain/domain/rich",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "domain/domain/rich.js",
+        "startLine": 4
+      },
+      "metrics": {}
+    },
+    {
+      "id": "extra/tool.Tool",
+      "name": "Tool",
+      "module": "extra/tool",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "extra/tool.js",
+        "startLine": 1
+      },
+      "metrics": {}
+    },
+    {
+      "id": "services/svc.Svc",
+      "name": "Svc",
+      "module": "services/svc",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "services/svc.js",
+        "startLine": 1
+      },
+      "metrics": {}
+    },
+    {
+      "id": "tools/tool.Tool",
+      "name": "Tool",
+      "module": "tools/tool",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "tools/tool.js",
+        "startLine": 3
+      },
+      "metrics": {}
+    },
+    {
+      "id": "web/page.Page",
+      "name": "Page",
+      "module": "web/page",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "web/page.js",
+        "startLine": 5
+      },
+      "metrics": {}
+    }
+  ],
+  "functions": [],
+  "dependencies": [
+    {
+      "from": "domain/entity.Entity",
+      "to": "services/svc.Svc",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "domain/domain/rich.Rich",
+      "to": "domain/entity.Entity",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "domain/domain/rich.Rich",
+      "to": "web/page.Page",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "tools/tool.Tool",
+      "to": "web/page.Page",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "web/page.Page",
+      "to": "services/svc.Svc",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "web/page.Page",
+      "to": "domain/entity.Entity",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "web/page.Page",
+      "to": "extra/tool.Tool",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "domain/entity",
+      "to": "services/svc",
+      "kind": "import",
+      "phase": "runtime"
+    },
+    {
+      "from": "domain/domain/rich",
+      "to": "domain/entity",
+      "kind": "import",
+      "phase": "runtime"
+    },
+    {
+      "from": "domain/domain/rich",
+      "to": "web/page",
+      "kind": "import",
+      "phase": "runtime"
+    },
+    {
+      "from": "tools/tool",
+      "to": "web/page",
+      "kind": "import",
+      "phase": "runtime"
+    },
+    {
+      "from": "web/page",
+      "to": "domain/entity",
+      "kind": "import",
+      "phase": "runtime"
+    },
+    {
+      "from": "web/page",
+      "to": "extra/tool",
+      "kind": "import",
+      "phase": "runtime"
+    },
+    {
+      "from": "web/page",
+      "to": "services/svc",
+      "kind": "import",
+      "phase": "runtime"
+    }
+  ],
+  "cycles": [],
+  "skippedRules": [],
+  "diagnostics": []
+}

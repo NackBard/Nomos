@@ -1,0 +1,610 @@
+{
+  "schemaVersion": "1.3.0",
+  "analyzer": {
+    "name": "hand-computed",
+    "version": "0.0.0",
+    "language": "typescript"
+  },
+  "files": [
+    {
+      "path": "structure.ts",
+      "lines": 76,
+      "loc": 59
+    }
+  ],
+  "modules": [
+    {
+      "id": "structure",
+      "name": "structure",
+      "files": [
+        "structure.ts"
+      ],
+      "loc": 59,
+      "metrics": {},
+      "paradigmEvidence": []
+    }
+  ],
+  "types": [
+    {
+      "id": "structure.Shape",
+      "name": "Shape",
+      "module": "structure",
+      "kind": "interface",
+      "isAbstract": true,
+      "location": {
+        "file": "structure.ts",
+        "startLine": 1
+      },
+      "metrics": {}
+    },
+    {
+      "id": "structure.Named",
+      "name": "Named",
+      "module": "structure",
+      "kind": "interface",
+      "isAbstract": true,
+      "location": {
+        "file": "structure.ts",
+        "startLine": 5
+      },
+      "metrics": {},
+      "members": [
+        {
+          "name": "label",
+          "kind": "field",
+          "visibility": "public",
+          "typeName": "string"
+        }
+      ]
+    },
+    {
+      "id": "structure.Cell",
+      "name": "Cell",
+      "module": "structure",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "structure.ts",
+        "startLine": 10
+      },
+      "metrics": {},
+      "members": [
+        {
+          "name": "x",
+          "kind": "field",
+          "visibility": "public"
+        },
+        {
+          "name": "y",
+          "kind": "field",
+          "visibility": "public"
+        }
+      ]
+    },
+    {
+      "id": "structure.Base",
+      "name": "Base",
+      "module": "structure",
+      "kind": "class",
+      "isAbstract": true,
+      "location": {
+        "file": "structure.ts",
+        "startLine": 15
+      },
+      "metrics": {},
+      "members": [
+        {
+          "name": "title",
+          "kind": "field",
+          "visibility": "private",
+          "typeName": "string"
+        }
+      ],
+      "satisfies": [
+        "structure.Shape"
+      ]
+    },
+    {
+      "id": "structure.Square",
+      "name": "Square",
+      "module": "structure",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "structure.ts",
+        "startLine": 25
+      },
+      "metrics": {},
+      "members": [
+        {
+          "name": "count",
+          "kind": "field",
+          "visibility": "public",
+          "isStatic": true
+        },
+        {
+          "name": "side",
+          "kind": "field",
+          "visibility": "public"
+        },
+        {
+          "name": "cells",
+          "kind": "field",
+          "visibility": "public",
+          "typeName": "Cell[]",
+          "type": "structure.Cell",
+          "isCollection": true
+        },
+        {
+          "name": "byKey",
+          "kind": "field",
+          "visibility": "public",
+          "typeName": "Map<string, Cell>",
+          "type": "structure.Cell",
+          "isCollection": true
+        },
+        {
+          "name": "#secret",
+          "kind": "field",
+          "visibility": "private",
+          "typeName": "Cell",
+          "type": "structure.Cell"
+        },
+        {
+          "name": "perimeter",
+          "kind": "property",
+          "visibility": "public",
+          "typeName": "number"
+        }
+      ]
+    },
+    {
+      "id": "structure.Circle",
+      "name": "Circle",
+      "module": "structure",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "structure.ts",
+        "startLine": 55
+      },
+      "metrics": {},
+      "members": [
+        {
+          "name": "label",
+          "kind": "field",
+          "visibility": "public"
+        }
+      ],
+      "satisfies": [
+        "structure.Named",
+        "structure.Shape"
+      ]
+    },
+    {
+      "id": "structure.Color",
+      "name": "Color",
+      "module": "structure",
+      "kind": "enum",
+      "isAbstract": false,
+      "location": {
+        "file": "structure.ts",
+        "startLine": 61
+      },
+      "metrics": {},
+      "members": [
+        {
+          "name": "Red",
+          "kind": "literal",
+          "visibility": "public"
+        },
+        {
+          "name": "Green",
+          "kind": "literal",
+          "visibility": "public"
+        }
+      ]
+    },
+    {
+      "id": "structure.Box",
+      "name": "Box",
+      "module": "structure",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "structure.ts",
+        "startLine": 66
+      },
+      "metrics": {},
+      "typeParameters": [
+        "T"
+      ],
+      "members": [
+        {
+          "name": "item",
+          "kind": "field",
+          "visibility": "public",
+          "typeName": "T"
+        }
+      ]
+    },
+    {
+      "id": "structure.Point",
+      "name": "Point",
+      "module": "structure",
+      "kind": "type",
+      "isAbstract": true,
+      "location": {
+        "file": "structure.ts",
+        "startLine": 70
+      },
+      "metrics": {},
+      "members": [
+        {
+          "name": "x",
+          "kind": "field",
+          "visibility": "public",
+          "typeName": "number"
+        },
+        {
+          "name": "y",
+          "kind": "field",
+          "visibility": "public",
+          "typeName": "number"
+        }
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "id": "structure.Shape.area",
+      "name": "area",
+      "module": "structure",
+      "type": "structure.Shape",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "structure.ts",
+        "startLine": 2
+      },
+      "parameters": [],
+      "returnTypeName": "number",
+      "isAbstract": true,
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "structure.Named.name",
+      "name": "name",
+      "module": "structure",
+      "type": "structure.Named",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "structure.ts",
+        "startLine": 7
+      },
+      "parameters": [],
+      "returnTypeName": "string",
+      "isAbstract": true,
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "structure.Base.constructor",
+      "name": "constructor",
+      "module": "structure",
+      "type": "structure.Base",
+      "kind": "constructor",
+      "visibility": "protected",
+      "location": {
+        "file": "structure.ts",
+        "startLine": 16
+      },
+      "parameters": [
+        {
+          "name": "title",
+          "typeName": "string"
+        }
+      ],
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 1,
+        "lines": 1
+      }
+    },
+    {
+      "id": "structure.Base.name",
+      "name": "name",
+      "module": "structure",
+      "type": "structure.Base",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "structure.ts",
+        "startLine": 18
+      },
+      "parameters": [],
+      "returnTypeName": "string",
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3
+      }
+    },
+    {
+      "id": "structure.Base.area",
+      "name": "area",
+      "module": "structure",
+      "type": "structure.Base",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "structure.ts",
+        "startLine": 22
+      },
+      "parameters": [],
+      "returnTypeName": "number",
+      "isAbstract": true,
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "structure.Square.create",
+      "name": "create",
+      "module": "structure",
+      "type": "structure.Square",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "structure.ts",
+        "startLine": 32
+      },
+      "parameters": [],
+      "returnTypeName": "Square",
+      "isStatic": true,
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3
+      }
+    },
+    {
+      "id": "structure.Square.perimeter.get",
+      "name": "perimeter",
+      "module": "structure",
+      "type": "structure.Square",
+      "kind": "accessor",
+      "visibility": "public",
+      "location": {
+        "file": "structure.ts",
+        "startLine": 36
+      },
+      "parameters": [],
+      "returnTypeName": "number",
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3
+      }
+    },
+    {
+      "id": "structure.Square.perimeter.set",
+      "name": "perimeter",
+      "module": "structure",
+      "type": "structure.Square",
+      "kind": "accessor",
+      "visibility": "public",
+      "location": {
+        "file": "structure.ts",
+        "startLine": 40
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "typeName": "number"
+        }
+      ],
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 1,
+        "lines": 3
+      }
+    },
+    {
+      "id": "structure.Square.area",
+      "name": "area",
+      "module": "structure",
+      "type": "structure.Square",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "structure.ts",
+        "startLine": 44
+      },
+      "parameters": [],
+      "returnTypeName": "number",
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3
+      }
+    },
+    {
+      "id": "structure.Square.resize",
+      "name": "resize",
+      "module": "structure",
+      "type": "structure.Square",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "structure.ts",
+        "startLine": 48
+      },
+      "parameters": [
+        {
+          "name": "by",
+          "typeName": "number"
+        },
+        {
+          "name": "labels",
+          "typeName": "...string[]"
+        }
+      ],
+      "returnTypeName": "[number, string[]]",
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 2,
+        "lines": 5
+      }
+    },
+    {
+      "id": "structure.Circle.area",
+      "name": "area",
+      "module": "structure",
+      "type": "structure.Circle",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "structure.ts",
+        "startLine": 57
+      },
+      "parameters": [],
+      "returnTypeName": "number",
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "structure.Circle.name",
+      "name": "name",
+      "module": "structure",
+      "type": "structure.Circle",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "structure.ts",
+        "startLine": 58
+      },
+      "parameters": [],
+      "returnTypeName": "string",
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "structure.paint",
+      "name": "paint",
+      "module": "structure",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "structure.ts",
+        "startLine": 72
+      },
+      "parameters": [
+        {
+          "name": "s",
+          "typeName": "Shape"
+        }
+      ],
+      "returnTypeName": "number",
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 1,
+        "lines": 3
+      }
+    },
+    {
+      "id": "structure.twice",
+      "name": "twice",
+      "module": "structure",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "structure.ts",
+        "startLine": 76
+      },
+      "parameters": [
+        {
+          "name": "n",
+          "typeName": "number"
+        }
+      ],
+      "returnTypeName": "number",
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 1,
+        "lines": 1
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "from": "structure.Named",
+      "to": "structure.Shape",
+      "kind": "inheritance",
+      "phase": "type-only"
+    },
+    {
+      "from": "structure.Square",
+      "to": "structure.Base",
+      "kind": "inheritance",
+      "phase": "runtime"
+    },
+    {
+      "from": "structure.Square",
+      "to": "structure.Shape",
+      "kind": "inheritance",
+      "phase": "type-only"
+    },
+    {
+      "from": "structure.Square",
+      "to": "structure.Cell",
+      "kind": "type-ref",
+      "phase": "type-only"
+    },
+    {
+      "from": "structure.paint",
+      "to": "structure.Shape",
+      "kind": "type-ref",
+      "phase": "type-only"
+    },
+    {
+      "from": "structure.paint",
+      "to": "structure.Shape",
+      "kind": "call",
+      "phase": "type-only"
+    }
+  ],
+  "cycles": [],
+  "skippedRules": [],
+  "diagnostics": []
+}

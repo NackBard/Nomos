@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "1.0.0",
+  "analyzers": [
+    {
+      "language": "javascript",
+      "command": [
+        "nomos-typescript"
+      ]
+    }
+  ],
+  "rules": {
+    "MNT002": {
+      "threshold": {
+        "minIndex": 80
+      }
+    },
+    "MNT003": {
+      "threshold": {
+        "minTokens": 20
+      }
+    },
+    "MNT004": {
+      "threshold": {
+        "report": "coverage.info",
+        "minCoverage": 50
+      }
+    }
+  }
+}

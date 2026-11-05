@@ -7,6 +7,13 @@
   ],
   "languages": [
     "csharp",
-    "go"
+    "go",
+    "typescript"
+  ],
+  "exceptions": [
+    {
+      "language": "javascript",
+      "reason": "The case checks types as written: typeName, parameter types and results. JavaScript sources have none; members and methods of JavaScript classes are checked by oop-cohesion and design-smells, and types from JSDoc by design-smells and paradigm-activation (D-055)."
+    }
   ]
 }

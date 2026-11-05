@@ -29,6 +29,32 @@
         "conformance/**",
         "**/node_modules/**"
       ]
+    },
+    {
+      "language": "typescript",
+      "command": [
+        "node",
+        "analyzers/typescript/src/main.ts"
+      ],
+      "exclude": [
+        "conformance/**",
+        "**/node_modules/**",
+        "extension/bundle/**"
+      ]
+    },
+    {
+      "language": "javascript",
+      "command": [
+        "node",
+        "analyzers/typescript/src/main.ts",
+        "--language",
+        "javascript"
+      ],
+      "exclude": [
+        "conformance/**",
+        "**/node_modules/**",
+        "extension/bundle/**"
+      ]
     }
   ],
   "layers": [

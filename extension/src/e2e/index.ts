@@ -95,10 +95,13 @@ export async function run(): Promise<void> {
   const graphTabs = vscode.window.tabGroups.all.flatMap((g) => g.tabs).filter((t) => t.label === graphTitle);
   assert.equal(graphTabs.length, 1, "the graph must stay a single tab");
 
-  // Stage 11: every analyzer fills the structure of facts 1.3.0, and the class diagram of its largest module has members.
+  // Stage 11: every analyzer fills the structure of facts 1.3.0, and the class diagram of its largest module with types
+  // has members. A language written only with functions in this folder has no class diagram to check.
   assert.ok((await vscode.commands.getCommands(true)).includes("nomos.exportClassDiagram"), "no export command");
   for (const each of runs) {
-    const largest = [...each.facts.modules].sort((a, b) => b.loc - a.loc)[0];
+    const withTypes = each.facts.modules.filter((m) => each.facts.types.some((t) => t.module === m.id));
+    const largest = [...withTypes].sort((a, b) => b.loc - a.loc)[0];
+    if (!largest) continue;
     const diagram = focusDiagram(runs, largest.id)?.diagram;
     assert.ok(diagram?.classes.some((c) => c.attributes.length + c.operations.length > 0), `${each.language}: no members in the class diagram of ${largest.id}`);
     if (!diagram) return;

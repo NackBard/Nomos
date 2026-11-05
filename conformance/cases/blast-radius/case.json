@@ -8,7 +8,9 @@
   ],
   "languages": [
     "csharp",
-    "go"
+    "go",
+    "typescript",
+    "javascript"
   ],
   "expectSarif": true,
   "config": true,
@@ -18,7 +20,9 @@
       "scope": "type",
       "entities": {
         "csharp": "Blast.Chain.C1",
-        "go": "blast/chain.C1"
+        "go": "blast/chain.C1",
+        "typescript": "chain.C1",
+        "javascript": "chain.C1"
       }
     },
     {
@@ -26,7 +30,9 @@
       "scope": "type",
       "entities": {
         "csharp": "Blast.Chain.C4",
-        "go": "blast/chain.C4"
+        "go": "blast/chain.C4",
+        "typescript": "chain.C4",
+        "javascript": "chain.C4"
       }
     },
     {
@@ -34,7 +40,9 @@
       "scope": "type",
       "entities": {
         "csharp": "Blast.Diamond.Bottom",
-        "go": "blast/diamond.Bottom"
+        "go": "blast/diamond.Bottom",
+        "typescript": "diamond.Bottom",
+        "javascript": "diamond.Bottom"
       }
     },
     {
@@ -42,7 +50,9 @@
       "scope": "type",
       "entities": {
         "csharp": "Blast.Ring.R2",
-        "go": "blast/ring.R2"
+        "go": "blast/ring.R2",
+        "typescript": "ring.R2",
+        "javascript": "ring.R2"
       }
     },
     {
@@ -50,7 +60,9 @@
       "scope": "type",
       "entities": {
         "csharp": "Blast.Ring.Leaf",
-        "go": "blast/ring.Leaf"
+        "go": "blast/ring.Leaf",
+        "typescript": "ring.Leaf",
+        "javascript": "ring.Leaf"
       }
     },
     {
@@ -58,7 +70,9 @@
       "scope": "type",
       "entities": {
         "csharp": "Blast.Ring.Tail",
-        "go": "blast/ring.Tail"
+        "go": "blast/ring.Tail",
+        "typescript": "ring.Tail",
+        "javascript": "ring.Tail"
       }
     }
   ]

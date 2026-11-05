@@ -12,7 +12,9 @@
   ],
   "languages": [
     "csharp",
-    "go"
+    "go",
+    "typescript",
+    "javascript"
   ],
   "parity": [
     {
@@ -20,7 +22,9 @@
       "scope": "type",
       "entities": {
         "csharp": "Oc.Mixed",
-        "go": "oc.Mixed"
+        "go": "oc.Mixed",
+        "typescript": "cohesion.Mixed",
+        "javascript": "cohesion.Mixed"
       }
     },
     {
@@ -28,7 +32,9 @@
       "scope": "type",
       "entities": {
         "csharp": "Oc.Mixed",
-        "go": "oc.Mixed"
+        "go": "oc.Mixed",
+        "typescript": "cohesion.Mixed",
+        "javascript": "cohesion.Mixed"
       }
     },
     {
@@ -36,7 +42,9 @@
       "scope": "type",
       "entities": {
         "csharp": "Oc.Mixed",
-        "go": "oc.Mixed"
+        "go": "oc.Mixed",
+        "typescript": "cohesion.Mixed",
+        "javascript": "cohesion.Mixed"
       }
     },
     {
@@ -44,7 +52,9 @@
       "scope": "type",
       "entities": {
         "csharp": "Oc.Mixed",
-        "go": "oc.Mixed"
+        "go": "oc.Mixed",
+        "typescript": "cohesion.Mixed",
+        "javascript": "cohesion.Mixed"
       }
     },
     {
@@ -52,7 +62,9 @@
       "scope": "type",
       "entities": {
         "csharp": "Oc.Mixed",
-        "go": "oc.Mixed"
+        "go": "oc.Mixed",
+        "typescript": "cohesion.Mixed",
+        "javascript": "cohesion.Mixed"
       }
     },
     {
@@ -60,7 +72,9 @@
       "scope": "type",
       "entities": {
         "csharp": "Oc.Mixed",
-        "go": "oc.Mixed"
+        "go": "oc.Mixed",
+        "typescript": "cohesion.Mixed",
+        "javascript": "cohesion.Mixed"
       }
     }
   ]

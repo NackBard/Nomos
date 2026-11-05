@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "1.2.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "typescript" },
+  "files": [
+    { "path": "big/store.ts", "lines": 402, "loc": 300 },
+    { "path": "tiny/box.ts", "lines": 3, "loc": 3 }
+  ],
+  "modules": [
+    { "id": "big/store", "name": "store", "files": ["big/store.ts"], "loc": 300, "metrics": {  }, "paradigmEvidence": [], "health": { "score": 90.5, "categories": [], "explanation": ["100 * exp(-0.6 / 0.3 / 20)"] } },
+    { "id": "tiny/box", "name": "box", "files": ["tiny/box.ts"], "loc": 3, "metrics": {  }, "paradigmEvidence": [], "health": { "score": 100, "categories": [], "explanation": ["no findings"] } }
+  ],
+  "types": [
+    { "id": "big/store.Store", "name": "Store", "module": "big/store", "kind": "class", "isAbstract": false, "location": { "file": "big/store.ts", "startLine": 103 }, "metrics": { "memberCount": 288 } },
+    { "id": "tiny/box.Box", "name": "Box", "module": "tiny/box", "kind": "class", "isAbstract": false, "location": { "file": "tiny/box.ts", "startLine": 1 }, "metrics": { "memberCount": 1 } }
+  ],
+  "functions": [
+    { "id": "big/store.pairs", "name": "pairs", "module": "big/store", "kind": "function", "visibility": "public", "location": { "file": "big/store.ts", "startLine": 394 }, "metrics": { "cyclomatic": 3, "maxNesting": 2, "parameterCount": 2, "lines": 9 } }
+  ],
+  "dependencies": [
+  ],
+  "cycles": [
+  ],
+  "health": { "score": 90.6, "categories": [], "explanation": ["(90.48 * 300 + 100 * 3) / 303"] },
+  "skippedRules": [
+  ],
+  "diagnostics": []
+}

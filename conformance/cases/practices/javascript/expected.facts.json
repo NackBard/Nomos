@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "1.2.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "javascript" },
+  "files": [ { "path": "store.js", "lines": 9, "loc": 7 } ],
+  "modules": [
+    { "id": "store", "name": "store", "files": ["store.js"], "loc": 7, "metrics": {}, "paradigmEvidence": [] }
+  ],
+  "types": [],
+  "functions": [
+    { "id": "store.find", "name": "find", "module": "store", "kind": "function", "visibility": "public", "location": { "file": "store.js", "startLine": 3 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 1, "lines": 3 } },
+    { "id": "store.sum", "name": "sum", "module": "store", "kind": "function", "visibility": "public", "location": { "file": "store.js", "startLine": 7 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 6, "lines": 3 } }
+  ],
+  "dependencies": [],
+  "cycles": [],
+  "skippedRules": [
+    { "ruleId": "CC003", "reason": "disabled-by-config", "message": "outside the selected practice security" },
+    { "ruleId": "DSN001", "reason": "disabled-by-config", "message": "outside the selected practice security" },
+    { "ruleId": "SEC001", "reason": "disabled-by-config", "message": "switched off by rules in nomos.json" }
+  ],
+  "diagnostics": []
+}

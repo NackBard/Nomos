@@ -1,0 +1,7 @@
+{
+  "results": [
+    { "ruleId": "DSN003", "file": "domain/entity.ts", "startLine": 4 },
+    { "ruleId": "DSN003", "file": "domain/domain/rich.ts", "startLine": 6 },
+    { "ruleId": "DSN003", "file": "web/page.ts", "startLine": 7 }
+  ]
+}

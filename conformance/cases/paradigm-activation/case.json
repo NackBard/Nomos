@@ -13,6 +13,8 @@
   ],
   "languages": [
     "csharp",
-    "go"
+    "go",
+    "typescript",
+    "javascript"
   ]
 }

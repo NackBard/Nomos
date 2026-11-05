@@ -30,13 +30,14 @@ conformance/ ── прогоняет каждый анализатор на э
 | `spec/` | `rules/*.yaml` — правила как данные; `practices.yaml` — практики, наборы правил; `metrics.md` — формулы; `structure.md` — члены типов и связи диаграммы классов; `paradigms.md` — признаки стиля; `suppressions.md` — подавления | при добавлении правил и метрик |
 | `analyzers/csharp/` | анализатор C# на Roslyn | |
 | `analyzers/go/` | анализатор Go на `go/parser` и `go/types` | |
+| `analyzers/typescript/` | анализатор TypeScript и JavaScript на TypeScript Compiler API | |
 | `analyzers/<язык>/` | будущие анализаторы | |
 | `extension/` | расширение VS Code, только потребитель контрактов | |
 | `conformance/` | фикстуры, эталонные facts, harness | |
 | `ci/` | запуск анализаторов без IDE, отчёты md/html из facts и SARIF, baseline | |
 | `docs/` | эта документация | |
 
-Анализатор Go лежит в `analyzers/go/`, точка входа `cmd/nomos-go`, зависимостей вне стандартной библиотеки нет. Анализатор C# лежит в `analyzers/csharp/` (`src/`, `tests/`, `Nomos.slnx`, `Directory.*`). Точка входа — `src/Nomos.Analyzer.CSharp` (`nomos-csharp`), она говорит по протоколу `manifest`/`analyze`.
+Анализатор Go лежит в `analyzers/go/`, точка входа `cmd/nomos-go`, зависимостей вне стандартной библиотеки нет. Анализатор TypeScript и JavaScript лежит в `analyzers/typescript/`, точка входа `src/main.ts`; язык выбирает первый аргумент `--language javascript`, единственная зависимость — компилятор `typescript` (D-055). Анализатор C# лежит в `analyzers/csharp/` (`src/`, `tests/`, `Nomos.slnx`, `Directory.*`). Точка входа — `src/Nomos.Analyzer.CSharp` (`nomos-csharp`), она говорит по протоколу `manifest`/`analyze`.
 
 ## Контракты
 
@@ -121,12 +122,13 @@ Facts — измерения и наблюдения, без вердиктов:
 ```json
 { "analyzers": [
   { "language": "go", "files": ["**/*.go"], "command": ["${bundle}/go/nomos-go.exe"] },
+  { "language": "javascript", "files": ["**/*.js", "..."], "command": ["${node}", "${bundle}/typescript/main.js", "--language", "javascript"] },
   { "language": "csharp", "files": ["**/*.cs"], "command": ["${runtime}", "${bundle}/csharp/nomos-csharp.dll"],
     "runtime": { "name": "...", "extension": "ms-dotnettools.vscode-dotnet-runtime", "command": "dotnet.acquire", "argument": { "version": "10.0" }, "resultField": "dotnetPath" } }
 ] }
 ```
 
-Реестр пишет скрипт сборки; `files` он берёт из manifest анализатора (поле `files`, контракт 1.2.0). В папке без `nomos.json` расширение запускает те анализаторы, для которых нашёлся хотя бы один файл по `files`, без `--config`, с настройками по умолчанию. Настройки задаются настройками VS Code рабочей области (D-050): если задана `nomos.practices`, расширение пишет файл рабочей области с командой анализатора и `practices` в своё хранилище (`workspaces/<папка>-<язык>.json`) и передаёт его через `--config`. `ci` этих настроек не видит. Рабочая папка анализатора — хранилище расширения, поэтому SARIF не попадает в проект. `runtime` — программа, которую выдаёт другое расширение VS Code: расширение спрашивает разрешения на его установку, вызывает `command` и берёт путь из `resultField`. Всё это — данные реестра; код расширения языков не называет. Если `nomos.json` есть, используется только он.
+Реестр пишет скрипт сборки; `files` он берёт из manifest анализатора (поле `files`, контракт 1.2.0). В папке без `nomos.json` расширение запускает те анализаторы, для которых нашёлся хотя бы один файл по `files`, без `--config`, с настройками по умолчанию. Настройки задаются настройками VS Code рабочей области (D-050): если задана `nomos.practices`, расширение пишет файл рабочей области с командой анализатора и `practices` в своё хранилище (`workspaces/<папка>-<язык>.json`) и передаёт его через `--config`. `ci` этих настроек не видит. Рабочая папка анализатора — хранилище расширения, поэтому SARIF не попадает в проект. `${node}` — Node.js, на котором работает само расширение: в VS Code это его исполняемый файл с `ELECTRON_RUN_AS_NODE=1`, ставить ничего не нужно (D-055). `runtime` — программа, которую выдаёт другое расширение VS Code: расширение спрашивает разрешения на его установку, вызывает `command` и берёт путь из `resultField`. Всё это — данные реестра; код расширения языков не называет. Если `nomos.json` есть, используется только он.
 
 ## Правила и метрики
 

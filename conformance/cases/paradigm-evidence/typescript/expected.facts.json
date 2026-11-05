@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "1.2.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "typescript" },
+  "files": [
+    { "path": "funcs.ts", "lines": 9, "loc": 7 },
+    { "path": "plain.ts", "lines": 4, "loc": 4 },
+    { "path": "shapes.ts", "lines": 9, "loc": 7 }
+  ],
+  "modules": [
+    { "id": "funcs", "name": "funcs", "files": ["funcs.ts"], "loc": 7, "metrics": {  }, "paradigmEvidence": [{ "paradigm": "structural", "kind": "str.free-functions", "count": 2, "description": "d" }, { "paradigm": "structural", "kind": "str.global-state", "count": 1, "description": "d" }, { "paradigm": "functional", "kind": "fp.pure-functions", "count": 1, "description": "d" }], "activeParadigms": ["functional", "structural"] },
+    { "id": "plain", "name": "plain", "files": ["plain.ts"], "loc": 4, "metrics": {  }, "paradigmEvidence": [], "activeParadigms": [ ] },
+    { "id": "shapes", "name": "shapes", "files": ["shapes.ts"], "loc": 7, "metrics": {  }, "paradigmEvidence": [{ "paradigm": "oop", "kind": "oop.classes", "count": 2, "description": "d" }, { "paradigm": "oop", "kind": "oop.mutable-state-classes", "count": 2, "description": "d" }, { "paradigm": "oop", "kind": "oop.inheritance", "count": 1, "description": "d" }, { "paradigm": "oop", "kind": "oop.abstractions", "count": 1, "description": "d" }], "activeParadigms": ["oop"] }
+  ],
+  "types": [
+    { "id": "plain.Mode", "name": "Mode", "module": "plain", "kind": "enum", "isAbstract": false, "location": { "file": "plain.ts", "startLine": 1 }, "metrics": {  } },
+    { "id": "shapes.Shape", "name": "Shape", "module": "shapes", "kind": "interface", "isAbstract": true, "location": { "file": "shapes.ts", "startLine": 1 }, "metrics": {  } },
+    { "id": "shapes.ShapeBase", "name": "ShapeBase", "module": "shapes", "kind": "class", "isAbstract": false, "location": { "file": "shapes.ts", "startLine": 3 }, "metrics": {  } },
+    { "id": "shapes.Square", "name": "Square", "module": "shapes", "kind": "class", "isAbstract": false, "location": { "file": "shapes.ts", "startLine": 7 }, "metrics": {  } }
+  ],
+  "functions": [
+    { "id": "funcs.add", "name": "add", "module": "funcs", "kind": "function", "visibility": "public", "location": { "file": "funcs.ts", "startLine": 3 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 2, "lines": 3 } },
+    { "id": "funcs.bump", "name": "bump", "module": "funcs", "kind": "function", "visibility": "public", "location": { "file": "funcs.ts", "startLine": 7 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 0, "lines": 3 } }
+  ],
+  "dependencies": [
+    { "from": "shapes.Square", "to": "shapes.ShapeBase", "kind": "inheritance", "phase": "runtime" }
+  ],
+  "cycles": [
+  ],
+  "skippedRules": [
+    { "ruleId": "OOP002", "module": "funcs", "reason": "paradigm-not-detected", "message": "m" },
+    { "ruleId": "OOP002", "module": "plain", "reason": "paradigm-not-detected", "message": "m" },
+    { "ruleId": "STR002", "module": "shapes", "reason": "paradigm-not-detected", "message": "m" }
+  ],
+  "diagnostics": []
+}

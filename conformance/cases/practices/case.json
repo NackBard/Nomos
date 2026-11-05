@@ -9,7 +9,9 @@
   ],
   "languages": [
     "csharp",
-    "go"
+    "go",
+    "typescript",
+    "javascript"
   ],
   "expectSarif": true,
   "config": true

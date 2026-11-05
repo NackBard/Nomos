@@ -1,0 +1,19 @@
+{
+  "results": [
+    {
+      "ruleId": "DSN003",
+      "file": "domain/entity.js",
+      "startLine": 4
+    },
+    {
+      "ruleId": "DSN003",
+      "file": "domain/domain/rich.js",
+      "startLine": 6
+    },
+    {
+      "ruleId": "DSN003",
+      "file": "web/page.js",
+      "startLine": 7
+    }
+  ]
+}

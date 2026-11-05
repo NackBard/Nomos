@@ -26,7 +26,10 @@ export interface RuntimeRequirement {
 
 export interface BundledAnalyzer {
   language: string;
-  /** `${bundle}` is the registry folder, `${runtime}` the executable from `runtime`. */
+  /**
+   * `${bundle}` is the registry folder, `${runtime}` the executable from `runtime`, `${node}` the Node.js that runs the
+   * extension: inside VS Code its own executable in Node mode, so nothing has to be installed (D-055).
+   */
   command: string[];
   /** `files` of the analyzer's manifest, copied when the bundle was built. */
   files: string[];
@@ -82,10 +85,12 @@ export function writeWorkspaceFile(workspace: Workspace, storage: string, key: s
  */
 export function launchConfig(analyzer: BundledAnalyzer, bundleFolder: string, storage: string, runtimePath?: string): AnalyzerConfig {
   if (analyzer.runtime && !runtimePath) throw new Error(`${analyzer.language}: ${analyzer.runtime.name} is required`);
-  const command = analyzer.command.map((part) => part.replaceAll("${bundle}", bundleFolder).replaceAll("${runtime}", runtimePath ?? ""));
+  const command = analyzer.command.map((part) => part.replaceAll("${bundle}", bundleFolder).replaceAll("${runtime}", runtimePath ?? "").replaceAll("${node}", process.execPath));
   // VS Code does not create an extension's storage folder; a missing working directory fails the start with ENOENT.
   fs.mkdirSync(storage, { recursive: true });
   // A package does not always keep the executable bit of a bundled program.
   if (process.platform !== "win32" && analyzer.command[0].startsWith("${bundle}") && fs.existsSync(command[0])) fs.chmodSync(command[0], 0o755);
-  return { language: analyzer.language, command, cwd: storage };
+  // The executable of VS Code is Electron; this variable makes it behave as plain Node. Node itself ignores it.
+  const usesNode = analyzer.command.some((part) => part.includes("${node}"));
+  return { language: analyzer.language, command, cwd: storage, ...(usesNode ? { env: { ELECTRON_RUN_AS_NODE: "1" } } : {}) };
 }

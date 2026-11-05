@@ -1,0 +1,420 @@
+{
+  "schemaVersion": "1.2.0",
+  "analyzer": {
+    "name": "hand-computed",
+    "version": "0.0.0",
+    "language": "typescript"
+  },
+  "files": [
+    {
+      "path": "chain.ts",
+      "lines": 13,
+      "loc": 10
+    },
+    {
+      "path": "diamond.ts",
+      "lines": 16,
+      "loc": 13
+    },
+    {
+      "path": "ring.ts",
+      "lines": 22,
+      "loc": 17
+    }
+  ],
+  "modules": [
+    {
+      "id": "chain",
+      "name": "chain",
+      "files": [
+        "chain.ts"
+      ],
+      "loc": 10,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "diamond",
+      "name": "diamond",
+      "files": [
+        "diamond.ts"
+      ],
+      "loc": 13,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "ring",
+      "name": "ring",
+      "files": [
+        "ring.ts"
+      ],
+      "loc": 17,
+      "metrics": {},
+      "paradigmEvidence": []
+    }
+  ],
+  "types": [
+    {
+      "id": "chain.C1",
+      "name": "C1",
+      "module": "chain",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "chain.ts",
+        "startLine": 1
+      },
+      "metrics": {
+        "blastRadius": 8
+      }
+    },
+    {
+      "id": "chain.C2",
+      "name": "C2",
+      "module": "chain",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "chain.ts",
+        "startLine": 3
+      },
+      "metrics": {
+        "blastRadius": 7
+      }
+    },
+    {
+      "id": "chain.C3",
+      "name": "C3",
+      "module": "chain",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "chain.ts",
+        "startLine": 7
+      },
+      "metrics": {
+        "blastRadius": 6
+      }
+    },
+    {
+      "id": "chain.C4",
+      "name": "C4",
+      "module": "chain",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "chain.ts",
+        "startLine": 11
+      },
+      "metrics": {
+        "blastRadius": 5
+      }
+    },
+    {
+      "id": "diamond.Bottom",
+      "name": "Bottom",
+      "module": "diamond",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "diamond.ts",
+        "startLine": 1
+      },
+      "metrics": {
+        "blastRadius": 3
+      }
+    },
+    {
+      "id": "diamond.Left",
+      "name": "Left",
+      "module": "diamond",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "diamond.ts",
+        "startLine": 7
+      },
+      "metrics": {
+        "blastRadius": 1
+      }
+    },
+    {
+      "id": "diamond.Right",
+      "name": "Right",
+      "module": "diamond",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "diamond.ts",
+        "startLine": 9
+      },
+      "metrics": {
+        "blastRadius": 1
+      }
+    },
+    {
+      "id": "diamond.Top",
+      "name": "Top",
+      "module": "diamond",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "diamond.ts",
+        "startLine": 13
+      },
+      "metrics": {
+        "blastRadius": 0
+      }
+    },
+    {
+      "id": "ring.R1",
+      "name": "R1",
+      "module": "ring",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "ring.ts",
+        "startLine": 3
+      },
+      "metrics": {
+        "blastRadius": 3
+      }
+    },
+    {
+      "id": "ring.R2",
+      "name": "R2",
+      "module": "ring",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "ring.ts",
+        "startLine": 7
+      },
+      "metrics": {
+        "blastRadius": 3
+      }
+    },
+    {
+      "id": "ring.R3",
+      "name": "R3",
+      "module": "ring",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "ring.ts",
+        "startLine": 11
+      },
+      "metrics": {
+        "blastRadius": 3
+      }
+    },
+    {
+      "id": "ring.Tail",
+      "name": "Tail",
+      "module": "ring",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "ring.ts",
+        "startLine": 16
+      },
+      "metrics": {
+        "blastRadius": 0
+      }
+    },
+    {
+      "id": "ring.Leaf",
+      "name": "Leaf",
+      "module": "ring",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "ring.ts",
+        "startLine": 20
+      },
+      "metrics": {
+        "blastRadius": 4
+      }
+    }
+  ],
+  "functions": [
+    {
+      "id": "diamond.Bottom.size",
+      "name": "size",
+      "module": "diamond",
+      "type": "diamond.Bottom",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "diamond.ts",
+        "startLine": 2
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3,
+        "blastRadius": 3
+      }
+    },
+    {
+      "id": "ring.R1.next",
+      "name": "next",
+      "module": "ring",
+      "type": "ring.R1",
+      "kind": "method",
+      "location": {
+        "file": "ring.ts",
+        "startLine": 4
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1,
+        "blastRadius": 3
+      }
+    },
+    {
+      "id": "ring.R2.next",
+      "name": "next",
+      "module": "ring",
+      "type": "ring.R2",
+      "kind": "method",
+      "location": {
+        "file": "ring.ts",
+        "startLine": 8
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1,
+        "blastRadius": 3
+      }
+    },
+    {
+      "id": "ring.R3.next",
+      "name": "next",
+      "module": "ring",
+      "type": "ring.R3",
+      "kind": "method",
+      "location": {
+        "file": "ring.ts",
+        "startLine": 12
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1,
+        "blastRadius": 3
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "from": "chain.C2",
+      "to": "chain.C1",
+      "kind": "type-ref",
+      "phase": "type-only"
+    },
+    {
+      "from": "chain.C3",
+      "to": "chain.C2",
+      "kind": "type-ref",
+      "phase": "type-only"
+    },
+    {
+      "from": "chain.C4",
+      "to": "chain.C3",
+      "kind": "type-ref",
+      "phase": "type-only"
+    },
+    {
+      "from": "diamond.Left",
+      "to": "diamond.Bottom",
+      "kind": "inheritance",
+      "phase": "runtime"
+    },
+    {
+      "from": "diamond.Right",
+      "to": "diamond.Bottom",
+      "kind": "type-ref",
+      "phase": "type-only"
+    },
+    {
+      "from": "diamond.Top",
+      "to": "diamond.Left",
+      "kind": "type-ref",
+      "phase": "type-only"
+    },
+    {
+      "from": "diamond.Top",
+      "to": "diamond.Right",
+      "kind": "type-ref",
+      "phase": "type-only"
+    },
+    {
+      "from": "ring.R1",
+      "to": "ring.R2",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "ring.R2",
+      "to": "ring.R3",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "ring.R3",
+      "to": "ring.R1",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "ring.R3",
+      "to": "ring.Leaf",
+      "kind": "type-ref",
+      "phase": "type-only"
+    },
+    {
+      "from": "ring.Tail",
+      "to": "ring.R1",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "ring.Leaf",
+      "to": "chain.C4",
+      "kind": "type-ref",
+      "phase": "type-only"
+    },
+    {
+      "from": "ring",
+      "to": "chain",
+      "kind": "import",
+      "phase": "type-only"
+    }
+  ],
+  "cycles": [
+    {
+      "level": "type",
+      "members": [
+        "ring.R1",
+        "ring.R2",
+        "ring.R3"
+      ]
+    }
+  ],
+  "skippedRules": [
+    {
+      "ruleId": "DSN003",
+      "reason": "missing-input",
+      "message": "m"
+    }
+  ],
+  "diagnostics": []
+}

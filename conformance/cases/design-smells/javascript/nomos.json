@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1.0.0",
+  "analyzers": [
+    {
+      "language": "javascript",
+      "command": [
+        "nomos-typescript"
+      ]
+    }
+  ],
+  "rules": {
+    "DSN004": {
+      "threshold": {
+        "minWmc": 7,
+        "minAtfd": 3,
+        "maxTcc": 0.5
+      }
+    }
+  }
+}

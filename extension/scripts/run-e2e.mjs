@@ -30,7 +30,18 @@ const isolation = [`--extensions-dir=${extensionsDir}`];
 if (bundled) {
   const registry = path.join(extension, "bundle", "analyzers.json");
   if (!fs.existsSync(registry)) throw new Error(`${folder} has no nomos.json and the extension has no bundle; run: npm run package -- --bundle-only`);
-  const runtimes = [...new Set(JSON.parse(fs.readFileSync(registry, "utf8")).analyzers.flatMap((a) => (a.runtime ? [a.runtime.extension] : [])))];
+  // Only analyzers with files in the folder start, so only their runtimes are installed (globs of the form **/*.ext).
+  const extensions = new Set();
+  const walk = (dir) => {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      if (entry.isDirectory()) {
+        if (entry.name !== "node_modules" && !entry.name.startsWith(".")) walk(path.join(dir, entry.name));
+      } else extensions.add(path.extname(entry.name));
+    }
+  };
+  walk(folder);
+  const present = (analyzer) => analyzer.files.some((glob) => !/^\*\*\/\*\.[^/*]+$/.test(glob) || extensions.has(glob.slice(3)));
+  const runtimes = [...new Set(JSON.parse(fs.readFileSync(registry, "utf8")).analyzers.filter(present).flatMap((a) => (a.runtime ? [a.runtime.extension] : [])))];
   const cli = spawnSync(process.platform === "win32" ? "where" : "which", ["code"], { encoding: "utf8" }).stdout.split(/\r?\n/).find(Boolean);
   for (const id of runtimes) {
     // The CLI script is a .cmd on Windows, which only starts through a shell; the arguments are fixed here.

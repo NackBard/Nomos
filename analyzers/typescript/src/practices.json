@@ -1,0 +1,206 @@
+[
+  {
+    "id": "solid",
+    "title": "SOLID",
+    "description": "Single responsibility, open/closed, Liskov substitution, interface segregation and dependency inversion in classes.",
+    "rules": [
+      "PRN001",
+      "PRN002",
+      "PRN003",
+      "PRN004",
+      "PRN005"
+    ],
+    "l10n": {
+      "ru": {
+        "title": "SOLID",
+        "description": "Единственная ответственность, открытость/закрытость, подстановка Лисков, разделение интерфейсов и инверсия зависимостей в классах."
+      }
+    }
+  },
+  {
+    "id": "simplicity",
+    "title": "Simplicity",
+    "description": "Do not repeat yourself, keep it simple, you are not going to need it, and the law of Demeter.",
+    "rules": [
+      "PRN006",
+      "PRN007",
+      "PRN008",
+      "PRN009"
+    ],
+    "l10n": {
+      "ru": {
+        "title": "Простота",
+        "description": "Не повторяйся (DRY), делай проще (KISS), тебе это не понадобится (YAGNI) и закон Деметры."
+      }
+    }
+  },
+  {
+    "id": "clean-code",
+    "title": "Clean Code",
+    "description": "Size and shape of functions and classes, placeholders, dead and commented-out code, empty catch blocks, naming.",
+    "rules": [
+      "CC001",
+      "CC002",
+      "CC003",
+      "CC004",
+      "CC006",
+      "CC007",
+      "CC008",
+      "CC009",
+      "CS.NAM001"
+    ],
+    "l10n": {
+      "ru": {
+        "title": "Чистый код (Clean Code)",
+        "description": "Размер и форма функций и классов, заглушки, мёртвый и закомментированный код, пустые блоки catch, имена."
+      }
+    }
+  },
+  {
+    "id": "oop",
+    "title": "Object-oriented design",
+    "description": "Encapsulation, inheritance, polymorphism, cohesion and coupling of classes, god classes and feature envy.",
+    "rules": [
+      "OOP001",
+      "OOP002",
+      "OOP003",
+      "OOP004",
+      "OOP005",
+      "OOP006",
+      "DSN004",
+      "DSN005"
+    ],
+    "l10n": {
+      "ru": {
+        "title": "Объектно-ориентированное проектирование",
+        "description": "Инкапсуляция, наследование, полиморфизм, связность и зацепление классов, божественные классы и завистливые методы."
+      }
+    }
+  },
+  {
+    "id": "functional",
+    "title": "Functional style",
+    "description": "Purity, side effects in lambdas, mutable state, recursion and depth of higher-order functions.",
+    "rules": [
+      "FUN001",
+      "FUN002",
+      "FUN003",
+      "FUN004",
+      "FUN005"
+    ],
+    "l10n": {
+      "ru": {
+        "title": "Функциональный стиль",
+        "description": "Чистота, побочные эффекты в лямбдах, изменяемое состояние, рекурсия и глубина функций высшего порядка."
+      }
+    }
+  },
+  {
+    "id": "structural",
+    "title": "Structured programming",
+    "description": "Goto, global state and module size.",
+    "rules": [
+      "STR001",
+      "STR002",
+      "STR003"
+    ],
+    "l10n": {
+      "ru": {
+        "title": "Структурное программирование",
+        "description": "Goto, глобальное состояние и размер модулей."
+      }
+    }
+  },
+  {
+    "id": "architecture",
+    "title": "Architecture",
+    "description": "Distance from the main sequence, dependency cycles, layer violations, god classes, feature envy and blast radius.",
+    "rules": [
+      "DSN001",
+      "DSN002",
+      "DSN003",
+      "DSN004",
+      "DSN005",
+      "DSN006"
+    ],
+    "l10n": {
+      "ru": {
+        "title": "Архитектура",
+        "description": "Расстояние до главной последовательности, циклы зависимостей, нарушения слоёв, божественные классы, завистливые методы и радиус распространения изменений."
+      }
+    }
+  },
+  {
+    "id": "maintainability",
+    "title": "Maintainability",
+    "description": "Cyclomatic complexity, maintainability index, duplication and test coverage.",
+    "rules": [
+      "MNT001",
+      "MNT002",
+      "MNT003",
+      "MNT004"
+    ],
+    "l10n": {
+      "ru": {
+        "title": "Сопровождаемость",
+        "description": "Цикломатическая сложность, индекс сопровождаемости, дублирование и покрытие тестами."
+      }
+    }
+  },
+  {
+    "id": "performance",
+    "title": "Performance",
+    "description": "Estimates of time and space complexity, quadratic patterns and allocations in hot loops.",
+    "rules": [
+      "ALG001",
+      "ALG002",
+      "ALG003",
+      "ALG004"
+    ],
+    "l10n": {
+      "ru": {
+        "title": "Производительность",
+        "description": "Оценки временной и пространственной сложности, квадратичные шаблоны и выделение памяти в горячих циклах."
+      }
+    }
+  },
+  {
+    "id": "patterns",
+    "title": "Design patterns",
+    "description": "Recognized patterns (singleton, factory, strategy, observer, decorator, repository, builder) and anti-patterns (service locator, anemic model, middle man).",
+    "rules": [
+      "PAT001",
+      "PAT002",
+      "PAT003",
+      "PAT004",
+      "PAT005",
+      "PAT006",
+      "PAT007",
+      "PAT101",
+      "PAT102",
+      "PAT103"
+    ],
+    "l10n": {
+      "ru": {
+        "title": "Шаблоны проектирования",
+        "description": "Распознанные шаблоны (одиночка, фабрика, стратегия, наблюдатель, декоратор, репозиторий, строитель) и антишаблоны (локатор служб, анемичная модель, посредник)."
+      }
+    }
+  },
+  {
+    "id": "security",
+    "title": "Security",
+    "description": "Hardcoded secrets, insecure deserialization and SQL built by concatenation, as heuristics.",
+    "rules": [
+      "SEC001",
+      "SEC002",
+      "SEC003"
+    ],
+    "l10n": {
+      "ru": {
+        "title": "Безопасность",
+        "description": "Секреты в коде, небезопасная десериализация и SQL, собранный конкатенацией, — как эвристики."
+      }
+    }
+  }
+]

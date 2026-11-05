@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "1.2.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "typescript" },
+  "files": [
+    { "path": "store.ts", "lines": 15, "loc": 12 }
+  ],
+  "modules": [
+    { "id": "store", "name": "store", "files": ["store.ts"], "loc": 12, "metrics": {  }, "paradigmEvidence": [] }
+  ],
+  "types": [
+  ],
+  "functions": [
+    { "id": "store.query", "name": "query", "module": "store", "kind": "function", "visibility": "public", "location": { "file": "store.ts", "startLine": 5 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 1, "lines": 3 } },
+    { "id": "store.fixed", "name": "fixed", "module": "store", "kind": "function", "visibility": "public", "location": { "file": "store.ts", "startLine": 9 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 0, "lines": 3 } },
+    { "id": "store.formatted", "name": "formatted", "module": "store", "kind": "function", "visibility": "public", "location": { "file": "store.ts", "startLine": 13 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 1, "lines": 3 } }
+  ],
+  "dependencies": [
+  ],
+  "cycles": [
+  ],
+  "skippedRules": [
+    { "ruleId": "SEC002", "reason": "not-supported", "message": "m" }
+  ],
+  "diagnostics": []
+}

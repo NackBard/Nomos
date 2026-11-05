@@ -1,0 +1,1046 @@
+{
+  "schemaVersion": "1.2.0",
+  "analyzer": {
+    "name": "hand-computed",
+    "version": "0.0.0",
+    "language": "typescript"
+  },
+  "files": [
+    {
+      "path": "dag.ts",
+      "lines": 18,
+      "loc": 14
+    },
+    {
+      "path": "eight.ts",
+      "lines": 12,
+      "loc": 10
+    },
+    {
+      "path": "funcs.ts",
+      "lines": 13,
+      "loc": 12
+    },
+    {
+      "path": "left.ts",
+      "lines": 10,
+      "loc": 8
+    },
+    {
+      "path": "mixed.ts",
+      "lines": 7,
+      "loc": 6
+    },
+    {
+      "path": "ping.ts",
+      "lines": 9,
+      "loc": 7
+    },
+    {
+      "path": "pong.ts",
+      "lines": 5,
+      "loc": 4
+    },
+    {
+      "path": "right.ts",
+      "lines": 7,
+      "loc": 6
+    },
+    {
+      "path": "ring.ts",
+      "lines": 20,
+      "loc": 16
+    }
+  ],
+  "modules": [
+    {
+      "id": "dag",
+      "name": "dag",
+      "files": [
+        "dag.ts"
+      ],
+      "loc": 14,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "eight",
+      "name": "eight",
+      "files": [
+        "eight.ts"
+      ],
+      "loc": 10,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "funcs",
+      "name": "funcs",
+      "files": [
+        "funcs.ts"
+      ],
+      "loc": 12,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "left",
+      "name": "left",
+      "files": [
+        "left.ts"
+      ],
+      "loc": 8,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "mixed",
+      "name": "mixed",
+      "files": [
+        "mixed.ts"
+      ],
+      "loc": 6,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "ping",
+      "name": "ping",
+      "files": [
+        "ping.ts"
+      ],
+      "loc": 7,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "pong",
+      "name": "pong",
+      "files": [
+        "pong.ts"
+      ],
+      "loc": 4,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "right",
+      "name": "right",
+      "files": [
+        "right.ts"
+      ],
+      "loc": 6,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "ring",
+      "name": "ring",
+      "files": [
+        "ring.ts"
+      ],
+      "loc": 16,
+      "metrics": {},
+      "paradigmEvidence": []
+    }
+  ],
+  "types": [
+    {
+      "id": "dag.Top",
+      "name": "Top",
+      "module": "dag",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "dag.ts",
+        "startLine": 1
+      },
+      "metrics": {}
+    },
+    {
+      "id": "dag.Mid1",
+      "name": "Mid1",
+      "module": "dag",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "dag.ts",
+        "startLine": 6
+      },
+      "metrics": {}
+    },
+    {
+      "id": "dag.Mid2",
+      "name": "Mid2",
+      "module": "dag",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "dag.ts",
+        "startLine": 10
+      },
+      "metrics": {}
+    },
+    {
+      "id": "dag.Bottom",
+      "name": "Bottom",
+      "module": "dag",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "dag.ts",
+        "startLine": 14
+      },
+      "metrics": {}
+    },
+    {
+      "id": "dag.Self",
+      "name": "Self",
+      "module": "dag",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "dag.ts",
+        "startLine": 16
+      },
+      "metrics": {}
+    },
+    {
+      "id": "eight.P",
+      "name": "P",
+      "module": "eight",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "eight.ts",
+        "startLine": 1
+      },
+      "metrics": {}
+    },
+    {
+      "id": "eight.Q",
+      "name": "Q",
+      "module": "eight",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "eight.ts",
+        "startLine": 5
+      },
+      "metrics": {}
+    },
+    {
+      "id": "eight.S",
+      "name": "S",
+      "module": "eight",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "eight.ts",
+        "startLine": 10
+      },
+      "metrics": {}
+    },
+    {
+      "id": "ring.N1",
+      "name": "N1",
+      "module": "ring",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "ring.ts",
+        "startLine": 1
+      },
+      "metrics": {}
+    },
+    {
+      "id": "ring.N2",
+      "name": "N2",
+      "module": "ring",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "ring.ts",
+        "startLine": 5
+      },
+      "metrics": {}
+    },
+    {
+      "id": "ring.N3",
+      "name": "N3",
+      "module": "ring",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "ring.ts",
+        "startLine": 10
+      },
+      "metrics": {}
+    },
+    {
+      "id": "ring.N4",
+      "name": "N4",
+      "module": "ring",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "ring.ts",
+        "startLine": 14
+      },
+      "metrics": {}
+    },
+    {
+      "id": "ring.N5",
+      "name": "N5",
+      "module": "ring",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "ring.ts",
+        "startLine": 18
+      },
+      "metrics": {}
+    },
+    {
+      "id": "mixed.Base",
+      "name": "Base",
+      "module": "mixed",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "mixed.ts",
+        "startLine": 1
+      },
+      "metrics": {}
+    },
+    {
+      "id": "mixed.Derived",
+      "name": "Derived",
+      "module": "mixed",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "mixed.ts",
+        "startLine": 7
+      },
+      "metrics": {}
+    },
+    {
+      "id": "left.X1",
+      "name": "X1",
+      "module": "left",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "left.ts",
+        "startLine": 3
+      },
+      "metrics": {}
+    },
+    {
+      "id": "left.X2",
+      "name": "X2",
+      "module": "left",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "left.ts",
+        "startLine": 7
+      },
+      "metrics": {}
+    },
+    {
+      "id": "right.Y1",
+      "name": "Y1",
+      "module": "right",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "right.ts",
+        "startLine": 1
+      },
+      "metrics": {}
+    },
+    {
+      "id": "right.Y2",
+      "name": "Y2",
+      "module": "right",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "right.ts",
+        "startLine": 5
+      },
+      "metrics": {}
+    }
+  ],
+  "functions": [
+    {
+      "id": "dag.Top.left",
+      "name": "left",
+      "module": "dag",
+      "type": "dag.Top",
+      "kind": "method",
+      "location": {
+        "file": "dag.ts",
+        "startLine": 2
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "dag.Top.right",
+      "name": "right",
+      "module": "dag",
+      "type": "dag.Top",
+      "kind": "method",
+      "location": {
+        "file": "dag.ts",
+        "startLine": 3
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "dag.Mid1.end",
+      "name": "end",
+      "module": "dag",
+      "type": "dag.Mid1",
+      "kind": "method",
+      "location": {
+        "file": "dag.ts",
+        "startLine": 7
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "dag.Mid2.end",
+      "name": "end",
+      "module": "dag",
+      "type": "dag.Mid2",
+      "kind": "method",
+      "location": {
+        "file": "dag.ts",
+        "startLine": 11
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "dag.Self.next",
+      "name": "next",
+      "module": "dag",
+      "type": "dag.Self",
+      "kind": "method",
+      "location": {
+        "file": "dag.ts",
+        "startLine": 17
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "eight.P.next",
+      "name": "next",
+      "module": "eight",
+      "type": "eight.P",
+      "kind": "method",
+      "location": {
+        "file": "eight.ts",
+        "startLine": 2
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "eight.Q.back",
+      "name": "back",
+      "module": "eight",
+      "type": "eight.Q",
+      "kind": "method",
+      "location": {
+        "file": "eight.ts",
+        "startLine": 6
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "eight.Q.side",
+      "name": "side",
+      "module": "eight",
+      "type": "eight.Q",
+      "kind": "method",
+      "location": {
+        "file": "eight.ts",
+        "startLine": 7
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "eight.S.back",
+      "name": "back",
+      "module": "eight",
+      "type": "eight.S",
+      "kind": "method",
+      "location": {
+        "file": "eight.ts",
+        "startLine": 11
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "funcs.even",
+      "name": "even",
+      "module": "funcs",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "funcs.ts",
+        "startLine": 1
+      },
+      "metrics": {
+        "cyclomatic": 2,
+        "maxNesting": 1,
+        "parameterCount": 1,
+        "lines": 6
+      }
+    },
+    {
+      "id": "funcs.odd",
+      "name": "odd",
+      "module": "funcs",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "funcs.ts",
+        "startLine": 8
+      },
+      "metrics": {
+        "cyclomatic": 2,
+        "maxNesting": 1,
+        "parameterCount": 1,
+        "lines": 6
+      }
+    },
+    {
+      "id": "left.X1.next",
+      "name": "next",
+      "module": "left",
+      "type": "left.X1",
+      "kind": "method",
+      "location": {
+        "file": "left.ts",
+        "startLine": 4
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "left.X2.back",
+      "name": "back",
+      "module": "left",
+      "type": "left.X2",
+      "kind": "method",
+      "location": {
+        "file": "left.ts",
+        "startLine": 8
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "left.X2.bridge",
+      "name": "bridge",
+      "module": "left",
+      "type": "left.X2",
+      "kind": "method",
+      "location": {
+        "file": "left.ts",
+        "startLine": 9
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "mixed.Base.make",
+      "name": "make",
+      "module": "mixed",
+      "type": "mixed.Base",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "mixed.ts",
+        "startLine": 2
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3
+      }
+    },
+    {
+      "id": "ping.ping",
+      "name": "ping",
+      "module": "ping",
+      "kind": "function",
+      "location": {
+        "file": "ping.ts",
+        "startLine": 3
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3
+      }
+    },
+    {
+      "id": "ping.tick",
+      "name": "tick",
+      "module": "ping",
+      "kind": "function",
+      "location": {
+        "file": "ping.ts",
+        "startLine": 7
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3
+      }
+    },
+    {
+      "id": "pong.pong",
+      "name": "pong",
+      "module": "pong",
+      "kind": "function",
+      "location": {
+        "file": "pong.ts",
+        "startLine": 3
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3
+      }
+    },
+    {
+      "id": "right.Y1.next",
+      "name": "next",
+      "module": "right",
+      "type": "right.Y1",
+      "kind": "method",
+      "location": {
+        "file": "right.ts",
+        "startLine": 2
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "right.Y2.back",
+      "name": "back",
+      "module": "right",
+      "type": "right.Y2",
+      "kind": "method",
+      "location": {
+        "file": "right.ts",
+        "startLine": 6
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "ring.N1.next",
+      "name": "next",
+      "module": "ring",
+      "type": "ring.N1",
+      "kind": "method",
+      "location": {
+        "file": "ring.ts",
+        "startLine": 2
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "ring.N2.next",
+      "name": "next",
+      "module": "ring",
+      "type": "ring.N2",
+      "kind": "method",
+      "location": {
+        "file": "ring.ts",
+        "startLine": 6
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "ring.N2.skip",
+      "name": "skip",
+      "module": "ring",
+      "type": "ring.N2",
+      "kind": "method",
+      "location": {
+        "file": "ring.ts",
+        "startLine": 7
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "ring.N3.next",
+      "name": "next",
+      "module": "ring",
+      "type": "ring.N3",
+      "kind": "method",
+      "location": {
+        "file": "ring.ts",
+        "startLine": 11
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "ring.N4.next",
+      "name": "next",
+      "module": "ring",
+      "type": "ring.N4",
+      "kind": "method",
+      "location": {
+        "file": "ring.ts",
+        "startLine": 15
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "ring.N5.next",
+      "name": "next",
+      "module": "ring",
+      "type": "ring.N5",
+      "kind": "method",
+      "location": {
+        "file": "ring.ts",
+        "startLine": 19
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "from": "dag.Top",
+      "to": "dag.Mid1",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "dag.Top",
+      "to": "dag.Mid2",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "dag.Mid1",
+      "to": "dag.Bottom",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "dag.Mid2",
+      "to": "dag.Bottom",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "eight.P",
+      "to": "eight.Q",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "eight.Q",
+      "to": "eight.P",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "eight.Q",
+      "to": "eight.S",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "eight.S",
+      "to": "eight.Q",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "ring.N1",
+      "to": "ring.N2",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "ring.N2",
+      "to": "ring.N3",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "ring.N2",
+      "to": "ring.N4",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "ring.N3",
+      "to": "ring.N4",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "ring.N4",
+      "to": "ring.N5",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "ring.N5",
+      "to": "ring.N1",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "mixed.Base",
+      "to": "mixed.Derived",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "mixed.Derived",
+      "to": "mixed.Base",
+      "kind": "inheritance",
+      "phase": "runtime"
+    },
+    {
+      "from": "funcs.even",
+      "to": "funcs.odd",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "funcs.odd",
+      "to": "funcs.even",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "left.X1",
+      "to": "left.X2",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "left.X2",
+      "to": "left.X1",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "left.X2",
+      "to": "right.Y1",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "right.Y1",
+      "to": "right.Y2",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "right.Y2",
+      "to": "right.Y1",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "ping.ping",
+      "to": "pong.pong",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "pong.pong",
+      "to": "ping.tick",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "left",
+      "to": "right",
+      "kind": "import",
+      "phase": "runtime"
+    },
+    {
+      "from": "ping",
+      "to": "pong",
+      "kind": "import",
+      "phase": "runtime"
+    },
+    {
+      "from": "pong",
+      "to": "ping",
+      "kind": "import",
+      "phase": "runtime"
+    }
+  ],
+  "cycles": [
+    {
+      "level": "type",
+      "members": [
+        "mixed.Base",
+        "mixed.Derived"
+      ]
+    },
+    {
+      "level": "type",
+      "members": [
+        "funcs.even",
+        "funcs.odd"
+      ]
+    },
+    {
+      "level": "type",
+      "members": [
+        "eight.P",
+        "eight.Q",
+        "eight.S"
+      ]
+    },
+    {
+      "level": "type",
+      "members": [
+        "ring.N1",
+        "ring.N2",
+        "ring.N3",
+        "ring.N4",
+        "ring.N5"
+      ]
+    },
+    {
+      "level": "type",
+      "members": [
+        "left.X1",
+        "left.X2"
+      ]
+    },
+    {
+      "level": "type",
+      "members": [
+        "right.Y1",
+        "right.Y2"
+      ]
+    },
+    {
+      "level": "module",
+      "members": [
+        "ping",
+        "pong"
+      ]
+    }
+  ],
+  "skippedRules": [],
+  "diagnostics": []
+}

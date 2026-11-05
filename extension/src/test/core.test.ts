@@ -315,6 +315,20 @@ test("without nomos.json the bundled analyzers whose files exist run on their de
   assert.equal(fs.existsSync(path.join(project, ".nomos")), false);
 });
 
+test("${node} is the Node.js that runs the extension, switched to Node mode", async () => {
+  const bundle = temporaryFolder();
+  const [, script] = fakeAnalyzer(bundle, 0);
+  fs.renameSync(script, path.join(bundle, "script.js"));
+  const storage = temporaryFolder();
+  const config = launchConfig({ language: "toy", command: ["${node}", "${bundle}/script.js"], files: ["**/*.toy"] }, bundle, storage);
+  assert.deepEqual(config.command, [process.execPath, `${bundle}/script.js`]);
+  assert.deepEqual(config.env, { ELECTRON_RUN_AS_NODE: "1" });
+  const run = await analyze(config, temporaryFolder(), implicitWorkspace(config));
+  assert.equal(run.language, "toy");
+  // A command without ${node} gets no such variable.
+  assert.equal(launchConfig({ language: "x", command: ["${bundle}/x"], files: [] }, bundle, storage).env, undefined);
+});
+
 const catalog: Practice[] = [
   { id: "solid", title: "SOLID", description: "d", rules: ["PRN001"] },
   { id: "security", title: "Security", description: "d", rules: ["SEC001"] },

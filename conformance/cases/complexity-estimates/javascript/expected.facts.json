@@ -1,0 +1,48 @@
+{
+  "schemaVersion": "1.2.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "javascript" },
+  "files": [
+    { "path": "estimates.js", "lines": 78, "loc": 69 },
+    { "path": "memory.js", "lines": 58, "loc": 50 }
+  ],
+  "modules": [
+    { "id": "estimates", "name": "estimates", "files": ["estimates.js"], "loc": 69, "metrics": {  }, "paradigmEvidence": [] },
+    { "id": "memory", "name": "memory", "files": ["memory.js"], "loc": 50, "metrics": {  }, "paradigmEvidence": [] }
+  ],
+  "types": [
+    { "id": "memory.Box", "name": "Box", "module": "memory", "kind": "class", "isAbstract": false, "location": { "file": "memory.js", "startLine": 38 }, "metrics": { "lines": 3, "memberCount": 1 } }
+  ],
+  "functions": [
+    { "id": "estimates.constant", "name": "constant", "module": "estimates", "kind": "function", "visibility": "public", "location": { "file": "estimates.js", "startLine": 1 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 1, "lines": 3, "timeDegree": 0, "timeLogFactor": 0, "timeExponential": 0, "spaceDegree": 0, "allocationDepth": 0 } },
+    { "id": "estimates.linear", "name": "linear", "module": "estimates", "kind": "function", "visibility": "public", "location": { "file": "estimates.js", "startLine": 5 }, "metrics": { "cyclomatic": 2, "maxNesting": 1, "parameterCount": 1, "lines": 7, "timeDegree": 1, "timeLogFactor": 0, "timeExponential": 0, "spaceDegree": 0, "allocationDepth": 0 } },
+    { "id": "estimates.quadratic", "name": "quadratic", "module": "estimates", "kind": "function", "visibility": "public", "location": { "file": "estimates.js", "startLine": 13 }, "metrics": { "cyclomatic": 3, "maxNesting": 2, "parameterCount": 2, "lines": 9, "timeDegree": 2, "timeLogFactor": 0, "timeExponential": 0, "spaceDegree": 0, "allocationDepth": 0 } },
+    { "id": "estimates.halving", "name": "halving", "module": "estimates", "kind": "function", "visibility": "public", "location": { "file": "estimates.js", "startLine": 23 }, "metrics": { "cyclomatic": 2, "maxNesting": 1, "parameterCount": 1, "lines": 7, "timeDegree": 0, "timeLogFactor": 1, "timeExponential": 0, "spaceDegree": 0, "allocationDepth": 0 } },
+    { "id": "estimates.linearLog", "name": "linearLog", "module": "estimates", "kind": "function", "visibility": "public", "location": { "file": "estimates.js", "startLine": 31 }, "metrics": { "cyclomatic": 2, "maxNesting": 1, "parameterCount": 1, "lines": 7, "timeDegree": 1, "timeLogFactor": 1, "timeExponential": 0, "spaceDegree": 0, "allocationDepth": 0 } },
+    { "id": "estimates.fixed", "name": "fixed", "module": "estimates", "kind": "function", "visibility": "public", "location": { "file": "estimates.js", "startLine": 39 }, "metrics": { "cyclomatic": 2, "maxNesting": 1, "parameterCount": 0, "lines": 7, "timeDegree": 0, "timeLogFactor": 0, "timeExponential": 0, "spaceDegree": 0, "allocationDepth": 0 } },
+    { "id": "estimates.fib", "name": "fib", "module": "estimates", "kind": "function", "visibility": "public", "location": { "file": "estimates.js", "startLine": 47 }, "metrics": { "cyclomatic": 2, "maxNesting": 1, "parameterCount": 1, "lines": 6, "timeDegree": null, "timeLogFactor": null, "timeExponential": 1, "spaceDegree": 1, "allocationDepth": 0 } },
+    { "id": "estimates.factorial", "name": "factorial", "module": "estimates", "kind": "function", "visibility": "public", "location": { "file": "estimates.js", "startLine": 54 }, "metrics": { "cyclomatic": 2, "maxNesting": 1, "parameterCount": 1, "lines": 6, "timeDegree": 1, "timeLogFactor": 0, "timeExponential": 0, "spaceDegree": 1, "allocationDepth": 0 } },
+    { "id": "estimates.search", "name": "search", "module": "estimates", "kind": "function", "visibility": "public", "location": { "file": "estimates.js", "startLine": 61 }, "metrics": { "cyclomatic": 3, "maxNesting": 1, "parameterCount": 3, "lines": 10, "timeDegree": 0, "timeLogFactor": 1, "timeExponential": 0, "spaceDegree": 1, "allocationDepth": 0 } },
+    { "id": "estimates.cubicViaCallee", "name": "cubicViaCallee", "module": "estimates", "kind": "function", "visibility": "public", "location": { "file": "estimates.js", "startLine": 72 }, "metrics": { "cyclomatic": 2, "maxNesting": 1, "parameterCount": 1, "lines": 7, "timeDegree": 3, "timeLogFactor": 0, "timeExponential": 0, "spaceDegree": 0, "allocationDepth": 0 } },
+    { "id": "memory.none", "name": "none", "module": "memory", "kind": "function", "visibility": "public", "location": { "file": "memory.js", "startLine": 1 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 1, "lines": 3, "timeDegree": 0, "timeLogFactor": 0, "timeExponential": 0, "spaceDegree": 0, "allocationDepth": 0 } },
+    { "id": "memory.grows", "name": "grows", "module": "memory", "kind": "function", "visibility": "public", "location": { "file": "memory.js", "startLine": 5 }, "metrics": { "cyclomatic": 2, "maxNesting": 1, "parameterCount": 1, "lines": 7, "timeDegree": 1, "timeLogFactor": 0, "timeExponential": 0, "spaceDegree": 1, "allocationDepth": 0 } },
+    { "id": "memory.grid", "name": "grid", "module": "memory", "kind": "function", "visibility": "public", "location": { "file": "memory.js", "startLine": 13 }, "metrics": { "cyclomatic": 3, "maxNesting": 2, "parameterCount": 2, "lines": 9, "timeDegree": 2, "timeLogFactor": 0, "timeExponential": 0, "spaceDegree": 2, "allocationDepth": 0 } },
+    { "id": "memory.sized", "name": "sized", "module": "memory", "kind": "function", "visibility": "public", "location": { "file": "memory.js", "startLine": 23 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 1, "lines": 3, "timeDegree": 0, "timeLogFactor": 0, "timeExponential": 0, "spaceDegree": 1, "allocationDepth": 0 } },
+    { "id": "memory.literal", "name": "literal", "module": "memory", "kind": "function", "visibility": "public", "location": { "file": "memory.js", "startLine": 27 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 0, "lines": 3, "timeDegree": 0, "timeLogFactor": 0, "timeExponential": 0, "spaceDegree": 0, "allocationDepth": 0 } },
+    { "id": "memory.deep", "name": "deep", "module": "memory", "kind": "function", "visibility": "public", "location": { "file": "memory.js", "startLine": 31 }, "metrics": { "cyclomatic": 2, "maxNesting": 1, "parameterCount": 1, "lines": 6, "timeDegree": 1, "timeLogFactor": 0, "timeExponential": 0, "spaceDegree": 1, "allocationDepth": 0 } },
+    { "id": "memory.newInNested", "name": "newInNested", "module": "memory", "kind": "function", "visibility": "public", "location": { "file": "memory.js", "startLine": 42 }, "metrics": { "cyclomatic": 3, "maxNesting": 2, "parameterCount": 2, "lines": 9, "timeDegree": 2, "timeLogFactor": 0, "timeExponential": 0, "spaceDegree": 0, "allocationDepth": 2 } },
+    { "id": "memory.newInLoop", "name": "newInLoop", "module": "memory", "kind": "function", "visibility": "public", "location": { "file": "memory.js", "startLine": 52 }, "metrics": { "cyclomatic": 2, "maxNesting": 1, "parameterCount": 1, "lines": 7, "timeDegree": 1, "timeLogFactor": 0, "timeExponential": 0, "spaceDegree": 0, "allocationDepth": 1 } }
+  ],
+  "dependencies": [
+    { "from": "estimates.linearLog", "to": "estimates.halving", "kind": "call", "phase": "runtime" },
+    { "from": "estimates.cubicViaCallee", "to": "estimates.quadratic", "kind": "call", "phase": "runtime" },
+    { "from": "memory.newInNested", "to": "memory.Box", "kind": "call", "phase": "runtime" },
+    { "from": "memory.newInNested", "to": "memory.Box", "kind": "type-ref", "phase": "runtime" },
+    { "from": "memory.newInLoop", "to": "memory.Box", "kind": "call", "phase": "runtime" },
+    { "from": "memory.newInLoop", "to": "memory.Box", "kind": "type-ref", "phase": "runtime" }
+  ],
+  "cycles": [
+  ],
+  "skippedRules": [
+  ],
+  "diagnostics": []
+}

@@ -1,0 +1,10 @@
+export class Right {
+  p = 0;
+  q = 0;
+  r = 0;
+  s = 0;
+  t = 0;
+  u = 0;
+  v = 0;
+  w = 0;
+}

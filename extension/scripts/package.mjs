@@ -76,6 +76,33 @@ const analyzers = [];
   analyzers.push({ language, files, command: [`\${bundle}/go/${name}`] });
 }
 
+// TypeScript and JavaScript: one program on the Node of VS Code (D-055). The compiler goes next to it rather than into
+// node_modules, which vsce does not pack outside the extension's own dependencies; its lib.*.d.ts files must sit beside
+// typescript.js, where the compiler looks for them.
+{
+  const source = path.join(repository, "analyzers", "typescript");
+  const out = path.join(bundle, "typescript");
+  const compiler = path.join(source, "node_modules", "typescript");
+  fs.rmSync(path.join(source, "dist"), { recursive: true, force: true });
+  run(process.execPath, [path.join(compiler, "bin", "tsc"), "-p", "tsconfig.build.json"], { cwd: source, stdio: ["ignore", "inherit", "inherit"] });
+  fs.mkdirSync(path.join(out, "lib"), { recursive: true });
+  for (const file of fs.readdirSync(path.join(source, "dist"))) {
+    const text = fs.readFileSync(path.join(source, "dist", file), "utf8").replaceAll('from "typescript"', 'from "./lib/typescript.js"');
+    fs.writeFileSync(path.join(out, file), text);
+  }
+  for (const file of ["rules.json", "practices.json"]) fs.copyFileSync(path.join(source, "src", file), path.join(out, file));
+  fs.writeFileSync(path.join(out, "package.json"), JSON.stringify({ type: "module", private: true }) + "\n");
+  fs.writeFileSync(path.join(out, "lib", "package.json"), JSON.stringify({ type: "commonjs", private: true }) + "\n");
+  for (const file of fs.readdirSync(path.join(compiler, "lib")).filter((f) => f === "typescript.js" || /^lib\..*\.d\.ts$/.test(f))) {
+    fs.copyFileSync(path.join(compiler, "lib", file), path.join(out, "lib", file));
+  }
+  fs.copyFileSync(path.join(compiler, "LICENSE.txt"), path.join(out, "lib", "LICENSE.txt"));
+  for (const extra of [[], ["--language", "javascript"]]) {
+    const { language, files } = manifest(process.execPath, [path.join(out, "main.js"), ...extra]);
+    analyzers.push({ language, files, command: ["${node}", "${bundle}/typescript/main.js", ...extra] });
+  }
+}
+
 fs.writeFileSync(path.join(bundle, "analyzers.json"), JSON.stringify({ analyzers }, null, 2) + "\n");
 console.log(`bundle/analyzers.json: ${analyzers.map((a) => a.language).join(", ")}`);
 

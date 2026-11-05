@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "1.2.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "typescript" },
+  "files": [
+    { "path": "cohesion.ts", "lines": 28, "loc": 22 },
+    { "path": "errors.ts", "lines": 3, "loc": 2 }
+  ],
+  "modules": [
+    { "id": "cohesion", "name": "cohesion", "files": ["cohesion.ts"], "loc": 22, "metrics": {  }, "paradigmEvidence": [] },
+    { "id": "errors", "name": "errors", "files": ["errors.ts"], "loc": 2, "metrics": {  }, "paradigmEvidence": [] }
+  ],
+  "types": [
+    { "id": "cohesion.Data", "name": "Data", "module": "cohesion", "kind": "class", "isAbstract": false, "location": { "file": "cohesion.ts", "startLine": 1 }, "metrics": { "lines": 4, "memberCount": 2, "methodCount": 0, "dit": 0, "cbo": 0, "lcom4": null, "wmc": 0, "atfd": 0, "tcc": null } },
+    { "id": "cohesion.Mixed", "name": "Mixed", "module": "cohesion", "kind": "class", "isAbstract": false, "location": { "file": "cohesion.ts", "startLine": 6 }, "metrics": { "lines": 21, "memberCount": 7, "methodCount": 4, "dit": 0, "cbo": 1, "lcom4": 3, "wmc": 4, "atfd": 2, "tcc": 0.1667 } },
+    { "id": "cohesion.Derived", "name": "Derived", "module": "cohesion", "kind": "class", "isAbstract": false, "location": { "file": "cohesion.ts", "startLine": 28 }, "metrics": { "lines": 1, "memberCount": 0, "methodCount": 0, "dit": 1, "cbo": 1, "lcom4": null, "wmc": 0, "atfd": 0, "tcc": null } },
+    { "id": "errors.Fail", "name": "Fail", "module": "errors", "kind": "class", "isAbstract": false, "location": { "file": "errors.ts", "startLine": 1 }, "metrics": { "dit": 1, "cbo": 0 } },
+    { "id": "errors.DeepFail", "name": "DeepFail", "module": "errors", "kind": "class", "isAbstract": false, "location": { "file": "errors.ts", "startLine": 3 }, "metrics": { "dit": 2, "cbo": 1 } }
+  ],
+  "functions": [
+    { "id": "cohesion.Mixed.incA", "name": "incA", "module": "cohesion", "type": "cohesion.Mixed", "kind": "method", "visibility": "public", "location": { "file": "cohesion.ts", "startLine": 11 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 0, "lines": 3 } },
+    { "id": "cohesion.Mixed.readA", "name": "readA", "module": "cohesion", "type": "cohesion.Mixed", "kind": "method", "visibility": "public", "location": { "file": "cohesion.ts", "startLine": 15 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 0, "lines": 3 } },
+    { "id": "cohesion.Mixed.incB", "name": "incB", "module": "cohesion", "type": "cohesion.Mixed", "kind": "method", "visibility": "public", "location": { "file": "cohesion.ts", "startLine": 19 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 0, "lines": 3 } },
+    { "id": "cohesion.Mixed.peek", "name": "peek", "module": "cohesion", "type": "cohesion.Mixed", "kind": "method", "visibility": "public", "location": { "file": "cohesion.ts", "startLine": 23 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 0, "lines": 3 } }
+  ],
+  "dependencies": [
+    { "from": "cohesion.Mixed", "to": "cohesion.Data", "kind": "call", "phase": "runtime" },
+    { "from": "cohesion.Mixed", "to": "cohesion.Data", "kind": "type-ref", "phase": "runtime" },
+    { "from": "cohesion.Derived", "to": "cohesion.Mixed", "kind": "inheritance", "phase": "runtime" },
+    { "from": "errors.DeepFail", "to": "errors.Fail", "kind": "inheritance", "phase": "runtime" }
+  ],
+  "cycles": [
+  ],
+  "skippedRules": [
+  ],
+  "diagnostics": []
+}

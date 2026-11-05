@@ -1,0 +1,11 @@
+{
+  "results": [
+    { "ruleId": "ALG001", "file": "estimates.js", "startLine": 13, "measured": { "metric": "timeDegree", "value": 2, "threshold": 2 } },
+    { "ruleId": "ALG001", "file": "estimates.js", "startLine": 47, "measured": { "metric": "timeExponential", "value": 1, "threshold": 1 } },
+    { "ruleId": "ALG001", "file": "estimates.js", "startLine": 72, "measured": { "metric": "timeDegree", "value": 3, "threshold": 2 } },
+    { "ruleId": "ALG001", "file": "memory.js", "startLine": 13, "measured": { "metric": "timeDegree", "value": 2, "threshold": 2 } },
+    { "ruleId": "ALG001", "file": "memory.js", "startLine": 42, "measured": { "metric": "timeDegree", "value": 2, "threshold": 2 } },
+    { "ruleId": "ALG003", "file": "memory.js", "startLine": 46, "measured": { "metric": "allocationDepth", "value": 2, "threshold": 2 } },
+    { "ruleId": "ALG004", "file": "memory.js", "startLine": 13, "measured": { "metric": "spaceDegree", "value": 2, "threshold": 2 } }
+  ]
+}

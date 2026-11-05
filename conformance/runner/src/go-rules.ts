@@ -5,6 +5,9 @@ import { practicesFile, repoRoot, rulesDir } from "./paths.ts";
 
 export const goRulesPath = path.join(repoRoot, "analyzers", "go", "internal", "analyzer", "rules.json");
 export const goPracticesPath = path.join(repoRoot, "analyzers", "go", "internal", "analyzer", "practices.json");
+/** The TypeScript analyzer reads the same JSON: it has no YAML dependency either (D-055). */
+export const typescriptRulesPath = path.join(repoRoot, "analyzers", "typescript", "src", "rules.json");
+export const typescriptPracticesPath = path.join(repoRoot, "analyzers", "typescript", "src", "practices.json");
 /** The extension lists the practices to choose from; it reads them as data (D-051). */
 export const extensionPracticesPath = path.join(repoRoot, "extension", "practices.json");
 /** The extension and ci show rule texts and finding templates in the interface language (spec/l10n.md, D-052). */
@@ -32,7 +35,9 @@ export function generatedFiles(): { file: string; content: string }[] {
     { file: goRulesPath, content: rules },
     { file: extensionRulesPath, content: rules },
     { file: ciRulesPath, content: rules },
+    { file: typescriptRulesPath, content: rules },
     { file: goPracticesPath, content: practices },
     { file: extensionPracticesPath, content: practices },
+    { file: typescriptPracticesPath, content: practices },
   ];
 }

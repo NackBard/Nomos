@@ -13,7 +13,9 @@
   ],
   "languages": [
     "csharp",
-    "go"
+    "go",
+    "typescript",
+    "javascript"
   ],
   "expectSarif": true,
   "config": true,
@@ -23,7 +25,9 @@
       "scope": "function",
       "entities": {
         "csharp": "Smell.Report.Printer.Envy",
-        "go": "smell/report.Printer.Envy"
+        "go": "smell/report.Printer.Envy",
+        "typescript": "report/printer.Printer.envy",
+        "javascript": "report/printer.Printer.envy"
       }
     },
     {
@@ -31,7 +35,9 @@
       "scope": "function",
       "entities": {
         "csharp": "Smell.Report.Printer.Envy",
-        "go": "smell/report.Printer.Envy"
+        "go": "smell/report.Printer.Envy",
+        "typescript": "report/printer.Printer.envy",
+        "javascript": "report/printer.Printer.envy"
       }
     },
     {
@@ -39,7 +45,9 @@
       "scope": "function",
       "entities": {
         "csharp": "Smell.Report.Printer.Balanced",
-        "go": "smell/report.Printer.Balanced"
+        "go": "smell/report.Printer.Balanced",
+        "typescript": "report/printer.Printer.balanced",
+        "javascript": "report/printer.Printer.balanced"
       }
     },
     {
@@ -47,7 +55,9 @@
       "scope": "function",
       "entities": {
         "csharp": "Smell.Report.Printer.Balanced",
-        "go": "smell/report.Printer.Balanced"
+        "go": "smell/report.Printer.Balanced",
+        "typescript": "report/printer.Printer.balanced",
+        "javascript": "report/printer.Printer.balanced"
       }
     },
     {
@@ -55,7 +65,9 @@
       "scope": "function",
       "entities": {
         "csharp": "Smell.Report.Printer.Few",
-        "go": "smell/report.Printer.Few"
+        "go": "smell/report.Printer.Few",
+        "typescript": "report/printer.Printer.few",
+        "javascript": "report/printer.Printer.few"
       }
     },
     {
@@ -63,7 +75,9 @@
       "scope": "type",
       "entities": {
         "csharp": "Smell.Report.God",
-        "go": "smell/report.God"
+        "go": "smell/report.God",
+        "typescript": "report/god.God",
+        "javascript": "report/god.God"
       }
     },
     {
@@ -71,7 +85,9 @@
       "scope": "type",
       "entities": {
         "csharp": "Smell.Report.God",
-        "go": "smell/report.God"
+        "go": "smell/report.God",
+        "typescript": "report/god.God",
+        "javascript": "report/god.God"
       }
     },
     {
@@ -79,7 +95,9 @@
       "scope": "type",
       "entities": {
         "csharp": "Smell.Report.God",
-        "go": "smell/report.God"
+        "go": "smell/report.God",
+        "typescript": "report/god.God",
+        "javascript": "report/god.God"
       }
     }
   ]

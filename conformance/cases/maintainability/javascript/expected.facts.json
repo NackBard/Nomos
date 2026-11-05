@@ -1,0 +1,122 @@
+{
+  "schemaVersion": "1.2.0",
+  "analyzer": {
+    "name": "hand-computed",
+    "version": "0.0.0",
+    "language": "javascript"
+  },
+  "files": [
+    {
+      "path": "calc.js",
+      "lines": 3,
+      "loc": 3,
+      "coverage": 25
+    },
+    {
+      "path": "left.js",
+      "lines": 10,
+      "loc": 10,
+      "coverage": 100
+    },
+    {
+      "path": "right.js",
+      "lines": 10,
+      "loc": 10
+    }
+  ],
+  "modules": [
+    {
+      "id": "calc",
+      "name": "calc",
+      "files": [
+        "calc.js"
+      ],
+      "loc": 3,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "left",
+      "name": "left",
+      "files": [
+        "left.js"
+      ],
+      "loc": 10,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "right",
+      "name": "right",
+      "files": [
+        "right.js"
+      ],
+      "loc": 10,
+      "metrics": {},
+      "paradigmEvidence": []
+    }
+  ],
+  "types": [
+    {
+      "id": "left.Left",
+      "name": "Left",
+      "module": "left",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "left.js",
+        "startLine": 1
+      },
+      "metrics": {
+        "lines": 10,
+        "memberCount": 8
+      }
+    },
+    {
+      "id": "right.Right",
+      "name": "Right",
+      "module": "right",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "right.js",
+        "startLine": 1
+      },
+      "metrics": {
+        "lines": 10,
+        "memberCount": 8
+      }
+    }
+  ],
+  "functions": [
+    {
+      "id": "calc.add",
+      "name": "add",
+      "module": "calc",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "calc.js",
+        "startLine": 1
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 2,
+        "lines": 3,
+        "halsteadVolume": 25.27,
+        "maintainabilityIndex": 79.64
+      }
+    }
+  ],
+  "dependencies": [],
+  "cycles": [],
+  "skippedRules": [
+    {
+      "ruleId": "DSN003",
+      "reason": "missing-input",
+      "message": "m"
+    }
+  ],
+  "diagnostics": []
+}

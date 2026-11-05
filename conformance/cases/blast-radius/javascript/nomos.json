@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "1.0.0",
+  "analyzers": [
+    {
+      "language": "javascript",
+      "command": [
+        "nomos-typescript"
+      ]
+    }
+  ],
+  "rules": {
+    "DSN006": {
+      "threshold": {
+        "maxDependents": 4
+      }
+    }
+  }
+}

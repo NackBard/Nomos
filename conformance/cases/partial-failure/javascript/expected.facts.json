@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "1.2.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "javascript" },
+  "files": [
+    { "path": "broken.js", "lines": 1, "loc": 1, "parsed": false },
+    { "path": "good.js", "lines": 3, "loc": 3 }
+  ],
+  "modules": [
+    { "id": "broken", "name": "broken", "files": ["broken.js"], "loc": 1, "metrics": {}, "paradigmEvidence": [] },
+    { "id": "good", "name": "good", "files": ["good.js"], "loc": 3, "metrics": {}, "paradigmEvidence": [] }
+  ],
+  "types": [
+    { "id": "good.Ok", "name": "Ok", "module": "good", "kind": "class", "isAbstract": false, "location": { "file": "good.js", "startLine": 1 }, "metrics": { "lines": 3, "memberCount": 1 } }
+  ],
+  "functions": [
+  ],
+  "dependencies": [
+  ],
+  "cycles": [
+  ],
+  "skippedRules": [
+  ],
+  "diagnostics": [{ "level": "warning", "message": "m", "file": "broken.js", "code": "syntax-error" }]
+}
