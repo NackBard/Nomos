@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1.2.0",
+  "id": "type-structure",
+  "title": "Members, type parameters, signatures and implicit implementation of facts 1.3.0 (spec/structure.md): member kinds, visibility, static members, collections, embedding",
+  "covers": [
+    "structure"
+  ],
+  "languages": [
+    "csharp",
+    "go"
+  ]
+}

@@ -10,7 +10,7 @@ namespace Nomos.Facts;
 /// </summary>
 internal sealed class FactsBuilder
 {
-    private const string SchemaVersion = "1.2.0";
+    private const string SchemaVersion = "1.3.0";
 
     private readonly ProjectModel _model;
     private readonly AnalysisResult _result;
@@ -126,8 +126,45 @@ internal sealed class FactsBuilder
             metrics["settableProperties"] = TypeMetrics.SettableProperties(type);
             metrics["forwardingMethods"] = TypeMetrics.ForwardingMethods(type);
         }
-        return new FactsType(type.Id, type.Name, type.ModuleName, KindName(type.Kind), type.IsAbstract, Place(type.Location), metrics);
+        return new FactsType(type.Id, type.Name, type.ModuleName, KindName(type.Kind), type.IsAbstract, Place(type.Location),
+            type.TypeParameters.Count == 0 ? null : type.TypeParameters, Members(type), metrics);
     }
+
+    // spec/structure.md: own members in declaration order, functions excluded.
+    private IReadOnlyList<FactsMember>? Members(TypeDecl type)
+    {
+        var members = type.Fields.Select(f => (f.Location, Member: f.IsEnumValue
+                ? new FactsMember(f.Name, "literal", VisibilityName(f.Visibility), null, null, null, null)
+                : Member(f.Name, f.IsConstant ? "constant" : "field", f.Visibility, f.TypeText, f.Type, f.IsStatic && !f.IsConstant)))
+            .Concat(type.Properties.Select(p => (p.Location, Member: Member(p.Name, "property", p.Visibility, p.TypeText, p.Type, p.IsStatic))))
+            .Concat(type.Events.Select(e => (e.Location, Member: Member(e.Name, "event", e.Visibility, e.TypeText, e.Type, e.IsStatic))))
+            .OrderBy(m => m.Location.FilePath, StringComparer.Ordinal).ThenBy(m => m.Location.StartLine).ThenBy(m => m.Location.StartColumn)
+            .Select(m => m.Member).ToList();
+        return members.Count == 0 ? null : members;
+    }
+
+    private FactsMember Member(string name, string kind, Visibility visibility, string? typeName, TypeRef? type, bool isStatic)
+    {
+        var element = CollectionElement(type);
+        var target = element ?? Unwrap(type);
+        return new FactsMember(name, kind, VisibilityName(visibility), typeName ?? type?.Name,
+            target?.Id is { } id && _typeIds.Contains(id) ? id : null, isStatic ? true : null, element is null ? null : true);
+    }
+
+    private static readonly string[] CollectionNamespaces =
+        ["System.Collections.Generic.", "System.Collections.Immutable.", "System.Collections.ObjectModel.", "System.Collections.Concurrent."];
+
+    /// <summary>The element of an array or a generic collection of the standard library: its last type argument.</summary>
+    private static TypeRef? CollectionElement(TypeRef? type)
+    {
+        type = Unwrap(type);
+        if (type is null || type.TypeArguments.Count == 0) return null;
+        var collection = type.Kind == TypeRefKind.Array || (type.Id is { } id && CollectionNamespaces.Any(n => id.StartsWith(n, StringComparison.Ordinal)));
+        return collection ? Unwrap(type.TypeArguments[^1]) : null;
+    }
+
+    private static TypeRef? Unwrap(TypeRef? type) =>
+        type is { Id: "System.Nullable<T>", TypeArguments: [var inner] } ? inner : type;
 
     private static string KindName(TypeKind kind) => kind.ToString().ToLowerInvariant();
 
@@ -163,7 +200,11 @@ internal sealed class FactsBuilder
                 CallableKind.Function => "function",
                 _ => "other",
             };
-            return new FactsFunction(_functionIds[callable.Id], callable.Name, module.Name, owner?.Id, kind, VisibilityName(callable.Visibility), Place(callable.Location), metrics);
+            var isAbstract = callable.Has(Modifiers.Abstract) || (owner?.Kind == TypeKind.Interface && callable.Body is null && !callable.Has(Modifiers.Static));
+            return new FactsFunction(_functionIds[callable.Id], callable.Name, module.Name, owner?.Id, kind, VisibilityName(callable.Visibility), Place(callable.Location),
+                [.. callable.Parameters.Select(p => new FactsParameter(p.Name, p.TypeText ?? p.Type?.Name))],
+                callable.Kind == CallableKind.Constructor ? null : callable.ReturnTypeText ?? callable.ReturnType?.Name,
+                callable.Has(Modifiers.Static) ? true : null, isAbstract ? true : null, metrics);
         }).OrderBy(f => f.Id, StringComparer.Ordinal)];
     }
 

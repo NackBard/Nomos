@@ -66,9 +66,36 @@ function compareSets(kind: string, expected: string[], actual: string[], errors:
   for (const x of [...a].sort()) if (!e.has(x)) errors.push(`${kind} ${x}: reported but not expected`);
 }
 
-/** Compares actual facts with the hand-computed ones. Array order is irrelevant. */
+// spec/structure.md: absent fields take their defaults, so a hand-written expectation can leave them out.
+const member = (m: any) => ({ name: m.name, kind: m.kind, visibility: m.visibility ?? "unspecified", typeName: m.typeName ?? null, type: m.type ?? null,
+  isStatic: m.isStatic ?? false, isCollection: m.isCollection ?? false, isEmbedded: m.isEmbedded ?? false });
+const parameter = (p: any) => `${p.name}: ${p.typeName ?? "-"}`;
+
+function compareList(where: string, expected: unknown[], actual: unknown[], errors: string[]): void {
+  const e = expected.map((x) => JSON.stringify(x));
+  const a = actual.map((x) => JSON.stringify(x));
+  if (e.join("\n") !== a.join("\n")) errors.push(`${where} is [${a.join(", ")}], expected [${e.join(", ")}]`);
+}
+
+/** Structure fields of facts 1.3.0, in declaration order; only for cases that cover "structure". */
+function compareStructure(kind: "type" | "function", id: string, e: any, a: any, errors: string[]): void {
+  if (kind === "type") {
+    compareList(`type ${id}: typeParameters`, e.typeParameters ?? [], a.typeParameters ?? [], errors);
+    compareList(`type ${id}: members`, (e.members ?? []).map(member), (a.members ?? []).map(member), errors);
+    compareList(`type ${id}: satisfies`, [...(e.satisfies ?? [])].sort(), [...(a.satisfies ?? [])].sort(), errors);
+    return;
+  }
+  compareList(`function ${id}: parameters`, (e.parameters ?? []).map(parameter), (a.parameters ?? []).map(parameter), errors);
+  for (const key of ["returnTypeName", "isStatic", "isAbstract"]) {
+    const fallback = key === "returnTypeName" ? null : false;
+    if ((e[key] ?? fallback) !== (a[key] ?? fallback)) errors.push(`function ${id}: ${key} is ${a[key] ?? fallback}, expected ${e[key] ?? fallback}`);
+  }
+}
+
+/** Compares actual facts with the hand-computed ones. Array order is irrelevant, except for the structure lists. */
 export function compareFacts(expected: any, actual: any, spec: CaseSpec): string[] {
   const errors: string[] = [];
+  const structure = spec.covers?.includes("structure") ?? false;
 
   compareById("file", (expected.files ?? []).map((f: any) => ({ ...f, id: f.path })), (actual.files ?? []).map((f: any) => ({ ...f, id: f.path })), errors, (id, e, a) => {
     for (const key of ["lines", "loc"]) if (e[key] !== a[key]) errors.push(`file ${id}: ${key} is ${a[key]}, expected ${e[key]}`);
@@ -91,11 +118,13 @@ export function compareFacts(expected: any, actual: any, spec: CaseSpec): string
   compareById("type", expected.types, actual.types, errors, (id, e, a) => {
     for (const key of ["module", "kind", "isAbstract"]) if (e[key] !== a[key]) errors.push(`type ${id}: ${key} is ${a[key]}, expected ${e[key]}`);
     compareMetrics(`type ${id}`, e.metrics, a.metrics, spec, errors);
+    if (structure) compareStructure("type", id, e, a, errors);
   });
 
   compareById("function", expected.functions, actual.functions, errors, (id, e, a) => {
     for (const key of ["module", "type"]) if (e[key] !== a[key]) errors.push(`function ${id}: ${key} is ${a[key]}, expected ${e[key]}`);
     compareMetrics(`function ${id}`, e.metrics, a.metrics, spec, errors);
+    if (structure) compareStructure("function", id, e, a, errors);
   });
 
   // Edges are compared by (from, to, kind, phase); kinds are defined in spec/metrics.md. External targets are

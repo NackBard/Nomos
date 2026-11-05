@@ -42,6 +42,12 @@
         "title": "%command.choosePractices%",
         "icon": "$(checklist)",
         "category": "Nomos"
+      },
+      {
+        "command": "nomos.exportClassDiagram",
+        "title": "%command.exportClassDiagram%",
+        "icon": "$(export)",
+        "category": "Nomos"
       }
     ],
     "viewsContainers": {
@@ -87,6 +93,11 @@
       "editor/title": [
         {
           "command": "nomos.openGraphWindow",
+          "when": "activeWebviewPanelId == nomos.graph",
+          "group": "navigation"
+        },
+        {
+          "command": "nomos.exportClassDiagram",
           "when": "activeWebviewPanelId == nomos.graph",
           "group": "navigation"
         }

@@ -111,3 +111,16 @@ test("a rule without its input needs a missing-input record, a rule with it must
   // A rule the configuration switched off, by practices for example, does not run and needs no record.
   assert.deepEqual(checkRequiredInputs(facts({ skippedRules: [{ ruleId: "DSN003", reason: "disabled-by-config", message: "m" }] }), undefined, rules), []);
 });
+
+test("structure is compared in order with defaults, and only when the case covers it", () => {
+  const type = (members: any[], extra: Record<string, unknown> = {}) => ({ id: "T", module: "M", kind: "class", isAbstract: false, metrics: {}, members, ...extra });
+  const expected = facts({ types: [type([{ name: "a", kind: "field", visibility: "private", typeName: "int" }, { name: "b", kind: "field", visibility: "private", typeName: "int" }])] });
+  const swapped = facts({ types: [type([{ name: "b", kind: "field", visibility: "private", typeName: "int" }, { name: "a", kind: "field", visibility: "private", typeName: "int", isStatic: false }])] });
+  assert.deepEqual(compareFacts(expected, swapped, spec), []);
+  const covered = { ...spec, covers: ["structure"] };
+  assert.equal(compareFacts(expected, swapped, covered).length, 1);
+  assert.deepEqual(compareFacts(expected, facts({ types: [type(expected.types[0].members.map((m: any) => ({ ...m, isCollection: false })))] }), covered), []);
+
+  const fn = (extra: Record<string, unknown>) => ({ id: "T.F", module: "M", type: "T", metrics: {}, parameters: [{ name: "x", typeName: "int" }], ...extra });
+  assert.deepEqual(compareFacts(facts({ functions: [fn({ returnTypeName: "int" })] }), facts({ functions: [fn({})] }), covered), ["function T.F: returnTypeName is null, expected int"]);
+});

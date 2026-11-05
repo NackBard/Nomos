@@ -139,7 +139,7 @@ internal sealed class TypeBuilder
             case EnumDeclarationSyntax enumeration:
                 foreach (var member in enumeration.Members)
                     _fields.Add(new FieldDecl(member.Identifier.ValueText, Symbols.ToTypeRef(_symbol), Visibility.Public, Locations.Of(member))
-                    { Id = $"{Id}.{member.Identifier.ValueText}", IsStatic = true, IsReadOnly = true, IsConstant = true });
+                    { Id = $"{Id}.{member.Identifier.ValueText}", IsStatic = true, IsReadOnly = true, IsConstant = true, IsEnumValue = true });
                 break;
             case DelegateDeclarationSyntax:
                 if (_symbol.DelegateInvokeMethod is { } invoke)
@@ -171,6 +171,7 @@ internal sealed class TypeBuilder
         Visibility = Symbols.VisibilityOf(_symbol),
         Modifiers = Symbols.ModifiersOf(_symbol),
         ModuleName = ModuleName,
+        TypeParameters = [.. _symbol.TypeParameters.Select(p => p.Name)],
         BaseType = _symbol.BaseType is { SpecialType: SpecialType.None } baseType ? Symbols.ToTypeRef(baseType) : null,
         Interfaces = [.. DeclaredInterfaces().Select(i => Symbols.ToTypeRef(i)!)],
         InheritanceDepth = Depth(),
@@ -212,7 +213,9 @@ internal sealed class TypeBuilder
                 AddDependency(pointer.PointedAtType, kind, location);
                 break;
             case INamedTypeSymbol { TypeKind: not RoslynTypeKind.Error } named:
-                foreach (var argument in named.TypeArguments) AddDependency(argument, kind, location);
+                // A type argument of a base is used by the declaration, not inherited from (spec/metrics.md).
+                var argumentKind = kind is DependencyKind.Inheritance or DependencyKind.Implementation ? DependencyKind.Usage : kind;
+                foreach (var argument in named.TypeArguments) AddDependency(argument, argumentKind, location);
                 if (named.SpecialType != SpecialType.None || named.IsAnonymousType) return;
                 var target = Symbols.TypeId(named);
                 if (target != Id) _dependencies.TryAdd((target, kind), new Dependency(Id, target, kind, Symbols.IsExternal(named), Locations.Of(location)));
@@ -246,10 +249,10 @@ internal sealed class TypeBuilder
         {
             if (_symbol.IsRecord)
                 _properties.Add(new PropertyDecl(parameter.Name, parameter.Type, Visibility.Public, parameter.Location)
-                { Id = $"{Id}.{parameter.Name}", HasGetter = true, IsInitOnly = true, IsAuto = true });
+                { Id = $"{Id}.{parameter.Name}", HasGetter = true, IsInitOnly = true, IsAuto = true, TypeText = parameter.TypeText });
             else
                 _fields.Add(new FieldDecl(parameter.Name, parameter.Type, Visibility.Private, parameter.Location)
-                { Id = $"{Id}.{parameter.Name}", IsReadOnly = true });
+                { Id = $"{Id}.{parameter.Name}", IsReadOnly = true, TypeText = parameter.TypeText });
         }
     }
 
@@ -265,14 +268,16 @@ internal sealed class TypeBuilder
                 {
                     if (model.GetDeclaredSymbol(variable) is not IEventSymbol symbol) continue;
                     AddDependency(symbol.Type, DependencyKind.Member, variable.GetLocation());
-                    _events.Add(new EventDecl(symbol.Name, Symbols.ToTypeRef(symbol.Type), Symbols.VisibilityOf(symbol), Locations.Of(variable)));
+                    _events.Add(new EventDecl(symbol.Name, Symbols.ToTypeRef(symbol.Type), Symbols.VisibilityOf(symbol), Locations.Of(variable))
+                    { IsStatic = symbol.IsStatic, TypeText = Syntax.Text(eventField.Declaration.Type) });
                 }
                 break;
             case EventDeclarationSyntax eventDeclaration:
                 if (model.GetDeclaredSymbol(eventDeclaration) is { } eventSymbol)
                 {
                     AddDependency(eventSymbol.Type, DependencyKind.Member, eventDeclaration.GetLocation());
-                    _events.Add(new EventDecl(eventSymbol.Name, Symbols.ToTypeRef(eventSymbol.Type), Symbols.VisibilityOf(eventSymbol), Locations.Of(eventDeclaration)));
+                    _events.Add(new EventDecl(eventSymbol.Name, Symbols.ToTypeRef(eventSymbol.Type), Symbols.VisibilityOf(eventSymbol), Locations.Of(eventDeclaration))
+                    { IsStatic = eventSymbol.IsStatic, TypeText = Syntax.Text(eventDeclaration.Type) });
                 }
                 break;
             case BasePropertyDeclarationSyntax property:
@@ -295,6 +300,7 @@ internal sealed class TypeBuilder
             IsReadOnly = symbol.IsReadOnly || symbol.IsConst,
             IsConstant = symbol.IsConst,
             Initializer = variable.Initializer is { } init ? converter.Expression(init.Value) : null,
+            TypeText = (variable.Parent as VariableDeclarationSyntax)?.Type is { } type ? Syntax.Text(type) : null,
         });
     }
 
@@ -315,6 +321,7 @@ internal sealed class TypeBuilder
             IsStatic = symbol.IsStatic,
             Modifiers = Symbols.ModifiersOf(symbol),
             Initializer = (property as PropertyDeclarationSyntax)?.Initializer is { } init ? converter.Expression(init.Value) : null,
+            TypeText = Syntax.Text(property.Type),
         });
 
         if (arrow is not null)
@@ -381,6 +388,13 @@ internal sealed class TypeBuilder
             Modifiers = Symbols.ModifiersOf(symbol),
             Parameters = converter.Parameters(method.ParameterList),
             ReturnType = symbol.ReturnsVoid ? null : Symbols.ToTypeRef(symbol.ReturnType),
+            ReturnTypeText = symbol.ReturnsVoid ? null : method switch
+            {
+                MethodDeclarationSyntax m => Syntax.Text(m.ReturnType),
+                OperatorDeclarationSyntax o => Syntax.Text(o.ReturnType),
+                ConversionOperatorDeclarationSyntax c => Syntax.Text(c.Type),
+                _ => null,
+            },
             Body = body,
             Attributes = converter.Attributes(method.AttributeLists),
             DeclaringTypeId = Id,
@@ -522,6 +536,7 @@ internal sealed class BodyConverter(SemanticModel model, Action<ITypeSymbol?, De
         {
             IsByReference = symbol?.RefKind is RefKind.Ref or RefKind.Out,
             HasDefault = syntax.Default is not null,
+            TypeText = syntax.Type is { } type ? Syntax.Text(type, syntax.Modifiers.Where(m => !m.IsKind(SyntaxKind.ThisKeyword))) : null,
         };
     }
 
@@ -881,4 +896,15 @@ internal sealed class BodyConverter(SemanticModel model, Action<ITypeSymbol?, De
         initializer is null ? [] : [.. initializer.Expressions.Select(e => Expression(e is AssignmentExpressionSyntax a ? a.Right : e))];
 
     private static TypeRef Unknown(SyntaxNode syntax) => new(syntax.ToString(), null, TypeRefKind.Unknown, true);
+}
+
+/// <summary>Source text of declarations, as spec/structure.md writes it into facts.</summary>
+internal static class Syntax
+{
+    /// <summary>The text of a type with optional modifiers in front; runs of whitespace become one space.</summary>
+    public static string Text(TypeSyntax type, IEnumerable<SyntaxToken>? modifiers = null)
+    {
+        var words = (modifiers ?? []).Select(m => m.ValueText).Append(type.ToString());
+        return string.Join(' ', string.Join(' ', words).Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries));
+    }
 }

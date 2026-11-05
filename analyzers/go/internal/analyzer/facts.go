@@ -19,7 +19,7 @@ const (
 	Name            = "nomos-go"
 	Language        = "go"
 	Version         = "0.1.0"
-	factsVersion    = "1.2.0"
+	factsVersion    = "1.3.0"
 	manifestVersion = "1.2.0"
 )
 
@@ -195,24 +195,30 @@ type factsModule struct {
 }
 
 type factsType struct {
-	ID         string   `json:"id"`
-	Name       string   `json:"name"`
-	Module     string   `json:"module"`
-	Kind       string   `json:"kind"`
-	IsAbstract bool     `json:"isAbstract"`
-	Location   location `json:"location"`
-	Metrics    metrics  `json:"metrics"`
+	ID         string        `json:"id"`
+	Name       string        `json:"name"`
+	Module     string        `json:"module"`
+	Kind       string        `json:"kind"`
+	IsAbstract bool          `json:"isAbstract"`
+	Location   location      `json:"location"`
+	TypeParams []string      `json:"typeParameters,omitempty"`
+	Members    []factsMember `json:"members,omitempty"`
+	Satisfies  []string      `json:"satisfies,omitempty"`
+	Metrics    metrics       `json:"metrics"`
 }
 
 type factsFunction struct {
-	ID         string   `json:"id"`
-	Name       string   `json:"name"`
-	Module     string   `json:"module"`
-	Type       string   `json:"type,omitempty"`
-	Kind       string   `json:"kind"`
-	Visibility string   `json:"visibility"`
-	Location   location `json:"location"`
-	Metrics    metrics  `json:"metrics"`
+	ID         string           `json:"id"`
+	Name       string           `json:"name"`
+	Module     string           `json:"module"`
+	Type       string           `json:"type,omitempty"`
+	Kind       string           `json:"kind"`
+	Visibility string           `json:"visibility"`
+	Location   location         `json:"location"`
+	Parameters []factsParameter `json:"parameters"`
+	ReturnType string           `json:"returnTypeName,omitempty"`
+	IsAbstract bool             `json:"isAbstract,omitempty"`
+	Metrics    metrics          `json:"metrics"`
 }
 
 type factsDependency struct {
@@ -532,7 +538,7 @@ func (r *run) factsTypes() []factsType {
 			values["atfd"] = count(r.p.ATFD(t))
 			values["tcc"] = r.p.TCC(t)
 		}
-		list = append(list, factsType{t.ID, t.Name, t.Module.ID, t.Kind, t.IsAbstract(), toLocation(t.Place), values})
+		list = append(list, factsType{t.ID, t.Name, t.Module.ID, t.Kind, t.IsAbstract(), toLocation(t.Place), typeParameters(t), r.p.members(t), r.p.satisfies(t), values})
 	}
 	return list
 }
@@ -574,7 +580,8 @@ func (r *run) factsFunctions() []factsFunction {
 		if exported(f.Name) {
 			visibility = "public"
 		}
-		list = append(list, factsFunction{f.ID, f.Name, f.Module.ID, owner, kind, visibility, toLocation(f.Place), values})
+		parameters, result := signature(f.Sig)
+		list = append(list, factsFunction{f.ID, f.Name, f.Module.ID, owner, kind, visibility, toLocation(f.Place), parameters, result, f.Decl == nil && f.Owner != nil, values})
 	}
 	return list
 }

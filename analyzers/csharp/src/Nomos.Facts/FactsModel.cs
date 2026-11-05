@@ -41,7 +41,14 @@ internal sealed record FactsType(
     string Kind,
     bool IsAbstract,
     FactsLocation Location,
+    IReadOnlyList<string>? TypeParameters,
+    IReadOnlyList<FactsMember>? Members,
     SortedDictionary<string, double?> Metrics);
+
+// spec/structure.md. Flags are null rather than false so that the default is left out of the output.
+internal sealed record FactsMember(string Name, string Kind, string Visibility, string? TypeName, string? Type, bool? IsStatic, bool? IsCollection);
+
+internal sealed record FactsParameter(string Name, string? TypeName);
 
 internal sealed record FactsFunction(
     string Id,
@@ -51,6 +58,10 @@ internal sealed record FactsFunction(
     string Kind,
     string Visibility,
     FactsLocation Location,
+    IReadOnlyList<FactsParameter> Parameters,
+    string? ReturnTypeName,
+    bool? IsStatic,
+    bool? IsAbstract,
     SortedDictionary<string, double?> Metrics);
 
 internal sealed record FactsDependency(string From, string To, string Kind, string Phase, bool External, bool Stdlib, int Count, FactsLocation? Location);

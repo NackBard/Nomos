@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import * as vscode from "vscode";
 import type { NomosApi } from "../extension";
+import { focusDiagram, toMermaid, toPlantUml } from "../core/uml";
 import { openNextToGraph } from "../ui/graphPanel";
 import { interfaceTranslator } from "../ui/translate";
 
@@ -82,6 +83,17 @@ export async function run(): Promise<void> {
   assert.equal(Math.abs(fromWindow.viewColumn! - await graphGroup()), 1, "code must open next to the graph in a separate window too");
   const graphTabs = vscode.window.tabGroups.all.flatMap((g) => g.tabs).filter((t) => t.label === graphTitle);
   assert.equal(graphTabs.length, 1, "the graph must stay a single tab");
+
+  // Stage 11: every analyzer fills the structure of facts 1.3.0, and the class diagram of its largest module has members.
+  assert.ok((await vscode.commands.getCommands(true)).includes("nomos.exportClassDiagram"), "no export command");
+  for (const each of runs) {
+    const largest = [...each.facts.modules].sort((a, b) => b.loc - a.loc)[0];
+    const diagram = focusDiagram(runs, largest.id)?.diagram;
+    assert.ok(diagram?.classes.some((c) => c.attributes.length + c.operations.length > 0), `${each.language}: no members in the class diagram of ${largest.id}`);
+    if (!diagram) return;
+    assert.match(toPlantUml(diagram), /^@startuml\n[\s\S]*@enduml\n$/);
+    assert.match(toMermaid(diagram), /\nclassDiagram\n/);
+  }
 
   console.log(`e2e ${vscode.env.language} (${configured ? "nomos.json" : "bundled analyzers"}): ${runs.map((r) => `${r.language} ${r.findings.length}`).join(", ")} findings, ${withDiagnostics.length} files with diagnostics, ${lenses.length} lenses in ${entity.location.file}`);
 }

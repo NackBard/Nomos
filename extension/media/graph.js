@@ -47,6 +47,23 @@
   const LANES_SPREAD = 3 * ROW;
   // Height a waypoint of a long link takes in its column: room for its line and a gap to the next one.
   const WAYPOINT = 18;
+  // UML classes (spec/structure.md): boxes keep their size in the diagram, like a drawing, and take the room they need.
+  const BOX_GAP_X = 110;
+  const BOX_GAP_Y = 34;
+  const BOX_PAD = 7;
+  const BOX_LINE = 15;
+  const BOX_MIN = 90;
+  const BOX_MAX = 380;
+  // A compartment longer than this shows its first lines and "+N" for the rest.
+  const BOX_ROWS = 8;
+  const umlBox = document.getElementById("umlToggle");
+  const umlCheck = document.getElementById("uml");
+  const exportButton = document.getElementById("export");
+  let umlOn = false;
+  let boxes = [];
+  // Room a node takes in its column, and the width of a column that holds it.
+  const slotOf = (node) => (node.waypoint ? WAYPOINT : node.box ? node.box.h + BOX_GAP_Y : ROW);
+  const widthOf = (node) => (node.box ? node.box.w + BOX_GAP_X : COLUMN);
 
   function element(name, attributes, parent) {
     const node = document.createElementNS(ns, name);
@@ -102,43 +119,44 @@
     const filled = columns.filter(Boolean);
     orderColumns(filled, around);
     // A waypoint needs room for one line, not for a node and its label. Only nodes count towards folding a column.
-    const slot = (node) => (node.waypoint ? WAYPOINT : ROW);
+    // A folded column puts its nodes on a grid of its largest node; a column is as wide as its widest node needs.
     const shape = (column) => {
-      const real = column.filter((n) => !n.waypoint).length;
-      const wide = Math.max(1, Math.ceil(real / rows));
-      const extent = wide > 1 ? Math.ceil(real / wide) * ROW : column.reduce((sum, n) => sum + slot(n), 0);
-      return { wide, extent };
+      const real = column.filter((n) => !n.waypoint);
+      const wide = Math.max(1, Math.ceil(real.length / rows));
+      const cell = Math.max(ROW, ...real.map(slotOf));
+      const extent = wide > 1 ? Math.ceil(real.length / wide) * cell : column.reduce((sum, n) => sum + slotOf(n), 0);
+      return { wide, extent, cell, across: Math.max(COLUMN, ...real.map(widthOf)) };
     };
     const tallest = Math.max(...filled.map((column) => shape(column).extent));
     let left = 0;
     for (const column of filled) {
-      const { wide, extent } = shape(column);
+      const { wide, extent, cell, across } = shape(column);
       const first = top + (tallest - extent) / 2;
       if (wide > 1) {
         // A folded column keeps its nodes on a grid; the waypoints run between its first two sub-columns, in order.
         const real = column.filter((n) => !n.waypoint);
         const ways = column.filter((n) => n.waypoint);
         real.forEach((node, i) => {
-          node.x = left + (i % wide) * COLUMN;
-          node.y = first + (Math.floor(i / wide) + 0.5) * ROW;
+          node.x = left + (i % wide + 0.5) * across;
+          node.y = first + (Math.floor(i / wide) + 0.5) * cell;
         });
         ways.forEach((node, i) => {
-          node.x = left + COLUMN / 2;
+          node.x = left + across;
           node.y = first + ((i + 0.5) * extent) / ways.length;
         });
       } else {
         let y = first;
         for (const node of column) {
-          node.x = left;
-          node.y = y + slot(node) / 2;
-          y += slot(node);
+          node.x = left + across / 2;
+          node.y = y + slotOf(node) / 2;
+          y += slotOf(node);
         }
       }
-      left += wide * COLUMN;
+      left += wide * across;
       if (wide > 1) column.folded = true;
     }
     straighten(filled, around);
-    return { width: left, height: tallest / ROW };
+    return { width: left, height: tallest };
   }
 
   /**
@@ -151,7 +169,7 @@
       const ys = around.get(node.id).map((n) => n.y);
       return ys.reduce((sum, y) => sum + y, 0) / ys.length;
     };
-    const gap = (a, b) => ((a.waypoint ? WAYPOINT : ROW) + (b.waypoint ? WAYPOINT : ROW)) / 2;
+    const gap = (a, b) => (slotOf(a) + slotOf(b)) / 2;
     for (let pass = 0; pass < 16; pass++) {
       for (const column of pass % 2 ? [...columns].reverse() : columns) {
         if (column.folded) continue;
@@ -219,24 +237,31 @@
     }
     const { groups, lone } = components(all, around);
     // A column folds only when it is really tall: folding puts nodes of one depth side by side, which reads as two depths.
-    const rows = Math.max(12, Math.round(Math.sqrt(nodes.length * COLUMN / (ROW * aspect))));
+    // Classes are far larger than dots, so their columns fold by area, not by count.
+    const mean = (f) => nodes.reduce((sum, n) => sum + f(n), 0) / nodes.length;
+    const rows = umlOn
+      ? Math.max(3, Math.round(Math.sqrt((nodes.length * mean(widthOf)) / (mean(slotOf) * aspect))))
+      : Math.max(12, Math.round(Math.sqrt(nodes.length * COLUMN / (ROW * aspect))));
     let top = 0;
     let width = COLUMN * 4;
     for (const group of groups) {
       const size = placeGroup(group, around, rows, top);
-      top += (size.height + 1) * ROW;
+      top += size.height + ROW;
       width = Math.max(width, size.width);
     }
-    const perRow = Math.max(1, Math.floor(width / COLUMN));
+    const across = Math.max(COLUMN, ...lone.map(widthOf));
+    const cell = Math.max(ROW, ...lone.map(slotOf));
+    const perRow = Math.max(1, Math.floor(width / across));
     lone.forEach((node, i) => {
-      node.x = (i % perRow) * COLUMN;
-      node.y = top + Math.floor(i / perRow) * ROW;
+      node.x = (i % perRow + 0.5) * across;
+      node.y = top + (Math.floor(i / perRow) + 0.5) * cell;
     });
-    // Columns are wider than rows are tall, so a short graph is stretched to use the height of the page.
+    // Columns are wider than rows are tall, so a short graph is stretched to use the height of the page. Classes are
+    // not: they already fill their rows.
     const ys = all.map((n) => n.y);
     const tall = Math.max(...ys) - Math.min(...ys) + ROW;
-    const stretch = Math.min(3, (Math.max(...all.map((n) => n.x)) + COLUMN) / aspect / tall);
-    if (stretch > 1) for (const node of all) node.y *= stretch;
+    const stretch = Math.min(3, (Math.max(...all.map((n) => n.x)) + COLUMN / 2) / aspect / tall);
+    if (stretch > 1 && !umlOn) for (const node of all) node.y *= stretch;
     return { index, routes };
   }
 
@@ -278,6 +303,97 @@
     return `M${bx - uy * width} ${by + ux * width}L${tip.x} ${tip.y}L${bx + uy * width} ${by - ux * width}`;
   }
 
+  // ---- UML classes -----------------------------------------------------------------------------------------------
+
+  const measure = document.createElement("canvas").getContext("2d");
+  const codeFont = () => getComputedStyle(document.body).getPropertyValue("--vscode-editor-font-family").trim() || "monospace";
+
+  // Cuts a line to the widest box with an ellipsis; the tooltip of the class keeps the whole text.
+  function fit(text, font, room) {
+    measure.font = font;
+    if (measure.measureText(text).width <= room) return text;
+    let cut = text.length;
+    while (cut > 1 && measure.measureText(text.slice(0, cut) + "…").width > room) cut--;
+    return text.slice(0, cut) + "…";
+  }
+
+  // A compartment of at most BOX_ROWS lines: the first ones and "+N" for the rest.
+  function compartment(members) {
+    if (members.length <= BOX_ROWS) return members;
+    return [...members.slice(0, BOX_ROWS - 1), { text: `+${members.length - BOX_ROWS + 1}`, more: true }];
+  }
+
+  /** Size and lines of a class box: a header with the stereotype and name, then attributes and operations. */
+  function classBox(c) {
+    const code = `11px ${codeFont()}`;
+    const head = `600 12px ${codeFont()}`;
+    const lines = [];
+    let y = BOX_PAD;
+    if (c.stereotype) { lines.push({ text: `«${c.stereotype}»`, y: (y += BOX_LINE), cls: "stereotype", font: code }); }
+    lines.push({ text: c.name, y: (y += BOX_LINE), cls: `name${c.isAbstract ? " abstract" : ""}`, font: head });
+    const header = (y += BOX_PAD);
+    const separators = [];
+    for (const part of [c.attributes, c.operations]) {
+      if (!part.length) continue;
+      separators.push(y);
+      y += BOX_PAD / 2;
+      for (const m of compartment(part)) {
+        const cls = m.more ? "more" : `${m.isStatic ? "static" : ""}${m.isAbstract ? " abstract" : ""}`.trim();
+        lines.push({ text: m.text, y: (y += BOX_LINE), cls: `member ${cls}`, font: code });
+      }
+      y += BOX_PAD;
+    }
+    measure.font = head;
+    let w = BOX_MIN;
+    for (const line of lines) {
+      measure.font = line.font;
+      w = Math.max(w, measure.measureText(line.text).width + 2 * BOX_PAD + 2);
+    }
+    w = Math.min(Math.ceil(w), BOX_MAX);
+    for (const line of lines) line.text = fit(line.text, line.font, w - 2 * BOX_PAD);
+    return { w, h: Math.max(y, header), header, lines, separators };
+  }
+
+  function drawClass(node, parent) {
+    const { w, h, header, lines, separators } = node.box;
+    const layer = Math.min(node.layer, colors - 1);
+    const g = element("g", { class: `class${node.cycle ? " cycle" : ""}`, transform: `translate(${node.x - w / 2} ${node.y - h / 2})` }, parent);
+    element("rect", { class: `box box-${layer}`, width: w, height: h, rx: 3 }, g);
+    element("path", { class: `band layer-${layer}`, d: `M0 ${header}V3Q0 0 3 0H${w - 3}Q${w} 0 ${w} 3V${header}Z` }, g);
+    for (const y of separators) element("path", { class: `separator box-${layer}`, d: `M0 ${y}H${w}` }, g);
+    for (const line of lines) {
+      const centred = !line.cls.startsWith("member");
+      const text = element("text", { class: line.cls, x: centred ? w / 2 : BOX_PAD, y: line.y - 3.5 }, g);
+      text.textContent = line.text;
+    }
+    const c = node.uml;
+    element("title", {}, g).textContent = [`${node.id} (${node.kind})`, ...c.attributes.map((m) => m.text), ...c.operations.map((m) => m.text)].join("\n");
+    return g;
+  }
+
+  // The end of a UML relation (spec/structure.md): a hollow triangle at the general type, a filled diamond at the owner
+  // of an embedded part, an open arrow at the target of an association or dependency. Sizes are those of the drawing.
+  function relationMarks(kind, start, su, end, eu, scale = 1) {
+    const marks = [];
+    const at = (p, u, along, across) => `${p.x - u.x * along - u.y * across} ${p.y - u.y * along + u.x * across}`;
+    const size = 11 * scale, half = 6 * scale;
+    if (kind === "uml-generalization" || kind === "uml-realization") {
+      marks.push({ d: `M${end.x} ${end.y}L${at(end, eu, size, half)}L${at(end, eu, size, -half)}Z`, cls: "hollow" });
+    } else if (kind === "uml-embed") {
+      const back = { x: -su.x, y: -su.y };
+      marks.push({ d: `M${start.x} ${start.y}L${at(start, back, size * 0.8, half * 0.8)}L${at(start, back, size * 1.6, 0)}L${at(start, back, size * 0.8, -half * 0.8)}Z`, cls: "solid" });
+    }
+    if (kind === "uml-association" || kind === "uml-dependency") {
+      marks.push({ d: `M${at(end, eu, size, half)}L${end.x} ${end.y}L${at(end, eu, size, -half)}`, cls: "open" });
+    }
+    return marks;
+  }
+
+  function unit(dx, dy) {
+    const length = Math.hypot(dx, dy) || 1;
+    return { x: dx / length, y: dy / length };
+  }
+
   function apply() {
     root.setAttribute("transform", `translate(${view.x} ${view.y}) scale(${view.k})`);
     // Zooming out moves nodes closer but keeps them and their labels readable.
@@ -296,6 +412,7 @@
       label.setAttribute("font-size", font);
     }
     for (const { mid, ux, uy, head, via } of links) {
+      if (!head) continue;
       const length = 5 * size;
       head.setAttribute("d", finPath({ x: mid.x + (ux * length) / 2, y: mid.y + (uy * length) / 2 }, ux, uy, length));
       if (!via) continue;
@@ -331,7 +448,8 @@
       const outgoing = edge.from === node.id;
       if (!outgoing && edge.to !== node.id) continue;
       const other = outgoing ? edge.to : edge.from;
-      lines.push({ order: `${outgoing ? 0 : 1}${edge.kind}${names.get(other)}`, verb: outgoing ? kindOf(edge.kind).out : kindOf(edge.kind).in, arrow: outgoing ? "→" : "←", name: names.get(other) ?? other, via: edge.via, weight: edge.weight });
+      const via = edge.via ?? (edge.label ? [`${edge.label}${edge.many ? " [*]" : ""}`] : undefined);
+      lines.push({ order: `${outgoing ? 0 : 1}${edge.kind}${names.get(other)}${edge.label ?? ""}`, verb: outgoing ? kindOf(edge.kind).out : kindOf(edge.kind).in, arrow: outgoing ? "→" : "←", name: names.get(other) ?? other, via, weight: edge.weight });
     }
     lines.sort((x, y) => (x.order < y.order ? -1 : x.order > y.order ? 1 : 0));
     relations.replaceChildren();
@@ -378,8 +496,13 @@
       toggle.title = fmt(S.toggleKind, kindOf(kind).name);
       toggle.setAttribute("aria-pressed", String(!hidden.has(kind)));
       const sample = element("svg", { viewBox: "0 0 30 12" }, toggle);
-      element("path", { d: "M1 6H22", class: `edge kind-${kind}` }, sample);
-      element("path", { d: finPath({ x: 17, y: 6 }, 1, 0, 4), class: `head kind-${kind}` }, sample);
+      if (kind.startsWith("uml-")) {
+        element("path", { d: "M2 6H28", class: `edge kind-${kind}` }, sample);
+        for (const mark of relationMarks(kind, { x: 2, y: 6 }, { x: 1, y: 0 }, { x: 28, y: 6 }, { x: 1, y: 0 }, 0.6)) element("path", { d: mark.d, class: `mark ${mark.cls} kind-${kind}` }, sample);
+      } else {
+        element("path", { d: "M1 6H22", class: `edge kind-${kind}` }, sample);
+        element("path", { d: finPath({ x: 17, y: 6 }, 1, 0, 4), class: `head kind-${kind}` }, sample);
+      }
       toggle.append(kindOf(kind).name);
       toggle.addEventListener("click", () => {
         const shown = hidden.has(kind);
@@ -387,7 +510,7 @@
         toggle.setAttribute("aria-pressed", String(shown));
       });
     }
-    const shapes = new Map(nodes.filter((n) => n.kind).map((n) => [n.kind, n.shape]));
+    const shapes = new Map(nodes.filter((n) => n.kind && !n.box).map((n) => [n.kind, n.shape]));
     for (const kind of [...shapes.keys()].sort()) {
       const entry = document.createElement("span");
       const icon = element("svg", { viewBox: "0 0 24 24" }, entry);
@@ -430,11 +553,12 @@
     for (const { node, entries } of sides.values()) {
       entries.sort((p, q) => p.other.y - q.other.y || p.other.x - q.other.x || (p.kind < q.kind ? -1 : p.kind > q.kind ? 1 : 0) || p.index - q.index);
       const step = entries.length > 1 ? Math.min(LANE, LANES_SPREAD / (entries.length - 1)) : 0;
-      const inside = (node.role === "module" && focused ? LARGEST : radius(node)) * 0.6;
+      // A class has a whole side to leave from: its links start at their own heights, not from one point.
+      const inside = node.box ? node.box.h / 2 - 6 : (node.role === "module" && focused ? LARGEST : radius(node)) * 0.6;
       entries.forEach((entry, rank) => {
         const offset = (rank - (entries.length - 1) / 2) * step;
         entry.lane.bend = offset;
-        entry.lane.start = Math.max(-inside, Math.min(inside, offset * 0.4));
+        entry.lane.start = Math.max(-inside, Math.min(inside, node.box ? offset : offset * 0.4));
       });
     }
     for (const entries of brackets.values()) {
@@ -448,6 +572,9 @@
    * Cubic pieces through the points of a route. At the two nodes a line leaves and arrives horizontally, in its lane;
    * through waypoints it runs on as a Catmull-Rom spline, without a wave at each one.
    */
+  // Where a line meets a node on the side facing the given way: the centre of a dot, the border of a class.
+  const edgeX = (node, way) => node.x + (node.box ? (way >= 0 ? 1 : -1) * node.box.w / 2 : 0);
+
   function curveThrough(route, lane) {
     const last = route.length - 2;
     if (last === 0 && lane.bracket !== undefined) {
@@ -455,17 +582,22 @@
       // wider for nodes further apart, and one lane wider for each link before it.
       const [from, to] = route;
       const reach = 28 + Math.abs(to.y - from.y) * 0.3 + lane.bracket * LANE;
-      return [{ start: from, c1: { x: from.x - reach, y: from.y }, c2: { x: to.x - reach, y: to.y }, end: to }];
+      const a = { x: edgeX(from, -1), y: from.y + (from.box ? lane.bracket * 6 - 6 : 0) };
+      const b = { x: edgeX(to, -1), y: to.y + (to.box ? lane.bracket * 6 + 6 : 0) };
+      return [{ start: a, c1: { x: a.x - reach, y: a.y }, c2: { x: b.x - reach, y: b.y }, end: b }];
     }
     if (last === 0) {
       const [from, to] = route;
-      const bend = Math.max(Math.abs(to.x - from.x) / 2, 40);
-      const near = from.x <= to.x ? bend : -bend;
+      const way = from.x <= to.x ? 1 : -1;
+      const start = { x: edgeX(from, way), y: from.y + lane.a.start };
+      const end = { x: edgeX(to, -way), y: to.y + lane.b.start };
+      const bend = Math.max(Math.abs(end.x - start.x) / 2, 40);
+      const near = way * bend;
       return [{
-        start: { x: from.x, y: from.y + lane.a.start },
-        c1: { x: from.x + near, y: from.y + lane.a.bend },
-        c2: { x: to.x - near, y: to.y + lane.b.bend },
-        end: { x: to.x, y: to.y + lane.b.start },
+        start,
+        c1: { x: start.x + near, y: from.y + lane.a.bend },
+        c2: { x: end.x - near, y: to.y + lane.b.bend },
+        end,
       }];
     }
     // Every point gets a tangent of the same scale, so the handles on both sides of a point are equally long and an
@@ -479,10 +611,10 @@
       const to = route[k + 1];
       const out = tangent(k), into = tangent(k + 1);
       return {
-        start: { x: from.x, y: from.y + (k === 0 ? lane.a.start : 0) },
+        start: { x: k === 0 ? edgeX(from, to.x - from.x) : from.x, y: from.y + (k === 0 ? lane.a.start : 0) },
         c1: { x: from.x + out.x / 3, y: from.y + out.y / 3 + (k === 0 ? lane.a.bend : 0) },
         c2: { x: to.x - into.x / 3, y: to.y - into.y / 3 + (k === last ? lane.b.bend : 0) },
-        end: { x: to.x, y: to.y + (k === last ? lane.b.start : 0) },
+        end: { x: k === last ? edgeX(to, from.x - to.x) : to.x, y: to.y + (k === last ? lane.b.start : 0) },
       };
     });
   }
@@ -516,11 +648,17 @@
       if (b.dataset.level === "type") b.disabled = !focus;
     });
     focused = level === "type";
+    // UML applies to the types level; the host keeps the choice while the user moves between modules.
+    umlBox.hidden = !focused;
+    exportButton.hidden = !focused || !umlOn;
+    umlCheck.checked = umlOn;
+    for (const node of graph.nodes) if (node.uml) node.box = classBox(node.uml);
     svg.replaceChildren();
     const cyclic = graph.nodes.filter((n) => n.cycle).length;
     info.textContent = fmt(S.summary, title(level, focus), graph.nodes.length, graph.edges.length, cyclic);
     root = element("g", {}, svg);
     marks = [];
+    boxes = [];
     legend.replaceChildren();
     if (!graph.nodes.length) {
       info.textContent = focused ? fmt(S.noTypeLinks, title(level, focus)) : S.noData;
@@ -537,7 +675,7 @@
     relations.replaceChildren();
     const hint = relations.appendChild(document.createElement("div"));
     hint.className = "hint";
-    hint.textContent = S.pointHint;
+    hint.textContent = graph.nodes.some((n) => n.box) ? S.umlPointHint : S.pointHint;
     // Lines under heads, heads under nodes: a head is never hidden by a line crossing it.
     const lineLayer = element("g", {}, root);
     const headLayer = element("g", {}, root);
@@ -549,9 +687,28 @@
       // A cycle keeps the line of its kind and gets a red underlay.
       if (edge.cycle) parts.push(element("path", { d, class: "halo" }, lineLayer));
       const line = element("path", { d, class: `edge kind-${edge.kind}` }, lineLayer);
-      const head = element("path", { class: `head kind-${edge.kind}` }, headLayer);
       const hit = element("path", { d, class: edge.pair ? "hit open" : "hit" }, lineLayer);
-      parts.push(line, head, hit);
+      parts.push(line, hit);
+      // A UML relation says what it is at its ends; other links carry a fin in the middle.
+      let head;
+      if (edge.kind.startsWith("uml-")) {
+        const first = segments[0], last = segments[segments.length - 1];
+        const su = unit(first.c1.x - first.start.x, first.c1.y - first.start.y);
+        const eu = unit(last.end.x - last.c2.x, last.end.y - last.c2.y);
+        for (const mark of relationMarks(edge.kind, first.start, su, last.end, eu)) parts.push(element("path", { d: mark.d, class: `mark ${mark.cls} kind-${edge.kind}` }, headLayer));
+        const name = edge.label ?? (edge.kind === "uml-embed" ? "«embed»" : undefined);
+        if (name) {
+          // The role name sits near the end it names, above the line, with the multiplicity of a collection: two links
+          // to one class end close together, and separate labels for the multiplicity would stack on each other.
+          const anchor = edge.kind === "uml-embed" ? { x: first.start.x + su.x * 34, y: first.start.y + su.y * 34 } : { x: last.end.x - eu.x * 26, y: last.end.y - eu.y * 26 };
+          const role = element("text", { class: "role", x: anchor.x, y: anchor.y - 5 }, headLayer);
+          role.textContent = edge.many ? `${name} [*]` : name;
+          parts.push(role);
+        }
+      } else {
+        head = element("path", { class: `head kind-${edge.kind}` }, headLayer);
+        parts.push(head);
+      }
       // A line to a folded module says which of its types it reaches (or which come from it), faintly, above the fin.
       let via;
       if (edge.via?.length) {
@@ -580,6 +737,16 @@
       }
       const peer = focused && node.role === "module";
       const color = peer ? "peer" : `layer-${Math.min(node.layer, colors - 1)}`;
+      const open = () => vscode.postMessage(node.role === "module" ? { type: "focus", module: node.id } : { type: "open", language: node.language, file: node.file, line: node.line });
+      if (node.box) {
+        const box = drawClass(node, root);
+        boxes.push(box);
+        items.push({ element: box, ids: neighbours });
+        box.addEventListener("mouseenter", () => { highlight(node.id, items); describe(node, graph); });
+        box.addEventListener("mouseleave", () => highlight(null, items));
+        box.addEventListener("click", open);
+        continue;
+      }
       const circle = element("path", { class: `node ${color}${node.cycle ? " cycle" : ""}` }, root);
       element("title", {}, circle).textContent = node.kind ? `${node.id} (${node.kind})` : node.id;
       const label = element("text", peer ? { class: "peer" } : {}, root);
@@ -588,16 +755,19 @@
       items.push({ element: circle, ids: neighbours }, { element: label, ids: neighbours });
       circle.addEventListener("mouseenter", () => { highlight(node.id, items); describe(node, graph); });
       circle.addEventListener("mouseleave", () => highlight(null, items));
-      circle.addEventListener("click", () => vscode.postMessage(node.role === "module" ? { type: "focus", module: node.id } : { type: "open", language: node.language, file: node.file, line: node.line }));
+      circle.addEventListener("click", open);
     }
     // Waypoints may take rows below or above the nodes; the view fits them too.
     const points = [...graph.nodes, ...routes.flat()];
-    const xs = points.map((n) => n.x), ys = points.map((n) => n.y);
-    // Labels are centered under the nodes: half a column of margin on each side, half a row below.
-    const width = Math.max(...xs) - Math.min(...xs) + COLUMN + 40, height = Math.max(...ys) - Math.min(...ys) + ROW + 80;
-    view.k = Math.min(box.width / width, (box.height - top) / height, 1.5);
-    view.x = box.width / 2 - view.k * (Math.max(...xs) + Math.min(...xs)) / 2;
-    view.y = (box.height + top) / 2 - view.k * (Math.max(...ys) + Math.min(...ys) + ROW / 2) / 2;
+    // Labels are centered under the nodes: half a column of margin on each side, half a row below. A class is its box.
+    const halfW = (n) => (n.box ? n.box.w / 2 + 30 : COLUMN / 2 + 20);
+    const above = (n) => (n.box ? n.box.h / 2 + 20 : 40);
+    const below = (n) => (n.box ? n.box.h / 2 + 20 : ROW / 2 + 40);
+    const left = Math.min(...points.map((n) => n.x - halfW(n))), right = Math.max(...points.map((n) => n.x + halfW(n)));
+    const upper = Math.min(...points.map((n) => n.y - above(n))), lower = Math.max(...points.map((n) => n.y + below(n)));
+    view.k = Math.min(box.width / (right - left), (box.height - top) / (lower - upper), 1.5);
+    view.x = box.width / 2 - view.k * (left + right) / 2;
+    view.y = (box.height + top) / 2 - view.k * (upper + lower) / 2;
     apply();
   }
 
@@ -621,10 +791,17 @@
   });
 
   buttons.forEach((b) => b.addEventListener("click", () => vscode.postMessage({ type: "level", level: b.dataset.level })));
+  umlCheck.addEventListener("change", () => vscode.postMessage({ type: "uml", on: umlCheck.checked }));
+  exportButton.addEventListener("click", () => vscode.postMessage({ type: "export" }));
   window.addEventListener("message", (event) => {
     if (event.data.type !== "graph") return;
     S = event.data.strings;
+    umlOn = event.data.uml === true;
     buttons.forEach((b) => (b.textContent = b.dataset.level === "type" ? S.types : S.modules));
+    umlBox.title = S.umlHint;
+    umlBox.lastChild.textContent = ` ${S.uml}`;
+    exportButton.textContent = S.exportDiagram;
+    exportButton.title = S.exportHint;
     draw(event.data.level, event.data.focus, event.data.graph);
   });
   vscode.postMessage({ type: "level", level: "module" });

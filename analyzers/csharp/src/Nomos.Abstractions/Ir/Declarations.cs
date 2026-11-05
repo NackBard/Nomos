@@ -143,6 +143,9 @@ public sealed record Parameter(string Name, TypeRef? Type, SourceLocation Locati
 
     /// <summary>Gets whether the parameter has a default value.</summary>
     public bool HasDefault { get; init; }
+
+    /// <summary>Gets the type as written, with modifiers such as ref or params, in the source, whitespace collapsed; null when not written.</summary>
+    public string? TypeText { get; init; }
 }
 
 /// <summary>A field, constant or module-level variable.</summary>
@@ -166,6 +169,12 @@ public sealed record FieldDecl(string Name, TypeRef? Type, Visibility Visibility
 
     /// <summary>Gets the initializer expression, if any.</summary>
     public Expression? Initializer { get; init; }
+
+    /// <summary>Gets the type as written in the source, whitespace collapsed; null when not written.</summary>
+    public string? TypeText { get; init; }
+
+    /// <summary>Gets whether the field is an enumeration value.</summary>
+    public bool IsEnumValue { get; init; }
 }
 
 /// <summary>A property or accessor pair.</summary>
@@ -198,6 +207,9 @@ public sealed record PropertyDecl(string Name, TypeRef? Type, Visibility Visibil
 
     /// <summary>Gets the initializer expression, if any.</summary>
     public Expression? Initializer { get; init; }
+
+    /// <summary>Gets the type as written in the source, whitespace collapsed; null when not written.</summary>
+    public string? TypeText { get; init; }
 }
 
 /// <summary>An event or signal a type publishes.</summary>
@@ -205,7 +217,14 @@ public sealed record PropertyDecl(string Name, TypeRef? Type, Visibility Visibil
 /// <param name="Type">Handler type.</param>
 /// <param name="Visibility">Accessibility.</param>
 /// <param name="Location">Source location.</param>
-public sealed record EventDecl(string Name, TypeRef? Type, Visibility Visibility, SourceLocation Location);
+public sealed record EventDecl(string Name, TypeRef? Type, Visibility Visibility, SourceLocation Location)
+{
+    /// <summary>Gets whether the event is shared across instances.</summary>
+    public bool IsStatic { get; init; }
+
+    /// <summary>Gets the type as written in the source, whitespace collapsed; null when not written.</summary>
+    public string? TypeText { get; init; }
+}
 
 /// <summary>Kinds of callables.</summary>
 public enum CallableKind
@@ -249,6 +268,9 @@ public sealed record Callable(SourceLocation Location) : IrNode(Location)
 
     /// <summary>Gets the return type; null when void-like.</summary>
     public TypeRef? ReturnType { get; init; }
+
+    /// <summary>Gets the return type as written in the source, whitespace collapsed; null when void-like or not written.</summary>
+    public string? ReturnTypeText { get; init; }
 
     /// <summary>Gets the body; null when abstract or extern.</summary>
     public BlockStatement? Body { get; init; }
@@ -322,6 +344,9 @@ public sealed record TypeDecl(SourceLocation Location) : IrNode(Location)
 
     /// <summary>Gets the name of the owning module.</summary>
     public required string ModuleName { get; init; }
+
+    /// <summary>Gets the names of generic type parameters in declaration order.</summary>
+    public IReadOnlyList<string> TypeParameters { get; init; } = [];
 
     /// <summary>Gets the base type; null when there is no explicit base in the project sense.</summary>
     public TypeRef? BaseType { get; init; }

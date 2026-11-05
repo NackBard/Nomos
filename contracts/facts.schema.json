@@ -1,14 +1,14 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:nomos:contracts:1.2.0:facts",
+  "$id": "urn:nomos:contracts:1.3.0:facts",
   "title": "Analysis facts",
-  "description": "Output of `<analyzer> analyze`. Contract version 1.2.0. Facts are measurements and observations; they carry no verdicts. Findings are reported separately as SARIF (see contracts/sarif-profile.md). Changing this file requires a schemaVersion bump and a record in docs/DECISIONS.md.",
-  "x-contractVersion": "1.2.0",
+  "description": "Output of `<analyzer> analyze`. Contract version 1.3.0. Facts are measurements and observations; they carry no verdicts. Findings are reported separately as SARIF (see contracts/sarif-profile.md). Changing this file requires a schemaVersion bump and a record in docs/DECISIONS.md.",
+  "x-contractVersion": "1.3.0",
   "type": "object",
   "required": ["schemaVersion", "analyzer", "files", "modules", "types", "functions", "dependencies", "skippedRules", "diagnostics"],
   "additionalProperties": false,
   "properties": {
-    "schemaVersion": { "enum": ["1.0.0", "1.1.0", "1.2.0"], "description": "Minor versions only add optional fields, so documents of older minor versions stay valid." },
+    "schemaVersion": { "enum": ["1.0.0", "1.1.0", "1.2.0", "1.3.0"], "description": "Minor versions only add optional fields, so documents of older minor versions stay valid." },
     "analyzer": {
       "type": "object",
       "required": ["name", "version", "language"],
@@ -88,6 +88,9 @@
           "kind": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$", "description": "class, interface, struct, enum, record, trait, protocol, ... The set is open." },
           "isAbstract": { "type": "boolean", "description": "Interface, abstract class, protocol, trait: counts toward abstractness A." },
           "location": { "$ref": "#/$defs/location" },
+          "typeParameters": { "type": "array", "items": { "type": "string", "minLength": 1 }, "description": "Since 1.3.0. Names of generic type parameters in declaration order (spec/structure.md). Absent for a non-generic type." },
+          "members": { "type": "array", "items": { "$ref": "#/$defs/member" }, "description": "Since 1.3.0. Own fields, properties, events, constants and enum values in declaration order; functions are in `functions` (spec/structure.md)." },
+          "satisfies": { "type": "array", "items": { "$ref": "#/$defs/entityId" }, "description": "Since 1.3.0. Project interfaces the type implements without naming them (structural typing). Not a dependency: coupling metrics ignore it (spec/structure.md)." },
           "metrics": {
             "type": "object",
             "additionalProperties": { "type": ["number", "null"] },
@@ -119,8 +122,24 @@
           "module": { "$ref": "#/$defs/entityId" },
           "type": { "$ref": "#/$defs/entityId", "description": "Owning type. Absent for free functions." },
           "kind": { "type": "string", "enum": ["function", "method", "constructor", "accessor", "lambda", "other"], "default": "function" },
-          "visibility": { "type": "string", "enum": ["public", "protected", "internal", "private", "unspecified"], "default": "unspecified" },
+          "visibility": { "$ref": "#/$defs/visibility" },
           "location": { "$ref": "#/$defs/location" },
+          "parameters": {
+            "type": "array",
+            "description": "Since 1.3.0. Parameters in order; the Go receiver is not one (spec/structure.md).",
+            "items": {
+              "type": "object",
+              "required": ["name"],
+              "additionalProperties": false,
+              "properties": {
+                "name": { "type": "string" },
+                "typeName": { "type": "string", "minLength": 1, "description": "Type as written in the source, modifiers such as ref or ... included. Absent when not written." }
+              }
+            }
+          },
+          "returnTypeName": { "type": "string", "minLength": 1, "description": "Since 1.3.0. Result type as written in the source. Absent for constructors and functions without a result." },
+          "isStatic": { "type": "boolean", "default": false, "description": "Since 1.3.0. Static member of its type." },
+          "isAbstract": { "type": "boolean", "default": false, "description": "Since 1.3.0. Declared without an implementation: abstract or interface method." },
           "metrics": {
             "type": "object",
             "required": ["cyclomatic", "maxNesting", "parameterCount", "lines"],
@@ -215,6 +234,23 @@
   },
   "$defs": {
     "path": { "type": "string", "minLength": 1, "pattern": "^[^\\\\]*$", "description": "Relative to --root, forward slashes, never absolute." },
+    "visibility": { "type": "string", "enum": ["public", "protected", "internal", "private", "unspecified"], "default": "unspecified" },
+    "member": {
+      "type": "object",
+      "required": ["name", "kind"],
+      "additionalProperties": false,
+      "description": "Since 1.3.0. A member of a type that is not a function (spec/structure.md).",
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "kind": { "type": "string", "enum": ["field", "property", "event", "constant", "literal"] },
+        "visibility": { "$ref": "#/$defs/visibility" },
+        "typeName": { "type": "string", "minLength": 1, "description": "Type as written in the source. Absent for enum values." },
+        "type": { "$ref": "#/$defs/entityId", "description": "Project type the member is about; the element type for a collection. Absent when unresolved or outside the project." },
+        "isStatic": { "type": "boolean", "default": false },
+        "isCollection": { "type": "boolean", "default": false, "description": "The member holds many elements of `type`: UML multiplicity *." },
+        "isEmbedded": { "type": "boolean", "default": false, "description": "Embedded field (Go)." }
+      }
+    },
     "entityId": { "type": "string", "minLength": 1, "description": "Stable, language-native qualified name. Unique within one facts document." },
     "location": {
       "type": "object",

@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "1.2.0",
+  "schemaVersion": "1.3.0",
   "analyzer": {
     "name": "nomos-csharp",
     "version": "0.1.0",
@@ -385,6 +385,34 @@
         "endLine": 11,
         "endColumn": 2
       },
+      "members": [
+        {
+          "name": "Id",
+          "kind": "property",
+          "visibility": "public",
+          "typeName": "int"
+        },
+        {
+          "name": "Total",
+          "kind": "property",
+          "visibility": "public",
+          "typeName": "int"
+        },
+        {
+          "name": "Status",
+          "kind": "property",
+          "visibility": "public",
+          "typeName": "OrderStatus",
+          "type": "Sample.Domain.OrderStatus"
+        },
+        {
+          "name": "Listener",
+          "kind": "field",
+          "visibility": "public",
+          "typeName": "Sample.Services.Notifier?",
+          "type": "Sample.Services.Notifier"
+        }
+      ],
       "metrics": {
         "atfd": 0,
         "blastRadius": 1,
@@ -413,6 +441,23 @@
         "endLine": 3,
         "endColumn": 47
       },
+      "members": [
+        {
+          "name": "New",
+          "kind": "literal",
+          "visibility": "public"
+        },
+        {
+          "name": "Paid",
+          "kind": "literal",
+          "visibility": "public"
+        },
+        {
+          "name": "Shipped",
+          "kind": "literal",
+          "visibility": "public"
+        }
+      ],
       "metrics": {
         "blastRadius": 2,
         "lines": 1,
@@ -509,6 +554,14 @@
         "endLine": 51,
         "endColumn": 2
       },
+      "members": [
+        {
+          "name": "ApiKey",
+          "kind": "constant",
+          "visibility": "private",
+          "typeName": "string"
+        }
+      ],
       "metrics": {
         "atfd": 2,
         "blastRadius": 0,
@@ -540,6 +593,33 @@
         "endLine": 6,
         "endColumn": 88
       },
+      "parameters": [
+        {
+          "name": "a",
+          "typeName": "int"
+        },
+        {
+          "name": "b",
+          "typeName": "int"
+        },
+        {
+          "name": "c",
+          "typeName": "int"
+        },
+        {
+          "name": "d",
+          "typeName": "int"
+        },
+        {
+          "name": "e",
+          "typeName": "int"
+        },
+        {
+          "name": "f",
+          "typeName": "int"
+        }
+      ],
+      "returnTypeName": "int",
       "metrics": {
         "allocationDepth": 0,
         "blastRadius": 0,
@@ -574,6 +654,13 @@
         "endLine": 5,
         "endColumn": 56
       },
+      "parameters": [
+        {
+          "name": "message",
+          "typeName": "string"
+        }
+      ],
+      "isAbstract": true,
       "metrics": {
         "allocationDepth": null,
         "blastRadius": 3,
@@ -608,6 +695,12 @@
         "endLine": 9,
         "endColumn": 68
       },
+      "parameters": [
+        {
+          "name": "message",
+          "typeName": "string"
+        }
+      ],
       "metrics": {
         "allocationDepth": 0,
         "blastRadius": 2,
@@ -642,6 +735,13 @@
         "endLine": 24,
         "endColumn": 6
       },
+      "parameters": [
+        {
+          "name": "order",
+          "typeName": "Order"
+        }
+      ],
+      "returnTypeName": "string",
       "metrics": {
         "allocationDepth": 0,
         "blastRadius": 0,
@@ -676,6 +776,17 @@
         "endLine": 34,
         "endColumn": 6
       },
+      "parameters": [
+        {
+          "name": "orders",
+          "typeName": "List<Order>"
+        },
+        {
+          "name": "ids",
+          "typeName": "List<int>"
+        }
+      ],
+      "returnTypeName": "int",
       "metrics": {
         "allocationDepth": 0,
         "blastRadius": 0,
@@ -710,6 +821,17 @@
         "endLine": 43,
         "endColumn": 6
       },
+      "parameters": [
+        {
+          "name": "left",
+          "typeName": "int[]"
+        },
+        {
+          "name": "right",
+          "typeName": "int[]"
+        }
+      ],
+      "returnTypeName": "int",
       "metrics": {
         "allocationDepth": 0,
         "blastRadius": 0,
@@ -744,6 +866,12 @@
         "endLine": 50,
         "endColumn": 6
       },
+      "parameters": [
+        {
+          "name": "order",
+          "typeName": "Order"
+        }
+      ],
       "metrics": {
         "allocationDepth": 0,
         "blastRadius": 0,

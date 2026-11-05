@@ -6,6 +6,10 @@ import type { Locale } from "../core/l10n";
 const LAYER_COLORS = ["#2f9e8f", "#3f8fdc", "#7a6fe0", "#c060c8", "#e0a020", "#8a9a2c", "#c07a50", "#8a94a6"];
 // One color per kind of dependency in the facts contract.
 const EDGE_COLORS: Record<string, string> = { inheritance: "#e0559a", call: "#e0a020", "type-ref": "#3f9fe0", import: "#38b070" };
+// Relations of the class diagram (spec/structure.md): the line and its ends say the kind, the color follows the graph's.
+const UML_COLORS: Record<string, string> = {
+  "uml-generalization": "#e0559a", "uml-realization": "#e0559a", "uml-embed": "#7a6fe0", "uml-association": "#3f9fe0", "uml-dependency": "#8a94a6",
+};
 
 /** The HTML of the graph page; `script` is the URI of media/graph.js as the page may load it. */
 export function graphPage(nonce: string, script: string, strings: GraphStrings, locale: Locale): string {
@@ -63,12 +67,33 @@ export function graphPage(nonce: string, script: string, strings: GraphStrings, 
   #relations b { display: block; }
   #relations .verb { color: var(--vscode-descriptionForeground); }
   #relations .hint { color: var(--vscode-descriptionForeground); }
-${LAYER_COLORS.map((color, i) => `  .layer-${i} { fill: ${color}; background: ${color}; }`).join("\n")}
+  #umlToggle { display: flex; gap: 4px; align-items: center; cursor: pointer; }
+  [hidden] { display: none !important; }
+  /* A UML class: a box in the background color, the header tinted with the color of its depth. */
+  .class { cursor: pointer; }
+  .class .box { fill: var(--vscode-editor-background); stroke-width: 1.5; }
+  .class.cycle .box { stroke: var(--vscode-errorForeground); stroke-width: 3; }
+  .class .band { fill-opacity: .28; stroke: none; }
+  .class .separator { fill: none; stroke-width: 1; }
+  .class text { text-anchor: start; stroke: none; paint-order: normal; font-family: var(--vscode-editor-font-family, monospace); font-size: 11px; pointer-events: none; }
+  .class text.name { text-anchor: middle; font-weight: 600; font-size: 12px; }
+  .class text.stereotype { text-anchor: middle; fill: var(--vscode-descriptionForeground); }
+  .class text.abstract { font-style: italic; }
+  .class text.static { text-decoration: underline; }
+  .class text.more { fill: var(--vscode-descriptionForeground); }
+  .edge.kind-uml-generalization, .edge.kind-uml-realization, .edge.kind-uml-embed, .edge.kind-uml-association, .edge.kind-uml-dependency { stroke-width: 1.5; stroke-opacity: .9; }
+  .edge.kind-uml-realization, .edge.kind-uml-dependency { stroke-dasharray: 6 4; }
+  .mark { stroke-width: 1.5; stroke-linejoin: miter; pointer-events: none; vector-effect: non-scaling-stroke; }
+  .mark.hollow { fill: var(--vscode-editor-background); }
+  .mark.open { fill: none; stroke-linecap: round; }
+  text.role { font-size: 10px; fill-opacity: .85; stroke-width: 2px; }
+${LAYER_COLORS.map((color, i) => `  .layer-${i} { fill: ${color}; background: ${color}; }\n  .box-${i} { stroke: ${color}; }`).join("\n")}
 ${Object.entries(EDGE_COLORS).map(([kind, color]) => `  .kind-${kind} { stroke: ${color}; }`).join("\n")}
+${Object.entries(UML_COLORS).map(([kind, color]) => `  .kind-${kind} { stroke: ${color}; }\n  .mark.solid.kind-${kind} { fill: ${color}; }`).join("\n")}
 </style>
 </head>
 <body>
-<div id="bar"><button data-level="module">${escape(strings.modules)}</button><button data-level="type">${escape(strings.types)}</button><span id="info"></span><div id="legend" data-colors="${LAYER_COLORS.length}"></div></div>
+<div id="bar"><button data-level="module">${escape(strings.modules)}</button><button data-level="type">${escape(strings.types)}</button><label id="umlToggle" title="${escape(strings.umlHint)}" hidden><input type="checkbox" id="uml"><span> ${escape(strings.uml)}</span></label><button id="export" title="${escape(strings.exportHint)}" hidden>${escape(strings.exportDiagram)}</button><span id="info"></span><div id="legend" data-colors="${LAYER_COLORS.length}"></div></div>
 <svg id="graph"></svg>
 <div id="relations"></div>
 <script nonce="${nonce}" src="${script}"></script>

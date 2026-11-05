@@ -4,6 +4,7 @@
   "command.showGraph": "Показать граф зависимостей",
   "command.openGraphWindow": "Открыть граф зависимостей в новом окне",
   "command.choosePractices": "Выбрать практики",
+  "command.exportClassDiagram": "Выгрузить диаграмму классов",
   "view.findings": "Находки",
   "view.paradigms": "Парадигмы и пропущенные правила",
   "config.analyzeOnSave": "Запускать анализаторы после сохранения файла.",

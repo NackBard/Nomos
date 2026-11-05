@@ -1,0 +1,87 @@
+{
+  "schemaVersion": "1.3.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "go" },
+  "files": [
+    { "path": "structure.go", "lines": 40, "loc": 29 }
+  ],
+  "modules": [
+    { "id": "ts", "name": "ts", "files": ["structure.go"], "loc": 29, "metrics": {}, "paradigmEvidence": [] }
+  ],
+  "types": [
+    { "id": "ts.Shape", "name": "Shape", "module": "ts", "kind": "interface", "isAbstract": true, "location": { "file": "structure.go", "startLine": 5 }, "metrics": {} },
+    { "id": "ts.Named", "name": "Named", "module": "ts", "kind": "interface", "isAbstract": true, "location": { "file": "structure.go", "startLine": 9 }, "metrics": {} },
+    {
+      "id": "ts.Base", "name": "Base", "module": "ts", "kind": "struct", "isAbstract": false, "location": { "file": "structure.go", "startLine": 14 }, "metrics": {},
+      "members": [
+        { "name": "name", "kind": "field", "visibility": "internal", "typeName": "string" }
+      ]
+    },
+    {
+      "id": "ts.Square", "name": "Square", "module": "ts", "kind": "struct", "isAbstract": false, "location": { "file": "structure.go", "startLine": 20 }, "metrics": {},
+      "members": [
+        { "name": "Base", "kind": "field", "visibility": "public", "typeName": "Base", "type": "ts.Base", "isEmbedded": true },
+        { "name": "Builder", "kind": "field", "visibility": "public", "typeName": "*strings.Builder", "isEmbedded": true },
+        { "name": "Side", "kind": "field", "visibility": "public", "typeName": "float64" },
+        { "name": "cells", "kind": "field", "visibility": "internal", "typeName": "[]*Cell", "type": "ts.Cell", "isCollection": true },
+        { "name": "byKey", "kind": "field", "visibility": "internal", "typeName": "map[string]Cell", "type": "ts.Cell", "isCollection": true }
+      ],
+      "satisfies": ["ts.Named", "ts.Shape"]
+    },
+    {
+      "id": "ts.Cell", "name": "Cell", "module": "ts", "kind": "struct", "isAbstract": false, "location": { "file": "structure.go", "startLine": 36 }, "metrics": {},
+      "members": [
+        { "name": "X", "kind": "field", "visibility": "public", "typeName": "int" },
+        { "name": "Y", "kind": "field", "visibility": "public", "typeName": "int" }
+      ]
+    },
+    {
+      "id": "ts.Box", "name": "Box", "module": "ts", "kind": "struct", "isAbstract": false, "location": { "file": "structure.go", "startLine": 38 }, "metrics": {},
+      "typeParameters": ["T"],
+      "members": [
+        { "name": "Item", "kind": "field", "visibility": "public", "typeName": "T" }
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "id": "ts.Shape.Area", "name": "Area", "module": "ts", "type": "ts.Shape", "kind": "method", "visibility": "public", "location": { "file": "structure.go", "startLine": 6 },
+      "parameters": [], "returnTypeName": "float64", "isAbstract": true,
+      "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 0, "lines": 1 }
+    },
+    {
+      "id": "ts.Named.Name", "name": "Name", "module": "ts", "type": "ts.Named", "kind": "method", "visibility": "public", "location": { "file": "structure.go", "startLine": 11 },
+      "parameters": [], "returnTypeName": "string", "isAbstract": true,
+      "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 0, "lines": 1 }
+    },
+    {
+      "id": "ts.Base.Name", "name": "Name", "module": "ts", "type": "ts.Base", "kind": "method", "visibility": "public", "location": { "file": "structure.go", "startLine": 18 },
+      "parameters": [], "returnTypeName": "string",
+      "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 0, "lines": 1 }
+    },
+    {
+      "id": "ts.Square.Area", "name": "Area", "module": "ts", "type": "ts.Square", "kind": "method", "visibility": "public", "location": { "file": "structure.go", "startLine": 28 },
+      "parameters": [], "returnTypeName": "float64",
+      "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 0, "lines": 1 }
+    },
+    {
+      "id": "ts.Square.Resize", "name": "Resize", "module": "ts", "type": "ts.Square", "kind": "method", "visibility": "public", "location": { "file": "structure.go", "startLine": 30 },
+      "parameters": [{ "name": "by", "typeName": "float64" }, { "name": "labels", "typeName": "...string" }], "returnTypeName": "(old float64, err error)",
+      "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 2, "lines": 5 }
+    },
+    {
+      "id": "ts.Paint", "name": "Paint", "module": "ts", "kind": "function", "visibility": "public", "location": { "file": "structure.go", "startLine": 40 },
+      "parameters": [{ "name": "s", "typeName": "Shape" }], "returnTypeName": "float64",
+      "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 1, "lines": 1 }
+    }
+  ],
+  "dependencies": [
+    { "from": "ts.Named", "to": "ts.Shape", "kind": "inheritance", "phase": "runtime" },
+    { "from": "ts.Square", "to": "ts.Base", "kind": "inheritance", "phase": "runtime" },
+    { "from": "ts.Square", "to": "ts.Cell", "kind": "type-ref", "phase": "runtime" },
+    { "from": "ts.Paint", "to": "ts.Shape", "kind": "type-ref", "phase": "runtime" },
+    { "from": "ts.Paint", "to": "ts.Shape", "kind": "call", "phase": "runtime" }
+  ],
+  "cycles": [],
+  "skippedRules": [],
+  "diagnostics": []
+}

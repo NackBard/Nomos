@@ -1,0 +1,92 @@
+{
+  "schemaVersion": "1.3.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "csharp" },
+  "files": [
+    { "path": "Structure.cs", "lines": 48, "loc": 36 }
+  ],
+  "modules": [
+    { "id": "Ts", "name": "Ts", "files": ["Structure.cs"], "loc": 36, "metrics": {}, "paradigmEvidence": [] }
+  ],
+  "types": [
+    { "id": "Ts.IShape", "name": "IShape", "module": "Ts", "kind": "interface", "isAbstract": true, "location": { "file": "Structure.cs", "startLine": 5 }, "metrics": {} },
+    {
+      "id": "Ts.Shape", "name": "Shape", "module": "Ts", "kind": "class", "isAbstract": true, "location": { "file": "Structure.cs", "startLine": 10 }, "metrics": {},
+      "members": [
+        { "name": "Name", "kind": "property", "visibility": "protected", "typeName": "string" }
+      ]
+    },
+    {
+      "id": "Ts.Unit", "name": "Unit", "module": "Ts", "kind": "enum", "isAbstract": false, "location": { "file": "Structure.cs", "startLine": 17 }, "metrics": {},
+      "members": [
+        { "name": "Mm", "kind": "literal", "visibility": "public" },
+        { "name": "Cm", "kind": "literal", "visibility": "public" }
+      ]
+    },
+    {
+      "id": "Ts.Square", "name": "Square", "module": "Ts", "kind": "class", "isAbstract": false, "location": { "file": "Structure.cs", "startLine": 23 }, "metrics": {},
+      "members": [
+        { "name": "Sides", "kind": "constant", "visibility": "public", "typeName": "int" },
+        { "name": "_side", "kind": "field", "visibility": "private", "typeName": "double" },
+        { "name": "Created", "kind": "field", "visibility": "public", "typeName": "int", "isStatic": true },
+        { "name": "Unit", "kind": "property", "visibility": "public", "typeName": "Unit", "type": "Ts.Unit" }
+      ]
+    },
+    {
+      "id": "Ts.Drawing<T>", "name": "Drawing", "module": "Ts", "kind": "class", "isAbstract": false, "location": { "file": "Structure.cs", "startLine": 35 }, "metrics": {},
+      "typeParameters": ["T"],
+      "members": [
+        { "name": "_items", "kind": "field", "visibility": "private", "typeName": "List<T>", "isCollection": true },
+        { "name": "Frame", "kind": "property", "visibility": "public", "typeName": "Square?", "type": "Ts.Square" }
+      ]
+    },
+    { "id": "Ts.Painter", "name": "Painter", "module": "Ts", "kind": "class", "isAbstract": false, "location": { "file": "Structure.cs", "startLine": 45 }, "metrics": {} }
+  ],
+  "functions": [
+    {
+      "id": "Ts.IShape.Area", "name": "Area", "module": "Ts", "type": "Ts.IShape", "kind": "method", "visibility": "public", "location": { "file": "Structure.cs", "startLine": 7 },
+      "parameters": [], "returnTypeName": "double", "isAbstract": true,
+      "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 0, "lines": 1 }
+    },
+    {
+      "id": "Ts.Shape.Area", "name": "Area", "module": "Ts", "type": "Ts.Shape", "kind": "method", "visibility": "public", "location": { "file": "Structure.cs", "startLine": 14 },
+      "parameters": [], "returnTypeName": "double", "isAbstract": true,
+      "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 0, "lines": 1 }
+    },
+    {
+      "id": "Ts.Square.Square", "name": "Square", "module": "Ts", "type": "Ts.Square", "kind": "constructor", "visibility": "public", "location": { "file": "Structure.cs", "startLine": 30 },
+      "parameters": [{ "name": "side", "typeName": "double" }],
+      "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 1, "lines": 1 }
+    },
+    {
+      "id": "Ts.Square.Area", "name": "Area", "module": "Ts", "type": "Ts.Square", "kind": "method", "visibility": "public", "location": { "file": "Structure.cs", "startLine": 32 },
+      "parameters": [], "returnTypeName": "double",
+      "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 0, "lines": 1 }
+    },
+    {
+      "id": "Ts.Drawing<T>.Add", "name": "Add", "module": "Ts", "type": "Ts.Drawing<T>", "kind": "method", "visibility": "public", "location": { "file": "Structure.cs", "startLine": 40 },
+      "parameters": [{ "name": "item", "typeName": "T" }, { "name": "tags", "typeName": "params string[]" }],
+      "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 2, "lines": 1 }
+    },
+    {
+      "id": "Ts.Drawing<T>.Empty", "name": "Empty", "module": "Ts", "type": "Ts.Drawing<T>", "kind": "method", "visibility": "public", "location": { "file": "Structure.cs", "startLine": 42 },
+      "parameters": [], "returnTypeName": "Drawing<T>", "isStatic": true,
+      "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 0, "lines": 1 }
+    },
+    {
+      "id": "Ts.Painter.Paint", "name": "Paint", "module": "Ts", "type": "Ts.Painter", "kind": "method", "visibility": "public", "location": { "file": "Structure.cs", "startLine": 47 },
+      "parameters": [{ "name": "square", "typeName": "Square" }], "returnTypeName": "double",
+      "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 1, "lines": 1 }
+    }
+  ],
+  "dependencies": [
+    { "from": "Ts.Shape", "to": "Ts.IShape", "kind": "inheritance", "phase": "runtime" },
+    { "from": "Ts.Square", "to": "Ts.Shape", "kind": "inheritance", "phase": "runtime" },
+    { "from": "Ts.Square", "to": "Ts.Unit", "kind": "type-ref", "phase": "runtime" },
+    { "from": "Ts.Drawing<T>", "to": "Ts.Square", "kind": "type-ref", "phase": "runtime" },
+    { "from": "Ts.Painter", "to": "Ts.Square", "kind": "type-ref", "phase": "runtime" },
+    { "from": "Ts.Painter", "to": "Ts.Square", "kind": "call", "phase": "runtime" }
+  ],
+  "cycles": [],
+  "skippedRules": [],
+  "diagnostics": []
+}

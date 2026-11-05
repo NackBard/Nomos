@@ -4,6 +4,7 @@
   "command.showGraph": "Show Dependency Graph",
   "command.openGraphWindow": "Open Dependency Graph in New Window",
   "command.choosePractices": "Choose Practices",
+  "command.exportClassDiagram": "Export Class Diagram",
   "view.findings": "Findings",
   "view.paradigms": "Paradigms and Skipped Rules",
   "config.analyzeOnSave": "Run the analyzers after a file is saved.",

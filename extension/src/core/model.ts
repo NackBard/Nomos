@@ -3,7 +3,12 @@
 export interface Place { file: string; startLine: number; startColumn?: number; endLine?: number; endColumn?: number }
 export type Metrics = Record<string, number | null>;
 
-export interface Entity { id: string; name: string; module: string; kind?: string; isAbstract?: boolean; type?: string; location?: Place; metrics: Metrics }
+export interface Entity { id: string; name: string; module: string; kind?: string; isAbstract?: boolean; type?: string; location?: Place; metrics: Metrics; visibility?: string }
+
+/** Structure of facts 1.3.0 (spec/structure.md); every field is optional. */
+export interface Member { name: string; kind: string; visibility?: string; typeName?: string; type?: string; isStatic?: boolean; isCollection?: boolean; isEmbedded?: boolean }
+export interface TypeEntity extends Entity { typeParameters?: string[]; members?: Member[]; satisfies?: string[] }
+export interface FunctionEntity extends Entity { parameters?: { name: string; typeName?: string }[]; returnTypeName?: string; isStatic?: boolean }
 export interface Evidence { paradigm: string; kind: string; count: number; description?: string; examples?: string[] }
 export interface Module { id: string; name: string; files: string[]; loc: number; metrics: Metrics; paradigmEvidence: Evidence[]; activeParadigms?: string[] }
 export interface Dependency { from: string; to: string; kind: string; phase: string; external?: boolean; stdlib?: boolean; count?: number }
@@ -16,8 +21,8 @@ export interface Facts {
   analyzer: { name: string; version: string; language: string };
   files: { path: string; loc: number; lines: number; module?: string; parsed?: boolean }[];
   modules: Module[];
-  types: Entity[];
-  functions: Entity[];
+  types: TypeEntity[];
+  functions: FunctionEntity[];
   dependencies: Dependency[];
   cycles?: Cycle[];
   health?: { score: number; explanation?: string[] };

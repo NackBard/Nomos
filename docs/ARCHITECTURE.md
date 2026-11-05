@@ -27,7 +27,7 @@ conformance/ ── прогоняет каждый анализатор на э
 | Папка | Содержимое | Кто меняет |
 |---|---|---|
 | `contracts/` | JSON Schema: manifest, facts, правила, практики, nomos.json, conformance-case; профиль SARIF | только через `schemaVersion` и запись в DECISIONS.md |
-| `spec/` | `rules/*.yaml` — правила как данные; `practices.yaml` — практики, наборы правил; `metrics.md` — формулы; `paradigms.md` — признаки стиля; `suppressions.md` — подавления | при добавлении правил и метрик |
+| `spec/` | `rules/*.yaml` — правила как данные; `practices.yaml` — практики, наборы правил; `metrics.md` — формулы; `structure.md` — члены типов и связи диаграммы классов; `paradigms.md` — признаки стиля; `suppressions.md` — подавления | при добавлении правил и метрик |
 | `analyzers/csharp/` | анализатор C# на Roslyn | |
 | `analyzers/go/` | анализатор Go на `go/parser` и `go/types` | |
 | `analyzers/<язык>/` | будущие анализаторы | |

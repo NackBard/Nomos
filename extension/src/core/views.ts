@@ -1,4 +1,5 @@
 import { english } from "./l10n";
+import type { UmlClass } from "./uml";
 import type { Translate } from "./l10n";
 import type { AnalysisRun, Cycle, Entity, Facts, Finding, Module, SkippedRule } from "./model";
 
@@ -107,12 +108,13 @@ export function lensesFor(facts: Facts, file: string): Lens[] {
 }
 
 export type NodeShape = "circle" | "triangle" | "diamond" | "square" | "rounded" | "hexagon" | "pentagon" | "dot";
-export interface GraphNode { id: string; label: string; language: string; cycle: boolean; size: number; layer: number; role: "module" | "type"; shape: NodeShape; kind?: string; file?: string; line?: number }
+/** A type node drawn as a UML class carries the class (core/uml.ts). */
+export interface GraphNode { id: string; label: string; language: string; cycle: boolean; size: number; layer: number; role: "module" | "type"; shape: NodeShape; kind?: string; file?: string; line?: number; uml?: UmlClass }
 /**
  * One edge per kind of dependency between two nodes. A pair names the two modules this edge opens, when it joins modules.
  * Via names the types behind a folded module at the far end of the edge, in order: what is called, used or inherited there, or who does it.
  */
-export interface GraphEdge { from: string; to: string; kind: string; weight: number; cycle: boolean; pair?: [string, string]; via?: string[] }
+export interface GraphEdge { from: string; to: string; kind: string; weight: number; cycle: boolean; pair?: [string, string]; via?: string[]; label?: string; many?: boolean }
 /** Groups are set for the two modules of a pair: the layer of a node then says which module it is from. */
 export interface Graph { nodes: GraphNode[]; edges: GraphEdge[]; groups?: string[] }
 export type GraphLevel = "module" | "type";

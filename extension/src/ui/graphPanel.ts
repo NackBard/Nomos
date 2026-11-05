@@ -2,6 +2,7 @@ import { randomBytes } from "node:crypto";
 import path from "node:path";
 import * as vscode from "vscode";
 import type { AnalysisRun } from "../core/model";
+import { focusDiagram, withClasses } from "../core/uml";
 import { buildFocus, buildGraph, neighbourGroup } from "../core/views";
 import type { GraphLevel } from "../core/views";
 import { graphPage } from "./graphPage";
@@ -13,6 +14,8 @@ let level: GraphLevel = "module";
 // The types level always shows one module or a pair of them; it stays remembered while the modules are shown.
 let focus: { module: string; peer?: string } | undefined;
 let runsOf: () => AnalysisRun[] = () => [];
+// Types as UML classes; the choice stays while the user moves between modules.
+let uml = false;
 let stale = false;
 
 function page(webview: vscode.Webview, script: vscode.Uri): string {
@@ -31,8 +34,17 @@ function send(): void {
     focus = undefined;
     level = "module";
   }
-  const graph = level === "type" && shown ? shown : buildGraph(runsOf());
-  void panel.webview.postMessage({ type: "graph", level, focus, graph, strings: graphStrings(t) });
+  let graph = level === "type" && shown ? shown : buildGraph(runsOf());
+  if (level === "type" && shown && uml && focus) {
+    const classes = focusDiagram(runsOf(), focus.module, focus.peer);
+    if (classes) graph = withClasses(shown, classes.diagram);
+  }
+  void panel.webview.postMessage({ type: "graph", level, focus, graph, uml, strings: graphStrings(t) });
+}
+
+/** The module or pair the types level of the graph shows, if any. */
+export function graphFocus(): { module: string; peer?: string } | undefined {
+  return panel && level === "type" ? focus : undefined;
 }
 
 /** Shows fresh facts in the open graph, if there is one. */
@@ -62,8 +74,13 @@ export function showGraph(context: vscode.ExtensionContext, runs: () => Analysis
   panel.onDidChangeViewState(() => {
     if (stale) send();
   });
-  panel.webview.onDidReceiveMessage(async (message: { type: string; level?: GraphLevel; module?: string; peer?: string; language?: string; file?: string; line?: number }) => {
-    if (message.type === "level") {
+  panel.webview.onDidReceiveMessage(async (message: { type: string; level?: GraphLevel; module?: string; peer?: string; language?: string; file?: string; line?: number; on?: boolean }) => {
+    if (message.type === "uml") {
+      uml = message.on === true;
+      send();
+    } else if (message.type === "export") {
+      await vscode.commands.executeCommand("nomos.exportClassDiagram", focus);
+    } else if (message.type === "level") {
       level = message.level === "type" && focus ? "type" : "module";
       if (level === "type" && focus) focus = { module: focus.module };
       send();

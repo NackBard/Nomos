@@ -10,6 +10,8 @@ import type { Translate } from "./core/l10n";
 import { PracticesFileName, choiceToStore, describePractices, practiceText, readPractices, unchosenPractices } from "./core/practices";
 import { WorkspaceFileName, analyze, readWorkspace, writePractices } from "./core/runner";
 import { confidenceText, lensesFor } from "./core/views";
+import { exportClassDiagram } from "./ui/exportDiagram";
+import type { DiagramTarget } from "./ui/exportDiagram";
 import { openGraphWindow, refreshGraph, showGraph } from "./ui/graphPanel";
 import { interfaceTranslator } from "./ui/translate";
 import { FindingsTree, ParadigmsTree, locationOf } from "./ui/trees";
@@ -275,6 +277,7 @@ export function activate(context: vscode.ExtensionContext): NomosApi {
     vscode.commands.registerCommand("nomos.showGraph", () => showGraph(context, () => runs)),
     vscode.commands.registerCommand("nomos.openGraphWindow", () => openGraphWindow(context, () => runs)),
     vscode.commands.registerCommand("nomos.choosePractices", choosePractices),
+    vscode.commands.registerCommand("nomos.exportClassDiagram", (target?: DiagramTarget) => exportClassDiagram(runs, target)),
     vscode.workspace.onDidChangeConfiguration((event) => {
       if (event.affectsConfiguration("nomos.practices")) void analyzeAll();
     }),
