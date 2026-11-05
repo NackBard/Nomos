@@ -36,7 +36,11 @@ public sealed record FactsOptions(string AnalyzerName, string AnalyzerVersion, I
 /// <param name="Description">What the detector looks at.</param>
 /// <param name="Rationale">Why a reader may want to know.</param>
 /// <param name="Requires">External inputs without which the rule cannot work.</param>
-public sealed record RuleText(string Title, string Description, string Rationale, IReadOnlyList<string>? Requires = null);
+public sealed record RuleText(string Title, string Description, string Rationale, IReadOnlyList<string>? Requires = null)
+{
+    /// <summary>Gets the English templates of finding texts by key (spec/l10n.md); empty when the rule has none.</summary>
+    public IReadOnlyDictionary<string, string>? Messages { get; init; }
+}
 
 /// <summary>Serializes an analysis result as a facts document (contracts/facts.schema.json).</summary>
 public static class FactsWriter

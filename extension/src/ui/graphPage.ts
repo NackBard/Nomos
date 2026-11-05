@@ -1,4 +1,6 @@
 // The graph page without the VS Code API, so that it can also be rendered outside the editor for screenshots.
+import type { GraphStrings } from "./graphStrings";
+import type { Locale } from "../core/l10n";
 
 // Medium tones that read on light and dark themes. Red stays for cycles; the last color covers all deeper layers.
 const LAYER_COLORS = ["#2f9e8f", "#3f8fdc", "#7a6fe0", "#c060c8", "#e0a020", "#8a9a2c", "#c07a50", "#8a94a6"];
@@ -6,9 +8,9 @@ const LAYER_COLORS = ["#2f9e8f", "#3f8fdc", "#7a6fe0", "#c060c8", "#e0a020", "#8
 const EDGE_COLORS: Record<string, string> = { inheritance: "#e0559a", call: "#e0a020", "type-ref": "#3f9fe0", import: "#38b070" };
 
 /** The HTML of the graph page; `script` is the URI of media/graph.js as the page may load it. */
-export function graphPage(nonce: string, script: string): string {
+export function graphPage(nonce: string, script: string, strings: GraphStrings, locale: Locale): string {
   return `<!doctype html>
-<html lang="en">
+<html lang="${locale}">
 <head>
 <meta charset="utf-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'nonce-${nonce}'; script-src 'nonce-${nonce}'">
@@ -66,10 +68,14 @@ ${Object.entries(EDGE_COLORS).map(([kind, color]) => `  .kind-${kind} { stroke: 
 </style>
 </head>
 <body>
-<div id="bar"><button data-level="module">Modules</button><button data-level="type">Types</button><span id="info"></span><div id="legend" data-colors="${LAYER_COLORS.length}"></div></div>
+<div id="bar"><button data-level="module">${escape(strings.modules)}</button><button data-level="type">${escape(strings.types)}</button><span id="info"></span><div id="legend" data-colors="${LAYER_COLORS.length}"></div></div>
 <svg id="graph"></svg>
 <div id="relations"></div>
 <script nonce="${nonce}" src="${script}"></script>
 </body>
 </html>`;
+}
+
+function escape(text: string): string {
+  return text.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);
 }

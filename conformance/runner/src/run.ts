@@ -25,7 +25,7 @@ function parseJson(text: string): { value?: any; error?: string } {
   }
 }
 
-interface SpecRule { category: string; paradigms: string[]; title: string; description: string; rationale: string; requires?: string[] }
+interface SpecRule { category: string; paradigms: string[]; title: string; description: string; rationale: string; requires?: string[]; messages?: Record<string, { text: string; ru?: string }> }
 
 function loadSpecRules(): { ids: Set<string>; byId: Map<string, SpecRule> } {
   const ids = new Set<string>();
@@ -33,7 +33,7 @@ function loadSpecRules(): { ids: Set<string>; byId: Map<string, SpecRule> } {
   for (const file of fs.readdirSync(rulesDir).filter((f) => f.endsWith(".yaml"))) {
     for (const rule of YAML.parse(fs.readFileSync(path.join(rulesDir, file), "utf8")).rules) {
       ids.add(rule.id);
-      byId.set(rule.id, { category: rule.category, paradigms: rule.paradigms, title: rule.title, description: rule.description, rationale: rule.rationale, requires: rule.requires });
+      byId.set(rule.id, { category: rule.category, paradigms: rule.paradigms, title: rule.title, description: rule.description, rationale: rule.rationale, requires: rule.requires, messages: rule.messages });
     }
   }
   return { ids, byId };

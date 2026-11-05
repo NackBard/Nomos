@@ -2,6 +2,9 @@
 // shown with its derivation, and the output is deterministic.
 import type { Comparison, Finding } from "./baseline.ts";
 import { findingsOf } from "./baseline.ts";
+import { findingText } from "./l10n.ts";
+import type { Translate } from "./l10n.ts";
+import { translator } from "./l10n.ts";
 import type { Run, RunFailure } from "./run.ts";
 
 const MaxFindings = 500;
@@ -18,51 +21,68 @@ function sorted(findings: Finding[]): Finding[] {
 interface Table { title: string; head: string[]; rows: string[][]; note?: string }
 interface Section { title: string; lines: string[]; tables: Table[] }
 
-function sections(runs: Run[], failures: RunFailure[], comparison?: Comparison): Section[] {
+/** Words of the facts and SARIF contracts in the language of the report; other values stay as they are. */
+function word(value: string, t: Translate): string {
+  const words: Record<string, string> = {
+    critical: t("critical"), major: t("major"), minor: t("minor"), info: t("info"), low: t("low"), medium: t("medium"), high: t("high"),
+    "paradigm-not-detected": t("paradigm not detected"), "not-supported": t("not supported"), "disabled-by-config": t("disabled by the configuration"),
+    "needs-semantic-model": t("needs a semantic model"), "missing-input": t("missing input"), error: t("error"),
+    Algorithms: t("Algorithms"), CleanCode: t("CleanCode"), Design: t("Design"), Maintainability: t("Maintainability"),
+    Paradigm: t("Paradigm"), Patterns: t("Patterns"), Principles: t("Principles"), Security: t("Security"),
+  };
+  return words[value] ?? value;
+}
+
+function sections(runs: Run[], failures: RunFailure[], comparison: Comparison | undefined, t: Translate): Section[] {
+  const text = (f: Finding) => findingText(f.ruleId, f.template, f.message, t.locale);
   const result: Section[] = runs.map((run) => {
     const facts = run.facts;
     const findings = sorted(findingsOf(run));
     const reasons = new Map<string, number>();
     for (const skip of facts.skippedRules) reasons.set(skip.reason, (reasons.get(skip.reason) ?? 0) + 1);
     const lines = [
-      `Analyzer: ${facts.analyzer.name} ${facts.analyzer.version}. Files: ${facts.files.length}. Modules: ${facts.modules.length}. Findings: ${findings.length}.`,
-      `Health: ${facts.health?.score ?? "–"}. This is a number with its derivation, not a verdict.`,
+      t("Analyzer: {0} {1}. Files: {2}. Modules: {3}. Findings: {4}.", facts.analyzer.name, facts.analyzer.version, facts.files.length, facts.modules.length, findings.length),
+      t("Health: {0}. This is a number with its derivation, not a verdict.", facts.health?.score ?? "–"),
       ...(facts.health?.explanation ?? []),
-      ...(run.partial ? ["Partial result: some files could not be parsed."] : []),
+      ...(run.partial ? [t("Partial result: some files could not be parsed.")] : []),
     ];
     const tables: Table[] = [
-      { title: "Categories", head: ["Category", "Score", "Weight", "Findings", "Penalty"], rows: (facts.health?.categories ?? []).map((c: any) => [c.category, metric(c.score), metric(c.weight), String(c.findingCount), metric(c.penalty)]) },
       {
-        title: "Modules", head: ["Module", "Loc", "Health", "Ca", "Ce", "I", "A", "D", "Paradigms"],
+        title: t("Categories"), head: [t("Category"), t("Score"), t("Weight"), t("Findings"), t("Penalty")],
+        rows: (facts.health?.categories ?? []).map((c: any) => [word(c.category, t), metric(c.score), metric(c.weight), String(c.findingCount), metric(c.penalty)]),
+      },
+      {
+        title: t("Modules"), head: [t("Module"), "Loc", t("Health"), "Ca", "Ce", "I", "A", "D", t("Paradigms")],
         rows: facts.modules.map((m: any) => [m.id, String(m.loc), metric(m.health?.score), metric(m.metrics.ca), metric(m.metrics.ce), metric(m.metrics.instability), metric(m.metrics.abstractness), metric(m.metrics.distance), (m.activeParadigms ?? []).join(", ")]),
       },
       {
-        title: "Findings", head: ["Severity", "Confidence", "Rule", "Place", "Message"],
-        rows: findings.slice(0, MaxFindings).map((f) => [f.severity, f.confidence, f.ruleId, `${f.file}:${f.line}`, f.message]),
-        note: findings.length > MaxFindings ? `First ${MaxFindings} of ${findings.length}; all of them are in the SARIF file.` : undefined,
+        title: t("Findings"), head: [t("Severity"), t("Confidence"), t("Rule"), t("Place"), t("Message")],
+        rows: findings.slice(0, MaxFindings).map((f) => [word(f.severity, t), word(f.confidence, t), f.ruleId, `${f.file}:${f.line}`, text(f)]),
+        note: findings.length > MaxFindings ? t("First {0} of {1}; all of them are in the SARIF file.", MaxFindings, findings.length) : undefined,
       },
-      { title: "Skipped rules", head: ["Reason", "Records"], rows: [...reasons].sort(([a], [b]) => ordinal(a, b)).map(([reason, n]) => [reason, String(n)]) },
+      { title: t("Skipped rules"), head: [t("Reason"), t("Records")], rows: [...reasons].sort(([a], [b]) => ordinal(a, b)).map(([reason, n]) => [word(reason, t), String(n)]) },
     ];
     return { title: run.language, lines, tables };
   });
   if (comparison) {
     result.push({
-      title: "Compared with the baseline",
-      lines: [`New: ${comparison.added.length}. Gone: ${comparison.removed.length}. Unchanged: ${comparison.unchanged}.`],
+      title: t("Compared with the baseline"),
+      lines: [t("New: {0}. Gone: {1}. Unchanged: {2}.", comparison.added.length, comparison.removed.length, comparison.unchanged)],
       tables: [
-        { title: "New findings", head: ["Language", "Rule", "Place", "Message"], rows: sorted(comparison.added).map((f) => [f.language, f.ruleId, `${f.file}:${f.line}`, f.message]) },
-        { title: "Gone findings", head: ["Language", "Rule", "File", "Message"], rows: comparison.removed.map((f) => [f.language, f.ruleId, f.file, f.message]).sort((a, b) => ordinal(a.join("\0"), b.join("\0"))) },
+        { title: t("New findings"), head: [t("Language"), t("Rule"), t("Place"), t("Message")], rows: sorted(comparison.added).map((f) => [f.language, f.ruleId, `${f.file}:${f.line}`, text(f)]) },
+        // A gone finding is known only from the baseline, which keeps the English text.
+        { title: t("Gone findings"), head: [t("Language"), t("Rule"), t("File"), t("Message")], rows: comparison.removed.map((f) => [f.language, f.ruleId, f.file, f.message]).sort((a, b) => ordinal(a.join("\0"), b.join("\0"))) },
       ],
     });
   }
-  if (failures.length) result.push({ title: "Analyzers that did not finish", lines: failures.map((f) => `${f.language}: ${f.message}`), tables: [] });
+  if (failures.length) result.push({ title: t("Analyzers that did not finish"), lines: failures.map((f) => `${f.language}: ${f.message}`), tables: [] });
   return result;
 }
 
-export function renderMarkdown(runs: Run[], failures: RunFailure[], comparison?: Comparison): string {
+export function renderMarkdown(runs: Run[], failures: RunFailure[], comparison?: Comparison, t: Translate = translator("en")): string {
   const cell = (text: string) => text.replaceAll("|", "\\|").replaceAll("\n", " ");
-  const out = ["# Nomos report", ""];
-  for (const section of sections(runs, failures, comparison)) {
+  const out = [`# ${t("Nomos report")}`, ""];
+  for (const section of sections(runs, failures, comparison, t)) {
     out.push(`## ${section.title}`, "", ...section.lines.flatMap((line) => [line, ""]));
     for (const table of section.tables) {
       if (!table.rows.length) continue;
@@ -76,9 +96,9 @@ export function renderMarkdown(runs: Run[], failures: RunFailure[], comparison?:
 
 const escape = (text: string) => text.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;");
 
-export function renderHtml(runs: Run[], failures: RunFailure[], comparison?: Comparison): string {
+export function renderHtml(runs: Run[], failures: RunFailure[], comparison?: Comparison, t: Translate = translator("en")): string {
   const body: string[] = [];
-  for (const section of sections(runs, failures, comparison)) {
+  for (const section of sections(runs, failures, comparison, t)) {
     body.push(`<h2>${escape(section.title)}</h2>`, ...section.lines.map((line) => `<p>${escape(line)}</p>`));
     for (const table of section.tables) {
       if (!table.rows.length) continue;
@@ -88,11 +108,11 @@ export function renderHtml(runs: Run[], failures: RunFailure[], comparison?: Com
     }
   }
   return `<!doctype html>
-<html lang="en">
+<html lang="${t.locale}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Nomos report</title>
+<title>${escape(t("Nomos report"))}</title>
 <style>
 body { font: 15px/1.5 system-ui, sans-serif; margin: 0 auto; max-width: 70rem; padding: 1rem; color: #1a1a1a; background: #fff; }
 table { border-collapse: collapse; width: 100%; display: block; overflow-x: auto; }
@@ -101,7 +121,7 @@ th, td { border-bottom: 1px solid #ddd; padding: .25rem .5rem; text-align: left;
 </style>
 </head>
 <body>
-<h1>Nomos report</h1>
+<h1>${escape(t("Nomos report"))}</h1>
 ${body.join("\n")}
 </body>
 </html>

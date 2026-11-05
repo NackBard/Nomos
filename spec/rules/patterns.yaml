@@ -1,12 +1,176 @@
-schemaVersion: "1.0.0"
+schemaVersion: "1.1.0"
 rules:
-  - { id: PAT001, category: Patterns, title: Singleton, description: "A class with only private constructors that exposes a static instance of itself.", rationale: "Informational: recognizes the pattern; hidden global state is a cost.", paradigms: [oop], severity: info, confidence: medium, threshold: {} }
-  - { id: PAT002, category: Patterns, title: Factory, description: "A method that returns an abstraction and creates several of its concrete subtypes.", rationale: "Informational: recognizes the pattern.", paradigms: [oop], severity: info, confidence: medium, threshold: {} }
-  - { id: PAT003, category: Patterns, title: Strategy, description: "A context class that receives one of several interchangeable implementations and delegates to it.", rationale: "Informational: recognizes the pattern.", paradigms: [oop], severity: info, confidence: low, threshold: {} }
-  - { id: PAT004, category: Patterns, title: Observer, description: "A type with events it raises, or a list of observers it notifies in a loop, with subscribe methods.", rationale: "Informational: recognizes the pattern.", paradigms: [oop], severity: info, confidence: medium, threshold: {} }
-  - { id: PAT005, category: Patterns, title: Decorator, description: "A class that implements an abstraction, wraps an instance of the same abstraction and forwards to it.", rationale: "Informational: recognizes the pattern.", paradigms: [oop], severity: info, confidence: medium, threshold: {} }
-  - { id: PAT006, category: Patterns, title: Repository, description: "A type named *Repository, or a collection-like API of get, add and remove over one entity.", rationale: "Informational: recognizes the pattern.", paradigms: [oop], severity: info, confidence: low, threshold: {} }
-  - { id: PAT007, category: Patterns, title: Builder, description: "Fluent methods that return the type itself plus a terminal Build-like method.", rationale: "Informational: recognizes the pattern.", paradigms: [oop], severity: info, confidence: medium, threshold: {} }
-  - { id: PAT101, category: Patterns, title: Service Locator, description: "Resolving dependencies from a container inside business code.", rationale: "Hides dependencies from the constructor.", paradigms: [oop], severity: minor, confidence: low, threshold: { compositionRootSuffixes: [Program, Startup, Factory, Module, Registry, Extensions] } }
-  - { id: PAT102, category: Patterns, title: Anemic Domain Model, description: "A domain-named class with settable data and no behavior, while logic lives in services.", rationale: "Behavior is separated from the data it belongs to.", paradigms: [oop], severity: minor, confidence: low, threshold: { minProperties: 3, domainNamespaces: [Domain, Model, Entities] } }
-  - { id: PAT103, category: Patterns, title: Middle Man, description: "A class that does almost nothing but forward to one collaborator, without a shared abstraction.", rationale: "An extra hop with no value of its own.", paradigms: [oop], severity: minor, confidence: low, threshold: { minMethods: 3 } }
+  - id: PAT001
+    category: Patterns
+    title: Singleton
+    description: "A class with only private constructors that exposes a static instance of itself."
+    rationale: "Informational: recognizes the pattern; hidden global state is a cost."
+    paradigms: [oop]
+    severity: info
+    confidence: medium
+    threshold: {}
+    l10n:
+      ru:
+        title: "Одиночка (Singleton)"
+        description: "Класс только с закрытыми конструкторами, который открывает статический экземпляр самого себя."
+        rationale: "Для сведения: распознаёт шаблон; скрытое глобальное состояние — его цена."
+    messages:
+      singleton: { text: "{0} is a Singleton", ru: "{0} — одиночка (Singleton)" }
+      global: { text: "Private constructors plus a static member of its own type. Singletons are global state: they hide dependencies and hinder testing.", ru: "Закрытые конструкторы и статический член собственного типа. Одиночки — глобальное состояние: они скрывают зависимости и мешают тестированию." }
+  - id: PAT002
+    category: Patterns
+    title: Factory
+    description: "A method that returns an abstraction and creates several of its concrete subtypes."
+    rationale: "Informational: recognizes the pattern."
+    paradigms: [oop]
+    severity: info
+    confidence: medium
+    threshold: {}
+    l10n:
+      ru:
+        title: "Фабрика (Factory)"
+        description: "Метод, который возвращает абстракцию и создаёт несколько её конкретных подтипов."
+        rationale: "Для сведения: распознаёт шаблон."
+    messages:
+      factory: { text: "{0} is a Factory of {1}", ru: "{0} — фабрика (Factory) для {1}" }
+      creates: { text: "It returns the abstraction and creates {0}.", ru: "Возвращает абстракцию и создаёт {0}." }
+      named: { text: "The type name and the creation of {0} behind the abstraction suggest it.", ru: "На это указывают имя типа и создание {0} за абстракцией." }
+  - id: PAT003
+    category: Patterns
+    title: Strategy
+    description: "A context class that receives one of several interchangeable implementations and delegates to it."
+    rationale: "Informational: recognizes the pattern."
+    paradigms: [oop]
+    severity: info
+    confidence: low
+    threshold: {}
+    l10n:
+      ru:
+        title: "Стратегия (Strategy)"
+        description: "Класс-контекст, который получает одну из нескольких взаимозаменяемых реализаций и делегирует ей."
+        rationale: "Для сведения: распознаёт шаблон."
+    messages:
+      strategy: { text: "{0} uses {1} as a Strategy", ru: "{0} использует {1} как стратегию (Strategy)" }
+      injected: { text: "It holds an injected {0}, with {1} implementations: {2}.", ru: "Хранит внедрённый {0}, у которого {1} {1|реализация|реализации|реализаций}: {2}." }
+  - id: PAT004
+    category: Patterns
+    title: Observer
+    description: "A type with events it raises, or a list of observers it notifies in a loop, with subscribe methods."
+    rationale: "Informational: recognizes the pattern."
+    paradigms: [oop]
+    severity: info
+    confidence: medium
+    threshold: {}
+    l10n:
+      ru:
+        title: "Наблюдатель (Observer)"
+        description: "Тип с событиями, которые он вызывает, или со списком наблюдателей, которых он уведомляет в цикле, и с методами подписки."
+        rationale: "Для сведения: распознаёт шаблон."
+    messages:
+      subject: { text: "{0} is an Observer subject", ru: "{0} — субъект наблюдателя (Observer)" }
+      events: { text: "It publishes events: {0}.", ru: "Публикует события: {0}." }
+      subscribe: { text: "It has a subscribe method and notifies registered observers in a loop.", ru: "Имеет метод подписки и в цикле уведомляет зарегистрированных наблюдателей." }
+  - id: PAT005
+    category: Patterns
+    title: Decorator
+    description: "A class that implements an abstraction, wraps an instance of the same abstraction and forwards to it."
+    rationale: "Informational: recognizes the pattern."
+    paradigms: [oop]
+    severity: info
+    confidence: medium
+    threshold: {}
+    l10n:
+      ru:
+        title: "Декоратор (Decorator)"
+        description: "Класс, который реализует абстракцию, оборачивает экземпляр той же абстракции и передаёт ему вызовы."
+        rationale: "Для сведения: распознаёт шаблон."
+    messages:
+      decorator: { text: "{0} is a Decorator of {1}", ru: "{0} — декоратор (Decorator) для {1}" }
+      forwards: { text: "It implements the abstraction, wraps an instance of it, and forwards calls.", ru: "Реализует абстракцию, оборачивает её экземпляр и передаёт ему вызовы." }
+  - id: PAT006
+    category: Patterns
+    title: Repository
+    description: "A type named *Repository, or a collection-like API of get, add and remove over one entity."
+    rationale: "Informational: recognizes the pattern."
+    paradigms: [oop]
+    severity: info
+    confidence: low
+    threshold: {}
+    l10n:
+      ru:
+        title: "Репозиторий (Repository)"
+        description: "Тип с именем *Repository или API в духе коллекции: получить, добавить и удалить одну сущность."
+        rationale: "Для сведения: распознаёт шаблон."
+    messages:
+      repository: { text: "{0} is a Repository", ru: "{0} — репозиторий (Repository)" }
+      agree: { text: "The name and the collection-like read/write API agree.", ru: "Имя и API чтения и записи в духе коллекции согласуются." }
+      maybe: { text: "{0} may be a Repository", ru: "{0}, возможно, репозиторий (Repository)" }
+      nameOnly: { text: "Only the name suggests it; the API is not collection-like.", ru: "На это указывает только имя; API не похож на коллекцию." }
+  - id: PAT007
+    category: Patterns
+    title: Builder
+    description: "Fluent methods that return the type itself plus a terminal Build-like method."
+    rationale: "Informational: recognizes the pattern."
+    paradigms: [oop]
+    severity: info
+    confidence: medium
+    threshold: {}
+    l10n:
+      ru:
+        title: "Строитель (Builder)"
+        description: "Текучие методы, которые возвращают сам тип, и завершающий метод вроде Build."
+        rationale: "Для сведения: распознаёт шаблон."
+    messages:
+      builder: { text: "{0} is a Builder", ru: "{0} — строитель (Builder)" }
+      fluent: { text: "{0} fluent methods return this, and a terminal method builds the result.", ru: "{0} {0|текучий метод возвращает|текучих метода возвращают|текучих методов возвращают} this, а завершающий метод строит результат." }
+  - id: PAT101
+    category: Patterns
+    title: Service Locator
+    description: "Resolving dependencies from a container inside business code."
+    rationale: "Hides dependencies from the constructor."
+    paradigms: [oop]
+    severity: minor
+    confidence: low
+    threshold: { compositionRootSuffixes: [Program, Startup, Factory, Module, Registry, Extensions] }
+    l10n:
+      ru:
+        title: "Локатор служб (Service Locator)"
+        description: "Получение зависимостей из контейнера внутри бизнес-кода."
+        rationale: "Скрывает зависимости от конструктора."
+    messages:
+      pulls: { text: "{0} pulls a dependency from {1}", ru: "{0} достаёт зависимость из {1}" }
+      invisible: { text: "The class's real dependencies are invisible in its constructor and fail only at run time.", ru: "Настоящие зависимости класса не видны в его конструкторе, и их нехватка проявляется только во время выполнения." }
+  - id: PAT102
+    category: Patterns
+    title: Anemic Domain Model
+    description: "A domain-named class with settable data and no behavior, while logic lives in services."
+    rationale: "Behavior is separated from the data it belongs to."
+    paradigms: [oop]
+    severity: minor
+    confidence: low
+    threshold: { minProperties: 3, domainNamespaces: [Domain, Model, Entities] }
+    l10n:
+      ru:
+        title: "Анемичная модель предметной области (Anemic Domain Model)"
+        description: "Класс с именем из предметной области, с изменяемыми данными и без поведения, а логика живёт в сервисах."
+        rationale: "Поведение отделено от данных, к которым оно относится."
+    messages:
+      anemic: { text: "{0} is an anemic domain object", ru: "{0} — анемичный объект предметной области" }
+      setters: { text: "{0} public setters and no methods: its invariants must be enforced by whoever changes it. Plain DTOs are fine; this one sits in a domain namespace.", ru: "{0} {0|открытый сеттер|открытых сеттера|открытых сеттеров} и ни одного метода: инварианты должен соблюдать тот, кто его меняет. Простые DTO — это нормально, но этот лежит в пространстве имён предметной области." }
+  - id: PAT103
+    category: Patterns
+    title: Middle Man
+    description: "A class that does almost nothing but forward to one collaborator, without a shared abstraction."
+    rationale: "An extra hop with no value of its own."
+    paradigms: [oop]
+    severity: minor
+    confidence: low
+    threshold: { minMethods: 3 }
+    l10n:
+      ru:
+        title: "Посредник (Middle Man)"
+        description: "Класс, который почти ничего не делает, кроме передачи вызовов одному соисполнителю, без общей абстракции."
+        rationale: "Лишний шаг без собственной пользы."
+    messages:
+      forwards: { text: "{0} only forwards to {1}", ru: "{0} только передаёт вызовы {1}" }
+      single: { text: "All {0} public methods are single calls to the same member; callers could use it directly.", ru: "Открытых методов: {0}, и каждый — один вызов одного и того же члена; вызывающие могли бы обращаться к нему напрямую." }

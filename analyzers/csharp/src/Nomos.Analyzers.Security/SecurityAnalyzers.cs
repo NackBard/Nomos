@@ -39,9 +39,9 @@ public sealed partial class HardcodedSecretAnalyzer : AnalyzerBase
     {
         if (value is not LiteralExpression { Kind: LiteralKind.String, Value: { Length: >= 6 } text }) return;
         if (KnownCredential().IsMatch(text))
-            context.Report(Confidence.High, location, $"{name} holds what looks like a real credential", "Heuristic: the literal matches the format of a known key or token. Rotate it if it is real, and load it from a secret store.", module, symbol, Severity.Critical);
+            context.Report(Confidence.High, location, $"{name} holds what looks like a real credential", $"Heuristic: the literal matches the format of a known key or token. Rotate it if it is real, and load it from a secret store.", module, symbol, Severity.Critical);
         else if (SecretName().IsMatch(name) && !text.Contains(' ', StringComparison.Ordinal) && !text.Contains('{', StringComparison.Ordinal))
-            context.Report(Confidence.Medium, location, $"{name} looks like a hardcoded secret", "Heuristic: the name suggests a secret and the value is a literal. It may be a placeholder or a non-secret value.", module, symbol);
+            context.Report(Confidence.Medium, location, $"{name} looks like a hardcoded secret", $"Heuristic: the name suggests a secret and the value is a literal. It may be a placeholder or a non-secret value.", module, symbol);
     }
 
     [GeneratedRegex("password|passwd|pwd|secret|api_?key|apikey|access_?token|auth_?token|private_?key", RegexOptions.IgnoreCase)]
@@ -64,9 +64,9 @@ public sealed class InsecureDeserializationAnalyzer : AnalyzerBase
         foreach (var callable in context.Callables)
         {
             foreach (var creation in callable.Body.All<ObjectCreationExpression>().Where(o => Formatters.Contains(o.CreatedType.SimpleName)))
-                context.Report(Confidence.High, creation.Location, $"{creation.CreatedType.SimpleName} is unsafe with untrusted data", "Heuristic: this formatter can instantiate arbitrary types from its input; whether the input is trusted is not checked.", symbol: callable.Id);
+                context.Report(Confidence.High, creation.Location, $"{creation.CreatedType.SimpleName} is unsafe with untrusted data", $"Heuristic: this formatter can instantiate arbitrary types from its input; whether the input is trusted is not checked.", symbol: callable.Id);
             foreach (var access in callable.Body.All<MemberAccessExpression>().Where(a => a.Target is NameExpression { Symbol.Name: "TypeNameHandling" } && a.Member.Name != "None"))
-                context.Report(Confidence.Medium, access.Location, $"TypeNameHandling.{access.Member.Name} enables polymorphic deserialization", "Heuristic: type names read from the payload allow gadget chains unless a binder restricts them.", symbol: callable.Id);
+                context.Report(Confidence.Medium, access.Location, $"TypeNameHandling.{access.Member.Name} enables polymorphic deserialization", $"Heuristic: type names read from the payload allow gadget chains unless a binder restricts them.", symbol: callable.Id);
         }
     }
 }
@@ -90,7 +90,7 @@ public sealed partial class SqlConcatenationAnalyzer : AnalyzerBase
                 var text = string.Concat(parts.OfType<LiteralExpression>().Select(l => l.Value));
                 var isDynamic = parts.Any(p => p is not LiteralExpression);
                 if (isDynamic && Sql().IsMatch(text))
-                    context.Report(Confidence.Medium, node.Location, "SQL built from non-constant values", "Heuristic: if any value comes from a user, this allows injection. Parameterized queries keep data out of the statement.", symbol: callable.Id);
+                    context.Report(Confidence.Medium, node.Location, $"SQL built from non-constant values", $"Heuristic: if any value comes from a user, this allows injection. Parameterized queries keep data out of the statement.", symbol: callable.Id);
             }
         }
     }

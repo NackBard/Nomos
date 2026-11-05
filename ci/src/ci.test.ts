@@ -106,3 +106,15 @@ test("wrong usage and a missing workspace have their own codes", () => {
   assert.equal(ci("--nonsense", "x").status, 2);
   assert.equal(ci("--workspace", "absent.json").status, 3);
 });
+
+test("--locale ru translates the report from the templates of spec, and only the report", async () => {
+  const { translator } = await import("./l10n.ts");
+  const templated = { ...result("a", "Run spans 52 lines"), message: { text: "Run spans 52 lines", id: "lines", arguments: ["Run", "52"] } };
+  const russian = renderMarkdown([run([templated])], [], undefined, translator("ru"));
+  assert.match(russian, /^# Отчёт Nomos/);
+  assert.match(russian, /Run занимает 52 строки/);
+  assert.match(russian, /незначительная | высокая/);
+  assert.doesNotMatch(renderMarkdown([run([templated])], []), /занимает/);
+  // The baseline keeps the English text whatever the locale.
+  assert.equal(toBaseline(findingsOf(run([templated]))).findings[0].message, "Run spans 52 lines");
+});

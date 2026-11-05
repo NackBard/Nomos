@@ -629,11 +629,33 @@ func (r *run) sarif(findings []Finding) ([]byte, error) {
 	for i, id := range ids {
 		index[id] = i
 		rule := byID[id]
-		rules = append(rules, map[string]any{
+		entry := map[string]any{
 			"id": id, "name": rule.Title, "shortDescription": map[string]string{"text": rule.Description}, "fullDescription": map[string]string{"text": rule.Rationale},
 			"defaultConfiguration": map[string]string{"level": level(rule.Severity)},
 			"properties":           map[string]any{"category": rule.Category, "paradigms": sortedStrings(rule.Paradigms)},
-		})
+		}
+		if len(rule.Messages) > 0 {
+			templates := map[string]map[string]string{}
+			for key, message := range rule.Messages {
+				templates[key] = map[string]string{"text": message.Text}
+			}
+			entry["messageStrings"] = templates
+		}
+		rules = append(rules, entry)
+	}
+	// key finds the spec template a text was made from (spec/l10n.md); the first key in order wins.
+	key := func(rule string, text Text) string {
+		keys := []string{}
+		for k, message := range byID[rule].Messages {
+			if message.Text == text.Template {
+				keys = append(keys, k)
+			}
+		}
+		sort.Strings(keys)
+		if len(keys) == 0 {
+			return ""
+		}
+		return keys[0]
 	}
 	results := []map[string]any{}
 	for _, f := range findings {
@@ -647,8 +669,15 @@ func (r *run) sarif(findings []Finding) ([]byte, error) {
 		if f.Measured != nil {
 			properties["measured"] = f.Measured
 		}
+		if id := key(f.Rule, f.ExplanationText); id != "" {
+			properties["explanationMessage"] = map[string]any{"id": id, "arguments": f.ExplanationText.Args}
+		}
+		message := map[string]any{"text": f.Message}
+		if id := key(f.Rule, f.MessageText); id != "" {
+			message["id"], message["arguments"] = id, f.MessageText.Args
+		}
 		results = append(results, map[string]any{
-			"ruleId": f.Rule, "ruleIndex": index[f.Rule], "level": level(f.Severity), "message": map[string]string{"text": f.Message},
+			"ruleId": f.Rule, "ruleIndex": index[f.Rule], "level": level(f.Severity), "message": message,
 			"locations": []map[string]any{{"physicalLocation": map[string]any{
 				"artifactLocation": map[string]string{"uri": f.Place.File},
 				"region":           map[string]int{"startLine": f.Place.StartLine, "startColumn": f.Place.StartColumn, "endLine": f.Place.EndLine, "endColumn": f.Place.EndColumn},

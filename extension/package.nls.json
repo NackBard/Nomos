@@ -1,0 +1,12 @@
+{
+  "description": "Statistics and observations about code from Nomos analyzers. Findings are heuristics, not verdicts.",
+  "command.analyze": "Analyze Workspace",
+  "command.showGraph": "Show Dependency Graph",
+  "command.openGraphWindow": "Open Dependency Graph in New Window",
+  "command.choosePractices": "Choose Practices",
+  "view.findings": "Findings",
+  "view.paradigms": "Paradigms and Skipped Rules",
+  "config.analyzeOnSave": "Run the analyzers after a file is saved.",
+  "config.codeLens": "Show metrics of functions and types above their declarations.",
+  "config.practices": "Practices whose rules run in a folder without `nomos.json` (ids from **Nomos: Choose Practices**). `null` runs every practice. Metrics are shown either way. In a folder with `nomos.json`, its `practices` field decides."
+}

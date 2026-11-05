@@ -363,3 +363,45 @@ test("the choice is written into nomos.json, raising its version for the new fie
   writePractices(folder, undefined);
   assert.equal(readWorkspace(folder).practices, undefined);
 });
+
+test("Russian templates pick word forms and finding texts come from rules.json (D-052)", async () => {
+  const { describeSkip, format, localizeFinding, readBundle, readRules, translator } = await import("../core/l10n");
+  assert.equal(format("{0} {0|строка|строки|строк}", ["1"]), "1 строка");
+  assert.equal(format("{0} {0|строка|строки|строк}", ["24"]), "24 строки");
+  assert.equal(format("{0} {0|строка|строки|строк}", ["11"]), "11 строк");
+
+  const rules = readRules(path.join(__dirname, "..", "..", "rules.json"));
+  const finding: Finding = {
+    ruleId: "CC001", ruleTitle: "Long method", category: "CleanCode", level: "warning", severity: "minor", confidence: "high",
+    message: "Run spans 52 lines", explanation: "The line count is exact; the limit of 40 is a readability convention.",
+    file: "a.cs", startLine: 1, startColumn: 1, endLine: 2, endColumn: 1, module: "A",
+    messageId: "lines", messageArguments: ["Run", "52"], explanationId: "limit", explanationArguments: ["40"],
+  };
+  assert.equal(localizeFinding(finding, rules, "en"), finding);
+  const russian = localizeFinding(finding, rules, "ru");
+  assert.equal(russian.message, "Run занимает 52 строки");
+  assert.equal(russian.ruleTitle, "Длинный метод (Long method)");
+  assert.match(russian.explanation, /^Число строк точное; предел 40/);
+  // Without a template key the analyzer's English text stays.
+  assert.equal(localizeFinding({ ...finding, messageId: undefined }, rules, "ru").message, "Run spans 52 lines");
+
+  const bundle = readBundle(path.join(__dirname, "..", "..", "l10n", "bundle.l10n.ru.json"));
+  const t = translator(bundle, "ru");
+  assert.equal(t("{0} rules", 3), "3 правила");
+  assert.equal(translator(bundle, "en")("{0} rules", 3), "3 rules");
+  const skip = { ruleId: "CC001", module: "A", reason: "disabled-by-config", message: "Rule belongs to practice clean-code, which is not selected" };
+  assert.equal(describeSkip(skip, rules, translator(bundle, "en"), ["Clean Code"]), skip.message);
+  assert.equal(describeSkip(skip, rules, t, ["Чистый код (Clean Code)"]), "Правило входит в невыбранные практики: Чистый код (Clean Code)");
+  assert.match(describeSkip({ ...skip, reason: "paradigm-not-detected" }, rules, t), /парадигмы «ООП»/);
+});
+
+test("SARIF template keys reach the finding", () => {
+  const log = { version: "2.1.0", runs: [{ tool: { driver: { rules: [] } }, results: [{
+    ruleId: "CC001", message: { text: "Run spans 52 lines", id: "lines", arguments: ["Run", "52"] },
+    properties: { confidence: "high", explanation: "because", explanationMessage: { id: "limit", arguments: ["40"] } } }] }] };
+  const [finding] = readFindings(log, "log");
+  assert.equal(finding.messageId, "lines");
+  assert.deepEqual(finding.messageArguments, ["Run", "52"]);
+  assert.equal(finding.explanationId, "limit");
+  assert.deepEqual(finding.explanationArguments, ["40"]);
+});

@@ -10,6 +10,31 @@
     "confidence": "low",
     "threshold": {
       "reportFromDegree": 2
+    },
+    "l10n": {
+      "ru": {
+        "title": "Оценка временной сложности",
+        "description": "Оценивает рост по вложенности циклов, известным линейным вызовам, форме рекурсии и вызываемым функциям проекта.",
+        "rationale": "Всегда оценка: размеры входных данных неизвестны."
+      }
+    },
+    "messages": {
+      "likely": {
+        "text": "{0} is likely {1}",
+        "ru": "{0}: вероятно, {1}"
+      },
+      "loops": {
+        "text": "Estimated from nested loops over inputs of unknown size. Small inputs may make this irrelevant.",
+        "ru": "Оценка по вложенным циклам над входными данными неизвестного размера. При малых данных это может быть неважно."
+      },
+      "recursion": {
+        "text": "Estimated from recursion, a while loop or a callee; loop bounds and call counts are not known exactly.",
+        "ru": "Оценка по рекурсии, циклу while или вызываемой функции; границы циклов и число вызовов точно не известны."
+      },
+      "recursionConditionLoop": {
+        "text": "Estimated from recursion, a condition-only loop or a callee; loop bounds and call counts are not known exactly.",
+        "ru": "Оценка по рекурсии, циклу только с условием или вызываемой функции; границы циклов и число вызовов точно не известны."
+      }
     }
   },
   {
@@ -21,7 +46,64 @@
     "paradigms": [],
     "severity": "minor",
     "confidence": "low",
-    "threshold": {}
+    "threshold": {},
+    "l10n": {
+      "ru": {
+        "title": "Квадратичный шаблон",
+        "description": "Поиск в списках, вставка в начало и конкатенация строк внутри циклов.",
+        "rationale": "Типичные источники случайного квадратичного времени."
+      }
+    },
+    "messages": {
+      "searchOn": {
+        "text": "Likely quadratic: {0} on {1} inside a loop",
+        "ru": "Вероятно квадратичное время: {0} над {1} внутри цикла"
+      },
+      "search": {
+        "text": "Likely quadratic: {0} on a sequence inside a loop",
+        "ru": "Вероятно квадратичное время: {0} над последовательностью внутри цикла"
+      },
+      "slicesSearch": {
+        "text": "Likely quadratic: slices.{0} inside a loop",
+        "ru": "Вероятно квадратичное время: slices.{0} внутри цикла"
+      },
+      "searchHashSet": {
+        "text": "Each iteration scans the sequence. A HashSet or Dictionary built once makes the lookup constant-time.",
+        "ru": "Каждая итерация просматривает последовательность. HashSet или Dictionary, построенные один раз, дают поиск за постоянное время."
+      },
+      "searchMap": {
+        "text": "Each iteration scans the sequence. A map built once makes the lookup constant-time.",
+        "ru": "Каждая итерация просматривает последовательность. map, построенный один раз, даёт поиск за постоянное время."
+      },
+      "frontCall": {
+        "text": "Likely quadratic: {0}(0) inside a loop",
+        "ru": "Вероятно квадратичное время: {0}(0) внутри цикла"
+      },
+      "frontCallQueue": {
+        "text": "Every element shifts on each call. A Queue, a Stack or iterating from the end avoids this.",
+        "ru": "При каждом вызове сдвигаются все элементы. Queue, Stack или проход с конца этого избегают."
+      },
+      "frontInsert": {
+        "text": "Likely quadratic: front insertion inside a loop",
+        "ru": "Вероятно квадратичное время: вставка в начало внутри цикла"
+      },
+      "frontInsertAppend": {
+        "text": "Every element shifts on each call. Appending and reversing once avoids this.",
+        "ru": "При каждом вызове сдвигаются все элементы. Добавление в конец и один разворот этого избегают."
+      },
+      "concat": {
+        "text": "Likely quadratic: String concatenation inside a loop",
+        "ru": "Вероятно квадратичное время: конкатенация строк внутри цикла"
+      },
+      "concatStringBuilder": {
+        "text": "Each step copies the whole string so far. StringBuilder grows in amortized constant time.",
+        "ru": "Каждый шаг копирует всю накопленную строку. StringBuilder растёт за амортизированное постоянное время."
+      },
+      "concatBuilder": {
+        "text": "Each step copies the whole string so far. strings.Builder grows in amortized constant time.",
+        "ru": "Каждый шаг копирует всю накопленную строку. strings.Builder растёт за амортизированное постоянное время."
+      }
+    }
   },
   {
     "id": "ALG003",
@@ -34,6 +116,51 @@
     "confidence": "low",
     "threshold": {
       "minDepthForObjects": 2
+    },
+    "l10n": {
+      "ru": {
+        "title": "Выделение памяти в горячем цикле",
+        "description": "Материализующие вызовы в циклах; создание объектов и замыканий во вложенных циклах.",
+        "rationale": "Нагрузка на память в часто выполняемом коде."
+      }
+    },
+    "messages": {
+      "materialize": {
+        "text": "{0} allocates on each loop iteration",
+        "ru": "{0} выделяет память на каждой итерации цикла"
+      },
+      "materializeBuffer": {
+        "text": "A new collection is built per iteration; moving it out of the loop or reusing a buffer reduces GC pressure.",
+        "ru": "На каждой итерации строится новая коллекция; вынос из цикла или повторное использование буфера снижает нагрузку на сборщик мусора."
+      },
+      "allocationOf": {
+        "text": "Allocation of {0} in a nested loop",
+        "ru": "Создание {0} во вложенном цикле"
+      },
+      "allocation": {
+        "text": "Allocation in a nested loop",
+        "ru": "Выделение памяти во вложенном цикле"
+      },
+      "hot": {
+        "text": "Runs once per inner iteration. Whether it matters depends on how hot the loop really is, which static analysis cannot tell.",
+        "ru": "Выполняется на каждой внутренней итерации. Важно ли это, зависит от того, как часто цикл выполняется на деле, а статический анализ этого не знает."
+      },
+      "lambda": {
+        "text": "Lambda in a nested loop",
+        "ru": "Лямбда во вложенном цикле"
+      },
+      "lambdaClosure": {
+        "text": "A capturing lambda allocates a closure per iteration; a non-capturing one is cached.",
+        "ru": "Захватывающая лямбда создаёт замыкание на каждой итерации; незахватывающая кешируется."
+      },
+      "literal": {
+        "text": "Function literal in a nested loop",
+        "ru": "Функциональный литерал во вложенном цикле"
+      },
+      "literalClosure": {
+        "text": "A capturing literal allocates a closure per iteration.",
+        "ru": "Захватывающий литерал создаёт замыкание на каждой итерации."
+      }
     }
   },
   {
@@ -47,6 +174,27 @@
     "confidence": "low",
     "threshold": {
       "reportFromDegree": 2
+    },
+    "l10n": {
+      "ru": {
+        "title": "Оценка пространственной сложности",
+        "description": "Коллекции, растущие в циклах, массивы непостоянного размера, глубина рекурсии.",
+        "rationale": "Всегда оценка: размеры входных данных неизвестны."
+      }
+    },
+    "messages": {
+      "likely": {
+        "text": "{0} likely uses {1} extra memory",
+        "ru": "{0}, вероятно, использует {1} дополнительной памяти"
+      },
+      "collections": {
+        "text": "Estimated from collection growth under nested loops or multi-dimensional allocation sizes.",
+        "ru": "Оценка по росту коллекций во вложенных циклах или по размерам многомерных массивов."
+      },
+      "slices": {
+        "text": "Estimated from slice growth under nested loops or sized allocations.",
+        "ru": "Оценка по росту срезов во вложенных циклах или по выделениям заданного размера."
+      }
     }
   },
   {
@@ -64,6 +212,23 @@
     "confidence": "high",
     "threshold": {
       "maxLines": 40
+    },
+    "l10n": {
+      "ru": {
+        "title": "Длинный метод (Long method)",
+        "description": "Строки исходного кода функции.",
+        "rationale": "Длинные функции труднее читать и тестировать."
+      }
+    },
+    "messages": {
+      "lines": {
+        "text": "{0} spans {1} lines",
+        "ru": "{0} занимает {1} {1|строку|строки|строк}"
+      },
+      "limit": {
+        "text": "The line count is exact; the limit of {0} is a readability convention.",
+        "ru": "Число строк точное; предел {0} — соглашение о читаемости."
+      }
     }
   },
   {
@@ -80,6 +245,23 @@
     "threshold": {
       "maxLines": 400,
       "maxMembers": 30
+    },
+    "l10n": {
+      "ru": {
+        "title": "Большой класс (Large class)",
+        "description": "Строки и члены типа по всем его частям.",
+        "rationale": "Большой тип склонен собирать несколько обязанностей."
+      }
+    },
+    "messages": {
+      "size": {
+        "text": "{0} has {1} lines and {2} members",
+        "ru": "В {0} {1} {1|строка|строки|строк} и {2} {2|член|члена|членов}"
+      },
+      "limits": {
+        "text": "The counts are exact; the limits ({0} lines, {1} members) are conventions.",
+        "ru": "Числа точные; пределы ({0} {0|строка|строки|строк}, {1} {1|член|члена|членов}) — соглашения."
+      }
     }
   },
   {
@@ -98,6 +280,27 @@
     "threshold": {
       "maxParameters": 5,
       "maxConstructorParameters": 7
+    },
+    "l10n": {
+      "ru": {
+        "title": "Слишком много параметров",
+        "description": "Число параметров функции; у конструкторов свой предел из-за внедрения зависимостей.",
+        "rationale": "Длинный список параметров трудно передать правильно."
+      }
+    },
+    "messages": {
+      "count": {
+        "text": "{0} takes {1} parameters",
+        "ru": "{0} принимает {1} {1|параметр|параметра|параметров}"
+      },
+      "limitObject": {
+        "text": "The limit is {0}. Long lists are easy to misorder; a parameter object groups what belongs together.",
+        "ru": "Предел — {0}. В длинных списках легко перепутать порядок; объект-параметр собирает вместе то, что связано."
+      },
+      "limitStruct": {
+        "text": "The limit is {0}. Long lists are easy to misorder; a parameter struct groups what belongs together.",
+        "ru": "Предел — {0}. В длинных списках легко перепутать порядок; структура-параметр собирает вместе то, что связано."
+      }
     }
   },
   {
@@ -115,6 +318,27 @@
     "confidence": "high",
     "threshold": {
       "maxDepth": 4
+    },
+    "l10n": {
+      "ru": {
+        "title": "Глубокая вложенность",
+        "description": "Глубина вложенности ветвлений, циклов и защищённых блоков; цепочки else-if остаются плоскими.",
+        "rationale": "Каждый уровень добавляет условие, которое читатель держит в голове."
+      }
+    },
+    "messages": {
+      "depth": {
+        "text": "{0} nests {1} levels deep",
+        "ru": "Вложенность {0} — {1} {1|уровень|уровня|уровней}"
+      },
+      "limitMethods": {
+        "text": "The limit is {0}. Guard clauses or extracted methods flatten the flow.",
+        "ru": "Предел — {0}. Ранние выходы или вынесенные методы делают поток плоским."
+      },
+      "limitFunctions": {
+        "text": "The limit is {0}. Guard clauses or extracted functions flatten the flow.",
+        "ru": "Предел — {0}. Ранние выходы или вынесенные функции делают поток плоским."
+      }
     }
   },
   {
@@ -130,7 +354,32 @@
     ],
     "severity": "minor",
     "confidence": "high",
-    "threshold": {}
+    "threshold": {},
+    "l10n": {
+      "ru": {
+        "title": "Заглушки",
+        "description": "Комментарии TODO, FIXME, HACK и XXX и тела, которые только бросают «не реализовано».",
+        "rationale": "Отмечают незаконченную работу."
+      }
+    },
+    "messages": {
+      "comment": {
+        "text": "{0} comment left in code",
+        "ru": "В коде оставлен комментарий {0}"
+      },
+      "commentTracker": {
+        "text": "A placeholder records unfinished work that belongs in the issue tracker or in a fix.",
+        "ru": "Заглушка отмечает незаконченную работу, место которой — в трекере задач или в исправлении."
+      },
+      "notImplemented": {
+        "text": "{0} is not implemented",
+        "ru": "{0}: не реализовано"
+      },
+      "notImplementedThrows": {
+        "text": "The body only throws NotImplementedException.",
+        "ru": "Тело только бросает NotImplementedException."
+      }
+    }
   },
   {
     "id": "CC007",
@@ -145,7 +394,44 @@
     ],
     "severity": "minor",
     "confidence": "medium",
-    "threshold": {}
+    "threshold": {},
+    "l10n": {
+      "ru": {
+        "title": "Мёртвый код",
+        "description": "Недостижимые операторы, неиспользуемые локальные переменные, закрытые члены, на которые никто не ссылается.",
+        "rationale": "Код, который никогда не выполняется, всё равно приходится читать."
+      }
+    },
+    "messages": {
+      "unreachable": {
+        "text": "Unreachable code in {0}",
+        "ru": "Недостижимый код в {0}"
+      },
+      "unreachableLeaves": {
+        "text": "The preceding statement always leaves this block.",
+        "ru": "Предыдущий оператор всегда покидает этот блок."
+      },
+      "local": {
+        "text": "Local {0} is never read",
+        "ru": "Локальная переменная {0} нигде не читается"
+      },
+      "localInitializer": {
+        "text": "No expression in the callable reads this variable; its initializer may still have side effects.",
+        "ru": "Ни одно выражение функции не читает эту переменную; у её инициализатора всё же могут быть побочные эффекты."
+      },
+      "method": {
+        "text": "Private method {0} is never called",
+        "ru": "Закрытый метод {0} нигде не вызывается"
+      },
+      "field": {
+        "text": "Private field {0} is never used",
+        "ru": "Закрытое поле {0} нигде не используется"
+      },
+      "reflection": {
+        "text": "Nothing in the declaring type refers to it; only reflection could reach it.",
+        "ru": "В объявляющем типе на него никто не ссылается; добраться до него можно только через рефлексию."
+      }
+    }
   },
   {
     "id": "CC008",
@@ -160,7 +446,24 @@
     ],
     "severity": "minor",
     "confidence": "low",
-    "threshold": {}
+    "threshold": {},
+    "l10n": {
+      "ru": {
+        "title": "Закомментированный код",
+        "description": "Строчные комментарии, которые заканчиваются как операторы.",
+        "rationale": "История хранится в системе контроля версий; отключённый код — шум."
+      }
+    },
+    "messages": {
+      "code": {
+        "text": "Comment looks like disabled code",
+        "ru": "Комментарий похож на отключённый код"
+      },
+      "shape": {
+        "text": "The comment has the shape of a statement; a textual heuristic cannot tell it from prose with certainty.",
+        "ru": "Комментарий имеет вид оператора; текстовая эвристика не может уверенно отличить его от обычного текста."
+      }
+    }
   },
   {
     "id": "CC009",
@@ -175,7 +478,24 @@
     ],
     "severity": "major",
     "confidence": "high",
-    "threshold": {}
+    "threshold": {},
+    "l10n": {
+      "ru": {
+        "title": "Пустой catch",
+        "description": "Блок catch без операторов и без комментария.",
+        "rationale": "Сбой молча отбрасывается."
+      }
+    },
+    "messages": {
+      "empty": {
+        "text": "Empty catch in {0}",
+        "ru": "Пустой catch в {0}"
+      },
+      "disappears": {
+        "text": "The exception disappears without handling, logging or a comment saying why that is safe.",
+        "ru": "Исключение пропадает без обработки, записи в журнал или комментария о том, почему это безопасно."
+      }
+    }
   },
   {
     "id": "CS.NAM001",
@@ -190,7 +510,64 @@
     ],
     "severity": "info",
     "confidence": "high",
-    "threshold": {}
+    "threshold": {},
+    "l10n": {
+      "ru": {
+        "title": "Соглашения об именах",
+        "description": "Типы, методы и свойства в PascalCase, интерфейсы начинаются с I, параметры в camelCase; однобуквенные параметры открытых методов.",
+        "rationale": "Отступления от соглашений .NET замедляют чтение. Раньше — CC005."
+      }
+    },
+    "messages": {
+      "shortParameter": {
+        "text": "Parameter {0} of {1} says little",
+        "ru": "Параметр {0} в {1} мало что говорит"
+      },
+      "shortParameterMeaning": {
+        "text": "One-letter names in a public signature leave the meaning to the reader.",
+        "ru": "Однобуквенные имена в открытой сигнатуре оставляют смысл на догадку читателю."
+      },
+      "type": {
+        "text": "The type name {0} is not PascalCase",
+        "ru": "Имя типа {0} не в стиле PascalCase"
+      },
+      "typeConvention": {
+        "text": "C# convention for a type is PascalCase.",
+        "ru": "По соглашению C# имя типа пишется в PascalCase."
+      },
+      "interface": {
+        "text": "The interface name {0} is not IPascalCase",
+        "ru": "Имя интерфейса {0} не в стиле IPascalCase"
+      },
+      "interfaceConvention": {
+        "text": "C# convention for an interface is IPascalCase.",
+        "ru": "По соглашению C# имя интерфейса пишется в IPascalCase."
+      },
+      "property": {
+        "text": "The property name {0} is not PascalCase",
+        "ru": "Имя свойства {0} не в стиле PascalCase"
+      },
+      "propertyConvention": {
+        "text": "C# convention for a property is PascalCase.",
+        "ru": "По соглашению C# имя свойства пишется в PascalCase."
+      },
+      "method": {
+        "text": "The method name {0} is not PascalCase",
+        "ru": "Имя метода {0} не в стиле PascalCase"
+      },
+      "methodConvention": {
+        "text": "C# convention for a method is PascalCase.",
+        "ru": "По соглашению C# имя метода пишется в PascalCase."
+      },
+      "parameter": {
+        "text": "The parameter name {0} is not camelCase",
+        "ru": "Имя параметра {0} не в стиле camelCase"
+      },
+      "parameterConvention": {
+        "text": "C# convention for a parameter is camelCase.",
+        "ru": "По соглашению C# имя параметра пишется в camelCase."
+      }
+    }
   },
   {
     "id": "DSN001",
@@ -204,6 +581,27 @@
     "threshold": {
       "maxDistance": 0.7,
       "minCoupling": 3
+    },
+    "l10n": {
+      "ru": {
+        "title": "Расстояние до главной последовательности",
+        "description": "Для каждого модуля Ca, Ce, нестабильность I, абстрактность A и расстояние D (spec/metrics.md).",
+        "rationale": "D около 1 означает, что модуль жёсткий или бесполезный."
+      }
+    },
+    "messages": {
+      "distance": {
+        "text": "Module {0} is far from the main sequence (D = {1})",
+        "ru": "Модуль {0} далёк от главной последовательности (D = {1})"
+      },
+      "pain": {
+        "text": "A = {0}, I = {1}, so it sits near the zone of pain: concrete and heavily depended upon.",
+        "ru": "A = {0}, I = {1}, поэтому он близок к зоне боли: конкретный, и от него многое зависит."
+      },
+      "uselessness": {
+        "text": "A = {0}, I = {1}, so it sits near the zone of uselessness: abstract and unused.",
+        "ru": "A = {0}, I = {1}, поэтому он близок к зоне бесполезности: абстрактный и неиспользуемый."
+      }
     }
   },
   {
@@ -215,7 +613,36 @@
     "paradigms": [],
     "severity": "major",
     "confidence": "high",
-    "threshold": {}
+    "threshold": {},
+    "l10n": {
+      "ru": {
+        "title": "Циклы зависимостей",
+        "description": "Сильно связные компоненты (Тарьян) в графе модулей и в графе типов.",
+        "rationale": "Участников цикла нельзя понять или изменить по отдельности."
+      }
+    },
+    "messages": {
+      "modules": {
+        "text": "Module cycle: {0}",
+        "ru": "Цикл модулей: {0}"
+      },
+      "modulesAlone": {
+        "text": "These modules depend on each other, directly or transitively, so none can be built, tested or released alone.",
+        "ru": "Эти модули зависят друг от друга напрямую или транзитивно, поэтому ни один нельзя собрать, проверить или выпустить отдельно."
+      },
+      "types": {
+        "text": "Type cycle of {0}: {1}",
+        "ru": "Цикл из {0} {0|типа|типов|типов}: {1}"
+      },
+      "typesRipple": {
+        "text": "These types reference each other, so a change to one can ripple through all of them.",
+        "ru": "Эти типы ссылаются друг на друга, поэтому изменение одного может отразиться на всех."
+      },
+      "unitsRipple": {
+        "text": "These units reference each other, so a change to one can ripple through all of them.",
+        "ru": "Эти единицы ссылаются друг на друга, поэтому изменение одной может отразиться на всех."
+      }
+    }
   },
   {
     "id": "DSN003",
@@ -229,7 +656,28 @@
     "threshold": {},
     "requires": [
       "layer-config"
-    ]
+    ],
+    "l10n": {
+      "ru": {
+        "title": "Нарушения слоёв",
+        "description": "Зависимости от слоёв, которые конфигурация не разрешает.",
+        "rationale": "Слои объявила команда, и их обходят."
+      }
+    },
+    "messages": {
+      "violation": {
+        "text": "{0} must not depend on {1}",
+        "ru": "{0} не должен зависеть от {1}"
+      },
+      "allowed": {
+        "text": "{0} ({1}) uses {2} ({3}); allowed: {4}.",
+        "ru": "{0} ({1}) использует {2} ({3}); разрешено: {4}."
+      },
+      "allowedNone": {
+        "text": "{0} ({1}) uses {2} ({3}); allowed: none.",
+        "ru": "{0} ({1}) использует {2} ({3}); разрешено: ничего."
+      }
+    }
   },
   {
     "id": "DSN004",
@@ -246,6 +694,23 @@
       "minWmc": 47,
       "minAtfd": 5,
       "maxTcc": 0.3333
+    },
+    "l10n": {
+      "ru": {
+        "title": "Божественный класс (God class)",
+        "description": "Стратегия обнаружения Ланцы и Маринеску: высокий WMC, высокий ATFD, низкий TCC.",
+        "rationale": "Класс, который знает и делает слишком много."
+      }
+    },
+    "messages": {
+      "god": {
+        "text": "{0} looks like a god class",
+        "ru": "{0} похож на божественный класс (God class)"
+      },
+      "metrics": {
+        "text": "WMC = {0} (>= {1}), ATFD = {2} (>= {3}), TCC = {4} (< {5}): it does much, uses others' data, and its methods share little.",
+        "ru": "WMC = {0} (>= {1}), ATFD = {2} (>= {3}), TCC = {4} (< {5}): он делает много, пользуется чужими данными, а у его методов мало общего."
+      }
     }
   },
   {
@@ -261,6 +726,23 @@
     "confidence": "low",
     "threshold": {
       "minForeignMembers": 3
+    },
+    "l10n": {
+      "ru": {
+        "title": "Завистливый метод (Feature envy)",
+        "description": "Метод, который использует больше данных одного чужого типа, чем своего.",
+        "rationale": "Вероятно, метод принадлежит другому типу."
+      }
+    },
+    "messages": {
+      "envy": {
+        "text": "{0} is more interested in {1} than in {2}",
+        "ru": "{0} обращается к {1} чаще, чем к {2}"
+      },
+      "members": {
+        "text": "It uses {0} members of {1} ({2}) and {3} of its own.",
+        "ru": "Использует {0} {0|член|члена|членов} {1} ({2}) и {3} своих."
+      }
     }
   },
   {
@@ -274,6 +756,31 @@
     "confidence": "medium",
     "threshold": {
       "maxDependents": 20
+    },
+    "l10n": {
+      "ru": {
+        "title": "Радиус распространения изменений (Blast radius)",
+        "description": "Число типов, достижимых по обращённым зависимостям (spec/metrics.md).",
+        "rationale": "Показывает, как далеко может распространиться изменение."
+      }
+    },
+    "messages": {
+      "types": {
+        "text": "Changing {0} can reach {1} types ({2})",
+        "ru": "Изменение {0} может затронуть {1} {1|тип|типа|типов} ({2})"
+      },
+      "typesHops": {
+        "text": "{0} direct dependents, up to {1} hops away. Stable abstractions at such points limit the spread. Static dependencies overstate real impact when a change keeps the contract.",
+        "ru": "Прямых зависимых: {0}, самые дальние — через {1} {1|шаг|шага|шагов}. Устойчивые абстракции в таких точках ограничивают распространение. Статические зависимости преувеличивают реальное влияние, если изменение сохраняет контракт."
+      },
+      "units": {
+        "text": "Changing {0} can reach {1} units",
+        "ru": "Изменение {0} может затронуть {1} {1|единицу|единицы|единиц}"
+      },
+      "stable": {
+        "text": "Stable abstractions at such points limit the spread. Static dependencies overstate real impact when a change keeps the contract.",
+        "ru": "Устойчивые абстракции в таких точках ограничивают распространение. Статические зависимости преувеличивают реальное влияние, если изменение сохраняет контракт."
+      }
     }
   },
   {
@@ -287,7 +794,24 @@
     ],
     "severity": "minor",
     "confidence": "low",
-    "threshold": {}
+    "threshold": {},
+    "l10n": {
+      "ru": {
+        "title": "Нечистая функция",
+        "description": "Функция, которая возвращает значение и при этом записывает состояние или выполняет ввод-вывод.",
+        "rationale": "О ней нельзя рассуждать подстановкой."
+      }
+    },
+    "messages": {
+      "impure": {
+        "text": "{0} returns a value and has side effects",
+        "ru": "{0} возвращает значение и имеет побочные эффекты"
+      },
+      "observed": {
+        "text": "Observed: {0}. Effects hidden behind calls to other methods are not visible here.",
+        "ru": "Замечено: {0}. Эффекты, скрытые за вызовами других методов, здесь не видны."
+      }
+    }
   },
   {
     "id": "FUN002",
@@ -300,7 +824,24 @@
     ],
     "severity": "minor",
     "confidence": "medium",
-    "threshold": {}
+    "threshold": {},
+    "l10n": {
+      "ru": {
+        "title": "Побочный эффект в лямбде",
+        "description": "Лямбда, переданная функции высшего порядка, меняет внешние переменные.",
+        "rationale": "Результат зависит от порядка вычисления."
+      }
+    },
+    "messages": {
+      "lambda": {
+        "text": "Lambda changes state outside itself",
+        "ru": "Лямбда меняет состояние вне себя"
+      },
+      "writes": {
+        "text": "It writes {0}. With lazy or parallel evaluation, the order of these writes is not guaranteed.",
+        "ru": "Она записывает {0}. При ленивом или параллельном вычислении порядок этих записей не гарантирован."
+      }
+    }
   },
   {
     "id": "FUN003",
@@ -313,7 +854,32 @@
     ],
     "severity": "minor",
     "confidence": "high",
-    "threshold": {}
+    "threshold": {},
+    "l10n": {
+      "ru": {
+        "title": "Изменяемое состояние",
+        "description": "Переприсваиваемые локальные переменные, изменяемые поля экземпляра, свойства с сеттером.",
+        "rationale": "Изменения затрудняют отслеживание потока данных."
+      }
+    },
+    "messages": {
+      "reassigns": {
+        "text": "{0} reassigns {1}",
+        "ru": "{0} переприсваивает {1}"
+      },
+      "newName": {
+        "text": "In functional style a new value gets a new name. Reassignment makes the meaning of a variable depend on the position in the code.",
+        "ru": "В функциональном стиле новое значение получает новое имя. Переприсваивание делает смысл переменной зависимым от места в коде."
+      },
+      "members": {
+        "text": "{0} has mutable members: {1}",
+        "ru": "У {0} изменяемые члены: {1}"
+      },
+      "time": {
+        "text": "Instances can change after construction, so a value's meaning depends on time.",
+        "ru": "Экземпляры могут меняться после создания, поэтому смысл значения зависит от времени."
+      }
+    }
   },
   {
     "id": "FUN004",
@@ -326,7 +892,24 @@
     ],
     "severity": "minor",
     "confidence": "medium",
-    "threshold": {}
+    "threshold": {},
+    "l10n": {
+      "ru": {
+        "title": "Нехвостовая рекурсия",
+        "description": "Рекурсивный вызов, результат которого используется дальше.",
+        "rationale": "Её нельзя превратить в цикл устранением хвостовых вызовов."
+      }
+    },
+    "messages": {
+      "recursion": {
+        "text": "{0} recurses outside tail position",
+        "ru": "{0} вызывает себя не в хвостовой позиции"
+      },
+      "stack": {
+        "text": "Work remains after the self-call returns, so each level keeps a stack frame; deep input can overflow the stack.",
+        "ru": "После возврата из рекурсивного вызова остаётся работа, поэтому каждый уровень держит кадр стека; глубокие входные данные могут переполнить стек."
+      }
+    }
   },
   {
     "id": "FUN005",
@@ -342,6 +925,43 @@
     "threshold": {
       "maxOrder": 3,
       "maxLambdaNesting": 3
+    },
+    "l10n": {
+      "ru": {
+        "title": "Глубина функций высшего порядка",
+        "description": "Порядок функций (данные, функции, функции от функций) и вложенность лямбд.",
+        "rationale": "Высокие порядки и вложенные лямбды трудно отслеживать."
+      }
+    },
+    "messages": {
+      "order": {
+        "text": "{0} is a function of order {1}",
+        "ru": "{0} — функция порядка {1}"
+      },
+      "orderOf": {
+        "text": "{0} has order {1}",
+        "ru": "Порядок {0} — {1}"
+      },
+      "orderLimit": {
+        "text": "The signature nests function types beyond order {0}.",
+        "ru": "Сигнатура вкладывает функциональные типы глубже порядка {0}."
+      },
+      "lambdas": {
+        "text": "{0} nests lambdas {1} levels deep",
+        "ru": "{0} вкладывает лямбды на {1} {1|уровень|уровня|уровней}"
+      },
+      "lambdasNamed": {
+        "text": "Beyond {0} levels, captured variables are hard to trace; named functions help.",
+        "ru": "Глубже {0} {0|уровня|уровней|уровней} захваченные переменные трудно отследить; помогают именованные функции."
+      },
+      "literals": {
+        "text": "{0} nests function literals {1} deep",
+        "ru": "{0} вкладывает функциональные литералы на {1} {1|уровень|уровня|уровней}"
+      },
+      "literalsTrace": {
+        "text": "Beyond {0} levels, captured variables are hard to trace.",
+        "ru": "Глубже {0} {0|уровня|уровней|уровней} захваченные переменные трудно отследить."
+      }
     }
   },
   {
@@ -355,6 +975,23 @@
     "confidence": "high",
     "threshold": {
       "maxComplexity": 10
+    },
+    "l10n": {
+      "ru": {
+        "title": "Цикломатическая сложность",
+        "description": "Точки ветвления в функции (spec/metrics.md). Каждое значение — метрика в facts; находки выдаются выше предела.",
+        "rationale": "Больше путей — больше тестов и больше места для ошибок."
+      }
+    },
+    "messages": {
+      "complexity": {
+        "text": "{0} has cyclomatic complexity {1}",
+        "ru": "Цикломатическая сложность {0} — {1}"
+      },
+      "paths": {
+        "text": "The count is exact; above {0}, the number of paths to test and to understand grows quickly.",
+        "ru": "Число точное; выше {0} количество путей, которые нужно проверить и понять, быстро растёт."
+      }
     }
   },
   {
@@ -368,6 +1005,23 @@
     "confidence": "low",
     "threshold": {
       "minIndex": 20
+    },
+    "l10n": {
+      "ru": {
+        "title": "Индекс сопровождаемости",
+        "description": "MI из объёма Холстеда, цикломатической сложности и строк (spec/metrics.md).",
+        "rationale": "Составной индекс; подсказка, а не измерение качества."
+      }
+    },
+    "messages": {
+      "index": {
+        "text": "{0} has a maintainability index of {1}",
+        "ru": "Индекс сопровождаемости {0} — {1}"
+      },
+      "ranking": {
+        "text": "Below {0}. The formula is an empirical blend of size and complexity, useful for ranking rather than as a measure of quality.",
+        "ru": "Ниже {0}. Формула — эмпирическая смесь размера и сложности, она годится для ранжирования, а не как мера качества."
+      }
     }
   },
   {
@@ -381,6 +1035,23 @@
     "confidence": "medium",
     "threshold": {
       "minTokens": 100
+    },
+    "l10n": {
+      "ru": {
+        "title": "Дублирование",
+        "description": "Клоны токенов типов 1 и 2 (скользящий хеш по нормализованным токенам).",
+        "rationale": "Ошибка, исправленная в одной копии, остаётся в других."
+      }
+    },
+    "messages": {
+      "clone": {
+        "text": "{0} tokens duplicate {1}:{2}",
+        "ru": "{0} {0|токен повторяет|токена повторяют|токенов повторяют} {1}:{2}"
+      },
+      "identical": {
+        "text": "The token sequences are identical after replacing identifiers and literals with placeholders.",
+        "ru": "Последовательности токенов совпадают после замены идентификаторов и литералов заполнителями."
+      }
     }
   },
   {
@@ -398,7 +1069,24 @@
     },
     "requires": [
       "coverage-report"
-    ]
+    ],
+    "l10n": {
+      "ru": {
+        "title": "Покрытие тестами",
+        "description": "Покрытие строк по отчёту Cobertura или LCOV, для каждого файла.",
+        "rationale": "Показывает, до каких файлов тесты не доходят."
+      }
+    },
+    "messages": {
+      "coverage": {
+        "text": "{0} has {1}% line coverage",
+        "ru": "Покрытие строк {0} — {1}%"
+      },
+      "minimum": {
+        "text": "Measured from {0}; below the {1}% minimum. Coverage shows what ran, not what was verified.",
+        "ru": "Измерено по {0}; ниже минимума {1}%. Покрытие показывает, что выполнялось, а не что проверено."
+      }
+    }
   },
   {
     "id": "OOP001",
@@ -411,7 +1099,24 @@
     ],
     "severity": "major",
     "confidence": "high",
-    "threshold": {}
+    "threshold": {},
+    "l10n": {
+      "ru": {
+        "title": "Инкапсуляция",
+        "description": "Открытые изменяемые поля.",
+        "rationale": "Отдаёт инварианты типа каждому вызывающему."
+      }
+    },
+    "messages": {
+      "field": {
+        "text": "Public mutable field {0}.{1}",
+        "ru": "Открытое изменяемое поле {0}.{1}"
+      },
+      "invariants": {
+        "text": "Any caller can change this field, so the type cannot protect its invariants. A property or a method can.",
+        "ru": "Любой вызывающий может изменить это поле, поэтому тип не может защитить свои инварианты. Свойство или метод могут."
+      }
+    }
   },
   {
     "id": "OOP002",
@@ -426,6 +1131,31 @@
     "confidence": "high",
     "threshold": {
       "maxDepth": 4
+    },
+    "l10n": {
+      "ru": {
+        "title": "Глубина наследования",
+        "description": "Глубина дерева наследования (DIT).",
+        "rationale": "Глубокие иерархии трудно понимать и менять."
+      }
+    },
+    "messages": {
+      "depth": {
+        "text": "{0} sits {1} levels deep",
+        "ru": "{0} находится на глубине {1}"
+      },
+      "composition": {
+        "text": "The depth counts base classes in the project; a base outside it is one step. Beyond {0} levels, behavior is spread over many classes. Composition often reads better.",
+        "ru": "Глубина считает базовые классы проекта; внешний базовый класс — один шаг. Глубже {0} {0|уровня|уровней|уровней} поведение размазано по многим классам. Композиция часто читается лучше."
+      },
+      "embeds": {
+        "text": "{0} embeds {1} levels deep",
+        "ru": "{0} встраивает типы на глубину {1}"
+      },
+      "promoted": {
+        "text": "The limit is {0}; promoted members come from far away.",
+        "ru": "Предел — {0}; продвинутые члены приходят издалека."
+      }
     }
   },
   {
@@ -441,6 +1171,31 @@
     "confidence": "medium",
     "threshold": {
       "minTypeTests": 3
+    },
+    "l10n": {
+      "ru": {
+        "title": "Полиморфизм",
+        "description": "Несколько проверок типа времени выполнения по типам проекта в одной функции.",
+        "rationale": "Обычно это заново реализованная виртуальная диспетчеризация."
+      }
+    },
+    "messages": {
+      "branches": {
+        "text": "{0} branches on {1} runtime types",
+        "ru": "{0} ветвится по {1} {1|типу|типам|типам} времени выполнения"
+      },
+      "virtual": {
+        "text": "It tests for {0}. A virtual member on their common base would dispatch without the checks.",
+        "ru": "Проверяются {0}. Виртуальный член их общего базового типа выбрал бы реализацию без проверок."
+      },
+      "tests": {
+        "text": "{0} tests {1} project types at run time",
+        "ru": "{0} проверяет {1} {1|тип|типа|типов} проекта во время выполнения"
+      },
+      "interface": {
+        "text": "A type switch over project types is what an interface method can replace.",
+        "ru": "Type switch по типам проекта может заменить метод интерфейса."
+      }
     }
   },
   {
@@ -457,6 +1212,31 @@
     "threshold": {
       "maxLcom": 2,
       "minMethods": 4
+    },
+    "l10n": {
+      "ru": {
+        "title": "Связность (Cohesion)",
+        "description": "LCOM4 — группы методов без общего состояния.",
+        "rationale": "Больше одной группы — признак класса, который можно разделить."
+      }
+    },
+    "messages": {
+      "splits": {
+        "text": "{0} splits into {1} unrelated method groups",
+        "ru": "{0} распадается на {1} {1|несвязанную группу|несвязанные группы|несвязанных групп} методов"
+      },
+      "lcom": {
+        "text": "LCOM4 finds method groups that share no field and do not call each other; each may be a separate class.",
+        "ru": "LCOM4 находит группы методов без общих полей и взаимных вызовов; каждая может быть отдельным классом."
+      },
+      "groups": {
+        "text": "{0} has {1} unrelated method groups",
+        "ru": "У {0} {1} {1|несвязанная группа|несвязанные группы|несвязанных групп} методов"
+      },
+      "responsibilities": {
+        "text": "Groups of methods that share no state may be separate responsibilities.",
+        "ru": "Группы методов без общего состояния могут быть отдельными обязанностями."
+      }
     }
   },
   {
@@ -472,6 +1252,31 @@
     "confidence": "high",
     "threshold": {
       "maxCoupling": 15
+    },
+    "l10n": {
+      "ru": {
+        "title": "Зацепление (Coupling)",
+        "description": "Зацепление между объектами (CBO) без стандартной библиотеки.",
+        "rationale": "Много зависимостей — много причин для изменения."
+      }
+    },
+    "messages": {
+      "dependsOn": {
+        "text": "{0} depends on {1} types",
+        "ru": "{0} зависит от {1} {1|типа|типов|типов}"
+      },
+      "collaborators": {
+        "text": "Beyond {0} collaborators, changes elsewhere are likely to reach this class.",
+        "ru": "При числе связей больше {0} изменения в других местах, скорее всего, дойдут до этого класса."
+      },
+      "coupled": {
+        "text": "{0} is coupled to {1} types",
+        "ru": "{0} связан с {1} {1|типом|типами|типами}"
+      },
+      "reason": {
+        "text": "The limit is {0}; each dependency is a reason to change.",
+        "ru": "Предел — {0}; каждая зависимость — причина для изменения."
+      }
     }
   },
   {
@@ -485,7 +1290,24 @@
     ],
     "severity": "minor",
     "confidence": "low",
-    "threshold": {}
+    "threshold": {},
+    "l10n": {
+      "ru": {
+        "title": "Отказ от наследства (Refused bequest)",
+        "description": "Подкласс, который ничего не переопределяет и не трогает унаследованные члены.",
+        "rationale": "Ничего не получает от базового класса."
+      }
+    },
+    "messages": {
+      "refused": {
+        "text": "{0} inherits {1} but uses none of it",
+        "ru": "{0} наследует {1}, но ничего из него не использует"
+      },
+      "offers": {
+        "text": "{0} offers {1} members; none are overridden or used here. Outside callers may still rely on the inherited API, which this check cannot rule out.",
+        "ru": "{0} предлагает {1} {1|член|члена|членов}; ни один не переопределён и не используется здесь. Внешний код всё же может опираться на унаследованный API, а эта проверка не может этого исключить."
+      }
+    }
   },
   {
     "id": "PAT001",
@@ -498,7 +1320,24 @@
     ],
     "severity": "info",
     "confidence": "medium",
-    "threshold": {}
+    "threshold": {},
+    "l10n": {
+      "ru": {
+        "title": "Одиночка (Singleton)",
+        "description": "Класс только с закрытыми конструкторами, который открывает статический экземпляр самого себя.",
+        "rationale": "Для сведения: распознаёт шаблон; скрытое глобальное состояние — его цена."
+      }
+    },
+    "messages": {
+      "singleton": {
+        "text": "{0} is a Singleton",
+        "ru": "{0} — одиночка (Singleton)"
+      },
+      "global": {
+        "text": "Private constructors plus a static member of its own type. Singletons are global state: they hide dependencies and hinder testing.",
+        "ru": "Закрытые конструкторы и статический член собственного типа. Одиночки — глобальное состояние: они скрывают зависимости и мешают тестированию."
+      }
+    }
   },
   {
     "id": "PAT002",
@@ -511,7 +1350,28 @@
     ],
     "severity": "info",
     "confidence": "medium",
-    "threshold": {}
+    "threshold": {},
+    "l10n": {
+      "ru": {
+        "title": "Фабрика (Factory)",
+        "description": "Метод, который возвращает абстракцию и создаёт несколько её конкретных подтипов.",
+        "rationale": "Для сведения: распознаёт шаблон."
+      }
+    },
+    "messages": {
+      "factory": {
+        "text": "{0} is a Factory of {1}",
+        "ru": "{0} — фабрика (Factory) для {1}"
+      },
+      "creates": {
+        "text": "It returns the abstraction and creates {0}.",
+        "ru": "Возвращает абстракцию и создаёт {0}."
+      },
+      "named": {
+        "text": "The type name and the creation of {0} behind the abstraction suggest it.",
+        "ru": "На это указывают имя типа и создание {0} за абстракцией."
+      }
+    }
   },
   {
     "id": "PAT003",
@@ -524,7 +1384,24 @@
     ],
     "severity": "info",
     "confidence": "low",
-    "threshold": {}
+    "threshold": {},
+    "l10n": {
+      "ru": {
+        "title": "Стратегия (Strategy)",
+        "description": "Класс-контекст, который получает одну из нескольких взаимозаменяемых реализаций и делегирует ей.",
+        "rationale": "Для сведения: распознаёт шаблон."
+      }
+    },
+    "messages": {
+      "strategy": {
+        "text": "{0} uses {1} as a Strategy",
+        "ru": "{0} использует {1} как стратегию (Strategy)"
+      },
+      "injected": {
+        "text": "It holds an injected {0}, with {1} implementations: {2}.",
+        "ru": "Хранит внедрённый {0}, у которого {1} {1|реализация|реализации|реализаций}: {2}."
+      }
+    }
   },
   {
     "id": "PAT004",
@@ -537,7 +1414,28 @@
     ],
     "severity": "info",
     "confidence": "medium",
-    "threshold": {}
+    "threshold": {},
+    "l10n": {
+      "ru": {
+        "title": "Наблюдатель (Observer)",
+        "description": "Тип с событиями, которые он вызывает, или со списком наблюдателей, которых он уведомляет в цикле, и с методами подписки.",
+        "rationale": "Для сведения: распознаёт шаблон."
+      }
+    },
+    "messages": {
+      "subject": {
+        "text": "{0} is an Observer subject",
+        "ru": "{0} — субъект наблюдателя (Observer)"
+      },
+      "events": {
+        "text": "It publishes events: {0}.",
+        "ru": "Публикует события: {0}."
+      },
+      "subscribe": {
+        "text": "It has a subscribe method and notifies registered observers in a loop.",
+        "ru": "Имеет метод подписки и в цикле уведомляет зарегистрированных наблюдателей."
+      }
+    }
   },
   {
     "id": "PAT005",
@@ -550,7 +1448,24 @@
     ],
     "severity": "info",
     "confidence": "medium",
-    "threshold": {}
+    "threshold": {},
+    "l10n": {
+      "ru": {
+        "title": "Декоратор (Decorator)",
+        "description": "Класс, который реализует абстракцию, оборачивает экземпляр той же абстракции и передаёт ему вызовы.",
+        "rationale": "Для сведения: распознаёт шаблон."
+      }
+    },
+    "messages": {
+      "decorator": {
+        "text": "{0} is a Decorator of {1}",
+        "ru": "{0} — декоратор (Decorator) для {1}"
+      },
+      "forwards": {
+        "text": "It implements the abstraction, wraps an instance of it, and forwards calls.",
+        "ru": "Реализует абстракцию, оборачивает её экземпляр и передаёт ему вызовы."
+      }
+    }
   },
   {
     "id": "PAT006",
@@ -563,7 +1478,32 @@
     ],
     "severity": "info",
     "confidence": "low",
-    "threshold": {}
+    "threshold": {},
+    "l10n": {
+      "ru": {
+        "title": "Репозиторий (Repository)",
+        "description": "Тип с именем *Repository или API в духе коллекции: получить, добавить и удалить одну сущность.",
+        "rationale": "Для сведения: распознаёт шаблон."
+      }
+    },
+    "messages": {
+      "repository": {
+        "text": "{0} is a Repository",
+        "ru": "{0} — репозиторий (Repository)"
+      },
+      "agree": {
+        "text": "The name and the collection-like read/write API agree.",
+        "ru": "Имя и API чтения и записи в духе коллекции согласуются."
+      },
+      "maybe": {
+        "text": "{0} may be a Repository",
+        "ru": "{0}, возможно, репозиторий (Repository)"
+      },
+      "nameOnly": {
+        "text": "Only the name suggests it; the API is not collection-like.",
+        "ru": "На это указывает только имя; API не похож на коллекцию."
+      }
+    }
   },
   {
     "id": "PAT007",
@@ -576,7 +1516,24 @@
     ],
     "severity": "info",
     "confidence": "medium",
-    "threshold": {}
+    "threshold": {},
+    "l10n": {
+      "ru": {
+        "title": "Строитель (Builder)",
+        "description": "Текучие методы, которые возвращают сам тип, и завершающий метод вроде Build.",
+        "rationale": "Для сведения: распознаёт шаблон."
+      }
+    },
+    "messages": {
+      "builder": {
+        "text": "{0} is a Builder",
+        "ru": "{0} — строитель (Builder)"
+      },
+      "fluent": {
+        "text": "{0} fluent methods return this, and a terminal method builds the result.",
+        "ru": "{0} {0|текучий метод возвращает|текучих метода возвращают|текучих методов возвращают} this, а завершающий метод строит результат."
+      }
+    }
   },
   {
     "id": "PAT101",
@@ -598,6 +1555,23 @@
         "Registry",
         "Extensions"
       ]
+    },
+    "l10n": {
+      "ru": {
+        "title": "Локатор служб (Service Locator)",
+        "description": "Получение зависимостей из контейнера внутри бизнес-кода.",
+        "rationale": "Скрывает зависимости от конструктора."
+      }
+    },
+    "messages": {
+      "pulls": {
+        "text": "{0} pulls a dependency from {1}",
+        "ru": "{0} достаёт зависимость из {1}"
+      },
+      "invisible": {
+        "text": "The class's real dependencies are invisible in its constructor and fail only at run time.",
+        "ru": "Настоящие зависимости класса не видны в его конструкторе, и их нехватка проявляется только во время выполнения."
+      }
     }
   },
   {
@@ -618,6 +1592,23 @@
         "Model",
         "Entities"
       ]
+    },
+    "l10n": {
+      "ru": {
+        "title": "Анемичная модель предметной области (Anemic Domain Model)",
+        "description": "Класс с именем из предметной области, с изменяемыми данными и без поведения, а логика живёт в сервисах.",
+        "rationale": "Поведение отделено от данных, к которым оно относится."
+      }
+    },
+    "messages": {
+      "anemic": {
+        "text": "{0} is an anemic domain object",
+        "ru": "{0} — анемичный объект предметной области"
+      },
+      "setters": {
+        "text": "{0} public setters and no methods: its invariants must be enforced by whoever changes it. Plain DTOs are fine; this one sits in a domain namespace.",
+        "ru": "{0} {0|открытый сеттер|открытых сеттера|открытых сеттеров} и ни одного метода: инварианты должен соблюдать тот, кто его меняет. Простые DTO — это нормально, но этот лежит в пространстве имён предметной области."
+      }
     }
   },
   {
@@ -633,6 +1624,23 @@
     "confidence": "low",
     "threshold": {
       "minMethods": 3
+    },
+    "l10n": {
+      "ru": {
+        "title": "Посредник (Middle Man)",
+        "description": "Класс, который почти ничего не делает, кроме передачи вызовов одному соисполнителю, без общей абстракции.",
+        "rationale": "Лишний шаг без собственной пользы."
+      }
+    },
+    "messages": {
+      "forwards": {
+        "text": "{0} only forwards to {1}",
+        "ru": "{0} только передаёт вызовы {1}"
+      },
+      "single": {
+        "text": "All {0} public methods are single calls to the same member; callers could use it directly.",
+        "ru": "Открытых методов: {0}, и каждый — один вызов одного и того же члена; вызывающие могли бы обращаться к нему напрямую."
+      }
     }
   },
   {
@@ -650,6 +1658,31 @@
       "maxConstructorDependencies": 5,
       "maxModules": 4,
       "minMethods": 3
+    },
+    "l10n": {
+      "ru": {
+        "title": "Единственная ответственность (Single Responsibility)",
+        "description": "Считает зависимости конструктора класса и модули проекта, к которым он обращается.",
+        "rationale": "У класса с множеством соисполнителей, вероятно, несколько причин для изменения."
+      }
+    },
+    "messages": {
+      "constructor": {
+        "text": "{0} takes {1} dependencies in its constructor",
+        "ru": "{0} принимает в конструкторе {1} {1|зависимость|зависимости|зависимостей}"
+      },
+      "injected": {
+        "text": "More than {0} injected collaborators usually mean several responsibilities live in one class.",
+        "ru": "Если внедрённых зависимостей больше {0}, в одном классе обычно живут несколько обязанностей."
+      },
+      "modules": {
+        "text": "{0} depends on {1} other modules",
+        "ru": "{0} зависит от {1} {1|другого модуля|других модулей|других модулей}"
+      },
+      "concerns": {
+        "text": "Reaching into more than {0} modules suggests the class coordinates unrelated concerns.",
+        "ru": "Обращение больше чем к {0} {0|модулю|модулям|модулям} говорит о том, что класс координирует несвязанные задачи."
+      }
     }
   },
   {
@@ -666,6 +1699,23 @@
     "threshold": {
       "minOccurrences": 2,
       "minCases": 3
+    },
+    "l10n": {
+      "ru": {
+        "title": "Открытость/закрытость (Open/Closed)",
+        "description": "Находит один и тот же enum или признак, по которому делается switch в нескольких местах.",
+        "rationale": "Тогда новое значение требует правки каждого switch."
+      }
+    },
+    "messages": {
+      "repeats": {
+        "text": "Switch over {0} repeats at {1} sites",
+        "ru": "Switch по {0} повторяется в {1} {1|месте|местах|местах}"
+      },
+      "table": {
+        "text": "{0} switches dispatch on {1}; a new value needs an edit at each. A polymorphic type or a table keeps this closed for modification.",
+        "ru": "{0} {0|switch выбирает|switch выбирают|switch выбирают} по {1}; новое значение требует правки в каждом. Полиморфный тип или таблица оставляют код закрытым для изменений."
+      }
     }
   },
   {
@@ -679,7 +1729,24 @@
     ],
     "severity": "major",
     "confidence": "medium",
-    "threshold": {}
+    "threshold": {},
+    "l10n": {
+      "ru": {
+        "title": "Подстановка Лисков (Liskov Substitution)",
+        "description": "Переопределение или реализация, тело которой только бросает «не поддерживается» или «не реализовано».",
+        "rationale": "Такой член не может заменить свой базовый тип."
+      }
+    },
+    "messages": {
+      "rejects": {
+        "text": "{0} rejects the inherited contract",
+        "ru": "{0} отвергает унаследованный контракт"
+      },
+      "throws": {
+        "text": "The member exists only to throw, so code written against the base type breaks when it receives this subtype.",
+        "ru": "Член существует только чтобы бросить исключение, поэтому код, написанный для базового типа, ломается, получив этот подтип."
+      }
+    }
   },
   {
     "id": "PRN004",
@@ -694,6 +1761,31 @@
     "confidence": "medium",
     "threshold": {
       "maxMembers": 10
+    },
+    "l10n": {
+      "ru": {
+        "title": "Разделение интерфейсов (Interface Segregation)",
+        "description": "Интерфейсы с множеством членов или такие, у которых реализации делают часть членов заглушками.",
+        "rationale": "Клиентов заставляют зависеть от членов, которыми они не пользуются."
+      }
+    },
+    "messages": {
+      "refused": {
+        "text": "{0} has members its implementers refuse",
+        "ru": "У {0} есть члены, от которых отказываются реализации"
+      },
+      "onlyThrow": {
+        "text": "Implementers only throw in: {0}. The interface is wider than some clients need.",
+        "ru": "Реализации только бросают исключение в: {0}. Интерфейс шире, чем нужно некоторым клиентам."
+      },
+      "wide": {
+        "text": "{0} declares {1} members",
+        "ru": "{0} объявляет {1} {1|член|члена|членов}"
+      },
+      "roles": {
+        "text": "More than {0} members on one interface usually mix several client roles.",
+        "ru": "Больше {0} {0|члена|членов|членов} в одном интерфейсе обычно смешивают несколько ролей клиентов."
+      }
     }
   },
   {
@@ -717,6 +1809,23 @@
         "Registry",
         "Tests"
       ]
+    },
+    "l10n": {
+      "ru": {
+        "title": "Инверсия зависимостей (Dependency Inversion)",
+        "description": "Создание класса проекта, который реализует абстракцию проекта, вне корней композиции и тестовых классов (класс с атрибутами тестового фреймворка вроде Fact, Theory, Test, TestMethod, TestCase).",
+        "rationale": "Вызывающий привязан к конкретному типу."
+      }
+    },
+    "messages": {
+      "creates": {
+        "text": "{0} creates {1} directly",
+        "ru": "{0} создаёт {1} напрямую"
+      },
+      "inject": {
+        "text": "{0} is available through {1}, but {2} instantiates the concrete class. Injecting the abstraction keeps {3} replaceable and testable.",
+        "ru": "{0} доступен через {1}, но {2} создаёт конкретный класс. Внедрение абстракции оставляет {3} заменяемым и тестируемым."
+      }
     }
   },
   {
@@ -730,6 +1839,23 @@
     "confidence": "medium",
     "threshold": {
       "minNodes": 25
+    },
+    "l10n": {
+      "ru": {
+        "title": "Не повторяйся (DRY)",
+        "description": "Функции, структура которых совпадает с точностью до имён локальных переменных и литералов.",
+        "rationale": "Одно и то же знание записано дважды."
+      }
+    },
+    "messages": {
+      "duplicates": {
+        "text": "{0} has {1} structural duplicate(s)",
+        "ru": "У {0} {1} {1|структурный дубликат|структурных дубликата|структурных дубликатов}"
+      },
+      "same": {
+        "text": "Same statement structure and member usage, differing at most in local names and literals: {0}.",
+        "ru": "Та же структура операторов и то же использование членов, отличия — не больше чем в именах локальных переменных и литералах: {0}."
+      }
     }
   },
   {
@@ -743,6 +1869,31 @@
     "confidence": "medium",
     "threshold": {
       "maxBooleanOperators": 3
+    },
+    "l10n": {
+      "ru": {
+        "title": "Делай проще (KISS)",
+        "description": "Длинные логические условия и вложенные тернарные операторы.",
+        "rationale": "В одно выражение упаковано слишком много решений."
+      }
+    },
+    "messages": {
+      "operators": {
+        "text": "Condition combines {0} boolean operators",
+        "ru": "Условие объединяет {0} {0|логический оператор|логических оператора|логических операторов}"
+      },
+      "intent": {
+        "text": "More than {0} operators in one condition; named intermediate values or a predicate method would state the intent.",
+        "ru": "Больше {0} {0|оператора|операторов|операторов} в одном условии; именованные промежуточные значения или метод-предикат выразили бы намерение."
+      },
+      "ternary": {
+        "text": "Nested ternary expression",
+        "ru": "Вложенный тернарный оператор"
+      },
+      "branching": {
+        "text": "A ternary inside a ternary hides the branching; an if or a switch expression shows it.",
+        "ru": "Тернарный оператор внутри тернарного скрывает ветвление; if или выражение switch его показывают."
+      }
     }
   },
   {
@@ -754,7 +1905,32 @@
     "paradigms": [],
     "severity": "minor",
     "confidence": "low",
-    "threshold": {}
+    "threshold": {},
+    "l10n": {
+      "ru": {
+        "title": "Тебе это не понадобится (YAGNI)",
+        "description": "Непубличные абстракции со слишком малым числом реализаций и неиспользуемые параметры закрытых методов.",
+        "rationale": "Обобщённость, которой никто не пользуется."
+      }
+    },
+    "messages": {
+      "implementers": {
+        "text": "{0} has {1} implementer(s)",
+        "ru": "У {0} {1} {1|реализация|реализации|реализаций}"
+      },
+      "indirection": {
+        "text": "A non-public abstraction with at most one implementation adds indirection without a second use. It may still serve test doubles, which this analysis cannot see.",
+        "ru": "Непубличная абстракция не более чем с одной реализацией добавляет косвенность без второго применения. Она всё же может служить тестовым дублёрам, которых этот анализ не видит."
+      },
+      "parameter": {
+        "text": "Parameter {0} of {1} is never used",
+        "ru": "Параметр {0} в {1} нигде не используется"
+      },
+      "private": {
+        "text": "The method is private, so no external contract requires this parameter.",
+        "ru": "Метод закрытый, поэтому никакой внешний контракт не требует этого параметра."
+      }
+    }
   },
   {
     "id": "PRN009",
@@ -770,7 +1946,24 @@
     "threshold": {
       "maxHops": 2
     },
-    "needsSemantic": true
+    "needsSemantic": true,
+    "l10n": {
+      "ru": {
+        "title": "Закон Деметры (Law of Demeter)",
+        "description": "Цепочки вызовов, которые проходят через несколько разных типов проекта.",
+        "rationale": "Вызывающий привязан к внутреннему устройству других типов."
+      }
+    },
+    "messages": {
+      "chain": {
+        "text": "Chain crosses {0} project types",
+        "ru": "Цепочка проходит через {0} {0|тип|типа|типов} проекта"
+      },
+      "navigates": {
+        "text": "The call site navigates {0}. Asking the first object for what is needed hides that structure.",
+        "ru": "Место вызова проходит по {0}. Если попросить у первого объекта то, что нужно, эта структура будет скрыта."
+      }
+    }
   },
   {
     "id": "SEC001",
@@ -781,7 +1974,32 @@
     "paradigms": [],
     "severity": "major",
     "confidence": "low",
-    "threshold": {}
+    "threshold": {},
+    "l10n": {
+      "ru": {
+        "title": "Секрет в коде (эвристика)",
+        "description": "Строковые литералы, присвоенные именам, похожим на секреты, и литералы в формате известных учётных данных.",
+        "rationale": "Не заменяет сканер секретов."
+      }
+    },
+    "messages": {
+      "credential": {
+        "text": "{0} holds what looks like a real credential",
+        "ru": "{0} содержит то, что похоже на настоящие учётные данные"
+      },
+      "rotate": {
+        "text": "Heuristic: the literal matches the format of a known key or token. Rotate it if it is real, and load it from a secret store.",
+        "ru": "Эвристика: литерал совпадает с форматом известного ключа или токена. Если он настоящий, замените его и загружайте из хранилища секретов."
+      },
+      "secret": {
+        "text": "{0} looks like a hardcoded secret",
+        "ru": "{0} похоже на секрет, записанный в коде"
+      },
+      "placeholder": {
+        "text": "Heuristic: the name suggests a secret and the value is a literal. It may be a placeholder or a non-secret value.",
+        "ru": "Эвристика: имя наводит на мысль о секрете, а значение — литерал. Это может быть заглушка или несекретное значение."
+      }
+    }
   },
   {
     "id": "SEC002",
@@ -792,7 +2010,32 @@
     "paradigms": [],
     "severity": "critical",
     "confidence": "low",
-    "threshold": {}
+    "threshold": {},
+    "l10n": {
+      "ru": {
+        "title": "Небезопасная десериализация (эвристика)",
+        "description": "Использование форматтеров, которые создают произвольные типы из входных данных, или полиморфной обработки типов.",
+        "rationale": "Эвристика по виду кода, без анализа заражённых данных."
+      }
+    },
+    "messages": {
+      "formatter": {
+        "text": "{0} is unsafe with untrusted data",
+        "ru": "{0} небезопасен для недоверенных данных"
+      },
+      "arbitrary": {
+        "text": "Heuristic: this formatter can instantiate arbitrary types from its input; whether the input is trusted is not checked.",
+        "ru": "Эвристика: этот форматтер может создавать произвольные типы из входных данных; доверены ли они, не проверяется."
+      },
+      "typeNames": {
+        "text": "TypeNameHandling.{0} enables polymorphic deserialization",
+        "ru": "TypeNameHandling.{0} включает полиморфную десериализацию"
+      },
+      "gadgets": {
+        "text": "Heuristic: type names read from the payload allow gadget chains unless a binder restricts them.",
+        "ru": "Эвристика: имена типов из полезной нагрузки открывают путь цепочкам гаджетов, если их не ограничивает binder."
+      }
+    }
   },
   {
     "id": "SEC003",
@@ -803,7 +2046,24 @@
     "paradigms": [],
     "severity": "major",
     "confidence": "low",
-    "threshold": {}
+    "threshold": {},
+    "l10n": {
+      "ru": {
+        "title": "Конкатенация SQL (эвристика)",
+        "description": "Текст, похожий на SQL, склеенный или интерполированный с неконстантными значениями.",
+        "rationale": "Эвристика по виду кода, без анализа заражённых данных."
+      }
+    },
+    "messages": {
+      "sql": {
+        "text": "SQL built from non-constant values",
+        "ru": "SQL собирается из неконстантных значений"
+      },
+      "injection": {
+        "text": "Heuristic: if any value comes from a user, this allows injection. Parameterized queries keep data out of the statement.",
+        "ru": "Эвристика: если хоть одно значение приходит от пользователя, это позволяет внедрение. Параметризованные запросы держат данные вне текста запроса."
+      }
+    }
   },
   {
     "id": "STR001",
@@ -816,7 +2076,24 @@
     ],
     "severity": "minor",
     "confidence": "high",
-    "threshold": {}
+    "threshold": {},
+    "l10n": {
+      "ru": {
+        "title": "Goto",
+        "description": "Использования goto. Переходы switch-case не отмечаются.",
+        "rationale": "Нарушает структуру блоков с одним входом и одним выходом."
+      }
+    },
+    "messages": {
+      "jump": {
+        "text": "goto {0} in {1}",
+        "ru": "goto {0} в {1}"
+      },
+      "structure": {
+        "text": "The flow no longer follows the block structure; a loop, a helper or an early return usually replaces it.",
+        "ru": "Поток управления больше не следует структуре блоков; обычно его заменяет цикл, вспомогательная функция или ранний возврат."
+      }
+    }
   },
   {
     "id": "STR002",
@@ -829,7 +2106,40 @@
     ],
     "severity": "major",
     "confidence": "medium",
-    "threshold": {}
+    "threshold": {},
+    "l10n": {
+      "ru": {
+        "title": "Глобальное состояние",
+        "description": "Незакрытые статические изменяемые поля и свойства, переменные уровня модуля.",
+        "rationale": "Работает как скрытая глобальная переменная."
+      }
+    },
+    "messages": {
+      "variable": {
+        "text": "Global variable {0}",
+        "ru": "Глобальная переменная {0}"
+      },
+      "history": {
+        "text": "Any function can change it, so its value depends on the call history.",
+        "ru": "Любая функция может её изменить, поэтому значение зависит от истории вызовов."
+      },
+      "field": {
+        "text": "Global mutable field {0}.{1}",
+        "ru": "Глобальное изменяемое поле {0}.{1}"
+      },
+      "fieldShared": {
+        "text": "A non-private static mutable field is shared by all code and threads.",
+        "ru": "Незакрытое статическое изменяемое поле общее для всего кода и всех потоков."
+      },
+      "property": {
+        "text": "Global mutable property {0}.{1}",
+        "ru": "Глобальное изменяемое свойство {0}.{1}"
+      },
+      "propertyShared": {
+        "text": "A static settable property is shared by all code and threads.",
+        "ru": "Статическое свойство с сеттером общее для всего кода и всех потоков."
+      }
+    }
   },
   {
     "id": "STR003",
@@ -845,6 +2155,31 @@
     "threshold": {
       "maxModuleLines": 3000,
       "maxFileLines": 800
+    },
+    "l10n": {
+      "ru": {
+        "title": "Размер модуля",
+        "description": "Строки кода в модуле и в файле.",
+        "rationale": "По очень большим модулям трудно ориентироваться."
+      }
+    },
+    "messages": {
+      "module": {
+        "text": "Module {0} has {1} lines of code",
+        "ru": "В модуле {0} {1} {1|строка|строки|строк} кода"
+      },
+      "unit": {
+        "text": "The limit is {0}; a smaller module is easier to understand as a unit.",
+        "ru": "Предел — {0}; модуль поменьше легче понять как целое."
+      },
+      "file": {
+        "text": "{0} has {1} lines",
+        "ru": "В {0} {1} {1|строка|строки|строк}"
+      },
+      "limit": {
+        "text": "The limit is {0}.",
+        "ru": "Предел — {0}."
+      }
     }
   }
 ]

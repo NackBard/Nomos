@@ -6,6 +6,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="YamlDotNet" />
+    <InternalsVisibleTo Include="Nomos.Analyzers.Tests" />
   </ItemGroup>
   <ItemGroup>
     <!-- The rules are data (spec/rules): titles, descriptions and rationale are read from here, not duplicated in code. -->

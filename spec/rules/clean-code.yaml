@@ -1,4 +1,4 @@
-schemaVersion: "1.0.0"
+schemaVersion: "1.1.0"
 rules:
   - id: CC001
     category: CleanCode
@@ -9,6 +9,14 @@ rules:
     severity: minor
     confidence: high
     threshold: { maxLines: 40 }
+    l10n:
+      ru:
+        title: "Длинный метод (Long method)"
+        description: "Строки исходного кода функции."
+        rationale: "Длинные функции труднее читать и тестировать."
+    messages:
+      lines: { text: "{0} spans {1} lines", ru: "{0} занимает {1} {1|строку|строки|строк}" }
+      limit: { text: "The line count is exact; the limit of {0} is a readability convention.", ru: "Число строк точное; предел {0} — соглашение о читаемости." }
   - id: CC002
     category: CleanCode
     title: Large class
@@ -18,6 +26,14 @@ rules:
     severity: minor
     confidence: high
     threshold: { maxLines: 400, maxMembers: 30 }
+    l10n:
+      ru:
+        title: "Большой класс (Large class)"
+        description: "Строки и члены типа по всем его частям."
+        rationale: "Большой тип склонен собирать несколько обязанностей."
+    messages:
+      size: { text: "{0} has {1} lines and {2} members", ru: "В {0} {1} {1|строка|строки|строк} и {2} {2|член|члена|членов}" }
+      limits: { text: "The counts are exact; the limits ({0} lines, {1} members) are conventions.", ru: "Числа точные; пределы ({0} {0|строка|строки|строк}, {1} {1|член|члена|членов}) — соглашения." }
   - id: CC003
     category: CleanCode
     title: Too many parameters
@@ -27,6 +43,15 @@ rules:
     severity: minor
     confidence: high
     threshold: { maxParameters: 5, maxConstructorParameters: 7 }
+    l10n:
+      ru:
+        title: "Слишком много параметров"
+        description: "Число параметров функции; у конструкторов свой предел из-за внедрения зависимостей."
+        rationale: "Длинный список параметров трудно передать правильно."
+    messages:
+      count: { text: "{0} takes {1} parameters", ru: "{0} принимает {1} {1|параметр|параметра|параметров}" }
+      limitObject: { text: "The limit is {0}. Long lists are easy to misorder; a parameter object groups what belongs together.", ru: "Предел — {0}. В длинных списках легко перепутать порядок; объект-параметр собирает вместе то, что связано." }
+      limitStruct: { text: "The limit is {0}. Long lists are easy to misorder; a parameter struct groups what belongs together.", ru: "Предел — {0}. В длинных списках легко перепутать порядок; структура-параметр собирает вместе то, что связано." }
   - id: CC004
     category: CleanCode
     title: Deep nesting
@@ -36,6 +61,15 @@ rules:
     severity: minor
     confidence: high
     threshold: { maxDepth: 4 }
+    l10n:
+      ru:
+        title: "Глубокая вложенность"
+        description: "Глубина вложенности ветвлений, циклов и защищённых блоков; цепочки else-if остаются плоскими."
+        rationale: "Каждый уровень добавляет условие, которое читатель держит в голове."
+    messages:
+      depth: { text: "{0} nests {1} levels deep", ru: "Вложенность {0} — {1} {1|уровень|уровня|уровней}" }
+      limitMethods: { text: "The limit is {0}. Guard clauses or extracted methods flatten the flow.", ru: "Предел — {0}. Ранние выходы или вынесенные методы делают поток плоским." }
+      limitFunctions: { text: "The limit is {0}. Guard clauses or extracted functions flatten the flow.", ru: "Предел — {0}. Ранние выходы или вынесенные функции делают поток плоским." }
   - id: CC006
     category: CleanCode
     title: Placeholders
@@ -45,6 +79,16 @@ rules:
     severity: minor
     confidence: high
     threshold: {}
+    l10n:
+      ru:
+        title: "Заглушки"
+        description: "Комментарии TODO, FIXME, HACK и XXX и тела, которые только бросают «не реализовано»."
+        rationale: "Отмечают незаконченную работу."
+    messages:
+      comment: { text: "{0} comment left in code", ru: "В коде оставлен комментарий {0}" }
+      commentTracker: { text: "A placeholder records unfinished work that belongs in the issue tracker or in a fix.", ru: "Заглушка отмечает незаконченную работу, место которой — в трекере задач или в исправлении." }
+      notImplemented: { text: "{0} is not implemented", ru: "{0}: не реализовано" }
+      notImplementedThrows: { text: "The body only throws NotImplementedException.", ru: "Тело только бросает NotImplementedException." }
   - id: CC007
     category: CleanCode
     title: Dead code
@@ -54,6 +98,19 @@ rules:
     severity: minor
     confidence: medium
     threshold: {}
+    l10n:
+      ru:
+        title: "Мёртвый код"
+        description: "Недостижимые операторы, неиспользуемые локальные переменные, закрытые члены, на которые никто не ссылается."
+        rationale: "Код, который никогда не выполняется, всё равно приходится читать."
+    messages:
+      unreachable: { text: "Unreachable code in {0}", ru: "Недостижимый код в {0}" }
+      unreachableLeaves: { text: "The preceding statement always leaves this block.", ru: "Предыдущий оператор всегда покидает этот блок." }
+      local: { text: "Local {0} is never read", ru: "Локальная переменная {0} нигде не читается" }
+      localInitializer: { text: "No expression in the callable reads this variable; its initializer may still have side effects.", ru: "Ни одно выражение функции не читает эту переменную; у её инициализатора всё же могут быть побочные эффекты." }
+      method: { text: "Private method {0} is never called", ru: "Закрытый метод {0} нигде не вызывается" }
+      field: { text: "Private field {0} is never used", ru: "Закрытое поле {0} нигде не используется" }
+      reflection: { text: "Nothing in the declaring type refers to it; only reflection could reach it.", ru: "В объявляющем типе на него никто не ссылается; добраться до него можно только через рефлексию." }
   - id: CC008
     category: CleanCode
     title: Commented-out code
@@ -63,6 +120,14 @@ rules:
     severity: minor
     confidence: low
     threshold: {}
+    l10n:
+      ru:
+        title: "Закомментированный код"
+        description: "Строчные комментарии, которые заканчиваются как операторы."
+        rationale: "История хранится в системе контроля версий; отключённый код — шум."
+    messages:
+      code: { text: "Comment looks like disabled code", ru: "Комментарий похож на отключённый код" }
+      shape: { text: "The comment has the shape of a statement; a textual heuristic cannot tell it from prose with certainty.", ru: "Комментарий имеет вид оператора; текстовая эвристика не может уверенно отличить его от обычного текста." }
   - id: CC009
     category: CleanCode
     title: Empty catch
@@ -72,3 +137,11 @@ rules:
     severity: major
     confidence: high
     threshold: {}
+    l10n:
+      ru:
+        title: "Пустой catch"
+        description: "Блок catch без операторов и без комментария."
+        rationale: "Сбой молча отбрасывается."
+    messages:
+      empty: { text: "Empty catch in {0}", ru: "Пустой catch в {0}" }
+      disappears: { text: "The exception disappears without handling, logging or a comment saying why that is safe.", ru: "Исключение пропадает без обработки, записи в журнал или комментария о том, почему это безопасно." }

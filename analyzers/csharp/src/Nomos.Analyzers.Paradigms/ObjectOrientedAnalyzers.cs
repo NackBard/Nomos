@@ -12,7 +12,7 @@ public sealed class EncapsulationAnalyzer : AnalyzerBase
         {
             foreach (var field in type.Fields.Where(f => f is { Visibility: Visibility.Public, IsReadOnly: false, IsConstant: false }))
                 context.Report(Confidence.High, field.Location, $"Public mutable field {type.Name}.{field.Name}",
-                    "Any caller can change this field, so the type cannot protect its invariants. A property or a method can.", type.ModuleName, field.Id);
+                    $"Any caller can change this field, so the type cannot protect its invariants. A property or a method can.", type.ModuleName, field.Id);
         }
     }
 }
@@ -74,7 +74,7 @@ public sealed class CohesionAnalyzer : AnalyzerBase
             context.Report(new Metric("lcom4", MetricScope.Type, type.Id, lcom, type.ModuleName));
             if (lcom > maxLcom && type.Callables.Count(c => c.Kind == CallableKind.Method) >= minMethods)
                 context.Report(type, Confidence.Medium, $"{type.Name} splits into {lcom} unrelated method groups",
-                    "LCOM4 finds method groups that share no field and do not call each other; each may be a separate class.",
+                    $"LCOM4 finds method groups that share no field and do not call each other; each may be a separate class.",
                     measured: new Measurement("lcom4", lcom, maxLcom));
         }
     }

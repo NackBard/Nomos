@@ -5,22 +5,22 @@ internal static class Effects
     private static readonly HashSet<string> EffectfulTypes = ["Console", "File", "Directory", "Environment", "HttpClient", "Process", "Random", "DateTime", "DateTimeOffset", "Guid", "Stopwatch", "Debug", "Trace"];
     private static readonly HashSet<string> Mutators = ["Add", "AddRange", "Remove", "RemoveAt", "RemoveAll", "Clear", "Insert", "Push", "Pop", "Enqueue", "Dequeue", "Sort", "Reverse"];
 
-    /// <summary>Lists observable effects of a body as (description, location).</summary>
+    /// <summary>Lists observable effects of a body as (code that shows the effect, location); code reads the same in every language.</summary>
     public static IEnumerable<(string What, SourceLocation Where)> Of(IrNode? body)
     {
         var flow = DataFlow.Analyze(body);
-        foreach (var (symbol, location) in flow.MemberWrites) yield return ($"writes {symbol.Name}", location);
-        foreach (var parameter in flow.MutatedParameters) yield return ($"mutates parameter {parameter}", body!.Location);
+        foreach (var (symbol, location) in flow.MemberWrites) yield return ($"{symbol.Name} = …", location);
+        foreach (var parameter in flow.MutatedParameters) yield return ($"{parameter}.… = …", body!.Location);
         foreach (var call in flow.Invocations)
         {
             var owner = call.Target.DeclaringTypeId?.Split('.').Last();
             if (owner is not null && EffectfulTypes.Contains(owner) && !call.Target.Name.StartsWith("Parse", StringComparison.Ordinal))
-                yield return ($"calls {owner}.{call.Target.Name}", call.Location);
+                yield return ($"{owner}.{call.Target.Name}()", call.Location);
             else if (Mutators.Contains(call.Target.Name) && call.Receiver is NameExpression { Symbol.Kind: SymbolKind.Field or SymbolKind.Property or SymbolKind.Parameter } target && call.Target.IsExternal)
-                yield return ($"mutates {target.Symbol.Name} through {call.Target.Name}", call.Location);
+                yield return ($"{target.Symbol.Name}.{call.Target.Name}()", call.Location);
         }
         foreach (var access in body.All<MemberAccessExpression>().Where(a => a.Member.Name is "Now" or "UtcNow" or "Today" && a.Member.IsExternal))
-            yield return ($"reads the clock via {access.Member.Name}", access.Location);
+            yield return ($"{access.Member.DeclaringTypeId?.Split('.').Last() ?? "DateTime"}.{access.Member.Name}", access.Location);
     }
 }
 
@@ -59,7 +59,7 @@ public sealed class LambdaSideEffectAnalyzer : AnalyzerBase
                 var captured = flow.LocalWrites.Where(w => !flow.LocalDeclarations.Contains(w) && !parameters.Contains(w)).ToList();
                 var members = flow.MemberWrites.Select(w => w.Symbol.Name).ToList();
                 if (captured.Count + members.Count > 0)
-                    context.Report(Confidence.High, lambda.Location, "Lambda changes state outside itself",
+                    context.Report(Confidence.High, lambda.Location, $"Lambda changes state outside itself",
                         $"It writes {string.Join(", ", captured.Concat(members).Distinct())}. With lazy or parallel evaluation, the order of these writes is not guaranteed.", symbol: callable.Id);
             }
         }
@@ -81,7 +81,7 @@ public sealed class MutableStateAnalyzer : AnalyzerBase
             var reassigned = flow.LocalWrites.Where(w => flow.LocalDeclarations.Contains(w) && !counters.Contains(w)).Order(StringComparer.Ordinal).ToList();
             if (reassigned.Count > 0)
                 context.Report(Confidence.Medium, callable.Location, $"{callable.Name} reassigns {string.Join(", ", reassigned)}",
-                    "In functional style a new value gets a new name. Reassignment makes the meaning of a variable depend on the position in the code.", symbol: callable.Id);
+                    $"In functional style a new value gets a new name. Reassignment makes the meaning of a variable depend on the position in the code.", symbol: callable.Id);
         }
 
         foreach (var type in context.Types.Where(t => t.Kind is TypeKind.Class or TypeKind.Record or TypeKind.Struct))
@@ -90,7 +90,7 @@ public sealed class MutableStateAnalyzer : AnalyzerBase
                 .Concat(type.Properties.Where(p => p.SetterVisibility is not null).Select(p => p.Name)).ToList();
             if (mutable.Count > 0)
                 context.Report(type, Confidence.Medium, $"{type.Name} has mutable members: {string.Join(", ", mutable)}",
-                    "Instances can change after construction, so a value's meaning depends on time.");
+                    $"Instances can change after construction, so a value's meaning depends on time.");
         }
     }
 }
@@ -112,7 +112,7 @@ public sealed class NonTailRecursionAnalyzer : AnalyzerBase
             var offending = calls.FirstOrDefault(c => !tail.Contains(c));
             if (offending is not null)
                 context.Report(Confidence.High, offending.Location, $"{callable.Name} recurses outside tail position",
-                    "Work remains after the self-call returns, so each level keeps a stack frame; deep input can overflow the stack.", symbol: callable.Id);
+                    $"Work remains after the self-call returns, so each level keeps a stack frame; deep input can overflow the stack.", symbol: callable.Id);
         }
     }
 

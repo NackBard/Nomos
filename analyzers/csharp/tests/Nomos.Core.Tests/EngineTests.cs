@@ -10,7 +10,7 @@ public sealed class EveryTypeAnalyzer : AnalyzerBase
 {
     public override void Analyze(AnalysisContext context)
     {
-        foreach (var type in context.Types) context.Report(type, Confidence.High, $"type {type.Name}", "because");
+        foreach (var type in context.Types) context.Report(type, Confidence.High, $"type {type.Name}", $"because");
         context.Report(new Metric("count", MetricScope.Project, "p", context.Types.Count()));
     }
 }
@@ -36,7 +36,7 @@ public sealed class CrashingAnalyzer : AnalyzerBase
 [Analyzer("T005", "Other", Title = "Disabled by default", EnabledByDefault = false)]
 public sealed class OptInAnalyzer : AnalyzerBase
 {
-    public override void Analyze(AnalysisContext context) => context.Report(Confidence.Low, SourceLocation.None, "opted in", "because");
+    public override void Analyze(AnalysisContext context) => context.Report(Confidence.Low, SourceLocation.None, $"opted in", $"because");
 }
 
 [Analyzer("T006", "Test", Title = "Lists the modules it sees", Paradigms = ["oop"])]
@@ -44,7 +44,7 @@ public sealed class ModuleListAnalyzer : AnalyzerBase
 {
     public override void Analyze(AnalysisContext context)
     {
-        foreach (var module in context.Modules) context.Report(Confidence.Low, SourceLocation.None, $"module {module.Name}", "because");
+        foreach (var module in context.Modules) context.Report(Confidence.Low, SourceLocation.None, $"module {module.Name}", $"because");
     }
 }
 
@@ -198,7 +198,7 @@ public class EngineTests
     {
         var context = new AnalysisContext(new EveryTypeAnalyzer().Descriptor, new ProjectModel("p", [], []), [], "toy", new HashSet<string>(),
             null!, null!, _ => { }, _ => { });
-        Assert.Throws<ArgumentException>(() => context.Report(Confidence.High, SourceLocation.None, "m", " "));
+        Assert.Throws<ArgumentException>(() => context.Report(Confidence.High, SourceLocation.None, $"m", $" "));
     }
 
     [Fact]

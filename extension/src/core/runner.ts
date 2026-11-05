@@ -2,6 +2,8 @@ import { spawn } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { ContractError, checkContract, parseJson } from "./contracts";
+import { english } from "./l10n";
+import type { Translate } from "./l10n";
 import type { AnalysisRun, AnalyzerConfig, Facts, Workspace } from "./model";
 import { readFindings, readRuleTitles } from "./sarif";
 
@@ -15,11 +17,11 @@ export interface Manifest { name: string; language: string; version: string; cap
 /** Why an analyzer did not produce a result; the codes are those of docs/ARCHITECTURE.md. */
 export class AnalyzerError extends Error {}
 
-const codeMeaning: Record<number, string> = {
-  1: "unexpected analyzer error",
-  2: "usage error",
-  3: "the input is not usable",
-};
+function codeMeaning(code: number | null, t: Translate): string {
+  if (code === null) return t("stopped or timed out");
+  const meanings: Record<number, string> = { 1: t("unexpected analyzer error"), 2: t("usage error"), 3: t("the input is not usable") };
+  return meanings[code] ?? t("unknown exit code");
+}
 
 export function readWorkspace(folder: string): Workspace {
   const file = path.join(folder, WorkspaceFileName);
@@ -44,13 +46,13 @@ export function writePractices(folder: string, practices: string[] | undefined):
 
 interface Exit { code: number | null; stdout: string; stderr: string }
 
-function run(config: AnalyzerConfig, folder: string, args: string[], signal?: AbortSignal): Promise<Exit> {
+function run(config: AnalyzerConfig, folder: string, args: string[], signal: AbortSignal | undefined, t: Translate): Promise<Exit> {
   return new Promise((resolve, reject) => {
     const [command, ...fixed] = config.command;
     const cwd = config.cwd ? path.resolve(folder, config.cwd) : folder;
     // spawn reports a missing working directory as a missing program; name the real cause.
     if (!fs.existsSync(cwd)) {
-      reject(new AnalyzerError(`${config.language}: cannot start "${command}": the working directory ${cwd} does not exist`));
+      reject(new AnalyzerError(t("{0}: cannot start \"{1}\": the working directory {2} does not exist", config.language, command, cwd)));
       return;
     }
     const child = spawn(command, [...fixed, ...args], {
@@ -66,7 +68,7 @@ function run(config: AnalyzerConfig, folder: string, args: string[], signal?: Ab
     child.stderr.on("data", (d: Buffer) => stderr.push(d));
     child.on("error", (e) => {
       clearTimeout(timer);
-      reject(new AnalyzerError(`${config.language}: cannot start "${command}": ${e.message}`));
+      reject(new AnalyzerError(t("{0}: cannot start \"{1}\": {2}", config.language, command, e.message)));
     });
     child.on("close", (code) => {
       clearTimeout(timer);
@@ -90,15 +92,15 @@ function failureDetail(exit: Exit): string {
   return [...summary, ...causes].join(" | ");
 }
 
-function failure(config: AnalyzerConfig, command: string, exit: Exit): AnalyzerError {
-  const meaning = exit.code === null ? "stopped or timed out" : codeMeaning[exit.code] ?? "unknown exit code";
+function failure(config: AnalyzerConfig, command: string, exit: Exit, t: Translate): AnalyzerError {
   const detail = failureDetail(exit);
-  return new AnalyzerError(`${config.language}: "${command}" exited with ${exit.code} (${meaning})${detail ? `: ${detail}` : ""}`);
+  const message = t("{0}: \"{1}\" exited with {2} ({3})", config.language, command, String(exit.code), codeMeaning(exit.code, t));
+  return new AnalyzerError(`${message}${detail ? `: ${detail}` : ""}`);
 }
 
-export async function readManifest(config: AnalyzerConfig, folder: string, signal?: AbortSignal): Promise<Manifest> {
-  const exit = await run(config, folder, ["manifest"], signal);
-  if (exit.code !== SuccessCode) throw failure(config, "manifest", exit);
+export async function readManifest(config: AnalyzerConfig, folder: string, signal?: AbortSignal, t: Translate = english): Promise<Manifest> {
+  const exit = await run(config, folder, ["manifest"], signal, t);
+  if (exit.code !== SuccessCode) throw failure(config, "manifest", exit, t);
   const manifest = checkContract<Manifest>("manifest", parseJson(exit.stdout, `${config.language} manifest`), `${config.language} manifest`);
   if (manifest.language !== config.language) throw new ContractError(`manifest language "${manifest.language}" differs from the configured "${config.language}"`);
   return manifest;
@@ -107,9 +109,10 @@ export async function readManifest(config: AnalyzerConfig, folder: string, signa
 /**
  * Runs one analyzer over the workspace root. The SARIF path is relative so facts carry no absolute path.
  * `configFile` is the workspace file to pass with --config; by default the folder's nomos.json, if there is one.
+ * Errors about starting the analyzer are in the interface language; contract violations, addressed to analyzer authors, in English.
  */
-export async function analyze(config: AnalyzerConfig, folder: string, workspace: Workspace, signal?: AbortSignal, configFile?: string): Promise<AnalysisRun> {
-  const manifest = await readManifest(config, folder, signal);
+export async function analyze(config: AnalyzerConfig, folder: string, workspace: Workspace, signal?: AbortSignal, configFile?: string, t: Translate = english): Promise<AnalysisRun> {
+  const manifest = await readManifest(config, folder, signal, t);
   const workingDirectory = config.cwd ? path.resolve(folder, config.cwd) : folder;
   const root = path.resolve(folder, workspace.root ?? ".");
   const sarifRelative = path.posix.join(".nomos", `${config.language}.sarif`);
@@ -124,8 +127,8 @@ export async function analyze(config: AnalyzerConfig, folder: string, workspace:
     args.push("--sarif", sarifRelative);
   }
 
-  const exit = await run(config, folder, args, signal);
-  if (exit.code !== SuccessCode && exit.code !== PartialCode) throw failure(config, "analyze", exit);
+  const exit = await run(config, folder, args, signal, t);
+  if (exit.code !== SuccessCode && exit.code !== PartialCode) throw failure(config, "analyze", exit, t);
   const facts = checkContract<Facts>("facts", parseJson(exit.stdout, `${config.language} facts`), `${config.language} facts`);
   if (facts.analyzer.language !== config.language) throw new ContractError(`facts language "${facts.analyzer.language}" differs from the configured "${config.language}"`);
   const sarif = wantsSarif ? parseJson(fs.readFileSync(sarifFile, "utf8"), `${config.language} SARIF`) : undefined;

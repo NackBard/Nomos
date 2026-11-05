@@ -16,14 +16,22 @@
   let focused = false;
   // Kinds of links switched off in the legend; kept across redraws.
   const hidden = new Set();
+  // Texts come from the host with the data, in the interface language (src/ui/graphStrings.ts, D-052).
+  let S = null;
+  // Fills a template: {n} is argument n, {n|one|few|many} a word form for the number in argument n (spec/l10n.md).
+  const fmt = (template, ...args) => template.replace(/\{\{|\}\}|\{(\d+)(?:\|([^{}]*))?\}/g, (whole, index, forms) => {
+    if (whole === "{{") return "{";
+    if (whole === "}}") return "}";
+    const value = args[Number(index)];
+    if (value === undefined) return whole;
+    if (forms === undefined) return String(value);
+    const n = Number(value);
+    const m = Math.abs(n) % 100;
+    const form = !Number.isInteger(n) ? 1 : m % 10 === 1 && m !== 11 ? 0 : m % 10 >= 2 && m % 10 <= 4 && (m < 12 || m > 14) ? 1 : 2;
+    return forms.split("|")[form] ?? "";
+  });
   // How a link reads from each end; its kind shows in the line (CSS), its direction in a fin.
-  const KINDS = {
-    inheritance: { out: "inherits", in: "inherited by" },
-    call: { out: "calls", in: "called by" },
-    "type-ref": { out: "uses type", in: "type used by" },
-    import: { out: "imports", in: "imported by" },
-  };
-  const kindOf = (kind) => KINDS[kind] ?? { out: kind, in: `${kind} (from)` };
+  const kindOf = (kind) => S.kinds[kind] ?? { name: kind, out: kind, in: fmt(S.otherFrom, kind) };
   // Above this many nodes labels appear only near the pointer until the view is zoomed in.
   const CROWDED = 60;
   // Above this many named lines the names appear only on the links of the node under the pointer.
@@ -332,7 +340,7 @@
     if (!lines.length) {
       const none = relations.appendChild(document.createElement("div"));
       none.className = "hint";
-      none.textContent = "no links shown";
+      none.textContent = S.noLinks;
     }
     for (const line of lines) {
       const row = relations.appendChild(document.createElement("div"));
@@ -356,23 +364,23 @@
     if (groups) {
       groups.forEach((name, i) => add(`layer-${i}`, name));
     } else {
-      legend.append("Depth:");
+      legend.append(S.depth);
       const deepest = Math.max(...nodes.map((n) => n.layer));
       for (let layer = 0; layer <= Math.min(deepest, colors - 1); layer++) {
         add(`layer-${layer}`, layer === colors - 1 && deepest >= colors ? `${layer}+` : `${layer}`);
       }
     }
-    if (nodes.some((n) => n.cycle)) add("cycle", "cycle");
+    if (nodes.some((n) => n.cycle)) add("cycle", S.cycle);
     // Each kind of link is a switch: hiding the others leaves, for example, the inheritance hierarchy alone.
     for (const kind of [...new Set(edges.map((e) => e.kind))].sort()) {
       const toggle = legend.appendChild(document.createElement("button"));
       toggle.className = "link";
-      toggle.title = `Show or hide "${kind}" links`;
+      toggle.title = fmt(S.toggleKind, kindOf(kind).name);
       toggle.setAttribute("aria-pressed", String(!hidden.has(kind)));
       const sample = element("svg", { viewBox: "0 0 30 12" }, toggle);
       element("path", { d: "M1 6H22", class: `edge kind-${kind}` }, sample);
       element("path", { d: finPath({ x: 17, y: 6 }, 1, 0, 4), class: `head kind-${kind}` }, sample);
-      toggle.append(kind);
+      toggle.append(kindOf(kind).name);
       toggle.addEventListener("click", () => {
         const shown = hidden.has(kind);
         setKind(kind, shown);
@@ -498,7 +506,7 @@
   }
 
   function title(level, focus) {
-    if (level !== "type") return "Click a module to see its types, a line to see the types it joins";
+    if (level !== "type") return S.moduleHint;
     return focus.peer ? `${focus.module} ↔ ${focus.peer}` : focus.module;
   }
 
@@ -510,12 +518,12 @@
     focused = level === "type";
     svg.replaceChildren();
     const cyclic = graph.nodes.filter((n) => n.cycle).length;
-    info.textContent = `${title(level, focus)}: ${graph.nodes.length} nodes, ${graph.edges.length} edges, ${cyclic} in cycles`;
+    info.textContent = fmt(S.summary, title(level, focus), graph.nodes.length, graph.edges.length, cyclic);
     root = element("g", {}, svg);
     marks = [];
     legend.replaceChildren();
     if (!graph.nodes.length) {
-      info.textContent = focused ? `${title(level, focus)}: no links between types` : "No data yet: run Nomos: Analyze Workspace.";
+      info.textContent = focused ? fmt(S.noTypeLinks, title(level, focus)) : S.noData;
       return;
     }
     showLegend(graph);
@@ -529,7 +537,7 @@
     relations.replaceChildren();
     const hint = relations.appendChild(document.createElement("div"));
     hint.className = "hint";
-    hint.textContent = "Point at a node to list its links; the fins on a line point to what is inherited, called or used.";
+    hint.textContent = S.pointHint;
     // Lines under heads, heads under nodes: a head is never hidden by a line crossing it.
     const lineLayer = element("g", {}, root);
     const headLayer = element("g", {}, root);
@@ -552,7 +560,7 @@
         parts.push(via);
       }
       const from = a.label, to = b.label;
-      element("title", {}, hit).textContent = `${from} ${kindOf(edge.kind).out} ${to}${edge.weight > 1 ? ` (${edge.weight})` : ""}${edge.via?.length ? `\n${edge.via.join(", ")}` : ""}${edge.pair ? "\nClick to see the types it joins" : ""}`;
+      element("title", {}, hit).textContent = `${from} ${kindOf(edge.kind).out} ${to}${edge.weight > 1 ? ` (${edge.weight})` : ""}${edge.via?.length ? `\n${edge.via.join(", ")}` : ""}${edge.pair ? `\n${S.openPair}` : ""}`;
       if (edge.pair) hit.addEventListener("click", () => vscode.postMessage({ type: "focus", module: edge.pair[0], peer: edge.pair[1] }));
       // The head sits in the middle of the curve, pointing to the target: at the target it would hide under the label,
       // which hangs on the side links arrive from, and many heads would pile up at one node.
@@ -614,7 +622,10 @@
 
   buttons.forEach((b) => b.addEventListener("click", () => vscode.postMessage({ type: "level", level: b.dataset.level })));
   window.addEventListener("message", (event) => {
-    if (event.data.type === "graph") draw(event.data.level, event.data.focus, event.data.graph);
+    if (event.data.type !== "graph") return;
+    S = event.data.strings;
+    buttons.forEach((b) => (b.textContent = b.dataset.level === "type" ? S.types : S.modules));
+    draw(event.data.level, event.data.focus, event.data.graph);
   });
   vscode.postMessage({ type: "level", level: "module" });
 })();

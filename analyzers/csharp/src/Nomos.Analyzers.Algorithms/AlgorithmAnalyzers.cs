@@ -19,8 +19,8 @@ public sealed class TimeComplexityAnalyzer : AnalyzerBase
             if (!growth.Exponential && growth.Degree < reportFrom) continue;
             context.Report(growth.Uncertain ? Confidence.Low : Confidence.Medium, callable.Location, $"{callable.Name} is likely {growth}",
                 growth.Uncertain
-                    ? "Estimated from recursion, a while loop or a callee; loop bounds and call counts are not known exactly."
-                    : "Estimated from nested loops over inputs of unknown size. Small inputs may make this irrelevant.",
+                    ? (FormattableString)$"Estimated from recursion, a while loop or a callee; loop bounds and call counts are not known exactly."
+                    : $"Estimated from nested loops over inputs of unknown size. Small inputs may make this irrelevant.",
                 symbol: callable.Id, severity: growth.Exponential ? Severity.Major : null,
                 measured: growth.Exponential ? new Measurement("timeExponential", 1, 1) : new Measurement("timeDegree", growth.Degree, reportFrom));
         }
@@ -45,14 +45,16 @@ public sealed class QuadraticPatternAnalyzer : AnalyzerBase
                 switch (node)
                 {
                     case InvocationExpression call when IsLinearSearch(call):
-                        Report(context, callable, call, $"{call.Target.Name} on {call.Receiver?.Type?.SimpleName ?? "a sequence"} inside a loop",
-                            "Each iteration scans the sequence. A HashSet or Dictionary built once makes the lookup constant-time.");
+                        Report(context, callable, call, call.Receiver?.Type?.SimpleName is { } receiver
+                                ? (FormattableString)$"Likely quadratic: {call.Target.Name} on {receiver} inside a loop"
+                                : $"Likely quadratic: {call.Target.Name} on a sequence inside a loop",
+                            $"Each iteration scans the sequence. A HashSet or Dictionary built once makes the lookup constant-time.");
                         break;
                     case InvocationExpression { Target.Name: "RemoveAt" or "Insert", Arguments: [LiteralExpression { Value: "0" }, ..] } call:
-                        Report(context, callable, call, $"{call.Target.Name}(0) inside a loop", "Every element shifts on each call. A Queue, a Stack or iterating from the end avoids this.");
+                        Report(context, callable, call, $"Likely quadratic: {call.Target.Name}(0) inside a loop", $"Every element shifts on each call. A Queue, a Stack or iterating from the end avoids this.");
                         break;
                     case AssignmentExpression { Operator: "+=", Target.Type.Kind: TypeRefKind.Primitive, Target.Type.SimpleName: "string" } append:
-                        Report(context, callable, append, "String concatenation inside a loop", "Each step copies the whole string so far. StringBuilder grows in amortized constant time.");
+                        Report(context, callable, append, $"Likely quadratic: String concatenation inside a loop", $"Each step copies the whole string so far. StringBuilder grows in amortized constant time.");
                         break;
                 }
             }
@@ -62,8 +64,8 @@ public sealed class QuadraticPatternAnalyzer : AnalyzerBase
     private static bool IsLinearSearch(InvocationExpression call) =>
         Searches.Contains(call.Target.Name) && call.Receiver?.Type is { } type && (type.Kind == TypeRefKind.Array || LinearReceivers.Contains(type.SimpleName));
 
-    private static void Report(AnalysisContext context, Callable callable, IrNode node, string message, string explanation) =>
-        context.Report(Confidence.Medium, node.Location, $"Likely quadratic: {message}", explanation, symbol: callable.Id);
+    private static void Report(AnalysisContext context, Callable callable, IrNode node, FormattableString message, FormattableString explanation) =>
+        context.Report(Confidence.Medium, node.Location, message, explanation, symbol: callable.Id);
 }
 
 /// <summary>Flags allocations that repeat many times.</summary>
@@ -81,11 +83,11 @@ public sealed class HotLoopAllocationAnalyzer : AnalyzerBase
             foreach (var (node, depth) in callable.Body.WithLoopDepth())
             {
                 if (depth >= 1 && node is InvocationExpression { Target.Name: "ToList" or "ToArray" or "ToDictionary" or "ToHashSet" } call)
-                    context.Report(Confidence.Medium, call.Location, $"{call.Target.Name} allocates on each loop iteration", "A new collection is built per iteration; moving it out of the loop or reusing a buffer reduces GC pressure.", symbol: callable.Id);
+                    context.Report(Confidence.Medium, call.Location, $"{call.Target.Name} allocates on each loop iteration", $"A new collection is built per iteration; moving it out of the loop or reusing a buffer reduces GC pressure.", symbol: callable.Id);
                 else if (depth >= minDepth && node is ObjectCreationExpression { CreatedType.Kind: not TypeRefKind.Struct } creation)
-                    context.Report(Confidence.Low, creation.Location, $"Allocation of {creation.CreatedType.SimpleName} in a nested loop", "Runs once per inner iteration. Whether it matters depends on how hot the loop really is, which static analysis cannot tell.", symbol: callable.Id, measured: measured);
+                    context.Report(Confidence.Low, creation.Location, $"Allocation of {creation.CreatedType.SimpleName} in a nested loop", $"Runs once per inner iteration. Whether it matters depends on how hot the loop really is, which static analysis cannot tell.", symbol: callable.Id, measured: measured);
                 else if (depth >= minDepth && node is LambdaExpression lambda)
-                    context.Report(Confidence.Low, lambda.Location, "Lambda in a nested loop", "A capturing lambda allocates a closure per iteration; a non-capturing one is cached.", symbol: callable.Id, measured: measured);
+                    context.Report(Confidence.Low, lambda.Location, $"Lambda in a nested loop", $"A capturing lambda allocates a closure per iteration; a non-capturing one is cached.", symbol: callable.Id, measured: measured);
             }
         }
     }
@@ -108,7 +110,7 @@ public sealed class SpaceComplexityAnalyzer : AnalyzerBase
             {
                 var growth = new Growth(degree, 0, false, true);
                 context.Report(Confidence.Low, callable.Location, $"{callable.Name} likely uses {growth} extra memory",
-                    "Estimated from collection growth under nested loops or multi-dimensional allocation sizes.", symbol: callable.Id,
+                    $"Estimated from collection growth under nested loops or multi-dimensional allocation sizes.", symbol: callable.Id,
                     measured: new Measurement("spaceDegree", degree, reportFrom));
             }
         }

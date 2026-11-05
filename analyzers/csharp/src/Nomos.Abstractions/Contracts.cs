@@ -97,6 +97,12 @@ public sealed record Finding(string AnalyzerId, string Category, Severity Severi
     /// <summary>Gets the measurement the finding is based on; <c>null</c> for rules that are not about a number.</summary>
     public Measurement? Measured { get; init; }
 
+    /// <summary>Gets the message as a template with arguments; <c>null</c> when the finding was built from plain text.</summary>
+    public TemplateText? MessageTemplate { get; init; }
+
+    /// <summary>Gets the explanation as a template with arguments; <c>null</c> when the finding was built from plain text.</summary>
+    public TemplateText? ExplanationTemplate { get; init; }
+
     /// <summary>Gets a hash that survives line shifts, for baselines and IDE tracking.</summary>
     public string Fingerprint
     {
@@ -295,18 +301,23 @@ public sealed class AnalysisContext
     public void Report(
         Confidence confidence,
         SourceLocation location,
-        string message,
-        string explanation,
+        FormattableString message,
+        FormattableString explanation,
         string? module = null,
         string? symbol = null,
         Severity? severity = null,
         Measurement? measured = null)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(message);
-        ArgumentException.ThrowIfNullOrWhiteSpace(explanation);
+        var messageText = TemplateText.From(message);
+        var explanationText = TemplateText.From(explanation);
+        ArgumentException.ThrowIfNullOrWhiteSpace(messageText.Text, nameof(message));
+        ArgumentException.ThrowIfNullOrWhiteSpace(explanationText.Text, nameof(explanation));
         var snippet = Model.FindFile(location.FilePath)?.Excerpt(location) ?? string.Empty;
-        _onFinding(new Finding(_descriptor.Id, _descriptor.Category, severity ?? _descriptor.DefaultSeverity, confidence, message,
-            new Evidence(location, snippet, explanation)) { Module = module, Symbol = symbol, Measured = measured });
+        _onFinding(new Finding(_descriptor.Id, _descriptor.Category, severity ?? _descriptor.DefaultSeverity, confidence, messageText.Text,
+            new Evidence(location, snippet, explanationText.Text))
+        {
+            Module = module, Symbol = symbol, Measured = measured, MessageTemplate = messageText, ExplanationTemplate = explanationText,
+        });
     }
 
     /// <summary>Reports a finding about a type.</summary>
@@ -316,7 +327,7 @@ public sealed class AnalysisContext
     /// <param name="explanation">Why the analyzer believes this.</param>
     /// <param name="severity">Severity override.</param>
     /// <param name="measured">The measurement the finding is based on, for rules about a number.</param>
-    public void Report(TypeDecl type, Confidence confidence, string message, string explanation, Severity? severity = null, Measurement? measured = null) =>
+    public void Report(TypeDecl type, Confidence confidence, FormattableString message, FormattableString explanation, Severity? severity = null, Measurement? measured = null) =>
         Report(confidence, type.Location, message, explanation, type.ModuleName, type.Id, severity, measured);
 
     /// <summary>Reports a metric.</summary>

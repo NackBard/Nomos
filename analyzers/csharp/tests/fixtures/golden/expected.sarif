@@ -21,6 +21,20 @@
               "defaultConfiguration": {
                 "level": "warning"
               },
+              "messageStrings": {
+                "likely": {
+                  "text": "{0} is likely {1}"
+                },
+                "loops": {
+                  "text": "Estimated from nested loops over inputs of unknown size. Small inputs may make this irrelevant."
+                },
+                "recursion": {
+                  "text": "Estimated from recursion, a while loop or a callee; loop bounds and call counts are not known exactly."
+                },
+                "recursionConditionLoop": {
+                  "text": "Estimated from recursion, a condition-only loop or a callee; loop bounds and call counts are not known exactly."
+                }
+              },
               "properties": {
                 "category": "Algorithms",
                 "paradigms": []
@@ -37,6 +51,44 @@
               },
               "defaultConfiguration": {
                 "level": "warning"
+              },
+              "messageStrings": {
+                "concat": {
+                  "text": "Likely quadratic: String concatenation inside a loop"
+                },
+                "concatBuilder": {
+                  "text": "Each step copies the whole string so far. strings.Builder grows in amortized constant time."
+                },
+                "concatStringBuilder": {
+                  "text": "Each step copies the whole string so far. StringBuilder grows in amortized constant time."
+                },
+                "frontCall": {
+                  "text": "Likely quadratic: {0}(0) inside a loop"
+                },
+                "frontCallQueue": {
+                  "text": "Every element shifts on each call. A Queue, a Stack or iterating from the end avoids this."
+                },
+                "frontInsert": {
+                  "text": "Likely quadratic: front insertion inside a loop"
+                },
+                "frontInsertAppend": {
+                  "text": "Every element shifts on each call. Appending and reversing once avoids this."
+                },
+                "search": {
+                  "text": "Likely quadratic: {0} on a sequence inside a loop"
+                },
+                "searchHashSet": {
+                  "text": "Each iteration scans the sequence. A HashSet or Dictionary built once makes the lookup constant-time."
+                },
+                "searchMap": {
+                  "text": "Each iteration scans the sequence. A map built once makes the lookup constant-time."
+                },
+                "searchOn": {
+                  "text": "Likely quadratic: {0} on {1} inside a loop"
+                },
+                "slicesSearch": {
+                  "text": "Likely quadratic: slices.{0} inside a loop"
+                }
               },
               "properties": {
                 "category": "Algorithms",
@@ -55,6 +107,35 @@
               "defaultConfiguration": {
                 "level": "warning"
               },
+              "messageStrings": {
+                "allocation": {
+                  "text": "Allocation in a nested loop"
+                },
+                "allocationOf": {
+                  "text": "Allocation of {0} in a nested loop"
+                },
+                "hot": {
+                  "text": "Runs once per inner iteration. Whether it matters depends on how hot the loop really is, which static analysis cannot tell."
+                },
+                "lambda": {
+                  "text": "Lambda in a nested loop"
+                },
+                "lambdaClosure": {
+                  "text": "A capturing lambda allocates a closure per iteration; a non-capturing one is cached."
+                },
+                "literal": {
+                  "text": "Function literal in a nested loop"
+                },
+                "literalClosure": {
+                  "text": "A capturing literal allocates a closure per iteration."
+                },
+                "materialize": {
+                  "text": "{0} allocates on each loop iteration"
+                },
+                "materializeBuffer": {
+                  "text": "A new collection is built per iteration; moving it out of the loop or reusing a buffer reduces GC pressure."
+                }
+              },
               "properties": {
                 "category": "Algorithms",
                 "paradigms": []
@@ -72,6 +153,17 @@
               "defaultConfiguration": {
                 "level": "warning"
               },
+              "messageStrings": {
+                "collections": {
+                  "text": "Estimated from collection growth under nested loops or multi-dimensional allocation sizes."
+                },
+                "likely": {
+                  "text": "{0} likely uses {1} extra memory"
+                },
+                "slices": {
+                  "text": "Estimated from slice growth under nested loops or sized allocations."
+                }
+              },
               "properties": {
                 "category": "Algorithms",
                 "paradigms": []
@@ -88,6 +180,14 @@
               },
               "defaultConfiguration": {
                 "level": "warning"
+              },
+              "messageStrings": {
+                "limit": {
+                  "text": "The line count is exact; the limit of {0} is a readability convention."
+                },
+                "lines": {
+                  "text": "{0} spans {1} lines"
+                }
               },
               "properties": {
                 "category": "CleanCode",
@@ -110,6 +210,14 @@
               "defaultConfiguration": {
                 "level": "warning"
               },
+              "messageStrings": {
+                "limits": {
+                  "text": "The counts are exact; the limits ({0} lines, {1} members) are conventions."
+                },
+                "size": {
+                  "text": "{0} has {1} lines and {2} members"
+                }
+              },
               "properties": {
                 "category": "CleanCode",
                 "paradigms": [
@@ -128,6 +236,17 @@
               },
               "defaultConfiguration": {
                 "level": "warning"
+              },
+              "messageStrings": {
+                "count": {
+                  "text": "{0} takes {1} parameters"
+                },
+                "limitObject": {
+                  "text": "The limit is {0}. Long lists are easy to misorder; a parameter object groups what belongs together."
+                },
+                "limitStruct": {
+                  "text": "The limit is {0}. Long lists are easy to misorder; a parameter struct groups what belongs together."
+                }
               },
               "properties": {
                 "category": "CleanCode",
@@ -150,6 +269,17 @@
               "defaultConfiguration": {
                 "level": "warning"
               },
+              "messageStrings": {
+                "depth": {
+                  "text": "{0} nests {1} levels deep"
+                },
+                "limitFunctions": {
+                  "text": "The limit is {0}. Guard clauses or extracted functions flatten the flow."
+                },
+                "limitMethods": {
+                  "text": "The limit is {0}. Guard clauses or extracted methods flatten the flow."
+                }
+              },
               "properties": {
                 "category": "CleanCode",
                 "paradigms": [
@@ -170,6 +300,20 @@
               },
               "defaultConfiguration": {
                 "level": "warning"
+              },
+              "messageStrings": {
+                "comment": {
+                  "text": "{0} comment left in code"
+                },
+                "commentTracker": {
+                  "text": "A placeholder records unfinished work that belongs in the issue tracker or in a fix."
+                },
+                "notImplemented": {
+                  "text": "{0} is not implemented"
+                },
+                "notImplementedThrows": {
+                  "text": "The body only throws NotImplementedException."
+                }
               },
               "properties": {
                 "category": "CleanCode",
@@ -192,6 +336,29 @@
               "defaultConfiguration": {
                 "level": "warning"
               },
+              "messageStrings": {
+                "field": {
+                  "text": "Private field {0} is never used"
+                },
+                "local": {
+                  "text": "Local {0} is never read"
+                },
+                "localInitializer": {
+                  "text": "No expression in the callable reads this variable; its initializer may still have side effects."
+                },
+                "method": {
+                  "text": "Private method {0} is never called"
+                },
+                "reflection": {
+                  "text": "Nothing in the declaring type refers to it; only reflection could reach it."
+                },
+                "unreachable": {
+                  "text": "Unreachable code in {0}"
+                },
+                "unreachableLeaves": {
+                  "text": "The preceding statement always leaves this block."
+                }
+              },
               "properties": {
                 "category": "CleanCode",
                 "paradigms": [
@@ -212,6 +379,14 @@
               },
               "defaultConfiguration": {
                 "level": "warning"
+              },
+              "messageStrings": {
+                "code": {
+                  "text": "Comment looks like disabled code"
+                },
+                "shape": {
+                  "text": "The comment has the shape of a statement; a textual heuristic cannot tell it from prose with certainty."
+                }
               },
               "properties": {
                 "category": "CleanCode",
@@ -234,6 +409,14 @@
               "defaultConfiguration": {
                 "level": "warning"
               },
+              "messageStrings": {
+                "disappears": {
+                  "text": "The exception disappears without handling, logging or a comment saying why that is safe."
+                },
+                "empty": {
+                  "text": "Empty catch in {0}"
+                }
+              },
               "properties": {
                 "category": "CleanCode",
                 "paradigms": [
@@ -254,6 +437,44 @@
               },
               "defaultConfiguration": {
                 "level": "note"
+              },
+              "messageStrings": {
+                "interface": {
+                  "text": "The interface name {0} is not IPascalCase"
+                },
+                "interfaceConvention": {
+                  "text": "C# convention for an interface is IPascalCase."
+                },
+                "method": {
+                  "text": "The method name {0} is not PascalCase"
+                },
+                "methodConvention": {
+                  "text": "C# convention for a method is PascalCase."
+                },
+                "parameter": {
+                  "text": "The parameter name {0} is not camelCase"
+                },
+                "parameterConvention": {
+                  "text": "C# convention for a parameter is camelCase."
+                },
+                "property": {
+                  "text": "The property name {0} is not PascalCase"
+                },
+                "propertyConvention": {
+                  "text": "C# convention for a property is PascalCase."
+                },
+                "shortParameter": {
+                  "text": "Parameter {0} of {1} says little"
+                },
+                "shortParameterMeaning": {
+                  "text": "One-letter names in a public signature leave the meaning to the reader."
+                },
+                "type": {
+                  "text": "The type name {0} is not PascalCase"
+                },
+                "typeConvention": {
+                  "text": "C# convention for a type is PascalCase."
+                }
               },
               "properties": {
                 "category": "CleanCode",
@@ -276,6 +497,17 @@
               "defaultConfiguration": {
                 "level": "warning"
               },
+              "messageStrings": {
+                "distance": {
+                  "text": "Module {0} is far from the main sequence (D = {1})"
+                },
+                "pain": {
+                  "text": "A = {0}, I = {1}, so it sits near the zone of pain: concrete and heavily depended upon."
+                },
+                "uselessness": {
+                  "text": "A = {0}, I = {1}, so it sits near the zone of uselessness: abstract and unused."
+                }
+              },
               "properties": {
                 "category": "Design",
                 "paradigms": []
@@ -292,6 +524,23 @@
               },
               "defaultConfiguration": {
                 "level": "warning"
+              },
+              "messageStrings": {
+                "modules": {
+                  "text": "Module cycle: {0}"
+                },
+                "modulesAlone": {
+                  "text": "These modules depend on each other, directly or transitively, so none can be built, tested or released alone."
+                },
+                "types": {
+                  "text": "Type cycle of {0}: {1}"
+                },
+                "typesRipple": {
+                  "text": "These types reference each other, so a change to one can ripple through all of them."
+                },
+                "unitsRipple": {
+                  "text": "These units reference each other, so a change to one can ripple through all of them."
+                }
               },
               "properties": {
                 "category": "Design",
@@ -310,6 +559,17 @@
               "defaultConfiguration": {
                 "level": "warning"
               },
+              "messageStrings": {
+                "allowed": {
+                  "text": "{0} ({1}) uses {2} ({3}); allowed: {4}."
+                },
+                "allowedNone": {
+                  "text": "{0} ({1}) uses {2} ({3}); allowed: none."
+                },
+                "violation": {
+                  "text": "{0} must not depend on {1}"
+                }
+              },
               "properties": {
                 "category": "Design",
                 "paradigms": []
@@ -326,6 +586,14 @@
               },
               "defaultConfiguration": {
                 "level": "warning"
+              },
+              "messageStrings": {
+                "god": {
+                  "text": "{0} looks like a god class"
+                },
+                "metrics": {
+                  "text": "WMC = {0} (>= {1}), ATFD = {2} (>= {3}), TCC = {4} (< {5}): it does much, uses others' data, and its methods share little."
+                }
               },
               "properties": {
                 "category": "Design",
@@ -346,6 +614,14 @@
               "defaultConfiguration": {
                 "level": "warning"
               },
+              "messageStrings": {
+                "envy": {
+                  "text": "{0} is more interested in {1} than in {2}"
+                },
+                "members": {
+                  "text": "It uses {0} members of {1} ({2}) and {3} of its own."
+                }
+              },
               "properties": {
                 "category": "Design",
                 "paradigms": [
@@ -365,6 +641,20 @@
               "defaultConfiguration": {
                 "level": "warning"
               },
+              "messageStrings": {
+                "stable": {
+                  "text": "Stable abstractions at such points limit the spread. Static dependencies overstate real impact when a change keeps the contract."
+                },
+                "types": {
+                  "text": "Changing {0} can reach {1} types ({2})"
+                },
+                "typesHops": {
+                  "text": "{0} direct dependents, up to {1} hops away. Stable abstractions at such points limit the spread. Static dependencies overstate real impact when a change keeps the contract."
+                },
+                "units": {
+                  "text": "Changing {0} can reach {1} units"
+                }
+              },
               "properties": {
                 "category": "Design",
                 "paradigms": []
@@ -381,6 +671,14 @@
               },
               "defaultConfiguration": {
                 "level": "warning"
+              },
+              "messageStrings": {
+                "impure": {
+                  "text": "{0} returns a value and has side effects"
+                },
+                "observed": {
+                  "text": "Observed: {0}. Effects hidden behind calls to other methods are not visible here."
+                }
               },
               "properties": {
                 "category": "Paradigm",
@@ -401,6 +699,14 @@
               "defaultConfiguration": {
                 "level": "warning"
               },
+              "messageStrings": {
+                "lambda": {
+                  "text": "Lambda changes state outside itself"
+                },
+                "writes": {
+                  "text": "It writes {0}. With lazy or parallel evaluation, the order of these writes is not guaranteed."
+                }
+              },
               "properties": {
                 "category": "Paradigm",
                 "paradigms": [
@@ -419,6 +725,20 @@
               },
               "defaultConfiguration": {
                 "level": "warning"
+              },
+              "messageStrings": {
+                "members": {
+                  "text": "{0} has mutable members: {1}"
+                },
+                "newName": {
+                  "text": "In functional style a new value gets a new name. Reassignment makes the meaning of a variable depend on the position in the code."
+                },
+                "reassigns": {
+                  "text": "{0} reassigns {1}"
+                },
+                "time": {
+                  "text": "Instances can change after construction, so a value's meaning depends on time."
+                }
               },
               "properties": {
                 "category": "Paradigm",
@@ -439,6 +759,14 @@
               "defaultConfiguration": {
                 "level": "warning"
               },
+              "messageStrings": {
+                "recursion": {
+                  "text": "{0} recurses outside tail position"
+                },
+                "stack": {
+                  "text": "Work remains after the self-call returns, so each level keeps a stack frame; deep input can overflow the stack."
+                }
+              },
               "properties": {
                 "category": "Paradigm",
                 "paradigms": [
@@ -457,6 +785,29 @@
               },
               "defaultConfiguration": {
                 "level": "warning"
+              },
+              "messageStrings": {
+                "lambdas": {
+                  "text": "{0} nests lambdas {1} levels deep"
+                },
+                "lambdasNamed": {
+                  "text": "Beyond {0} levels, captured variables are hard to trace; named functions help."
+                },
+                "literals": {
+                  "text": "{0} nests function literals {1} deep"
+                },
+                "literalsTrace": {
+                  "text": "Beyond {0} levels, captured variables are hard to trace."
+                },
+                "order": {
+                  "text": "{0} is a function of order {1}"
+                },
+                "orderLimit": {
+                  "text": "The signature nests function types beyond order {0}."
+                },
+                "orderOf": {
+                  "text": "{0} has order {1}"
+                }
               },
               "properties": {
                 "category": "Paradigm",
@@ -477,6 +828,14 @@
               "defaultConfiguration": {
                 "level": "warning"
               },
+              "messageStrings": {
+                "complexity": {
+                  "text": "{0} has cyclomatic complexity {1}"
+                },
+                "paths": {
+                  "text": "The count is exact; above {0}, the number of paths to test and to understand grows quickly."
+                }
+              },
               "properties": {
                 "category": "Maintainability",
                 "paradigms": []
@@ -493,6 +852,14 @@
               },
               "defaultConfiguration": {
                 "level": "warning"
+              },
+              "messageStrings": {
+                "index": {
+                  "text": "{0} has a maintainability index of {1}"
+                },
+                "ranking": {
+                  "text": "Below {0}. The formula is an empirical blend of size and complexity, useful for ranking rather than as a measure of quality."
+                }
               },
               "properties": {
                 "category": "Maintainability",
@@ -511,6 +878,14 @@
               "defaultConfiguration": {
                 "level": "warning"
               },
+              "messageStrings": {
+                "clone": {
+                  "text": "{0} tokens duplicate {1}:{2}"
+                },
+                "identical": {
+                  "text": "The token sequences are identical after replacing identifiers and literals with placeholders."
+                }
+              },
               "properties": {
                 "category": "Maintainability",
                 "paradigms": []
@@ -528,6 +903,14 @@
               "defaultConfiguration": {
                 "level": "warning"
               },
+              "messageStrings": {
+                "coverage": {
+                  "text": "{0} has {1}% line coverage"
+                },
+                "minimum": {
+                  "text": "Measured from {0}; below the {1}% minimum. Coverage shows what ran, not what was verified."
+                }
+              },
               "properties": {
                 "category": "Maintainability",
                 "paradigms": []
@@ -544,6 +927,14 @@
               },
               "defaultConfiguration": {
                 "level": "warning"
+              },
+              "messageStrings": {
+                "field": {
+                  "text": "Public mutable field {0}.{1}"
+                },
+                "invariants": {
+                  "text": "Any caller can change this field, so the type cannot protect its invariants. A property or a method can."
+                }
               },
               "properties": {
                 "category": "Paradigm",
@@ -564,6 +955,20 @@
               "defaultConfiguration": {
                 "level": "warning"
               },
+              "messageStrings": {
+                "composition": {
+                  "text": "The depth counts base classes in the project; a base outside it is one step. Beyond {0} levels, behavior is spread over many classes. Composition often reads better."
+                },
+                "depth": {
+                  "text": "{0} sits {1} levels deep"
+                },
+                "embeds": {
+                  "text": "{0} embeds {1} levels deep"
+                },
+                "promoted": {
+                  "text": "The limit is {0}; promoted members come from far away."
+                }
+              },
               "properties": {
                 "category": "Paradigm",
                 "paradigms": [
@@ -582,6 +987,20 @@
               },
               "defaultConfiguration": {
                 "level": "warning"
+              },
+              "messageStrings": {
+                "branches": {
+                  "text": "{0} branches on {1} runtime types"
+                },
+                "interface": {
+                  "text": "A type switch over project types is what an interface method can replace."
+                },
+                "tests": {
+                  "text": "{0} tests {1} project types at run time"
+                },
+                "virtual": {
+                  "text": "It tests for {0}. A virtual member on their common base would dispatch without the checks."
+                }
               },
               "properties": {
                 "category": "Paradigm",
@@ -602,6 +1021,20 @@
               "defaultConfiguration": {
                 "level": "warning"
               },
+              "messageStrings": {
+                "groups": {
+                  "text": "{0} has {1} unrelated method groups"
+                },
+                "lcom": {
+                  "text": "LCOM4 finds method groups that share no field and do not call each other; each may be a separate class."
+                },
+                "responsibilities": {
+                  "text": "Groups of methods that share no state may be separate responsibilities."
+                },
+                "splits": {
+                  "text": "{0} splits into {1} unrelated method groups"
+                }
+              },
               "properties": {
                 "category": "Paradigm",
                 "paradigms": [
@@ -620,6 +1053,20 @@
               },
               "defaultConfiguration": {
                 "level": "warning"
+              },
+              "messageStrings": {
+                "collaborators": {
+                  "text": "Beyond {0} collaborators, changes elsewhere are likely to reach this class."
+                },
+                "coupled": {
+                  "text": "{0} is coupled to {1} types"
+                },
+                "dependsOn": {
+                  "text": "{0} depends on {1} types"
+                },
+                "reason": {
+                  "text": "The limit is {0}; each dependency is a reason to change."
+                }
               },
               "properties": {
                 "category": "Paradigm",
@@ -640,6 +1087,14 @@
               "defaultConfiguration": {
                 "level": "warning"
               },
+              "messageStrings": {
+                "offers": {
+                  "text": "{0} offers {1} members; none are overridden or used here. Outside callers may still rely on the inherited API, which this check cannot rule out."
+                },
+                "refused": {
+                  "text": "{0} inherits {1} but uses none of it"
+                }
+              },
               "properties": {
                 "category": "Paradigm",
                 "paradigms": [
@@ -658,6 +1113,14 @@
               },
               "defaultConfiguration": {
                 "level": "note"
+              },
+              "messageStrings": {
+                "global": {
+                  "text": "Private constructors plus a static member of its own type. Singletons are global state: they hide dependencies and hinder testing."
+                },
+                "singleton": {
+                  "text": "{0} is a Singleton"
+                }
               },
               "properties": {
                 "category": "Patterns",
@@ -678,6 +1141,17 @@
               "defaultConfiguration": {
                 "level": "note"
               },
+              "messageStrings": {
+                "creates": {
+                  "text": "It returns the abstraction and creates {0}."
+                },
+                "factory": {
+                  "text": "{0} is a Factory of {1}"
+                },
+                "named": {
+                  "text": "The type name and the creation of {0} behind the abstraction suggest it."
+                }
+              },
               "properties": {
                 "category": "Patterns",
                 "paradigms": [
@@ -696,6 +1170,14 @@
               },
               "defaultConfiguration": {
                 "level": "note"
+              },
+              "messageStrings": {
+                "injected": {
+                  "text": "It holds an injected {0}, with {1} implementations: {2}."
+                },
+                "strategy": {
+                  "text": "{0} uses {1} as a Strategy"
+                }
               },
               "properties": {
                 "category": "Patterns",
@@ -716,6 +1198,17 @@
               "defaultConfiguration": {
                 "level": "note"
               },
+              "messageStrings": {
+                "events": {
+                  "text": "It publishes events: {0}."
+                },
+                "subject": {
+                  "text": "{0} is an Observer subject"
+                },
+                "subscribe": {
+                  "text": "It has a subscribe method and notifies registered observers in a loop."
+                }
+              },
               "properties": {
                 "category": "Patterns",
                 "paradigms": [
@@ -734,6 +1227,14 @@
               },
               "defaultConfiguration": {
                 "level": "note"
+              },
+              "messageStrings": {
+                "decorator": {
+                  "text": "{0} is a Decorator of {1}"
+                },
+                "forwards": {
+                  "text": "It implements the abstraction, wraps an instance of it, and forwards calls."
+                }
               },
               "properties": {
                 "category": "Patterns",
@@ -754,6 +1255,20 @@
               "defaultConfiguration": {
                 "level": "note"
               },
+              "messageStrings": {
+                "agree": {
+                  "text": "The name and the collection-like read/write API agree."
+                },
+                "maybe": {
+                  "text": "{0} may be a Repository"
+                },
+                "nameOnly": {
+                  "text": "Only the name suggests it; the API is not collection-like."
+                },
+                "repository": {
+                  "text": "{0} is a Repository"
+                }
+              },
               "properties": {
                 "category": "Patterns",
                 "paradigms": [
@@ -772,6 +1287,14 @@
               },
               "defaultConfiguration": {
                 "level": "note"
+              },
+              "messageStrings": {
+                "builder": {
+                  "text": "{0} is a Builder"
+                },
+                "fluent": {
+                  "text": "{0} fluent methods return this, and a terminal method builds the result."
+                }
               },
               "properties": {
                 "category": "Patterns",
@@ -792,6 +1315,14 @@
               "defaultConfiguration": {
                 "level": "warning"
               },
+              "messageStrings": {
+                "invisible": {
+                  "text": "The class's real dependencies are invisible in its constructor and fail only at run time."
+                },
+                "pulls": {
+                  "text": "{0} pulls a dependency from {1}"
+                }
+              },
               "properties": {
                 "category": "Patterns",
                 "paradigms": [
@@ -810,6 +1341,14 @@
               },
               "defaultConfiguration": {
                 "level": "warning"
+              },
+              "messageStrings": {
+                "anemic": {
+                  "text": "{0} is an anemic domain object"
+                },
+                "setters": {
+                  "text": "{0} public setters and no methods: its invariants must be enforced by whoever changes it. Plain DTOs are fine; this one sits in a domain namespace."
+                }
               },
               "properties": {
                 "category": "Patterns",
@@ -830,6 +1369,14 @@
               "defaultConfiguration": {
                 "level": "warning"
               },
+              "messageStrings": {
+                "forwards": {
+                  "text": "{0} only forwards to {1}"
+                },
+                "single": {
+                  "text": "All {0} public methods are single calls to the same member; callers could use it directly."
+                }
+              },
               "properties": {
                 "category": "Patterns",
                 "paradigms": [
@@ -848,6 +1395,20 @@
               },
               "defaultConfiguration": {
                 "level": "warning"
+              },
+              "messageStrings": {
+                "concerns": {
+                  "text": "Reaching into more than {0} modules suggests the class coordinates unrelated concerns."
+                },
+                "constructor": {
+                  "text": "{0} takes {1} dependencies in its constructor"
+                },
+                "injected": {
+                  "text": "More than {0} injected collaborators usually mean several responsibilities live in one class."
+                },
+                "modules": {
+                  "text": "{0} depends on {1} other modules"
+                }
               },
               "properties": {
                 "category": "Principles",
@@ -868,6 +1429,14 @@
               "defaultConfiguration": {
                 "level": "warning"
               },
+              "messageStrings": {
+                "repeats": {
+                  "text": "Switch over {0} repeats at {1} sites"
+                },
+                "table": {
+                  "text": "{0} switches dispatch on {1}; a new value needs an edit at each. A polymorphic type or a table keeps this closed for modification."
+                }
+              },
               "properties": {
                 "category": "Principles",
                 "paradigms": [
@@ -886,6 +1455,14 @@
               },
               "defaultConfiguration": {
                 "level": "warning"
+              },
+              "messageStrings": {
+                "rejects": {
+                  "text": "{0} rejects the inherited contract"
+                },
+                "throws": {
+                  "text": "The member exists only to throw, so code written against the base type breaks when it receives this subtype."
+                }
               },
               "properties": {
                 "category": "Principles",
@@ -906,6 +1483,20 @@
               "defaultConfiguration": {
                 "level": "warning"
               },
+              "messageStrings": {
+                "onlyThrow": {
+                  "text": "Implementers only throw in: {0}. The interface is wider than some clients need."
+                },
+                "refused": {
+                  "text": "{0} has members its implementers refuse"
+                },
+                "roles": {
+                  "text": "More than {0} members on one interface usually mix several client roles."
+                },
+                "wide": {
+                  "text": "{0} declares {1} members"
+                }
+              },
               "properties": {
                 "category": "Principles",
                 "paradigms": [
@@ -924,6 +1515,14 @@
               },
               "defaultConfiguration": {
                 "level": "warning"
+              },
+              "messageStrings": {
+                "creates": {
+                  "text": "{0} creates {1} directly"
+                },
+                "inject": {
+                  "text": "{0} is available through {1}, but {2} instantiates the concrete class. Injecting the abstraction keeps {3} replaceable and testable."
+                }
               },
               "properties": {
                 "category": "Principles",
@@ -944,6 +1543,14 @@
               "defaultConfiguration": {
                 "level": "warning"
               },
+              "messageStrings": {
+                "duplicates": {
+                  "text": "{0} has {1} structural duplicate(s)"
+                },
+                "same": {
+                  "text": "Same statement structure and member usage, differing at most in local names and literals: {0}."
+                }
+              },
               "properties": {
                 "category": "Principles",
                 "paradigms": []
@@ -960,6 +1567,20 @@
               },
               "defaultConfiguration": {
                 "level": "warning"
+              },
+              "messageStrings": {
+                "branching": {
+                  "text": "A ternary inside a ternary hides the branching; an if or a switch expression shows it."
+                },
+                "intent": {
+                  "text": "More than {0} operators in one condition; named intermediate values or a predicate method would state the intent."
+                },
+                "operators": {
+                  "text": "Condition combines {0} boolean operators"
+                },
+                "ternary": {
+                  "text": "Nested ternary expression"
+                }
               },
               "properties": {
                 "category": "Principles",
@@ -978,6 +1599,20 @@
               "defaultConfiguration": {
                 "level": "warning"
               },
+              "messageStrings": {
+                "implementers": {
+                  "text": "{0} has {1} implementer(s)"
+                },
+                "indirection": {
+                  "text": "A non-public abstraction with at most one implementation adds indirection without a second use. It may still serve test doubles, which this analysis cannot see."
+                },
+                "parameter": {
+                  "text": "Parameter {0} of {1} is never used"
+                },
+                "private": {
+                  "text": "The method is private, so no external contract requires this parameter."
+                }
+              },
               "properties": {
                 "category": "Principles",
                 "paradigms": []
@@ -994,6 +1629,14 @@
               },
               "defaultConfiguration": {
                 "level": "warning"
+              },
+              "messageStrings": {
+                "chain": {
+                  "text": "Chain crosses {0} project types"
+                },
+                "navigates": {
+                  "text": "The call site navigates {0}. Asking the first object for what is needed hides that structure."
+                }
               },
               "properties": {
                 "category": "Principles",
@@ -1014,6 +1657,20 @@
               "defaultConfiguration": {
                 "level": "warning"
               },
+              "messageStrings": {
+                "credential": {
+                  "text": "{0} holds what looks like a real credential"
+                },
+                "placeholder": {
+                  "text": "Heuristic: the name suggests a secret and the value is a literal. It may be a placeholder or a non-secret value."
+                },
+                "rotate": {
+                  "text": "Heuristic: the literal matches the format of a known key or token. Rotate it if it is real, and load it from a secret store."
+                },
+                "secret": {
+                  "text": "{0} looks like a hardcoded secret"
+                }
+              },
               "properties": {
                 "category": "Security",
                 "paradigms": []
@@ -1030,6 +1687,20 @@
               },
               "defaultConfiguration": {
                 "level": "error"
+              },
+              "messageStrings": {
+                "arbitrary": {
+                  "text": "Heuristic: this formatter can instantiate arbitrary types from its input; whether the input is trusted is not checked."
+                },
+                "formatter": {
+                  "text": "{0} is unsafe with untrusted data"
+                },
+                "gadgets": {
+                  "text": "Heuristic: type names read from the payload allow gadget chains unless a binder restricts them."
+                },
+                "typeNames": {
+                  "text": "TypeNameHandling.{0} enables polymorphic deserialization"
+                }
               },
               "properties": {
                 "category": "Security",
@@ -1048,6 +1719,14 @@
               "defaultConfiguration": {
                 "level": "warning"
               },
+              "messageStrings": {
+                "injection": {
+                  "text": "Heuristic: if any value comes from a user, this allows injection. Parameterized queries keep data out of the statement."
+                },
+                "sql": {
+                  "text": "SQL built from non-constant values"
+                }
+              },
               "properties": {
                 "category": "Security",
                 "paradigms": []
@@ -1064,6 +1743,14 @@
               },
               "defaultConfiguration": {
                 "level": "warning"
+              },
+              "messageStrings": {
+                "jump": {
+                  "text": "goto {0} in {1}"
+                },
+                "structure": {
+                  "text": "The flow no longer follows the block structure; a loop, a helper or an early return usually replaces it."
+                }
               },
               "properties": {
                 "category": "Paradigm",
@@ -1084,6 +1771,26 @@
               "defaultConfiguration": {
                 "level": "warning"
               },
+              "messageStrings": {
+                "field": {
+                  "text": "Global mutable field {0}.{1}"
+                },
+                "fieldShared": {
+                  "text": "A non-private static mutable field is shared by all code and threads."
+                },
+                "history": {
+                  "text": "Any function can change it, so its value depends on the call history."
+                },
+                "property": {
+                  "text": "Global mutable property {0}.{1}"
+                },
+                "propertyShared": {
+                  "text": "A static settable property is shared by all code and threads."
+                },
+                "variable": {
+                  "text": "Global variable {0}"
+                }
+              },
               "properties": {
                 "category": "Paradigm",
                 "paradigms": [
@@ -1103,6 +1810,20 @@
               "defaultConfiguration": {
                 "level": "warning"
               },
+              "messageStrings": {
+                "file": {
+                  "text": "{0} has {1} lines"
+                },
+                "limit": {
+                  "text": "The limit is {0}."
+                },
+                "module": {
+                  "text": "Module {0} has {1} lines of code"
+                },
+                "unit": {
+                  "text": "The limit is {0}; a smaller module is easier to understand as a unit."
+                }
+              },
               "properties": {
                 "category": "Paradigm",
                 "paradigms": [
@@ -1119,7 +1840,11 @@
           "ruleIndex": 14,
           "level": "warning",
           "message": {
-            "text": "Module cycle: Sample.Domain <-> Sample.Services"
+            "text": "Module cycle: Sample.Domain <-> Sample.Services",
+            "id": "modules",
+            "arguments": [
+              "Sample.Domain <-> Sample.Services"
+            ]
           },
           "locations": [
             {
@@ -1146,6 +1871,10 @@
             "severity": "major",
             "confidence": "high",
             "explanation": "These modules depend on each other, directly or transitively, so none can be built, tested or released alone.",
+            "explanationMessage": {
+              "id": "modulesAlone",
+              "arguments": []
+            },
             "module": "Sample.Domain"
           }
         },
@@ -1154,7 +1883,11 @@
           "ruleIndex": 42,
           "level": "warning",
           "message": {
-            "text": "Order is an anemic domain object"
+            "text": "Order is an anemic domain object",
+            "id": "anemic",
+            "arguments": [
+              "Order"
+            ]
           },
           "locations": [
             {
@@ -1181,6 +1914,12 @@
             "severity": "minor",
             "confidence": "medium",
             "explanation": "3 public setters and no methods: its invariants must be enforced by whoever changes it. Plain DTOs are fine; this one sits in a domain namespace.",
+            "explanationMessage": {
+              "id": "setters",
+              "arguments": [
+                "3"
+              ]
+            },
             "module": "Sample.Domain",
             "entity": "Sample.Domain.Order",
             "measured": {
@@ -1195,7 +1934,12 @@
           "ruleIndex": 15,
           "level": "warning",
           "message": {
-            "text": "Domain must not depend on Services"
+            "text": "Domain must not depend on Services",
+            "id": "violation",
+            "arguments": [
+              "Domain",
+              "Services"
+            ]
           },
           "locations": [
             {
@@ -1222,6 +1966,15 @@
             "severity": "major",
             "confidence": "high",
             "explanation": "Order (Sample.Domain) uses Notifier (Sample.Services); allowed: none.",
+            "explanationMessage": {
+              "id": "allowedNone",
+              "arguments": [
+                "Order",
+                "Sample.Domain",
+                "Notifier",
+                "Sample.Services"
+              ]
+            },
             "module": "Sample.Domain",
             "entity": "Sample.Domain.Order"
           }
@@ -1231,7 +1984,12 @@
           "ruleIndex": 28,
           "level": "warning",
           "message": {
-            "text": "Public mutable field Order.Listener"
+            "text": "Public mutable field Order.Listener",
+            "id": "field",
+            "arguments": [
+              "Order",
+              "Listener"
+            ]
           },
           "locations": [
             {
@@ -1258,6 +2016,10 @@
             "severity": "major",
             "confidence": "high",
             "explanation": "Any caller can change this field, so the type cannot protect its invariants. A property or a method can.",
+            "explanationMessage": {
+              "id": "invariants",
+              "arguments": []
+            },
             "module": "Sample.Domain",
             "entity": "Sample.Domain.Order"
           }
@@ -1267,7 +2029,12 @@
           "ruleIndex": 12,
           "level": "warning",
           "message": {
-            "text": "Parameter a of Many says little"
+            "text": "Parameter a of Many says little",
+            "id": "shortParameter",
+            "arguments": [
+              "a",
+              "Many"
+            ]
           },
           "locations": [
             {
@@ -1294,6 +2061,10 @@
             "severity": "minor",
             "confidence": "low",
             "explanation": "One-letter names in a public signature leave the meaning to the reader.",
+            "explanationMessage": {
+              "id": "shortParameterMeaning",
+              "arguments": []
+            },
             "module": "Sample.Legacy",
             "entity": "Sample.Legacy.Old.Many"
           }
@@ -1303,7 +2074,12 @@
           "ruleIndex": 12,
           "level": "warning",
           "message": {
-            "text": "Parameter b of Many says little"
+            "text": "Parameter b of Many says little",
+            "id": "shortParameter",
+            "arguments": [
+              "b",
+              "Many"
+            ]
           },
           "locations": [
             {
@@ -1330,6 +2106,10 @@
             "severity": "minor",
             "confidence": "low",
             "explanation": "One-letter names in a public signature leave the meaning to the reader.",
+            "explanationMessage": {
+              "id": "shortParameterMeaning",
+              "arguments": []
+            },
             "module": "Sample.Legacy",
             "entity": "Sample.Legacy.Old.Many"
           }
@@ -1339,7 +2119,12 @@
           "ruleIndex": 12,
           "level": "warning",
           "message": {
-            "text": "Parameter c of Many says little"
+            "text": "Parameter c of Many says little",
+            "id": "shortParameter",
+            "arguments": [
+              "c",
+              "Many"
+            ]
           },
           "locations": [
             {
@@ -1366,6 +2151,10 @@
             "severity": "minor",
             "confidence": "low",
             "explanation": "One-letter names in a public signature leave the meaning to the reader.",
+            "explanationMessage": {
+              "id": "shortParameterMeaning",
+              "arguments": []
+            },
             "module": "Sample.Legacy",
             "entity": "Sample.Legacy.Old.Many"
           }
@@ -1375,7 +2164,12 @@
           "ruleIndex": 12,
           "level": "warning",
           "message": {
-            "text": "Parameter d of Many says little"
+            "text": "Parameter d of Many says little",
+            "id": "shortParameter",
+            "arguments": [
+              "d",
+              "Many"
+            ]
           },
           "locations": [
             {
@@ -1402,6 +2196,10 @@
             "severity": "minor",
             "confidence": "low",
             "explanation": "One-letter names in a public signature leave the meaning to the reader.",
+            "explanationMessage": {
+              "id": "shortParameterMeaning",
+              "arguments": []
+            },
             "module": "Sample.Legacy",
             "entity": "Sample.Legacy.Old.Many"
           }
@@ -1411,7 +2209,12 @@
           "ruleIndex": 12,
           "level": "warning",
           "message": {
-            "text": "Parameter e of Many says little"
+            "text": "Parameter e of Many says little",
+            "id": "shortParameter",
+            "arguments": [
+              "e",
+              "Many"
+            ]
           },
           "locations": [
             {
@@ -1438,6 +2241,10 @@
             "severity": "minor",
             "confidence": "low",
             "explanation": "One-letter names in a public signature leave the meaning to the reader.",
+            "explanationMessage": {
+              "id": "shortParameterMeaning",
+              "arguments": []
+            },
             "module": "Sample.Legacy",
             "entity": "Sample.Legacy.Old.Many"
           }
@@ -1447,7 +2254,12 @@
           "ruleIndex": 12,
           "level": "warning",
           "message": {
-            "text": "Parameter f of Many says little"
+            "text": "Parameter f of Many says little",
+            "id": "shortParameter",
+            "arguments": [
+              "f",
+              "Many"
+            ]
           },
           "locations": [
             {
@@ -1474,6 +2286,10 @@
             "severity": "minor",
             "confidence": "low",
             "explanation": "One-letter names in a public signature leave the meaning to the reader.",
+            "explanationMessage": {
+              "id": "shortParameterMeaning",
+              "arguments": []
+            },
             "module": "Sample.Legacy",
             "entity": "Sample.Legacy.Old.Many"
           }
@@ -1483,7 +2299,12 @@
           "ruleIndex": 31,
           "level": "warning",
           "message": {
-            "text": "OrderService splits into 4 unrelated method groups"
+            "text": "OrderService splits into 4 unrelated method groups",
+            "id": "splits",
+            "arguments": [
+              "OrderService",
+              "4"
+            ]
           },
           "locations": [
             {
@@ -1510,6 +2331,10 @@
             "severity": "minor",
             "confidence": "medium",
             "explanation": "LCOM4 finds method groups that share no field and do not call each other; each may be a separate class.",
+            "explanationMessage": {
+              "id": "lcom",
+              "arguments": []
+            },
             "module": "Sample.Services",
             "entity": "Sample.Services.OrderService",
             "measured": {
@@ -1524,7 +2349,11 @@
           "ruleIndex": 53,
           "level": "warning",
           "message": {
-            "text": "ApiKey looks like a hardcoded secret"
+            "text": "ApiKey looks like a hardcoded secret",
+            "id": "secret",
+            "arguments": [
+              "ApiKey"
+            ]
           },
           "locations": [
             {
@@ -1551,6 +2380,10 @@
             "severity": "major",
             "confidence": "medium",
             "explanation": "Heuristic: the name suggests a secret and the value is a literal. It may be a placeholder or a non-secret value.",
+            "explanationMessage": {
+              "id": "placeholder",
+              "arguments": []
+            },
             "module": "Sample.Services",
             "entity": "Sample.Services.OrderService"
           }
@@ -1560,7 +2393,12 @@
           "ruleIndex": 0,
           "level": "warning",
           "message": {
-            "text": "Matches is likely O(n²)"
+            "text": "Matches is likely O(n²)",
+            "id": "likely",
+            "arguments": [
+              "Matches",
+              "O(n²)"
+            ]
           },
           "locations": [
             {
@@ -1587,6 +2425,10 @@
             "severity": "minor",
             "confidence": "medium",
             "explanation": "Estimated from nested loops over inputs of unknown size. Small inputs may make this irrelevant.",
+            "explanationMessage": {
+              "id": "loops",
+              "arguments": []
+            },
             "module": "Sample.Services",
             "entity": "Sample.Services.OrderService.Matches",
             "measured": {
@@ -1601,7 +2443,12 @@
           "ruleIndex": 0,
           "level": "warning",
           "message": {
-            "text": "Pairs is likely O(n²)"
+            "text": "Pairs is likely O(n²)",
+            "id": "likely",
+            "arguments": [
+              "Pairs",
+              "O(n²)"
+            ]
           },
           "locations": [
             {
@@ -1628,6 +2475,10 @@
             "severity": "minor",
             "confidence": "medium",
             "explanation": "Estimated from nested loops over inputs of unknown size. Small inputs may make this irrelevant.",
+            "explanationMessage": {
+              "id": "loops",
+              "arguments": []
+            },
             "module": "Sample.Services",
             "entity": "Sample.Services.OrderService.Pairs",
             "measured": {
@@ -1642,7 +2493,11 @@
           "ruleIndex": 8,
           "level": "warning",
           "message": {
-            "text": "TODO comment left in code"
+            "text": "TODO comment left in code",
+            "id": "comment",
+            "arguments": [
+              "TODO"
+            ]
           },
           "locations": [
             {
@@ -1669,6 +2524,10 @@
             "severity": "minor",
             "confidence": "high",
             "explanation": "A placeholder records unfinished work that belongs in the issue tracker or in a fix.",
+            "explanationMessage": {
+              "id": "commentTracker",
+              "arguments": []
+            },
             "module": "Sample.Services"
           }
         },
@@ -1677,7 +2536,12 @@
           "ruleIndex": 48,
           "level": "warning",
           "message": {
-            "text": "OrderService creates Notifier directly"
+            "text": "OrderService creates Notifier directly",
+            "id": "creates",
+            "arguments": [
+              "OrderService",
+              "Notifier"
+            ]
           },
           "locations": [
             {
@@ -1704,6 +2568,15 @@
             "severity": "minor",
             "confidence": "medium",
             "explanation": "Notifier is available through INotifier, but Pay instantiates the concrete class. Injecting the abstraction keeps OrderService replaceable and testable.",
+            "explanationMessage": {
+              "id": "inject",
+              "arguments": [
+                "Notifier",
+                "INotifier",
+                "Pay",
+                "OrderService"
+              ]
+            },
             "module": "Sample.Services",
             "entity": "Sample.Services.OrderService.Pay"
           }

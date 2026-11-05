@@ -11,7 +11,7 @@ public sealed class GotoAnalyzer : AnalyzerBase
         foreach (var callable in context.Callables)
         {
             foreach (var jump in callable.Body.All<GotoStatement>().Where(g => !g.Label.StartsWith("case", StringComparison.Ordinal) && g.Label != "default"))
-                context.Report(Confidence.High, jump.Location, $"goto {jump.Label} in {callable.Name}", "The flow no longer follows the block structure; a loop, a helper or an early return usually replaces it.", symbol: callable.Id);
+                context.Report(Confidence.High, jump.Location, $"goto {jump.Label} in {callable.Name}", $"The flow no longer follows the block structure; a loop, a helper or an early return usually replaces it.", symbol: callable.Id);
         }
     }
 }
@@ -27,13 +27,13 @@ public sealed class GlobalStateAnalyzer : AnalyzerBase
         foreach (var module in context.Modules)
         {
             foreach (var global in module.Globals.Where(g => !g.IsReadOnly))
-                context.Report(Confidence.High, global.Location, $"Global variable {global.Name}", "Any function can change it, so its value depends on the call history.", module.Name, global.Id);
+                context.Report(Confidence.High, global.Location, $"Global variable {global.Name}", $"Any function can change it, so its value depends on the call history.", module.Name, global.Id);
             foreach (var type in module.AllTypes)
             {
                 foreach (var field in type.Fields.Where(f => f is { IsStatic: true, IsReadOnly: false, Visibility: not Visibility.Private }))
-                    context.Report(Confidence.High, field.Location, $"Global mutable field {type.Name}.{field.Name}", "A non-private static mutable field is shared by all code and threads.", module.Name, field.Id);
+                    context.Report(Confidence.High, field.Location, $"Global mutable field {type.Name}.{field.Name}", $"A non-private static mutable field is shared by all code and threads.", module.Name, field.Id);
                 foreach (var property in type.Properties.Where(p => p is { IsStatic: true, SetterVisibility: > Visibility.Private }))
-                    context.Report(Confidence.High, property.Location, $"Global mutable property {type.Name}.{property.Name}", "A static settable property is shared by all code and threads.", module.Name, property.Id);
+                    context.Report(Confidence.High, property.Location, $"Global mutable property {type.Name}.{property.Name}", $"A static settable property is shared by all code and threads.", module.Name, property.Id);
             }
         }
     }

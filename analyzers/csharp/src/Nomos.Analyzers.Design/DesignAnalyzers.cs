@@ -29,10 +29,11 @@ public sealed class MainSequenceAnalyzer : AnalyzerBase
 
             if (package.Distance is not { } distance || package.Instability is not { } instability || package.Abstractness is not { } abstractness
                 || distance <= maxDistance || package.AfferentCoupling + package.EfferentCoupling < minCoupling) continue;
-            var zone = instability < 0.5 ? "the zone of pain: concrete and heavily depended upon" : "the zone of uselessness: abstract and unused";
             context.Report(Confidence.Medium, module.AllTypes.First().Location,
                 $"Module {module.Name} is far from the main sequence (D = {distance:0.00})",
-                $"A = {abstractness:0.00}, I = {instability:0.00}, so it sits near {zone}.", module.Name,
+                instability < 0.5
+                    ? (FormattableString)$"A = {abstractness:0.00}, I = {instability:0.00}, so it sits near the zone of pain: concrete and heavily depended upon."
+                    : $"A = {abstractness:0.00}, I = {instability:0.00}, so it sits near the zone of uselessness: abstract and unused.", module.Name,
                 measured: new Measurement("distance", Math.Round(distance, 4), maxDistance));
         }
     }
@@ -52,7 +53,7 @@ public sealed class DependencyCycleAnalyzer : AnalyzerBase
         {
             var location = context.Modules.First(m => cycle.Contains(m.Name)).AllTypes.First().Location;
             context.Report(Confidence.High, location, $"Module cycle: {string.Join(" <-> ", cycle)}",
-                "These modules depend on each other, directly or transitively, so none can be built, tested or released alone.", cycle[0]);
+                $"These modules depend on each other, directly or transitively, so none can be built, tested or released alone.", cycle[0]);
         }
 
         foreach (var cycle in Tarjan.Cycles(graphs.Types))
@@ -61,7 +62,7 @@ public sealed class DependencyCycleAnalyzer : AnalyzerBase
             // Nested types naturally lean on their outer type.
             if (cycle.All(id => id.StartsWith(cycle[0], StringComparison.Ordinal))) continue;
             context.Report(first, Confidence.High, $"Type cycle of {cycle.Count}: {string.Join(" <-> ", cycle.Select(Simple))}",
-                "These types reference each other, so a change to one can ripple through all of them.", Severity.Minor);
+                $"These types reference each other, so a change to one can ripple through all of them.", Severity.Minor);
         }
     }
 
@@ -86,7 +87,9 @@ public sealed class LayerViolationAnalyzer : AnalyzerBase
                 if (LayerOf(context, target.ModuleName) is not { } destination || destination.Name == source.Name) continue;
                 if (!source.MayDependOn.Contains(destination.Name))
                     context.Report(Confidence.High, dependency.Location, $"{source.Name} must not depend on {destination.Name}",
-                        $"{type.Name} ({type.ModuleName}) uses {target.Name} ({target.ModuleName}); allowed: {(source.MayDependOn.Count == 0 ? "none" : string.Join(", ", source.MayDependOn))}.", type.ModuleName, type.Id);
+                        source.MayDependOn.Count == 0
+                            ? (FormattableString)$"{type.Name} ({type.ModuleName}) uses {target.Name} ({target.ModuleName}); allowed: none."
+                            : $"{type.Name} ({type.ModuleName}) uses {target.Name} ({target.ModuleName}); allowed: {string.Join(", ", source.MayDependOn)}.", type.ModuleName, type.Id);
             }
         }
     }

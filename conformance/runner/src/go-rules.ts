@@ -7,6 +7,9 @@ export const goRulesPath = path.join(repoRoot, "analyzers", "go", "internal", "a
 export const goPracticesPath = path.join(repoRoot, "analyzers", "go", "internal", "analyzer", "practices.json");
 /** The extension lists the practices to choose from; it reads them as data (D-051). */
 export const extensionPracticesPath = path.join(repoRoot, "extension", "practices.json");
+/** The extension and ci show rule texts and finding templates in the interface language (spec/l10n.md, D-052). */
+export const extensionRulesPath = path.join(repoRoot, "extension", "rules.json");
+export const ciRulesPath = path.join(repoRoot, "ci", "rules.json");
 
 /** spec/rules as JSON: go:embed cannot reach outside the module, and the analyzer has no YAML dependency (D-038). */
 export function renderGoRules(): string {
@@ -24,8 +27,11 @@ export function renderPractices(): string {
 /** Every file generated from spec, with its content; `npm run spec-json` writes them, `validate` compares. */
 export function generatedFiles(): { file: string; content: string }[] {
   const practices = renderPractices();
+  const rules = renderGoRules();
   return [
-    { file: goRulesPath, content: renderGoRules() },
+    { file: goRulesPath, content: rules },
+    { file: extensionRulesPath, content: rules },
+    { file: ciRulesPath, content: rules },
     { file: goPracticesPath, content: practices },
     { file: extensionPracticesPath, content: practices },
   ];

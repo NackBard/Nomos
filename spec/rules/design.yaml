@@ -1,4 +1,4 @@
-schemaVersion: "1.0.0"
+schemaVersion: "1.1.0"
 rules:
   - id: DSN001
     category: Design
@@ -9,6 +9,15 @@ rules:
     severity: minor
     confidence: medium
     threshold: { maxDistance: 0.7, minCoupling: 3 }
+    l10n:
+      ru:
+        title: "Расстояние до главной последовательности"
+        description: "Для каждого модуля Ca, Ce, нестабильность I, абстрактность A и расстояние D (spec/metrics.md)."
+        rationale: "D около 1 означает, что модуль жёсткий или бесполезный."
+    messages:
+      distance: { text: "Module {0} is far from the main sequence (D = {1})", ru: "Модуль {0} далёк от главной последовательности (D = {1})" }
+      pain: { text: "A = {0}, I = {1}, so it sits near the zone of pain: concrete and heavily depended upon.", ru: "A = {0}, I = {1}, поэтому он близок к зоне боли: конкретный, и от него многое зависит." }
+      uselessness: { text: "A = {0}, I = {1}, so it sits near the zone of uselessness: abstract and unused.", ru: "A = {0}, I = {1}, поэтому он близок к зоне бесполезности: абстрактный и неиспользуемый." }
   - id: DSN002
     category: Design
     title: Dependency cycles
@@ -18,6 +27,17 @@ rules:
     severity: major
     confidence: high
     threshold: {}
+    l10n:
+      ru:
+        title: "Циклы зависимостей"
+        description: "Сильно связные компоненты (Тарьян) в графе модулей и в графе типов."
+        rationale: "Участников цикла нельзя понять или изменить по отдельности."
+    messages:
+      modules: { text: "Module cycle: {0}", ru: "Цикл модулей: {0}" }
+      modulesAlone: { text: "These modules depend on each other, directly or transitively, so none can be built, tested or released alone.", ru: "Эти модули зависят друг от друга напрямую или транзитивно, поэтому ни один нельзя собрать, проверить или выпустить отдельно." }
+      types: { text: "Type cycle of {0}: {1}", ru: "Цикл из {0} {0|типа|типов|типов}: {1}" }
+      typesRipple: { text: "These types reference each other, so a change to one can ripple through all of them.", ru: "Эти типы ссылаются друг на друга, поэтому изменение одного может отразиться на всех." }
+      unitsRipple: { text: "These units reference each other, so a change to one can ripple through all of them.", ru: "Эти единицы ссылаются друг на друга, поэтому изменение одной может отразиться на всех." }
   - id: DSN003
     category: Design
     title: Layer violations
@@ -28,6 +48,15 @@ rules:
     confidence: high
     threshold: {}
     requires: [layer-config]
+    l10n:
+      ru:
+        title: "Нарушения слоёв"
+        description: "Зависимости от слоёв, которые конфигурация не разрешает."
+        rationale: "Слои объявила команда, и их обходят."
+    messages:
+      violation: { text: "{0} must not depend on {1}", ru: "{0} не должен зависеть от {1}" }
+      allowed: { text: "{0} ({1}) uses {2} ({3}); allowed: {4}.", ru: "{0} ({1}) использует {2} ({3}); разрешено: {4}." }
+      allowedNone: { text: "{0} ({1}) uses {2} ({3}); allowed: none.", ru: "{0} ({1}) использует {2} ({3}); разрешено: ничего." }
   - id: DSN004
     category: Design
     title: God class
@@ -37,6 +66,14 @@ rules:
     severity: major
     confidence: medium
     threshold: { minWmc: 47, minAtfd: 5, maxTcc: 0.3333 }
+    l10n:
+      ru:
+        title: "Божественный класс (God class)"
+        description: "Стратегия обнаружения Ланцы и Маринеску: высокий WMC, высокий ATFD, низкий TCC."
+        rationale: "Класс, который знает и делает слишком много."
+    messages:
+      god: { text: "{0} looks like a god class", ru: "{0} похож на божественный класс (God class)" }
+      metrics: { text: "WMC = {0} (>= {1}), ATFD = {2} (>= {3}), TCC = {4} (< {5}): it does much, uses others' data, and its methods share little.", ru: "WMC = {0} (>= {1}), ATFD = {2} (>= {3}), TCC = {4} (< {5}): он делает много, пользуется чужими данными, а у его методов мало общего." }
   - id: DSN005
     category: Design
     title: Feature envy
@@ -46,6 +83,14 @@ rules:
     severity: minor
     confidence: low
     threshold: { minForeignMembers: 3 }
+    l10n:
+      ru:
+        title: "Завистливый метод (Feature envy)"
+        description: "Метод, который использует больше данных одного чужого типа, чем своего."
+        rationale: "Вероятно, метод принадлежит другому типу."
+    messages:
+      envy: { text: "{0} is more interested in {1} than in {2}", ru: "{0} обращается к {1} чаще, чем к {2}" }
+      members: { text: "It uses {0} members of {1} ({2}) and {3} of its own.", ru: "Использует {0} {0|член|члена|членов} {1} ({2}) и {3} своих." }
   - id: DSN006
     category: Design
     title: Blast radius
@@ -55,3 +100,13 @@ rules:
     severity: minor
     confidence: medium
     threshold: { maxDependents: 20 }
+    l10n:
+      ru:
+        title: "Радиус распространения изменений (Blast radius)"
+        description: "Число типов, достижимых по обращённым зависимостям (spec/metrics.md)."
+        rationale: "Показывает, как далеко может распространиться изменение."
+    messages:
+      types: { text: "Changing {0} can reach {1} types ({2})", ru: "Изменение {0} может затронуть {1} {1|тип|типа|типов} ({2})" }
+      typesHops: { text: "{0} direct dependents, up to {1} hops away. Stable abstractions at such points limit the spread. Static dependencies overstate real impact when a change keeps the contract.", ru: "Прямых зависимых: {0}, самые дальние — через {1} {1|шаг|шага|шагов}. Устойчивые абстракции в таких точках ограничивают распространение. Статические зависимости преувеличивают реальное влияние, если изменение сохраняет контракт." }
+      units: { text: "Changing {0} can reach {1} units", ru: "Изменение {0} может затронуть {1} {1|единицу|единицы|единиц}" }
+      stable: { text: "Stable abstractions at such points limit the spread. Static dependencies overstate real impact when a change keeps the contract.", ru: "Устойчивые абстракции в таких точках ограничивают распространение. Статические зависимости преувеличивают реальное влияние, если изменение сохраняет контракт." }

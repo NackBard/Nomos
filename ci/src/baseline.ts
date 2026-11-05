@@ -14,6 +14,8 @@ export interface Finding {
   file: string;
   line: number;
   module?: string;
+  /** message.id and message.arguments of SARIF, for a report in another language (D-052); not part of the baseline. */
+  template?: { id?: string; arguments?: string[] };
 }
 
 export interface Baseline {
@@ -46,6 +48,7 @@ export function findingsOf(run: Run): Finding[] {
       file: place?.artifactLocation?.uri ?? "",
       line: place?.region?.startLine ?? 0,
       module: result.properties.module,
+      template: { id: result.message.id, arguments: result.message.arguments },
     };
   });
 }

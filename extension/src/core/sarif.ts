@@ -12,6 +12,12 @@ export function readRuleTitles(log: any): Record<string, string> {
   return titles;
 }
 
+/** The template key and arguments of a text, when the analyzer gave them as the profile describes. */
+function strings(prefix: "message" | "explanation", message: any): Partial<Finding> {
+  if (typeof message?.id !== "string" || !Array.isArray(message.arguments)) return {};
+  return { [`${prefix}Id`]: message.id, [`${prefix}Arguments`]: message.arguments.map(String) };
+}
+
 /** Flattens a SARIF log written by contracts/sarif-profile.md. A result without an explanation breaks the profile. */
 export function readFindings(log: any, source: string): Finding[] {
   if (log?.version !== "2.1.0" || !Array.isArray(log.runs)) throw new ContractError(`${source}: not a SARIF 2.1.0 log`);
@@ -42,6 +48,8 @@ export function readFindings(log: any, source: string): Finding[] {
         module: properties.module ?? NoModule,
         entity: properties.entity,
         measured: properties.measured,
+        ...strings("message", result.message),
+        ...strings("explanation", properties.explanationMessage),
       });
     }
   }

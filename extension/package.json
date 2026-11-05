@@ -1,7 +1,7 @@
 {
   "name": "nomos",
   "displayName": "Nomos",
-  "description": "Statistics and observations about code from Nomos analyzers. Findings are heuristics, not verdicts.",
+  "description": "%description%",
   "version": "0.1.0",
   "publisher": "nomos",
   "private": true,
@@ -21,23 +21,27 @@
     "commands": [
       {
         "command": "nomos.analyze",
-        "title": "Nomos: Analyze Workspace",
-        "icon": "$(play)"
+        "title": "%command.analyze%",
+        "icon": "$(play)",
+        "category": "Nomos"
       },
       {
         "command": "nomos.showGraph",
-        "title": "Nomos: Show Dependency Graph",
-        "icon": "$(type-hierarchy)"
+        "title": "%command.showGraph%",
+        "icon": "$(type-hierarchy)",
+        "category": "Nomos"
       },
       {
         "command": "nomos.openGraphWindow",
-        "title": "Nomos: Open Dependency Graph in New Window",
-        "icon": "$(empty-window)"
+        "title": "%command.openGraphWindow%",
+        "icon": "$(empty-window)",
+        "category": "Nomos"
       },
       {
         "command": "nomos.choosePractices",
-        "title": "Nomos: Choose Practices",
-        "icon": "$(checklist)"
+        "title": "%command.choosePractices%",
+        "icon": "$(checklist)",
+        "category": "Nomos"
       }
     ],
     "viewsContainers": {
@@ -53,11 +57,11 @@
       "nomos": [
         {
           "id": "nomos.findings",
-          "name": "Findings"
+          "name": "%view.findings%"
         },
         {
           "id": "nomos.paradigms",
-          "name": "Paradigms and Skipped Rules",
+          "name": "%view.paradigms%",
           "visibility": "collapsed"
         }
       ]
@@ -94,12 +98,12 @@
         "nomos.analyzeOnSave": {
           "type": "boolean",
           "default": false,
-          "description": "Run the analyzers after a file is saved."
+          "description": "%config.analyzeOnSave%"
         },
         "nomos.codeLens": {
           "type": "boolean",
           "default": true,
-          "description": "Show metrics of functions and types above their declarations."
+          "description": "%config.codeLens%"
         },
         "nomos.practices": {
           "type": [
@@ -112,7 +116,7 @@
           "uniqueItems": true,
           "default": null,
           "scope": "resource",
-          "markdownDescription": "Practices whose rules run in a folder without `nomos.json` (ids from **Nomos: Choose Practices**). `null` runs every practice. Metrics are shown either way. In a folder with `nomos.json`, its `practices` field decides."
+          "markdownDescription": "%config.practices%"
         }
       }
     }
@@ -123,7 +127,8 @@
     "package": "node scripts/package.mjs",
     "test": "npm run compile && node --test \"out/test/**/*.test.js\"",
     "e2e": "npm run compile && node scripts/run-e2e.mjs",
-    "check-boundary": "node scripts/check-boundary.mjs"
+    "check-boundary": "node scripts/check-boundary.mjs",
+    "check-l10n": "node scripts/check-l10n.mjs"
   },
   "dependencies": {
     "ajv": "8.20.0"
@@ -133,5 +138,6 @@
     "@types/vscode": "1.90.0",
     "@vscode/vsce": "4.0.0",
     "typescript": "5.9.2"
-  }
+  },
+  "l10n": "./l10n"
 }

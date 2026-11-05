@@ -57,3 +57,19 @@ test("the expected file is compared only for the rules in covers, and a stated m
   assert.deepEqual(checkSarif(log(measured), { ...context(52), expected: { results: [] }, covers: new Set(["CC001"]) }), ["result CC001 a.cs:3: reported but not expected"]);
   assert.match(checkSarif(log(measured), { ...context(52), expected: expected({ ...measured, threshold: 41 }), covers: new Set(["CC001"]) })[0], /measured is/);
 });
+
+test("a message id must name a template of the rule that gives the text", () => {
+  const templated = (message: unknown, explanationMessage?: unknown) => {
+    const sarif = JSON.parse(log(undefined));
+    sarif.runs[0].tool.driver.rules[0].messageStrings = { lines: { text: "{0} spans {1} lines" }, limit: { text: "because" } };
+    sarif.runs[0].results[0].message = message;
+    sarif.runs[0].results[0].properties.explanationMessage = explanationMessage;
+    return JSON.stringify(sarif);
+  };
+  const explanation = { id: "limit", arguments: [] };
+  assert.deepEqual(checkSarif(templated({ text: "Run spans 52 lines", id: "lines", arguments: ["Run", "52"] }, explanation), context(52)), []);
+  assert.match(checkSarif(templated({ text: "Run spans 52 lines", id: "lines", arguments: ["Run", "50"] }, explanation), context(52)).join("\n"), /gives "Run spans 50 lines"/);
+  assert.match(checkSarif(templated({ text: "long", id: "nope", arguments: [] }, explanation), context(52)).join("\n"), /"nope" is not in the messageStrings/);
+  assert.match(checkSarif(templated({ text: "long" }, explanation), context(52)).join("\n"), /message.id is missing/);
+  assert.match(checkSarif(templated({ text: "Run spans 52 lines", id: "lines", arguments: ["Run", "52"] }), context(52)).join("\n"), /explanationMessage.id is missing/);
+});

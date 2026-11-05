@@ -16,12 +16,12 @@ public sealed partial class PlaceholderAnalyzer : AnalyzerBase
             {
                 var match = Marker().Match(comment.Text);
                 if (match.Success)
-                    context.Report(Confidence.High, comment.Location, $"{match.Value} comment left in code", "A placeholder records unfinished work that belongs in the issue tracker or in a fix.");
+                    context.Report(Confidence.High, comment.Location, $"{match.Value} comment left in code", $"A placeholder records unfinished work that belongs in the issue tracker or in a fix.");
             }
         }
 
         foreach (var callable in context.Callables.Where(c => IrQueries.IsStub(c) && c.Body.All<ObjectCreationExpression>().Any(o => o.CreatedType.SimpleName == "NotImplementedException")))
-            context.Report(Confidence.High, callable.Location, $"{callable.Name} is not implemented", "The body only throws NotImplementedException.", symbol: callable.Id);
+            context.Report(Confidence.High, callable.Location, $"{callable.Name} is not implemented", $"The body only throws NotImplementedException.", symbol: callable.Id);
     }
 
     [GeneratedRegex(@"\b(TODO|FIXME|HACK|XXX)\b")]
@@ -39,7 +39,7 @@ public sealed partial class CommentedOutCodeAnalyzer : AnalyzerBase
         foreach (var file in context.Model.Files.Where(f => f.Language == context.Language))
         {
             foreach (var comment in file.Comments.Where(c => !c.IsDocumentation && CodeLike().IsMatch(c.Text)))
-                context.Report(Confidence.Low, comment.Location, "Comment looks like disabled code", "The comment has the shape of a statement; a textual heuristic cannot tell it from prose with certainty.");
+                context.Report(Confidence.Low, comment.Location, $"Comment looks like disabled code", $"The comment has the shape of a statement; a textual heuristic cannot tell it from prose with certainty.");
         }
     }
 

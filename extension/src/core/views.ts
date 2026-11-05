@@ -1,3 +1,5 @@
+import { english } from "./l10n";
+import type { Translate } from "./l10n";
 import type { AnalysisRun, Cycle, Entity, Facts, Finding, Module, SkippedRule } from "./model";
 
 export interface Group<T> { key: string; items: T[] }
@@ -24,15 +26,24 @@ export function groupFindings(findings: Finding[]): ModuleFindings[] {
   return groupBy(findings, (f) => f.module).map((m) => ({ module: m.key, total: m.items.length, categories: groupBy(m.items, (f) => f.category) }));
 }
 
-export function formatMetrics(metrics: Record<string, number | null>, names?: string[]): string {
+/** Metric names are the ids of spec/metrics.md in every language, like names in code. */
+export function formatMetrics(metrics: Record<string, number | null>, names?: string[], t: Translate = english): string {
   const keys = names ?? Object.keys(metrics).sort();
-  return keys.filter((k) => k in metrics).map((k) => `${k} ${metrics[k] ?? "n/a"}`).join(" · ");
+  return keys.filter((k) => k in metrics).map((k) => `${k} ${metrics[k] ?? t("n/a")}`).join(" · ");
+}
+
+/** "low", "medium" or "high" confidence in the interface language. */
+export function confidenceText(confidence: string, t: Translate = english): string {
+  const names: Record<string, string> = { low: t("low"), medium: t("medium"), high: t("high") };
+  return names[confidence] ?? confidence;
 }
 
 /** The tooltip text: statement, heuristic label and explanation, so a finding never reads as a verdict. */
-export function describeFinding(f: Finding): string {
-  const measured = f.measured ? `\n\n${f.measured.metric} = ${f.measured.value}${f.measured.threshold === undefined ? "" : ` (reported from ${f.measured.threshold})`}` : "";
-  return `${f.ruleId} ${f.ruleTitle}: ${f.message}\n\nHeuristic, ${f.confidence} confidence.\n\n${f.explanation}${measured}`;
+export function describeFinding(f: Finding, t: Translate = english): string {
+  const measured = !f.measured ? "" : "\n\n" + (f.measured.threshold === undefined
+    ? `${f.measured.metric} = ${f.measured.value}`
+    : t("{0} = {1} (reported from {2})", f.measured.metric, f.measured.value, f.measured.threshold));
+  return `${f.ruleId} ${f.ruleTitle}: ${f.message}\n\n${t("Heuristic, {0} confidence.", confidenceText(f.confidence, t))}\n\n${f.explanation}${measured}`;
 }
 
 export interface StyleSummary {
@@ -115,9 +126,18 @@ export function shapeOf(kind: string | undefined, isAbstract: boolean | undefine
   return isAbstract && shape !== "diamond" ? "triangle" : shape;
 }
 
-function typeKindLabel(type: Entity): string {
+/** Kind of a type as the graph names it; kinds outside the facts contract show as they are. */
+function typeKindLabel(type: Entity, t: Translate): string {
   const kind = type.kind ?? "type";
-  return type.isAbstract && shapeOf(type.kind, true) === "triangle" ? `abstract ${kind}` : kind;
+  if (type.isAbstract && shapeOf(type.kind, true) === "triangle") {
+    const abstract: Record<string, string> = { class: t("abstract class"), record: t("abstract record"), struct: t("abstract struct") };
+    return abstract[kind] ?? t("abstract {0}", kind);
+  }
+  const names: Record<string, string> = {
+    class: t("class"), struct: t("struct"), record: t("record"), enum: t("enum"), interface: t("interface"),
+    protocol: t("protocol"), trait: t("trait"), type: t("type"), alias: t("alias"), delegate: t("delegate"),
+  };
+  return names[kind] ?? kind;
 }
 
 function cycleMembers(cycles: Cycle[] | undefined, level: GraphLevel): Set<string>[] {
@@ -224,7 +244,7 @@ export function buildGraph(runs: AnalysisRun[]): Graph {
  * Members fold into their type; a free function has no type to fold into and is drawn on its own when it has links.
  * Undefined means the module is gone from the facts.
  */
-export function buildFocus(runs: AnalysisRun[], module: string, peer?: string): Graph | undefined {
+export function buildFocus(runs: AnalysisRun[], module: string, peer?: string, translate: Translate = english): Graph | undefined {
   const run = runs.find((r) => r.facts.modules.some((m) => m.id === module));
   if (!run || (peer && !run.facts.modules.some((m) => m.id === peer))) return undefined;
   const { language, facts } = run;
@@ -240,7 +260,7 @@ export function buildFocus(runs: AnalysisRun[], module: string, peer?: string): 
   for (const t of facts.types) {
     unitOf.set(t.id, t.id);
     unitModule.set(t.id, t.module);
-    unitNode.set(t.id, () => ({ id: t.id, label: t.name, language, cycle: inTypeCycle(t.id), size: t.metrics.lines ?? 1, layer: 0, role: "type", shape: shapeOf(t.kind, t.isAbstract), kind: typeKindLabel(t), file: t.location?.file, line: t.location?.startLine }));
+    unitNode.set(t.id, () => ({ id: t.id, label: t.name, language, cycle: inTypeCycle(t.id), size: t.metrics.lines ?? 1, layer: 0, role: "type", shape: shapeOf(t.kind, t.isAbstract), kind: typeKindLabel(t, translate), file: t.location?.file, line: t.location?.startLine }));
   }
   for (const f of facts.functions) {
     if (f.type) {
@@ -249,7 +269,7 @@ export function buildFocus(runs: AnalysisRun[], module: string, peer?: string): 
     }
     unitOf.set(f.id, f.id);
     unitModule.set(f.id, f.module);
-    unitNode.set(f.id, () => ({ id: f.id, label: f.name, language, cycle: false, size: 1, layer: 0, role: "type", shape: "dot", kind: "function", file: f.location?.file, line: f.location?.startLine }));
+    unitNode.set(f.id, () => ({ id: f.id, label: f.name, language, cycle: false, size: 1, layer: 0, role: "type", shape: "dot", kind: translate("function"), file: f.location?.file, line: f.location?.startLine }));
   }
 
   const names = new Map([...facts.types, ...facts.functions].map((e) => [e.id, e.name]));

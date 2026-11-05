@@ -13,7 +13,7 @@ public sealed class LiskovSubstitutionAnalyzer : AnalyzerBase
             if (!IrQueries.IsStub(callable)) continue;
             context.Report(callable.Has(Modifiers.Override) ? Confidence.High : Confidence.Medium, callable.Location,
                 $"{callable.Name} rejects the inherited contract",
-                "The member exists only to throw, so code written against the base type breaks when it receives this subtype.",
+                $"The member exists only to throw, so code written against the base type breaks when it receives this subtype.",
                 symbol: callable.Id);
         }
     }

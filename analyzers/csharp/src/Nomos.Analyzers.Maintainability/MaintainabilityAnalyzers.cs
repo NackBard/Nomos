@@ -103,7 +103,7 @@ public sealed class DuplicationAnalyzer : AnalyzerBase
 
     private static void Report(AnalysisContext context, string path, int startLine, int endLine, string otherPath, int otherLine, int length, int window) =>
         context.Report(Confidence.High, new SourceLocation(path, startLine, 1, endLine, 1), $"{length} tokens duplicate {otherPath}:{otherLine}",
-            "The token sequences are identical after replacing identifiers and literals with placeholders.",
+            $"The token sequences are identical after replacing identifiers and literals with placeholders.",
             measured: new Measurement("cloneTokens", length, window));
 
     private static int MatchLength(List<(ulong Hash, int Line)> a, int i, List<(ulong Hash, int Line)> b, int j)

@@ -1,4 +1,4 @@
-schemaVersion: "1.0.0"
+schemaVersion: "1.1.0"
 rules:
   - id: FUN001
     category: Paradigm
@@ -9,6 +9,14 @@ rules:
     severity: minor
     confidence: low
     threshold: {}
+    l10n:
+      ru:
+        title: "Нечистая функция"
+        description: "Функция, которая возвращает значение и при этом записывает состояние или выполняет ввод-вывод."
+        rationale: "О ней нельзя рассуждать подстановкой."
+    messages:
+      impure: { text: "{0} returns a value and has side effects", ru: "{0} возвращает значение и имеет побочные эффекты" }
+      observed: { text: "Observed: {0}. Effects hidden behind calls to other methods are not visible here.", ru: "Замечено: {0}. Эффекты, скрытые за вызовами других методов, здесь не видны." }
   - id: FUN002
     category: Paradigm
     title: Side effect in lambda
@@ -18,6 +26,14 @@ rules:
     severity: minor
     confidence: medium
     threshold: {}
+    l10n:
+      ru:
+        title: "Побочный эффект в лямбде"
+        description: "Лямбда, переданная функции высшего порядка, меняет внешние переменные."
+        rationale: "Результат зависит от порядка вычисления."
+    messages:
+      lambda: { text: "Lambda changes state outside itself", ru: "Лямбда меняет состояние вне себя" }
+      writes: { text: "It writes {0}. With lazy or parallel evaluation, the order of these writes is not guaranteed.", ru: "Она записывает {0}. При ленивом или параллельном вычислении порядок этих записей не гарантирован." }
   - id: FUN003
     category: Paradigm
     title: Mutable state
@@ -27,6 +43,16 @@ rules:
     severity: minor
     confidence: high
     threshold: {}
+    l10n:
+      ru:
+        title: "Изменяемое состояние"
+        description: "Переприсваиваемые локальные переменные, изменяемые поля экземпляра, свойства с сеттером."
+        rationale: "Изменения затрудняют отслеживание потока данных."
+    messages:
+      reassigns: { text: "{0} reassigns {1}", ru: "{0} переприсваивает {1}" }
+      newName: { text: "In functional style a new value gets a new name. Reassignment makes the meaning of a variable depend on the position in the code.", ru: "В функциональном стиле новое значение получает новое имя. Переприсваивание делает смысл переменной зависимым от места в коде." }
+      members: { text: "{0} has mutable members: {1}", ru: "У {0} изменяемые члены: {1}" }
+      time: { text: "Instances can change after construction, so a value's meaning depends on time.", ru: "Экземпляры могут меняться после создания, поэтому смысл значения зависит от времени." }
   - id: FUN004
     category: Paradigm
     title: Non-tail recursion
@@ -36,6 +62,14 @@ rules:
     severity: minor
     confidence: medium
     threshold: {}
+    l10n:
+      ru:
+        title: "Нехвостовая рекурсия"
+        description: "Рекурсивный вызов, результат которого используется дальше."
+        rationale: "Её нельзя превратить в цикл устранением хвостовых вызовов."
+    messages:
+      recursion: { text: "{0} recurses outside tail position", ru: "{0} вызывает себя не в хвостовой позиции" }
+      stack: { text: "Work remains after the self-call returns, so each level keeps a stack frame; deep input can overflow the stack.", ru: "После возврата из рекурсивного вызова остаётся работа, поэтому каждый уровень держит кадр стека; глубокие входные данные могут переполнить стек." }
   - id: FUN005
     category: Paradigm
     title: Higher-order depth
@@ -45,6 +79,19 @@ rules:
     severity: minor
     confidence: medium
     threshold: { maxOrder: 3, maxLambdaNesting: 3 }
+    l10n:
+      ru:
+        title: "Глубина функций высшего порядка"
+        description: "Порядок функций (данные, функции, функции от функций) и вложенность лямбд."
+        rationale: "Высокие порядки и вложенные лямбды трудно отслеживать."
+    messages:
+      order: { text: "{0} is a function of order {1}", ru: "{0} — функция порядка {1}" }
+      orderOf: { text: "{0} has order {1}", ru: "Порядок {0} — {1}" }
+      orderLimit: { text: "The signature nests function types beyond order {0}.", ru: "Сигнатура вкладывает функциональные типы глубже порядка {0}." }
+      lambdas: { text: "{0} nests lambdas {1} levels deep", ru: "{0} вкладывает лямбды на {1} {1|уровень|уровня|уровней}" }
+      lambdasNamed: { text: "Beyond {0} levels, captured variables are hard to trace; named functions help.", ru: "Глубже {0} {0|уровня|уровней|уровней} захваченные переменные трудно отследить; помогают именованные функции." }
+      literals: { text: "{0} nests function literals {1} deep", ru: "{0} вкладывает функциональные литералы на {1} {1|уровень|уровня|уровней}" }
+      literalsTrace: { text: "Beyond {0} levels, captured variables are hard to trace.", ru: "Глубже {0} {0|уровня|уровней|уровней} захваченные переменные трудно отследить." }
   - id: OOP001
     category: Paradigm
     title: Encapsulation
@@ -54,6 +101,14 @@ rules:
     severity: major
     confidence: high
     threshold: {}
+    l10n:
+      ru:
+        title: "Инкапсуляция"
+        description: "Открытые изменяемые поля."
+        rationale: "Отдаёт инварианты типа каждому вызывающему."
+    messages:
+      field: { text: "Public mutable field {0}.{1}", ru: "Открытое изменяемое поле {0}.{1}" }
+      invariants: { text: "Any caller can change this field, so the type cannot protect its invariants. A property or a method can.", ru: "Любой вызывающий может изменить это поле, поэтому тип не может защитить свои инварианты. Свойство или метод могут." }
   - id: OOP002
     category: Paradigm
     title: Inheritance depth
@@ -63,6 +118,16 @@ rules:
     severity: minor
     confidence: high
     threshold: { maxDepth: 4 }
+    l10n:
+      ru:
+        title: "Глубина наследования"
+        description: "Глубина дерева наследования (DIT)."
+        rationale: "Глубокие иерархии трудно понимать и менять."
+    messages:
+      depth: { text: "{0} sits {1} levels deep", ru: "{0} находится на глубине {1}" }
+      composition: { text: "The depth counts base classes in the project; a base outside it is one step. Beyond {0} levels, behavior is spread over many classes. Composition often reads better.", ru: "Глубина считает базовые классы проекта; внешний базовый класс — один шаг. Глубже {0} {0|уровня|уровней|уровней} поведение размазано по многим классам. Композиция часто читается лучше." }
+      embeds: { text: "{0} embeds {1} levels deep", ru: "{0} встраивает типы на глубину {1}" }
+      promoted: { text: "The limit is {0}; promoted members come from far away.", ru: "Предел — {0}; продвинутые члены приходят издалека." }
   - id: OOP003
     category: Paradigm
     title: Polymorphism
@@ -72,6 +137,16 @@ rules:
     severity: minor
     confidence: medium
     threshold: { minTypeTests: 3 }
+    l10n:
+      ru:
+        title: "Полиморфизм"
+        description: "Несколько проверок типа времени выполнения по типам проекта в одной функции."
+        rationale: "Обычно это заново реализованная виртуальная диспетчеризация."
+    messages:
+      branches: { text: "{0} branches on {1} runtime types", ru: "{0} ветвится по {1} {1|типу|типам|типам} времени выполнения" }
+      virtual: { text: "It tests for {0}. A virtual member on their common base would dispatch without the checks.", ru: "Проверяются {0}. Виртуальный член их общего базового типа выбрал бы реализацию без проверок." }
+      tests: { text: "{0} tests {1} project types at run time", ru: "{0} проверяет {1} {1|тип|типа|типов} проекта во время выполнения" }
+      interface: { text: "A type switch over project types is what an interface method can replace.", ru: "Type switch по типам проекта может заменить метод интерфейса." }
   - id: OOP004
     category: Paradigm
     title: Cohesion
@@ -81,6 +156,16 @@ rules:
     severity: minor
     confidence: medium
     threshold: { maxLcom: 2, minMethods: 4 }
+    l10n:
+      ru:
+        title: "Связность (Cohesion)"
+        description: "LCOM4 — группы методов без общего состояния."
+        rationale: "Больше одной группы — признак класса, который можно разделить."
+    messages:
+      splits: { text: "{0} splits into {1} unrelated method groups", ru: "{0} распадается на {1} {1|несвязанную группу|несвязанные группы|несвязанных групп} методов" }
+      lcom: { text: "LCOM4 finds method groups that share no field and do not call each other; each may be a separate class.", ru: "LCOM4 находит группы методов без общих полей и взаимных вызовов; каждая может быть отдельным классом." }
+      groups: { text: "{0} has {1} unrelated method groups", ru: "У {0} {1} {1|несвязанная группа|несвязанные группы|несвязанных групп} методов" }
+      responsibilities: { text: "Groups of methods that share no state may be separate responsibilities.", ru: "Группы методов без общего состояния могут быть отдельными обязанностями." }
   - id: OOP005
     category: Paradigm
     title: Coupling
@@ -90,6 +175,16 @@ rules:
     severity: minor
     confidence: high
     threshold: { maxCoupling: 15 }
+    l10n:
+      ru:
+        title: "Зацепление (Coupling)"
+        description: "Зацепление между объектами (CBO) без стандартной библиотеки."
+        rationale: "Много зависимостей — много причин для изменения."
+    messages:
+      dependsOn: { text: "{0} depends on {1} types", ru: "{0} зависит от {1} {1|типа|типов|типов}" }
+      collaborators: { text: "Beyond {0} collaborators, changes elsewhere are likely to reach this class.", ru: "При числе связей больше {0} изменения в других местах, скорее всего, дойдут до этого класса." }
+      coupled: { text: "{0} is coupled to {1} types", ru: "{0} связан с {1} {1|типом|типами|типами}" }
+      reason: { text: "The limit is {0}; each dependency is a reason to change.", ru: "Предел — {0}; каждая зависимость — причина для изменения." }
   - id: OOP006
     category: Paradigm
     title: Refused bequest
@@ -99,6 +194,14 @@ rules:
     severity: minor
     confidence: low
     threshold: {}
+    l10n:
+      ru:
+        title: "Отказ от наследства (Refused bequest)"
+        description: "Подкласс, который ничего не переопределяет и не трогает унаследованные члены."
+        rationale: "Ничего не получает от базового класса."
+    messages:
+      refused: { text: "{0} inherits {1} but uses none of it", ru: "{0} наследует {1}, но ничего из него не использует" }
+      offers: { text: "{0} offers {1} members; none are overridden or used here. Outside callers may still rely on the inherited API, which this check cannot rule out.", ru: "{0} предлагает {1} {1|член|члена|членов}; ни один не переопределён и не используется здесь. Внешний код всё же может опираться на унаследованный API, а эта проверка не может этого исключить." }
   - id: STR001
     category: Paradigm
     title: Goto
@@ -108,6 +211,14 @@ rules:
     severity: minor
     confidence: high
     threshold: {}
+    l10n:
+      ru:
+        title: "Goto"
+        description: "Использования goto. Переходы switch-case не отмечаются."
+        rationale: "Нарушает структуру блоков с одним входом и одним выходом."
+    messages:
+      jump: { text: "goto {0} in {1}", ru: "goto {0} в {1}" }
+      structure: { text: "The flow no longer follows the block structure; a loop, a helper or an early return usually replaces it.", ru: "Поток управления больше не следует структуре блоков; обычно его заменяет цикл, вспомогательная функция или ранний возврат." }
   - id: STR002
     category: Paradigm
     title: Global state
@@ -117,6 +228,18 @@ rules:
     severity: major
     confidence: medium
     threshold: {}
+    l10n:
+      ru:
+        title: "Глобальное состояние"
+        description: "Незакрытые статические изменяемые поля и свойства, переменные уровня модуля."
+        rationale: "Работает как скрытая глобальная переменная."
+    messages:
+      variable: { text: "Global variable {0}", ru: "Глобальная переменная {0}" }
+      history: { text: "Any function can change it, so its value depends on the call history.", ru: "Любая функция может её изменить, поэтому значение зависит от истории вызовов." }
+      field: { text: "Global mutable field {0}.{1}", ru: "Глобальное изменяемое поле {0}.{1}" }
+      fieldShared: { text: "A non-private static mutable field is shared by all code and threads.", ru: "Незакрытое статическое изменяемое поле общее для всего кода и всех потоков." }
+      property: { text: "Global mutable property {0}.{1}", ru: "Глобальное изменяемое свойство {0}.{1}" }
+      propertyShared: { text: "A static settable property is shared by all code and threads.", ru: "Статическое свойство с сеттером общее для всего кода и всех потоков." }
   - id: STR003
     category: Paradigm
     title: Module size
@@ -126,3 +249,13 @@ rules:
     severity: minor
     confidence: high
     threshold: { maxModuleLines: 3000, maxFileLines: 800 }
+    l10n:
+      ru:
+        title: "Размер модуля"
+        description: "Строки кода в модуле и в файле."
+        rationale: "По очень большим модулям трудно ориентироваться."
+    messages:
+      module: { text: "Module {0} has {1} lines of code", ru: "В модуле {0} {1} {1|строка|строки|строк} кода" }
+      unit: { text: "The limit is {0}; a smaller module is easier to understand as a unit.", ru: "Предел — {0}; модуль поменьше легче понять как целое." }
+      file: { text: "{0} has {1} lines", ru: "В {0} {1} {1|строка|строки|строк}" }
+      limit: { text: "The limit is {0}.", ru: "Предел — {0}." }

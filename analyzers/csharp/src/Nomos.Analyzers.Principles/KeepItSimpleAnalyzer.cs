@@ -25,8 +25,8 @@ public sealed class KeepItSimpleAnalyzer : AnalyzerBase
                         $"More than {maxOperators} operators in one condition; named intermediate values or a predicate method would state the intent.", symbol: callable.Id);
 
                 if (node is ConditionalExpression ternary && (ternary.WhenTrue is ConditionalExpression || ternary.WhenFalse is ConditionalExpression))
-                    context.Report(Confidence.High, ternary.Location, "Nested ternary expression",
-                        "A ternary inside a ternary hides the branching; an if or a switch expression shows it.", symbol: callable.Id);
+                    context.Report(Confidence.High, ternary.Location, $"Nested ternary expression",
+                        $"A ternary inside a ternary hides the branching; an if or a switch expression shows it.", symbol: callable.Id);
             }
         }
     }

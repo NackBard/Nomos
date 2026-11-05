@@ -1,14 +1,26 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:nomos:contracts:1.0.0:rule",
+  "$id": "urn:nomos:contracts:1.1.0:rule",
   "title": "Rule specification file",
-  "description": "Schema of spec/rules/*.yaml (validated after YAML-to-JSON conversion). Contract version 1.0.0.",
-  "x-contractVersion": "1.0.0",
+  "description": "Schema of spec/rules/*.yaml (validated after YAML-to-JSON conversion). Contract version 1.1.0: l10n and messages are optional (D-052).",
+  "x-contractVersion": "1.1.0",
   "type": "object",
   "required": ["schemaVersion", "rules"],
   "additionalProperties": false,
+  "$defs": {
+    "ruleTexts": {
+      "type": "object",
+      "required": ["title", "description", "rationale"],
+      "additionalProperties": false,
+      "properties": {
+        "title": { "type": "string", "minLength": 1 },
+        "description": { "type": "string", "minLength": 1 },
+        "rationale": { "type": "string", "minLength": 1 }
+      }
+    }
+  },
   "properties": {
-    "schemaVersion": { "const": "1.0.0" },
+    "schemaVersion": { "enum": ["1.0.0", "1.1.0"], "description": "Minor versions only add optional fields, so files of older minor versions stay valid." },
     "language": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$", "description": "Set only in language-specific files (spec/rules/csharp.yaml). Every rule in such a file must carry the matching ID prefix." },
     "rules": {
       "type": "array",
@@ -32,6 +44,26 @@
             "description": "Default sensitivity: the value from which the detector emits a result. It does not decide whether code is acceptable. Empty object: the rule has no parameters. The raw measurement is always present in facts."
           },
           "needsSemantic": { "type": "boolean", "default": false, "description": "True when the rule is meaningless without symbol resolution; it is skipped with reason needs-semantic-model otherwise." },
+          "l10n": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": { "ru": { "$ref": "#/$defs/ruleTexts" } },
+            "description": "Texts of the rule in other languages, keyed by language (spec/l10n.md). English is the title, description and rationale above."
+          },
+          "messages": {
+            "type": "object",
+            "propertyNames": { "pattern": "^[a-z][A-Za-z0-9]*$" },
+            "additionalProperties": {
+              "type": "object",
+              "required": ["text"],
+              "additionalProperties": false,
+              "properties": {
+                "text": { "type": "string", "minLength": 1, "description": "English template with placeholders {0}, {1}…: an analyzer reports exactly this text with arguments in place." },
+                "ru": { "type": "string", "minLength": 1, "description": "Russian template; may also choose a word form by a number: {n|one|few|many} (spec/l10n.md)." }
+              }
+            },
+            "description": "Templates of finding texts (messages and explanations) by key; SARIF carries the key as message.id and properties.explanationMessage.id (contracts/sarif-profile.md)."
+          },
           "requires": { "type": "array", "items": { "type": "string", "enum": ["coverage-report", "layer-config"] }, "description": "External input the rule needs; absent input produces a skipped-rule record with reason missing-input." }
         }
       }

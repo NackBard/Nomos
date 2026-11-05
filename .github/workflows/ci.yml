@@ -59,3 +59,4 @@ jobs:
           npm ci
           npm test
           npm run check-boundary
+          npm run check-l10n

@@ -1,5 +1,5 @@
 # Language-specific rules for C#. The CS. prefix is mandatory.
-schemaVersion: "1.0.0"
+schemaVersion: "1.1.0"
 language: csharp
 rules:
   - id: CS.NAM001
@@ -11,3 +11,21 @@ rules:
     severity: info
     confidence: high
     threshold: {}
+    l10n:
+      ru:
+        title: "Соглашения об именах"
+        description: "Типы, методы и свойства в PascalCase, интерфейсы начинаются с I, параметры в camelCase; однобуквенные параметры открытых методов."
+        rationale: "Отступления от соглашений .NET замедляют чтение. Раньше — CC005."
+    messages:
+      shortParameter: { text: "Parameter {0} of {1} says little", ru: "Параметр {0} в {1} мало что говорит" }
+      shortParameterMeaning: { text: "One-letter names in a public signature leave the meaning to the reader.", ru: "Однобуквенные имена в открытой сигнатуре оставляют смысл на догадку читателю." }
+      type: { text: "The type name {0} is not PascalCase", ru: "Имя типа {0} не в стиле PascalCase" }
+      typeConvention: { text: "C# convention for a type is PascalCase.", ru: "По соглашению C# имя типа пишется в PascalCase." }
+      interface: { text: "The interface name {0} is not IPascalCase", ru: "Имя интерфейса {0} не в стиле IPascalCase" }
+      interfaceConvention: { text: "C# convention for an interface is IPascalCase.", ru: "По соглашению C# имя интерфейса пишется в IPascalCase." }
+      property: { text: "The property name {0} is not PascalCase", ru: "Имя свойства {0} не в стиле PascalCase" }
+      propertyConvention: { text: "C# convention for a property is PascalCase.", ru: "По соглашению C# имя свойства пишется в PascalCase." }
+      method: { text: "The method name {0} is not PascalCase", ru: "Имя метода {0} не в стиле PascalCase" }
+      methodConvention: { text: "C# convention for a method is PascalCase.", ru: "По соглашению C# имя метода пишется в PascalCase." }
+      parameter: { text: "The parameter name {0} is not camelCase", ru: "Имя параметра {0} не в стиле camelCase" }
+      parameterConvention: { text: "C# convention for a parameter is camelCase.", ru: "По соглашению C# имя параметра пишется в camelCase." }

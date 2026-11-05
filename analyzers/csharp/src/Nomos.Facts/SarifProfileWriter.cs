@@ -55,6 +55,7 @@ public static class SarifProfileWriter
                                 shortDescription = new { text = t.Description },
                                 fullDescription = new { text = t.Rationale },
                                 defaultConfiguration = new { level = Level(t.Descriptor.DefaultSeverity) },
+                                messageStrings = MessageStrings(options, t.Id),
                                 properties = new { category = t.Descriptor.Category, paradigms = t.Descriptor.Paradigms.Order(StringComparer.Ordinal).ToList() },
                             }),
                         },
@@ -64,7 +65,7 @@ public static class SarifProfileWriter
                         ruleId = f.AnalyzerId,
                         ruleIndex = ruleIndex.GetValueOrDefault(f.AnalyzerId),
                         level = Level(f.Severity),
-                        message = new { text = f.Message },
+                        message = Message(options, f),
                         locations = f.Evidence.Location.IsKnown ? new[] { Location(f) } : [],
                         partialFingerprints = new Dictionary<string, string> { ["nomos/v1"] = f.Fingerprint },
                         properties = new
@@ -72,6 +73,7 @@ public static class SarifProfileWriter
                             severity = f.Severity.ToString().ToLowerInvariant(),
                             confidence = f.Confidence.ToString().ToLowerInvariant(),
                             explanation = f.Evidence.Explanation,
+                            explanationMessage = Key(options, f.AnalyzerId, f.ExplanationTemplate) is { } key ? new { id = key, arguments = f.ExplanationTemplate!.Arguments } : null,
                             module = f.Module,
                             entity = entities?.Resolve(f.Symbol),
                             measured = f.Measured is { } m ? new { metric = m.Metric, value = m.Value, threshold = m.Threshold } : null,
@@ -81,6 +83,35 @@ public static class SarifProfileWriter
             },
         };
         output.WriteLine(JsonSerializer.Serialize(log, Options).ReplaceLineEndings("\n"));
+    }
+
+    /// <summary>English templates of the rule by key, in key order (rule.messageStrings of SARIF); null when the rule has none.</summary>
+    private static SortedDictionary<string, object>? MessageStrings(FactsOptions options, string id)
+    {
+        var messages = options.RuleTexts?.GetValueOrDefault(id)?.Messages;
+        if (messages is null || messages.Count == 0) return null;
+        return new SortedDictionary<string, object>(messages.ToDictionary(m => m.Key, m => (object)new { text = m.Value }), StringComparer.Ordinal);
+    }
+
+    /// <summary>The key of the spec template a text was made from; null when the rule has no such template.</summary>
+    private static string? Key(FactsOptions options, string ruleId, TemplateText? text)
+    {
+        if (text is null || options.RuleTexts?.GetValueOrDefault(ruleId)?.Messages is not { } messages) return null;
+        foreach (var (key, template) in messages.OrderBy(m => m.Key, StringComparer.Ordinal))
+            if (template == text.Template) return key;
+        return null;
+    }
+
+    /// <summary>The message with <c>id</c> and <c>arguments</c> of its spec template (spec/l10n.md); the text stays the English fallback.</summary>
+    private static Dictionary<string, object> Message(FactsOptions options, Finding finding)
+    {
+        var message = new Dictionary<string, object> { ["text"] = finding.Message };
+        if (Key(options, finding.AnalyzerId, finding.MessageTemplate) is { } key)
+        {
+            message["id"] = key;
+            message["arguments"] = finding.MessageTemplate!.Arguments;
+        }
+        return message;
     }
 
     /// <summary>Rule texts come from spec/rules; a rule without a spec entry falls back to the descriptor.</summary>

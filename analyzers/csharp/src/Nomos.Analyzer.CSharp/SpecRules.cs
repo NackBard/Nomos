@@ -19,7 +19,10 @@ internal static class SpecRules
         {
             using var reader = new StreamReader(assembly.GetManifestResourceStream(name)!);
             var file = deserializer.Deserialize<SpecFile>(reader);
-            foreach (var rule in file.Rules) texts[rule.Id] = new RuleText(rule.Title, rule.Description, rule.Rationale, rule.Requires);
+            foreach (var rule in file.Rules) texts[rule.Id] = new RuleText(rule.Title, rule.Description, rule.Rationale, rule.Requires)
+            {
+                Messages = rule.Messages.ToDictionary(m => m.Key, m => m.Value.Text, StringComparer.Ordinal),
+            };
         }
         return texts;
     }
@@ -40,5 +43,12 @@ internal static class SpecRules
         public string Rationale { get; set; } = "";
 
         public List<string> Requires { get; set; } = [];
+
+        public Dictionary<string, SpecMessage> Messages { get; set; } = [];
+    }
+
+    private sealed class SpecMessage
+    {
+        public string Text { get; set; } = "";
     }
 }

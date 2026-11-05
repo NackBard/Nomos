@@ -46,6 +46,11 @@ export interface Finding {
   module: string;
   entity?: string;
   measured?: Measured;
+  /** Template keys and arguments of spec/rules (message.id and properties.explanationMessage in SARIF, D-052). */
+  messageId?: string;
+  messageArguments?: string[];
+  explanationId?: string;
+  explanationArguments?: string[];
 }
 
 export interface AnalyzerConfig {

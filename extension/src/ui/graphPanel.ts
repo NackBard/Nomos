@@ -5,6 +5,8 @@ import type { AnalysisRun } from "../core/model";
 import { buildFocus, buildGraph, neighbourGroup } from "../core/views";
 import type { GraphLevel } from "../core/views";
 import { graphPage } from "./graphPage";
+import { graphStrings } from "./graphStrings";
+import { interfaceTranslator } from "./translate";
 
 let panel: vscode.WebviewPanel | undefined;
 let level: GraphLevel = "module";
@@ -14,7 +16,8 @@ let runsOf: () => AnalysisRun[] = () => [];
 let stale = false;
 
 function page(webview: vscode.Webview, script: vscode.Uri): string {
-  return graphPage(randomBytes(16).toString("hex"), webview.asWebviewUri(script).toString());
+  const t = interfaceTranslator();
+  return graphPage(randomBytes(16).toString("hex"), webview.asWebviewUri(script).toString(), graphStrings(t), t.locale);
 }
 
 function send(): void {
@@ -22,13 +25,14 @@ function send(): void {
   // A hidden page has no size to fit the graph to, so it gets the data when it is shown.
   stale = !panel.visible;
   if (stale) return;
-  const shown = focus && buildFocus(runsOf(), focus.module, focus.peer);
+  const t = interfaceTranslator();
+  const shown = focus && buildFocus(runsOf(), focus.module, focus.peer, t);
   if (!shown) {
     focus = undefined;
     level = "module";
   }
   const graph = level === "type" && shown ? shown : buildGraph(runsOf());
-  void panel.webview.postMessage({ type: "graph", level, focus, graph });
+  void panel.webview.postMessage({ type: "graph", level, focus, graph, strings: graphStrings(t) });
 }
 
 /** Shows fresh facts in the open graph, if there is one. */
@@ -51,7 +55,7 @@ export function showGraph(context: vscode.ExtensionContext, runs: () => Analysis
     return;
   }
   const media = vscode.Uri.joinPath(context.extensionUri, "media");
-  panel = vscode.window.createWebviewPanel("nomos.graph", "Nomos: Dependency Graph", { viewColumn: vscode.ViewColumn.Beside, preserveFocus }, { enableScripts: true, localResourceRoots: [media], retainContextWhenHidden: true });
+  panel = vscode.window.createWebviewPanel("nomos.graph", interfaceTranslator()("Nomos: Dependency Graph"), { viewColumn: vscode.ViewColumn.Beside, preserveFocus }, { enableScripts: true, localResourceRoots: [media], retainContextWhenHidden: true });
   panel.webview.html = page(panel.webview, vscode.Uri.joinPath(media, "graph.js"));
   panel.iconPath = vscode.Uri.joinPath(media, "icon.svg");
   panel.onDidDispose(() => (panel = undefined));

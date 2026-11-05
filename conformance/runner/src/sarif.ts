@@ -1,6 +1,7 @@
 // Checks a SARIF file against contracts/sarif-profile.md. The official SARIF 2.1.0 schema is not bundled
 // (the repository has no copy and the harness must work offline), so only the profile rules are verified.
 // When the official schema was downloaded (npm run fetch-sarif-schema) it is applied as well.
+import { format } from "./l10n.ts";
 import { validateSarifSchema } from "./sarif-schema.ts";
 
 const LEVELS: Record<string, string> = { info: "note", minor: "warning", major: "warning", critical: "error" };
@@ -16,7 +17,7 @@ export interface SarifContext {
   sarifPath: string;
   facts: any;
   /** Shared rules from spec/rules: SARIF rule texts must be the spec texts. */
-  specRules?: Map<string, { title: string; description: string; rationale: string }>;
+  specRules?: Map<string, { title: string; description: string; rationale: string; messages?: Record<string, { text: string }> }>;
   expected?: { results: { ruleId: string; file: string; startLine: number; measured?: Measured }[] };
   /** Only results of these rules are compared with the expected file. */
   covers?: Set<string>;
@@ -39,6 +40,20 @@ function checkMeasured(where: string, properties: any, uri: string, context: Sar
     return [`${where}: measured ${m.metric} is ${m.value}, the facts say ${known}`];
   }
   return [];
+}
+
+/**
+ * A text with a template (spec/l10n.md): the id names a messageString of the rule and the text is that template with
+ * the arguments in place. A rule with templates must use them, so that a client can show every result translated.
+ */
+function checkTemplate(where: string, field: string, message: any, text: string | undefined, rule: any): string[] {
+  const strings = rule?.messageStrings ?? {};
+  if (message?.id === undefined) return Object.keys(strings).length ? [`${where}: ${field}.id is missing, the rule has messageStrings`] : [];
+  const template = strings[message.id]?.text;
+  if (typeof template !== "string") return [`${where}: ${field}.id ${JSON.stringify(message.id)} is not in the messageStrings of the rule`];
+  if (!Array.isArray(message.arguments) || message.arguments.some((a: unknown) => typeof a !== "string")) return [`${where}: ${field}.arguments must be an array of strings`];
+  const formatted = format(template, message.arguments);
+  return formatted === text ? [] : [`${where}: ${field} ${JSON.stringify(message.id)} gives ${JSON.stringify(formatted)}, the text is ${JSON.stringify(text)}`];
 }
 
 const sortKeys = (m?: Measured) => m && { metric: m.metric, threshold: m.threshold, value: m.value };
@@ -73,6 +88,9 @@ export function checkSarif(text: string, context: SarifContext): string[] {
       if (rule.name !== spec.title) errors.push(`${where}: name differs from the spec title`);
       if (rule.shortDescription?.text !== spec.description) errors.push(`${where}: shortDescription differs from the spec description`);
       if (rule.fullDescription?.text !== spec.rationale) errors.push(`${where}: fullDescription differs from the spec rationale`);
+      const expected = Object.fromEntries(Object.entries(spec.messages ?? {}).map(([key, m]) => [key, m.text]));
+      const actual = Object.fromEntries(Object.entries(rule.messageStrings ?? {}).map(([key, m]: [string, any]) => [key, m?.text]));
+      if (JSON.stringify(Object.entries(actual).sort()) !== JSON.stringify(Object.entries(expected).sort())) errors.push(`${where}: messageStrings differ from the spec messages`);
     }
     if (!rule.properties?.category) errors.push(`${where}: properties.category is missing`);
     if (!Array.isArray(rule.properties?.paradigms)) errors.push(`${where}: properties.paradigms must be an array`);
@@ -88,6 +106,8 @@ export function checkSarif(text: string, context: SarifContext): string[] {
     if (!(properties.severity in LEVELS)) errors.push(`${where}: properties.severity ${JSON.stringify(properties.severity)} is invalid`);
     else if (result.level !== LEVELS[properties.severity]) errors.push(`${where}: level is ${result.level}, severity ${properties.severity} requires ${LEVELS[properties.severity]}`);
     if (!result.message?.text) errors.push(`${where}: message.text is missing`);
+    errors.push(...checkTemplate(where, "message", result.message, result.message?.text, rules[result.ruleIndex]));
+    errors.push(...checkTemplate(where, "properties.explanationMessage", properties.explanationMessage, properties.explanation, rules[result.ruleIndex]));
     if (!CONFIDENCES.has(properties.confidence)) errors.push(`${where}: properties.confidence ${JSON.stringify(properties.confidence)} must be low, medium or high`);
     if (typeof properties.explanation !== "string" || properties.explanation.trim() === "") errors.push(`${where}: properties.explanation is empty (every result is a heuristic and must explain itself)`);
     if (!result.partialFingerprints?.["nomos/v1"]) errors.push(`${where}: partialFingerprints["nomos/v1"] is missing`);

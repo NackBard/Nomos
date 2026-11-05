@@ -13,7 +13,7 @@ public sealed class YouArentGonnaNeedItAnalyzer : AnalyzerBase
             var subtypes = context.Model.DirectSubtypes(type.Id).Count();
             if (subtypes <= 1)
                 context.Report(type, Confidence.Low, $"{type.Name} has {subtypes} implementer(s)",
-                    "A non-public abstraction with at most one implementation adds indirection without a second use. It may still serve test doubles, which this analysis cannot see.");
+                    $"A non-public abstraction with at most one implementation adds indirection without a second use. It may still serve test doubles, which this analysis cannot see.");
         }
 
         foreach (var callable in context.Callables.Where(c => c is { Visibility: Visibility.Private, Body: not null, Kind: CallableKind.Method }))
@@ -21,7 +21,7 @@ public sealed class YouArentGonnaNeedItAnalyzer : AnalyzerBase
             var used = DataFlow.Analyze(callable.Body);
             foreach (var parameter in callable.Parameters.Where(p => !used.LocalReads.Contains(p.Name) && !used.LocalWrites.Contains(p.Name)))
                 context.Report(Confidence.Medium, parameter.Location, $"Parameter {parameter.Name} of {callable.Name} is never used",
-                    "The method is private, so no external contract requires this parameter.", symbol: callable.Id);
+                    $"The method is private, so no external contract requires this parameter.", symbol: callable.Id);
         }
     }
 }

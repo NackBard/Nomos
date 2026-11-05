@@ -5,6 +5,7 @@ import { casesDir, contractsDir, practicesFile, repoRoot, rulesDir } from "./pat
 import { generatedFiles } from "./go-rules.ts";
 import { renderRulesDoc, rulesDocPath } from "./rules-doc.ts";
 import { createAjv, formatErrors, loadValidators, readJson, schemaFiles } from "./schemas.ts";
+import { placeholders, templateProblems } from "./l10n.ts";
 
 /** Validates contracts, spec/rules and conformance cases. Returns error messages; empty means success. */
 export function validateRepository(): string[] {
@@ -44,6 +45,7 @@ export function validateRepository(): string[] {
         errors.push(`spec/rules/${file}: rule ${rule.id} of language "${document.language}" must carry a language prefix`);
       }
       if (!document.language && prefixed) errors.push(`spec/rules/${file}: ${rule.id} has a language prefix but the file sets no language`);
+      errors.push(...messageProblems(rule).map((m) => `spec/rules/${file}: ${rule.id}: ${m}`));
     }
   }
 
@@ -132,4 +134,21 @@ export function validateRepository(): string[] {
     if (current !== content) errors.push(`${path.relative(repoRoot, file).replaceAll("\\", "/")} is out of date: run npm run spec-json`);
   }
   return errors;
+}
+
+/** Templates of a rule (spec/l10n.md): distinct English texts, the same arguments in every language, valid syntax. */
+function messageProblems(rule: { messages?: Record<string, { text: string; ru?: string }> }): string[] {
+  const problems: string[] = [];
+  const texts = new Map<string, string>();
+  for (const [key, message] of Object.entries(rule.messages ?? {})) {
+    if (texts.has(message.text)) problems.push(`messages ${texts.get(message.text)} and ${key} have the same text; the key of a finding would be ambiguous`);
+    texts.set(message.text, key);
+    problems.push(...templateProblems(message.text, true).map((p) => `messages.${key}.text: ${p}`));
+    if (message.ru === undefined) continue;
+    problems.push(...templateProblems(message.ru, false).map((p) => `messages.${key}.ru: ${p}`));
+    const english = [...placeholders(message.text)].sort().join(",");
+    const russian = [...placeholders(message.ru)].sort().join(",");
+    if (english !== russian) problems.push(`messages.${key}: ru uses arguments {${russian}}, text uses {${english}}`);
+  }
+  return problems;
 }

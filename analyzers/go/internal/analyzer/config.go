@@ -21,6 +21,13 @@ type SpecRule struct {
 	Confidence  string         `json:"confidence"`
 	Threshold   map[string]any `json:"threshold"`
 	Requires    []string       `json:"requires"`
+	// Messages holds the templates of finding texts by key (spec/l10n.md); the analyzer uses the English text only.
+	Messages map[string]SpecMessage `json:"messages"`
+}
+
+// SpecMessage is one template of a rule: English text and its translations.
+type SpecMessage struct {
+	Text string `json:"text"`
 }
 
 //go:embed rules.json

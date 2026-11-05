@@ -27,6 +27,8 @@ type Finding struct {
 	Message, Explanation       string
 	Module, Entity             string
 	Measured                   *Measured
+	// MessageText and ExplanationText keep the templates of spec/rules with their arguments (spec/l10n.md).
+	MessageText, ExplanationText Text
 }
 
 // Fingerprint does not depend on the line (contracts/sarif-profile.md).
@@ -67,7 +69,7 @@ func (r *run) applies(m *Module) bool {
 	return false
 }
 
-func (r *run) report(confidence string, place Place, module, entity, message, explanation string, measured *Measured, severity ...string) {
+func (r *run) report(confidence string, place Place, module, entity string, message, explanation Text, measured *Measured, severity ...string) {
 	level := r.rule.Severity
 	if len(severity) > 0 {
 		level = severity[0]
@@ -75,7 +77,7 @@ func (r *run) report(confidence string, place Place, module, entity, message, ex
 	if own := r.config.Rules[r.rule.ID].Severity; own != "" {
 		level = own
 	}
-	r.findings = append(r.findings, Finding{r.rule.ID, level, confidence, r.rule.Category, place, message, explanation, module, entity, measured})
+	r.findings = append(r.findings, Finding{r.rule.ID, level, confidence, r.rule.Category, place, message.String(), explanation.String(), module, entity, measured, message, explanation})
 }
 
 func (r *run) functions(visit func(*Function)) {
@@ -120,7 +122,7 @@ func cc001(r *run) {
 		if lines > limit*2 {
 			severity = []string{"major"}
 		}
-		r.report("high", f.Place, f.Module.ID, f.ID, fmt.Sprintf("%s spans %.0f lines", f.Name, lines), fmt.Sprintf("The line count is exact; the limit of %.0f is a readability convention.", limit), &Measured{"lines", lines, limit}, severity...)
+		r.report("high", f.Place, f.Module.ID, f.ID, tx("%s spans %.0f lines", f.Name, lines), tx("The line count is exact; the limit of %.0f is a readability convention.", limit), &Measured{"lines", lines, limit}, severity...)
 	})
 }
 
@@ -135,7 +137,7 @@ func cc002(r *run) {
 		if lines > maxLines {
 			measured = &Measured{"lines", lines, maxLines}
 		}
-		r.report("high", t.Place, t.Module.ID, t.ID, fmt.Sprintf("%s has %.0f lines and %.0f members", t.Name, lines, members), fmt.Sprintf("The counts are exact; the limits (%.0f lines, %.0f members) are conventions.", maxLines, maxMembers), measured)
+		r.report("high", t.Place, t.Module.ID, t.ID, tx("%s has %.0f lines and %.0f members", t.Name, lines, members), tx("The counts are exact; the limits (%.0f lines, %.0f members) are conventions.", maxLines, maxMembers), measured)
 	})
 }
 
@@ -144,7 +146,7 @@ func cc003(r *run) {
 	r.functions(func(f *Function) {
 		count := float64(ParameterCount(f.Sig))
 		if count > limit {
-			r.report("high", f.Place, f.Module.ID, f.ID, fmt.Sprintf("%s takes %.0f parameters", f.Name, count), fmt.Sprintf("The limit is %.0f. Long lists are easy to misorder; a parameter struct groups what belongs together.", limit), &Measured{"parameterCount", count, limit})
+			r.report("high", f.Place, f.Module.ID, f.ID, tx("%s takes %.0f parameters", f.Name, count), tx("The limit is %.0f. Long lists are easy to misorder; a parameter struct groups what belongs together.", limit), &Measured{"parameterCount", count, limit})
 		}
 	})
 }
@@ -154,7 +156,7 @@ func cc004(r *run) {
 	r.functions(func(f *Function) {
 		depth := float64(MaxNesting(f))
 		if depth > limit {
-			r.report("high", f.Place, f.Module.ID, f.ID, fmt.Sprintf("%s nests %.0f levels deep", f.Name, depth), fmt.Sprintf("The limit is %.0f. Guard clauses or extracted functions flatten the flow.", limit), &Measured{"maxNesting", depth, limit})
+			r.report("high", f.Place, f.Module.ID, f.ID, tx("%s nests %.0f levels deep", f.Name, depth), tx("The limit is %.0f. Guard clauses or extracted functions flatten the flow.", limit), &Measured{"maxNesting", depth, limit})
 		}
 	})
 }
@@ -166,15 +168,15 @@ func alg001(r *run) {
 		if !ok || (!growth.Exponential && float64(growth.Degree) < reportFrom) {
 			return
 		}
-		confidence, explanation := "medium", "Estimated from nested loops over inputs of unknown size. Small inputs may make this irrelevant."
+		confidence, explanation := "medium", tx("Estimated from nested loops over inputs of unknown size. Small inputs may make this irrelevant.")
 		if growth.Uncertain {
-			confidence, explanation = "low", "Estimated from recursion, a condition-only loop or a callee; loop bounds and call counts are not known exactly."
+			confidence, explanation = "low", tx("Estimated from recursion, a condition-only loop or a callee; loop bounds and call counts are not known exactly.")
 		}
 		measured, severity := &Measured{"timeDegree", float64(growth.Degree), reportFrom}, []string{}
 		if growth.Exponential {
 			measured, severity = &Measured{"timeExponential", 1, 1}, []string{"major"}
 		}
-		r.report(confidence, f.Place, f.Module.ID, f.ID, fmt.Sprintf("%s is likely %s", f.Name, growth), explanation, measured, severity...)
+		r.report(confidence, f.Place, f.Module.ID, f.ID, tx("%s is likely %s", f.Name, growth), explanation, measured, severity...)
 	})
 }
 
@@ -187,16 +189,16 @@ func alg002(r *run) {
 			switch node := n.(type) {
 			case *ast.CallExpr:
 				if pkg, name := externalCall(f.Module, node); pkg == "slices" && linearCalls[pkg][name] && (name == "Contains" || name == "Index" || name == "IndexFunc" || name == "ContainsFunc") {
-					r.report("medium", r.p.place(node.Pos(), node.End()), f.Module.ID, f.ID, fmt.Sprintf("Likely quadratic: slices.%s inside a loop", name), "Each iteration scans the sequence. A map built once makes the lookup constant-time.", nil)
+					r.report("medium", r.p.place(node.Pos(), node.End()), f.Module.ID, f.ID, tx("Likely quadratic: slices.%s inside a loop", name), tx("Each iteration scans the sequence. A map built once makes the lookup constant-time."), nil)
 				}
 				if id, ok := node.Fun.(*ast.Ident); ok && id.Name == "append" && len(node.Args) == 2 && node.Ellipsis.IsValid() {
 					if _, front := node.Args[0].(*ast.CompositeLit); front {
-						r.report("medium", r.p.place(node.Pos(), node.End()), f.Module.ID, f.ID, "Likely quadratic: front insertion inside a loop", "Every element shifts on each call. Appending and reversing once avoids this.", nil)
+						r.report("medium", r.p.place(node.Pos(), node.End()), f.Module.ID, f.ID, tx("Likely quadratic: front insertion inside a loop"), tx("Every element shifts on each call. Appending and reversing once avoids this."), nil)
 					}
 				}
 			case *ast.AssignStmt:
 				if node.Tok == token.ADD_ASSIGN && len(node.Lhs) == 1 && f.Module.Info.TypeOf(node.Lhs[0]) != nil && f.Module.Info.TypeOf(node.Lhs[0]).Underlying().String() == "string" {
-					r.report("medium", r.p.place(node.Pos(), node.End()), f.Module.ID, f.ID, "Likely quadratic: String concatenation inside a loop", "Each step copies the whole string so far. strings.Builder grows in amortized constant time.", nil)
+					r.report("medium", r.p.place(node.Pos(), node.End()), f.Module.ID, f.ID, tx("Likely quadratic: String concatenation inside a loop"), tx("Each step copies the whole string so far. strings.Builder grows in amortized constant time."), nil)
 				}
 			}
 		})
@@ -220,9 +222,9 @@ func alg003(r *run) {
 			if unary, ok := n.(*ast.UnaryExpr); ok {
 				skip = append(skip, unary.X)
 			}
-			message, explanation := "Allocation in a nested loop", "Runs once per inner iteration. Whether it matters depends on how hot the loop really is, which static analysis cannot tell."
+			message, explanation := tx("Allocation in a nested loop"), tx("Runs once per inner iteration. Whether it matters depends on how hot the loop really is, which static analysis cannot tell.")
 			if _, ok := n.(*ast.FuncLit); ok {
-				message, explanation = "Function literal in a nested loop", "A capturing literal allocates a closure per iteration."
+				message, explanation = tx("Function literal in a nested loop"), tx("A capturing literal allocates a closure per iteration.")
 			}
 			r.report("low", r.p.place(n.Pos(), n.End()), f.Module.ID, f.ID, message, explanation, measured)
 		})
@@ -237,7 +239,7 @@ func alg004(r *run) {
 		}
 		degree := float64(r.p.SpaceDegree(f))
 		if degree >= reportFrom {
-			r.report("low", f.Place, f.Module.ID, f.ID, fmt.Sprintf("%s likely uses %s extra memory", f.Name, Growth{Degree: int(degree)}), "Estimated from slice growth under nested loops or sized allocations.", &Measured{"spaceDegree", degree, reportFrom})
+			r.report("low", f.Place, f.Module.ID, f.ID, tx("%s likely uses %s extra memory", f.Name, Growth{Degree: int(degree)}), tx("Estimated from slice growth under nested loops or sized allocations."), &Measured{"spaceDegree", degree, reportFrom})
 		}
 	})
 }
@@ -287,11 +289,11 @@ func dsn001(r *run) {
 		if distance == nil || *distance <= limit || float64(ca+ce) < coupling || len(m.Types) == 0 {
 			continue
 		}
-		zone := "the zone of uselessness: abstract and unused"
+		explanation := tx("A = %.2f, I = %.2f, so it sits near the zone of uselessness: abstract and unused.", *abstractness, *instability)
 		if *instability < 0.5 {
-			zone = "the zone of pain: concrete and heavily depended upon"
+			explanation = tx("A = %.2f, I = %.2f, so it sits near the zone of pain: concrete and heavily depended upon.", *abstractness, *instability)
 		}
-		r.report("medium", m.Types[0].Place, m.ID, "", fmt.Sprintf("Module %s is far from the main sequence (D = %.2f)", m.ID, *distance), fmt.Sprintf("A = %.2f, I = %.2f, so it sits near %s.", *abstractness, *instability, zone), &Measured{"distance", *distance, limit})
+		r.report("medium", m.Types[0].Place, m.ID, "", tx("Module %s is far from the main sequence (D = %.2f)", m.ID, *distance), explanation, &Measured{"distance", *distance, limit})
 	}
 }
 
@@ -299,7 +301,7 @@ func dsn002(r *run) {
 	for _, cycle := range Components(r.graphs.Modules) {
 		for _, m := range r.p.Modules {
 			if m.ID == cycle[0] && len(m.Types) > 0 {
-				r.report("high", m.Types[0].Place, m.ID, "", "Module cycle: "+strings.Join(cycle, " <-> "), "These modules depend on each other, directly or transitively, so none can be built, tested or released alone.", nil)
+				r.report("high", m.Types[0].Place, m.ID, "", tx("Module cycle: %s", strings.Join(cycle, " <-> ")), tx("These modules depend on each other, directly or transitively, so none can be built, tested or released alone."), nil)
 			}
 		}
 	}
@@ -314,7 +316,7 @@ func dsn002(r *run) {
 		} else if f := r.p.Functions[cycle[0]]; f != nil {
 			place, module = f.Place, f.Module.ID
 		}
-		r.report("high", place, module, cycle[0], fmt.Sprintf("Type cycle of %d: %s", len(cycle), strings.Join(names, " <-> ")), "These units reference each other, so a change to one can ripple through all of them.", nil, "minor")
+		r.report("high", place, module, cycle[0], tx("Type cycle of %d: %s", len(cycle), strings.Join(names, " <-> ")), tx("These units reference each other, so a change to one can ripple through all of them."), nil, "minor")
 	}
 }
 
@@ -339,7 +341,7 @@ func dsn003(r *run) {
 			allowed = allowed || name == target.Name
 		}
 		if !allowed {
-			r.report("high", e.Place, from.ID, e.From, fmt.Sprintf("%s must not depend on %s", source.Name, target.Name), fmt.Sprintf("%s (%s) uses %s (%s); allowed: %s.", simpleName(e.From), from.ID, simpleName(e.To), to.ID, strings.Join(source.MayDependOn, ", ")), nil)
+			r.report("high", e.Place, from.ID, e.From, tx("%s must not depend on %s", source.Name, target.Name), tx("%s (%s) uses %s (%s); allowed: %s.", simpleName(e.From), from.ID, simpleName(e.To), to.ID, strings.Join(source.MayDependOn, ", ")), nil)
 		}
 	}
 }
@@ -352,7 +354,7 @@ func dsn004(r *run) {
 		}
 		wmc, atfd, tcc := float64(WMC(t)), float64(r.p.ATFD(t)), r.p.TCC(t)
 		if wmc >= minWmc && atfd >= minAtfd && tcc != nil && *tcc < maxTcc {
-			r.report("medium", t.Place, t.Module.ID, t.ID, t.Name+" looks like a god class", fmt.Sprintf("WMC = %.0f (>= %.0f), ATFD = %.0f (>= %.0f), TCC = %.2f (< %.2f): it does much, uses others' data, and its methods share little.", wmc, minWmc, atfd, minAtfd, *tcc, maxTcc), &Measured{"wmc", wmc, minWmc})
+			r.report("medium", t.Place, t.Module.ID, t.ID, tx("%s looks like a god class", t.Name), tx("WMC = %.0f (>= %.0f), ATFD = %.0f (>= %.0f), TCC = %.2f (< %.2f): it does much, uses others' data, and its methods share little.", wmc, minWmc, atfd, minAtfd, *tcc, maxTcc), &Measured{"wmc", wmc, minWmc})
 		}
 	})
 }
@@ -367,7 +369,7 @@ func dsn005(r *run) {
 		own, _ := r.p.memberUse(f)
 		count := float64(len(members))
 		if count >= limit && len(members) > len(own) {
-			r.report("medium", f.Place, f.Module.ID, f.ID, fmt.Sprintf("%s is more interested in %s than in %s", f.Name, simpleName(owner), f.Owner.Name), fmt.Sprintf("It uses %.0f members of %s (%s) and %d of its own.", count, owner, strings.Join(members, ", "), len(own)), &Measured{"foreignMembers", count, limit})
+			r.report("medium", f.Place, f.Module.ID, f.ID, tx("%s is more interested in %s than in %s", f.Name, simpleName(owner), f.Owner.Name), tx("It uses %.0f members of %s (%s) and %d of its own.", count, owner, strings.Join(members, ", "), len(own)), &Measured{"foreignMembers", count, limit})
 		}
 	})
 }
@@ -377,7 +379,7 @@ func dsn006(r *run) {
 	for _, t := range r.p.AllTypes() {
 		radius := float64(r.graphs.Radius[t.ID])
 		if radius > limit {
-			r.report("medium", t.Place, t.Module.ID, t.ID, fmt.Sprintf("Changing %s can reach %.0f units", t.Name, radius), "Stable abstractions at such points limit the spread. Static dependencies overstate real impact when a change keeps the contract.", &Measured{"blastRadius", radius, limit})
+			r.report("medium", t.Place, t.Module.ID, t.ID, tx("Changing %s can reach %.0f units", t.Name, radius), tx("Stable abstractions at such points limit the spread. Static dependencies overstate real impact when a change keeps the contract."), &Measured{"blastRadius", radius, limit})
 		}
 	}
 }
@@ -386,10 +388,10 @@ func fun005(r *run) {
 	maxOrder, maxNesting := r.config.number(r.rule, "maxOrder"), r.config.number(r.rule, "maxLambdaNesting")
 	r.functions(func(f *Function) {
 		if order := float64(HofOrder(f)); order > maxOrder {
-			r.report("medium", f.Place, f.Module.ID, f.ID, fmt.Sprintf("%s has order %.0f", f.Name, order), fmt.Sprintf("The signature nests function types beyond order %.0f.", maxOrder), &Measured{"hofOrder", order, maxOrder})
+			r.report("medium", f.Place, f.Module.ID, f.ID, tx("%s has order %.0f", f.Name, order), tx("The signature nests function types beyond order %.0f.", maxOrder), &Measured{"hofOrder", order, maxOrder})
 		}
 		if nesting := float64(LambdaNesting(f)); nesting > maxNesting {
-			r.report("medium", f.Place, f.Module.ID, f.ID, fmt.Sprintf("%s nests function literals %.0f deep", f.Name, nesting), fmt.Sprintf("Beyond %.0f levels, captured variables are hard to trace.", maxNesting), &Measured{"lambdaNesting", nesting, maxNesting})
+			r.report("medium", f.Place, f.Module.ID, f.ID, tx("%s nests function literals %.0f deep", f.Name, nesting), tx("Beyond %.0f levels, captured variables are hard to trace.", maxNesting), &Measured{"lambdaNesting", nesting, maxNesting})
 		}
 	})
 }
@@ -405,7 +407,7 @@ func mnt001(r *run) {
 		if complexity > limit*2 {
 			severity = []string{"major"}
 		}
-		r.report("high", f.Place, f.Module.ID, f.ID, fmt.Sprintf("%s has cyclomatic complexity %.0f", f.Name, complexity), fmt.Sprintf("The count is exact; above %.0f, the number of paths to test and to understand grows quickly.", limit), &Measured{"cyclomatic", complexity, limit}, severity...)
+		r.report("high", f.Place, f.Module.ID, f.ID, tx("%s has cyclomatic complexity %.0f", f.Name, complexity), tx("The count is exact; above %.0f, the number of paths to test and to understand grows quickly.", limit), &Measured{"cyclomatic", complexity, limit}, severity...)
 	})
 }
 
@@ -416,7 +418,7 @@ func mnt002(r *run) {
 		if f.Body() == nil || index == nil || *index >= limit {
 			return
 		}
-		r.report("medium", f.Place, f.Module.ID, f.ID, fmt.Sprintf("%s has a maintainability index of %.0f", f.Name, *index), fmt.Sprintf("Below %.0f. The formula is an empirical blend of size and complexity, useful for ranking rather than as a measure of quality.", limit), &Measured{"maintainabilityIndex", round(*index, 4), limit})
+		r.report("medium", f.Place, f.Module.ID, f.ID, tx("%s has a maintainability index of %.0f", f.Name, *index), tx("Below %.0f. The formula is an empirical blend of size and complexity, useful for ranking rather than as a measure of quality.", limit), &Measured{"maintainabilityIndex", round(*index, 4), limit})
 	})
 }
 
@@ -489,7 +491,7 @@ func mnt003(r *run) {
 					}
 					skipUntil = at + length
 					place := Place{f.file.Path, tokens[at].line, 1, tokens[at+length-1].line, 1}
-					r.report("high", place, "", "", fmt.Sprintf("%d tokens duplicate %s:%d", length, files[earlier.file].file.Path, other[earlier.at].line), "The token sequences are identical after replacing identifiers and literals with placeholders.", &Measured{"cloneTokens", float64(length), float64(window)})
+					r.report("high", place, "", "", tx("%d tokens duplicate %s:%d", length, files[earlier.file].file.Path, other[earlier.at].line), tx("The token sequences are identical after replacing identifiers and literals with placeholders."), &Measured{"cloneTokens", float64(length), float64(window)})
 					break
 				}
 			}
@@ -507,7 +509,7 @@ func mnt004(r *run) {
 	for _, f := range r.p.Files {
 		percent := r.coverage.Percent(f.Path)
 		if percent != nil && *percent < limit {
-			r.report("high", Place{f.Path, 1, 1, 1, 1}, "", "", fmt.Sprintf("%s has %.0f%% line coverage", f.Path, *percent), fmt.Sprintf("Measured from %s; below the %.0f%% minimum. Coverage shows what ran, not what was verified.", report, limit), &Measured{"coverage", *percent, limit})
+			r.report("high", Place{f.Path, 1, 1, 1, 1}, "", "", tx("%s has %.0f%% line coverage", f.Path, *percent), tx("Measured from %s; below the %.0f%% minimum. Coverage shows what ran, not what was verified.", report, limit), &Measured{"coverage", *percent, limit})
 		}
 	}
 }
@@ -519,7 +521,7 @@ func oop002(r *run) {
 			return
 		}
 		if depth := float64(r.p.DIT(t, nil)); depth > limit {
-			r.report("medium", t.Place, t.Module.ID, t.ID, fmt.Sprintf("%s embeds %.0f levels deep", t.Name, depth), fmt.Sprintf("The limit is %.0f; promoted members come from far away.", limit), &Measured{"dit", depth, limit})
+			r.report("medium", t.Place, t.Module.ID, t.ID, tx("%s embeds %.0f levels deep", t.Name, depth), tx("The limit is %.0f; promoted members come from far away.", limit), &Measured{"dit", depth, limit})
 		}
 	})
 }
@@ -528,7 +530,7 @@ func oop003(r *run) {
 	limit := r.config.number(r.rule, "minTypeTests")
 	r.functions(func(f *Function) {
 		if tested := float64(len(r.p.TestedTypes(f))); tested >= limit {
-			r.report("medium", f.Place, f.Module.ID, f.ID, fmt.Sprintf("%s tests %.0f project types at run time", f.Name, tested), "A type switch over project types is what an interface method can replace.", &Measured{"typeTests", tested, limit})
+			r.report("medium", f.Place, f.Module.ID, f.ID, tx("%s tests %.0f project types at run time", f.Name, tested), tx("A type switch over project types is what an interface method can replace."), &Measured{"typeTests", tested, limit})
 		}
 	})
 }
@@ -540,7 +542,7 @@ func oop004(r *run) {
 			return
 		}
 		if lcom := r.p.LCOM4(t); lcom != nil && *lcom > maxLcom && float64(len(t.Methods)) >= minMethods {
-			r.report("medium", t.Place, t.Module.ID, t.ID, fmt.Sprintf("%s has %.0f unrelated method groups", t.Name, *lcom), "Groups of methods that share no state may be separate responsibilities.", &Measured{"lcom4", *lcom, maxLcom})
+			r.report("medium", t.Place, t.Module.ID, t.ID, tx("%s has %.0f unrelated method groups", t.Name, *lcom), tx("Groups of methods that share no state may be separate responsibilities."), &Measured{"lcom4", *lcom, maxLcom})
 		}
 	})
 }
@@ -562,7 +564,7 @@ func oop005(r *run) {
 			return
 		}
 		if coupling := float64(r.cbo(t)); coupling > limit {
-			r.report("medium", t.Place, t.Module.ID, t.ID, fmt.Sprintf("%s is coupled to %.0f types", t.Name, coupling), fmt.Sprintf("The limit is %.0f; each dependency is a reason to change.", limit), &Measured{"cbo", coupling, limit})
+			r.report("medium", t.Place, t.Module.ID, t.ID, tx("%s is coupled to %.0f types", t.Name, coupling), tx("The limit is %.0f; each dependency is a reason to change.", limit), &Measured{"cbo", coupling, limit})
 		}
 	})
 }
@@ -580,9 +582,9 @@ func (r *run) checkSecret(m *Module, name string, value ast.Expr, entity string)
 	}
 	place := r.p.place(value.Pos(), value.End())
 	if knownCredential.MatchString(text) {
-		r.report("high", place, m.ID, entity, name+" holds what looks like a real credential", "Heuristic: the literal matches the format of a known key or token. Rotate it if it is real, and load it from a secret store.", nil, "critical")
+		r.report("high", place, m.ID, entity, tx("%s holds what looks like a real credential", name), tx("Heuristic: the literal matches the format of a known key or token. Rotate it if it is real, and load it from a secret store."), nil, "critical")
 	} else if secretName.MatchString(name) && !strings.ContainsAny(text, " {") {
-		r.report("medium", place, m.ID, entity, name+" looks like a hardcoded secret", "Heuristic: the name suggests a secret and the value is a literal. It may be a placeholder or a non-secret value.", nil)
+		r.report("medium", place, m.ID, entity, tx("%s looks like a hardcoded secret", name), tx("Heuristic: the name suggests a secret and the value is a literal. It may be a placeholder or a non-secret value."), nil)
 	}
 }
 
@@ -661,7 +663,7 @@ func sec003(r *run) {
 					return true
 				}
 				if dynamic && sqlText.MatchString(text) {
-					r.report("medium", r.p.place(n.Pos(), n.End()), m.ID, f.ID, "SQL built from non-constant values", "Heuristic: if any value comes from a user, this allows injection. Parameterized queries keep data out of the statement.", nil)
+					r.report("medium", r.p.place(n.Pos(), n.End()), m.ID, f.ID, tx("SQL built from non-constant values"), tx("Heuristic: if any value comes from a user, this allows injection. Parameterized queries keep data out of the statement."), nil)
 				}
 				return true
 			})
@@ -673,7 +675,7 @@ func str001(r *run) {
 	r.functions(func(f *Function) {
 		inspectBody(f, func(n ast.Node) bool {
 			if branch, ok := n.(*ast.BranchStmt); ok && branch.Tok == token.GOTO {
-				r.report("high", r.p.place(n.Pos(), n.End()), f.Module.ID, f.ID, fmt.Sprintf("goto %s in %s", branch.Label.Name, f.Name), "The flow no longer follows the block structure; a loop, a helper or an early return usually replaces it.", nil)
+				r.report("high", r.p.place(n.Pos(), n.End()), f.Module.ID, f.ID, tx("goto %s in %s", branch.Label.Name, f.Name), tx("The flow no longer follows the block structure; a loop, a helper or an early return usually replaces it."), nil)
 			}
 			return true
 		})
@@ -684,7 +686,7 @@ func str002(r *run) {
 	for _, m := range r.p.Modules {
 		if r.applies(m) {
 			for _, g := range m.Globals {
-				r.report("high", g.Place, m.ID, "", "Global variable "+g.Name, "Any function can change it, so its value depends on the call history.", nil)
+				r.report("high", g.Place, m.ID, "", tx("Global variable %s", g.Name), tx("Any function can change it, so its value depends on the call history."), nil)
 			}
 		}
 	}
@@ -698,12 +700,12 @@ func str003(r *run) {
 			loc += f.Loc
 		}
 		if r.applies(m) && float64(loc) > maxModule && len(m.Files) > 0 {
-			r.report("high", Place{m.Files[0].Path, 1, 1, 1, 1}, m.ID, "", fmt.Sprintf("Module %s has %d lines of code", m.ID, loc), fmt.Sprintf("The limit is %.0f; a smaller module is easier to understand as a unit.", maxModule), &Measured{"loc", float64(loc), maxModule})
+			r.report("high", Place{m.Files[0].Path, 1, 1, 1, 1}, m.ID, "", tx("Module %s has %d lines of code", m.ID, loc), tx("The limit is %.0f; a smaller module is easier to understand as a unit.", maxModule), &Measured{"loc", float64(loc), maxModule})
 		}
 	}
 	for _, f := range r.p.Files {
 		if f.Module != nil && r.applies(f.Module) && float64(f.Lines) > maxFile {
-			r.report("high", Place{f.Path, 1, 1, 1, 1}, "", "", fmt.Sprintf("%s has %d lines", f.Path, f.Lines), fmt.Sprintf("The limit is %.0f.", maxFile), &Measured{"lines", float64(f.Lines), maxFile})
+			r.report("high", Place{f.Path, 1, 1, 1, 1}, "", "", tx("%s has %d lines", f.Path, f.Lines), tx("The limit is %.0f.", maxFile), &Measured{"lines", float64(f.Lines), maxFile})
 		}
 	}
 }

@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import * as vscode from "vscode";
 import type { NomosApi } from "../extension";
 import { openNextToGraph } from "../ui/graphPanel";
+import { interfaceTranslator } from "../ui/translate";
 
 /** Runs inside a real VS Code on the folder given by scripts/run-e2e.mjs. */
 export async function run(): Promise<void> {
@@ -27,7 +28,30 @@ export async function run(): Promise<void> {
   } else {
     // Without nomos.json the bundled analyzers run (D-046); a small clean project may have no findings.
     for (const each of runs) assert.ok(each.facts.files.length > 0, `${each.language} analyzed no files`);
+    // Practices chosen in the settings reach the analyzer through the extension's own workspace file (D-050, D-051).
+    const settings = vscode.workspace.getConfiguration("nomos", folder);
+    await settings.update("practices", ["security"], vscode.ConfigurationTarget.WorkspaceFolder);
+    try {
+      await vscode.commands.executeCommand("nomos.analyze");
+      assert.deepEqual(api.errors(), []);
+      for (const each of api.runs()) {
+        const skipped = each.facts.skippedRules.find((s) => s.ruleId === "CC003");
+        assert.equal(skipped?.reason, "disabled-by-config", `${each.language}: CC003 must be off outside the security practice`);
+        assert.ok(each.findings.every((f) => f.ruleId.startsWith("SEC")), `${each.language}: only security rules may report`);
+      }
+    } finally {
+      await settings.update("practices", undefined, vscode.ConfigurationTarget.WorkspaceFolder);
+    }
+    await vscode.commands.executeCommand("nomos.analyze");
   }
+
+  // In Russian every finding with a template of spec reads in Russian; in English the analyzer's text stays (D-052).
+  const templated = runs.flatMap((r) => r.findings).filter((f) => f.messageId);
+  const cyrillic = (text: string) => /[а-яё]/i.test(text);
+  const russian = interfaceTranslator().locale === "ru";
+  assert.ok(templated.every((f) => cyrillic(f.message) === russian), `finding texts must be ${russian ? "Russian" : "English"}`);
+  const ours = withDiagnostics.flatMap(([, list]) => list.filter((d) => d.source === "nomos"));
+  assert.ok(ours.every((d) => cyrillic(d.message) === russian), "diagnostics must follow the language");
 
   const entity = run.facts.functions.find((f) => f.location);
   assert.ok(entity?.location);
@@ -36,11 +60,12 @@ export async function run(): Promise<void> {
   const lenses = await vscode.commands.executeCommand<vscode.CodeLens[]>("vscode.executeCodeLensProvider", uri);
   assert.ok(lenses.some((l) => l.command?.title.includes("cyclomatic")), "no metric lens");
 
+  const graphTitle = interfaceTranslator()("Nomos: Dependency Graph");
   await vscode.commands.executeCommand("nomos.showGraph");
   // The tab list catches up with a new panel a moment after the command returns.
   const graphGroup = async (): Promise<vscode.ViewColumn> => {
     for (let attempt = 0; attempt < 100; attempt++) {
-      const group = vscode.window.tabGroups.all.find((g) => g.tabs.some((t) => t.label === "Nomos: Dependency Graph"));
+      const group = vscode.window.tabGroups.all.find((g) => g.tabs.some((t) => t.label === graphTitle));
       if (group) return group.viewColumn;
       await new Promise((resolve) => setTimeout(resolve, 50));
     }
@@ -55,8 +80,8 @@ export async function run(): Promise<void> {
   await vscode.commands.executeCommand("nomos.openGraphWindow");
   const fromWindow = await openNextToGraph(uri, 5, await graphGroup());
   assert.equal(Math.abs(fromWindow.viewColumn! - await graphGroup()), 1, "code must open next to the graph in a separate window too");
-  const graphTabs = vscode.window.tabGroups.all.flatMap((g) => g.tabs).filter((t) => t.label === "Nomos: Dependency Graph");
+  const graphTabs = vscode.window.tabGroups.all.flatMap((g) => g.tabs).filter((t) => t.label === graphTitle);
   assert.equal(graphTabs.length, 1, "the graph must stay a single tab");
 
-  console.log(`e2e (${configured ? "nomos.json" : "bundled analyzers"}): ${runs.map((r) => `${r.language} ${r.findings.length}`).join(", ")} findings, ${withDiagnostics.length} files with diagnostics, ${lenses.length} lenses in ${entity.location.file}`);
+  console.log(`e2e ${vscode.env.language} (${configured ? "nomos.json" : "bundled analyzers"}): ${runs.map((r) => `${r.language} ${r.findings.length}`).join(", ")} findings, ${withDiagnostics.length} files with diagnostics, ${lenses.length} lenses in ${entity.location.file}`);
 }

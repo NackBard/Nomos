@@ -1,4 +1,4 @@
-schemaVersion: "1.0.0"
+schemaVersion: "1.1.0"
 rules:
   - id: MNT001
     category: Maintainability
@@ -9,6 +9,14 @@ rules:
     severity: minor
     confidence: high
     threshold: { maxComplexity: 10 }
+    l10n:
+      ru:
+        title: "Цикломатическая сложность"
+        description: "Точки ветвления в функции (spec/metrics.md). Каждое значение — метрика в facts; находки выдаются выше предела."
+        rationale: "Больше путей — больше тестов и больше места для ошибок."
+    messages:
+      complexity: { text: "{0} has cyclomatic complexity {1}", ru: "Цикломатическая сложность {0} — {1}" }
+      paths: { text: "The count is exact; above {0}, the number of paths to test and to understand grows quickly.", ru: "Число точное; выше {0} количество путей, которые нужно проверить и понять, быстро растёт." }
   - id: MNT002
     category: Maintainability
     title: Maintainability index
@@ -18,6 +26,14 @@ rules:
     severity: minor
     confidence: low
     threshold: { minIndex: 20 }
+    l10n:
+      ru:
+        title: "Индекс сопровождаемости"
+        description: "MI из объёма Холстеда, цикломатической сложности и строк (spec/metrics.md)."
+        rationale: "Составной индекс; подсказка, а не измерение качества."
+    messages:
+      index: { text: "{0} has a maintainability index of {1}", ru: "Индекс сопровождаемости {0} — {1}" }
+      ranking: { text: "Below {0}. The formula is an empirical blend of size and complexity, useful for ranking rather than as a measure of quality.", ru: "Ниже {0}. Формула — эмпирическая смесь размера и сложности, она годится для ранжирования, а не как мера качества." }
   - id: MNT003
     category: Maintainability
     title: Duplication
@@ -27,6 +43,14 @@ rules:
     severity: minor
     confidence: medium
     threshold: { minTokens: 100 }
+    l10n:
+      ru:
+        title: "Дублирование"
+        description: "Клоны токенов типов 1 и 2 (скользящий хеш по нормализованным токенам)."
+        rationale: "Ошибка, исправленная в одной копии, остаётся в других."
+    messages:
+      clone: { text: "{0} tokens duplicate {1}:{2}", ru: "{0} {0|токен повторяет|токена повторяют|токенов повторяют} {1}:{2}" }
+      identical: { text: "The token sequences are identical after replacing identifiers and literals with placeholders.", ru: "Последовательности токенов совпадают после замены идентификаторов и литералов заполнителями." }
   - id: MNT004
     category: Maintainability
     title: Test coverage
@@ -37,3 +61,11 @@ rules:
     confidence: high
     threshold: { report: "", minCoverage: 50 }
     requires: [coverage-report]
+    l10n:
+      ru:
+        title: "Покрытие тестами"
+        description: "Покрытие строк по отчёту Cobertura или LCOV, для каждого файла."
+        rationale: "Показывает, до каких файлов тесты не доходят."
+    messages:
+      coverage: { text: "{0} has {1}% line coverage", ru: "Покрытие строк {0} — {1}%" }
+      minimum: { text: "Measured from {0}; below the {1}% minimum. Coverage shows what ran, not what was verified.", ru: "Измерено по {0}; ниже минимума {1}%. Покрытие показывает, что выполнялось, а не что проверено." }

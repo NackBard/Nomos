@@ -1,4 +1,4 @@
-schemaVersion: "1.0.0"
+schemaVersion: "1.1.0"
 rules:
   - id: ALG001
     category: Algorithms
@@ -9,6 +9,16 @@ rules:
     severity: minor
     confidence: low
     threshold: { reportFromDegree: 2 }
+    l10n:
+      ru:
+        title: "Оценка временной сложности"
+        description: "Оценивает рост по вложенности циклов, известным линейным вызовам, форме рекурсии и вызываемым функциям проекта."
+        rationale: "Всегда оценка: размеры входных данных неизвестны."
+    messages:
+      likely: { text: "{0} is likely {1}", ru: "{0}: вероятно, {1}" }
+      loops: { text: "Estimated from nested loops over inputs of unknown size. Small inputs may make this irrelevant.", ru: "Оценка по вложенным циклам над входными данными неизвестного размера. При малых данных это может быть неважно." }
+      recursion: { text: "Estimated from recursion, a while loop or a callee; loop bounds and call counts are not known exactly.", ru: "Оценка по рекурсии, циклу while или вызываемой функции; границы циклов и число вызовов точно не известны." }
+      recursionConditionLoop: { text: "Estimated from recursion, a condition-only loop or a callee; loop bounds and call counts are not known exactly.", ru: "Оценка по рекурсии, циклу только с условием или вызываемой функции; границы циклов и число вызовов точно не известны." }
   - id: ALG002
     category: Algorithms
     title: Quadratic pattern
@@ -18,6 +28,24 @@ rules:
     severity: minor
     confidence: low
     threshold: {}
+    l10n:
+      ru:
+        title: "Квадратичный шаблон"
+        description: "Поиск в списках, вставка в начало и конкатенация строк внутри циклов."
+        rationale: "Типичные источники случайного квадратичного времени."
+    messages:
+      searchOn: { text: "Likely quadratic: {0} on {1} inside a loop", ru: "Вероятно квадратичное время: {0} над {1} внутри цикла" }
+      search: { text: "Likely quadratic: {0} on a sequence inside a loop", ru: "Вероятно квадратичное время: {0} над последовательностью внутри цикла" }
+      slicesSearch: { text: "Likely quadratic: slices.{0} inside a loop", ru: "Вероятно квадратичное время: slices.{0} внутри цикла" }
+      searchHashSet: { text: "Each iteration scans the sequence. A HashSet or Dictionary built once makes the lookup constant-time.", ru: "Каждая итерация просматривает последовательность. HashSet или Dictionary, построенные один раз, дают поиск за постоянное время." }
+      searchMap: { text: "Each iteration scans the sequence. A map built once makes the lookup constant-time.", ru: "Каждая итерация просматривает последовательность. map, построенный один раз, даёт поиск за постоянное время." }
+      frontCall: { text: "Likely quadratic: {0}(0) inside a loop", ru: "Вероятно квадратичное время: {0}(0) внутри цикла" }
+      frontCallQueue: { text: "Every element shifts on each call. A Queue, a Stack or iterating from the end avoids this.", ru: "При каждом вызове сдвигаются все элементы. Queue, Stack или проход с конца этого избегают." }
+      frontInsert: { text: "Likely quadratic: front insertion inside a loop", ru: "Вероятно квадратичное время: вставка в начало внутри цикла" }
+      frontInsertAppend: { text: "Every element shifts on each call. Appending and reversing once avoids this.", ru: "При каждом вызове сдвигаются все элементы. Добавление в конец и один разворот этого избегают." }
+      concat: { text: "Likely quadratic: String concatenation inside a loop", ru: "Вероятно квадратичное время: конкатенация строк внутри цикла" }
+      concatStringBuilder: { text: "Each step copies the whole string so far. StringBuilder grows in amortized constant time.", ru: "Каждый шаг копирует всю накопленную строку. StringBuilder растёт за амортизированное постоянное время." }
+      concatBuilder: { text: "Each step copies the whole string so far. strings.Builder grows in amortized constant time.", ru: "Каждый шаг копирует всю накопленную строку. strings.Builder растёт за амортизированное постоянное время." }
   - id: ALG003
     category: Algorithms
     title: Allocation in hot loop
@@ -27,6 +55,21 @@ rules:
     severity: minor
     confidence: low
     threshold: { minDepthForObjects: 2 }
+    l10n:
+      ru:
+        title: "Выделение памяти в горячем цикле"
+        description: "Материализующие вызовы в циклах; создание объектов и замыканий во вложенных циклах."
+        rationale: "Нагрузка на память в часто выполняемом коде."
+    messages:
+      materialize: { text: "{0} allocates on each loop iteration", ru: "{0} выделяет память на каждой итерации цикла" }
+      materializeBuffer: { text: "A new collection is built per iteration; moving it out of the loop or reusing a buffer reduces GC pressure.", ru: "На каждой итерации строится новая коллекция; вынос из цикла или повторное использование буфера снижает нагрузку на сборщик мусора." }
+      allocationOf: { text: "Allocation of {0} in a nested loop", ru: "Создание {0} во вложенном цикле" }
+      allocation: { text: "Allocation in a nested loop", ru: "Выделение памяти во вложенном цикле" }
+      hot: { text: "Runs once per inner iteration. Whether it matters depends on how hot the loop really is, which static analysis cannot tell.", ru: "Выполняется на каждой внутренней итерации. Важно ли это, зависит от того, как часто цикл выполняется на деле, а статический анализ этого не знает." }
+      lambda: { text: "Lambda in a nested loop", ru: "Лямбда во вложенном цикле" }
+      lambdaClosure: { text: "A capturing lambda allocates a closure per iteration; a non-capturing one is cached.", ru: "Захватывающая лямбда создаёт замыкание на каждой итерации; незахватывающая кешируется." }
+      literal: { text: "Function literal in a nested loop", ru: "Функциональный литерал во вложенном цикле" }
+      literalClosure: { text: "A capturing literal allocates a closure per iteration.", ru: "Захватывающий литерал создаёт замыкание на каждой итерации." }
   - id: ALG004
     category: Algorithms
     title: Space complexity estimate
@@ -36,3 +79,12 @@ rules:
     severity: minor
     confidence: low
     threshold: { reportFromDegree: 2 }
+    l10n:
+      ru:
+        title: "Оценка пространственной сложности"
+        description: "Коллекции, растущие в циклах, массивы непостоянного размера, глубина рекурсии."
+        rationale: "Всегда оценка: размеры входных данных неизвестны."
+    messages:
+      likely: { text: "{0} likely uses {1} extra memory", ru: "{0}, вероятно, использует {1} дополнительной памяти" }
+      collections: { text: "Estimated from collection growth under nested loops or multi-dimensional allocation sizes.", ru: "Оценка по росту коллекций во вложенных циклах или по размерам многомерных массивов." }
+      slices: { text: "Estimated from slice growth under nested loops or sized allocations.", ru: "Оценка по росту срезов во вложенных циклах или по выделениям заданного размера." }

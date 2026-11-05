@@ -1,4 +1,4 @@
-schemaVersion: "1.0.0"
+schemaVersion: "1.1.0"
 rules:
   - id: SEC001
     category: Security
@@ -9,6 +9,16 @@ rules:
     severity: major
     confidence: low
     threshold: {}
+    l10n:
+      ru:
+        title: "Секрет в коде (эвристика)"
+        description: "Строковые литералы, присвоенные именам, похожим на секреты, и литералы в формате известных учётных данных."
+        rationale: "Не заменяет сканер секретов."
+    messages:
+      credential: { text: "{0} holds what looks like a real credential", ru: "{0} содержит то, что похоже на настоящие учётные данные" }
+      rotate: { text: "Heuristic: the literal matches the format of a known key or token. Rotate it if it is real, and load it from a secret store.", ru: "Эвристика: литерал совпадает с форматом известного ключа или токена. Если он настоящий, замените его и загружайте из хранилища секретов." }
+      secret: { text: "{0} looks like a hardcoded secret", ru: "{0} похоже на секрет, записанный в коде" }
+      placeholder: { text: "Heuristic: the name suggests a secret and the value is a literal. It may be a placeholder or a non-secret value.", ru: "Эвристика: имя наводит на мысль о секрете, а значение — литерал. Это может быть заглушка или несекретное значение." }
   - id: SEC002
     category: Security
     title: Insecure deserialization (heuristic)
@@ -18,6 +28,16 @@ rules:
     severity: critical
     confidence: low
     threshold: {}
+    l10n:
+      ru:
+        title: "Небезопасная десериализация (эвристика)"
+        description: "Использование форматтеров, которые создают произвольные типы из входных данных, или полиморфной обработки типов."
+        rationale: "Эвристика по виду кода, без анализа заражённых данных."
+    messages:
+      formatter: { text: "{0} is unsafe with untrusted data", ru: "{0} небезопасен для недоверенных данных" }
+      arbitrary: { text: "Heuristic: this formatter can instantiate arbitrary types from its input; whether the input is trusted is not checked.", ru: "Эвристика: этот форматтер может создавать произвольные типы из входных данных; доверены ли они, не проверяется." }
+      typeNames: { text: "TypeNameHandling.{0} enables polymorphic deserialization", ru: "TypeNameHandling.{0} включает полиморфную десериализацию" }
+      gadgets: { text: "Heuristic: type names read from the payload allow gadget chains unless a binder restricts them.", ru: "Эвристика: имена типов из полезной нагрузки открывают путь цепочкам гаджетов, если их не ограничивает binder." }
   - id: SEC003
     category: Security
     title: SQL concatenation (heuristic)
@@ -27,3 +47,11 @@ rules:
     severity: major
     confidence: low
     threshold: {}
+    l10n:
+      ru:
+        title: "Конкатенация SQL (эвристика)"
+        description: "Текст, похожий на SQL, склеенный или интерполированный с неконстантными значениями."
+        rationale: "Эвристика по виду кода, без анализа заражённых данных."
+    messages:
+      sql: { text: "SQL built from non-constant values", ru: "SQL собирается из неконстантных значений" }
+      injection: { text: "Heuristic: if any value comes from a user, this allows injection. Parameterized queries keep data out of the statement.", ru: "Эвристика: если хоть одно значение приходит от пользователя, это позволяет внедрение. Параметризованные запросы держат данные вне текста запроса." }

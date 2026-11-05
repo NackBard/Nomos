@@ -25,7 +25,7 @@ public sealed class SingletonAnalyzer : AnalyzerBase
             var constructors = type.Callables.Where(c => c.Kind == CallableKind.Constructor).ToList();
             var holdsSelf = type.Fields.Any(f => f.IsStatic && f.Type?.Id == type.Id) || type.Properties.Any(p => p.IsStatic && p.Type?.Id == type.Id);
             if (constructors.Count > 0 && constructors.All(c => c.Visibility == Visibility.Private) && holdsSelf)
-                context.Report(type, Confidence.High, $"{type.Name} is a Singleton", "Private constructors plus a static member of its own type. Singletons are global state: they hide dependencies and hinder testing.");
+                context.Report(type, Confidence.High, $"{type.Name} is a Singleton", $"Private constructors plus a static member of its own type. Singletons are global state: they hide dependencies and hinder testing.");
         }
     }
 }
@@ -93,7 +93,7 @@ public sealed class ObserverAnalyzer : AnalyzerBase
             var subscribes = type.Callables.Any(c => c.Name is "Subscribe" or "Attach" or "Register" or "AddObserver" or "AddListener");
             var notifies = type.Callables.Any(c => c.Body.All<LoopStatement>().Any(l => l.Kind == LoopKind.ForEach && l.Body.All<InvocationExpression>().Any()) && c.Name.StartsWith("Notify", StringComparison.Ordinal));
             if (subscribes && notifies)
-                context.Report(type, Confidence.High, $"{type.Name} is an Observer subject", "It has a subscribe method and notifies registered observers in a loop.");
+                context.Report(type, Confidence.High, $"{type.Name} is an Observer subject", $"It has a subscribe method and notifies registered observers in a loop.");
         }
     }
 }
@@ -112,7 +112,7 @@ public sealed class DecoratorAnalyzer : AnalyzerBase
             {
                 var forwards = type.Callables.Any(c => c.Implements.Count > 0 && c.Body.All<InvocationExpression>().Any(i => i.Target.Name == c.Name && i.Receiver is NameExpression { Symbol.Kind: SymbolKind.Field or SymbolKind.Property }));
                 if (Roles.Stores(type, abstraction) && Roles.Injects(type, abstraction) && forwards)
-                    context.Report(type, Confidence.High, $"{type.Name} is a Decorator of {context.Model.FindType(abstraction)?.Name}", "It implements the abstraction, wraps an instance of it, and forwards calls.");
+                    context.Report(type, Confidence.High, $"{type.Name} is a Decorator of {context.Model.FindType(abstraction)?.Name}", $"It implements the abstraction, wraps an instance of it, and forwards calls.");
             }
         }
     }
@@ -134,9 +134,9 @@ public sealed class RepositoryAnalyzer : AnalyzerBase
             var removes = names.Any(n => n.StartsWith("Remove", StringComparison.Ordinal) || n.StartsWith("Delete", StringComparison.Ordinal));
             var named = type.Name.EndsWith("Repository", StringComparison.Ordinal);
             if (named && reads && (writes || removes))
-                context.Report(type, Confidence.High, $"{type.Name} is a Repository", "The name and the collection-like read/write API agree.");
+                context.Report(type, Confidence.High, $"{type.Name} is a Repository", $"The name and the collection-like read/write API agree.");
             else if (named)
-                context.Report(type, Confidence.Low, $"{type.Name} may be a Repository", "Only the name suggests it; the API is not collection-like.");
+                context.Report(type, Confidence.Low, $"{type.Name} may be a Repository", $"Only the name suggests it; the API is not collection-like.");
         }
     }
 }
@@ -176,7 +176,7 @@ public sealed class ServiceLocatorAnalyzer : AnalyzerBase
                 {
                     var receiver = call.Receiver?.Type?.SimpleName ?? (call.Receiver as NameExpression)?.Symbol.Name ?? string.Empty;
                     if (receiver.Contains("ServiceProvider", StringComparison.Ordinal) || receiver.Contains("Locator", StringComparison.Ordinal) || receiver.Contains("Container", StringComparison.Ordinal))
-                        context.Report(Confidence.Medium, call.Location, $"{type.Name} pulls a dependency from {receiver}", "The class's real dependencies are invisible in its constructor and fail only at run time.", type.ModuleName, callable.Id);
+                        context.Report(Confidence.Medium, call.Location, $"{type.Name} pulls a dependency from {receiver}", $"The class's real dependencies are invisible in its constructor and fail only at run time.", type.ModuleName, callable.Id);
                 }
             }
         }
