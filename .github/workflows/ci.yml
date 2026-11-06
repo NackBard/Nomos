@@ -66,6 +66,8 @@ jobs:
         with:
           name: nomos-report
           path: .nomos/
+          # .nomos is a hidden folder, which upload-artifact skips by default since 4.4.
+          include-hidden-files: true
       - name: Extension
         working-directory: extension
         run: |
