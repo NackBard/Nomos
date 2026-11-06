@@ -129,6 +129,30 @@ const analyzers = [];
   });
 }
 
+// Java: one jar for every platform (class files of release 17) runs on the person's JDK 17+: the folder the Java
+// extension's settings name, then JAVA_HOME, then java from PATH. The check also needs the compiler module, which a JRE
+// lacks, and fails on a JDK older than the class files (D-058).
+{
+  const out = path.join(bundle, "java");
+  fs.mkdirSync(out, { recursive: true });
+  const runner = path.join(repository, "analyzers", "java", "run.mjs");
+  run(process.execPath, [runner, "--jar", path.join(out, "nomos-java.jar")], { stdio: ["ignore", "inherit", "inherit"] });
+  const { language, files } = manifest(process.execPath, [runner]);
+  analyzers.push({
+    language, files,
+    command: ["${runtime}", "-jar", "${bundle}/java/nomos-java.jar"],
+    runtime: {
+      name: "a JDK 17 or newer",
+      settings: ["java.jdt.ls.java.home", "java.home"],
+      environment: ["JAVA_HOME"],
+      home: "bin/java",
+      path: ["java"],
+      check: ["--add-modules", "jdk.compiler", "-jar", "${bundle}/java/nomos-java.jar", "manifest"],
+      installUrl: "https://adoptium.net/",
+    },
+  });
+}
+
 fs.writeFileSync(path.join(bundle, "analyzers.json"), JSON.stringify({ analyzers }, null, 2) + "\n");
 console.log(`bundle/analyzers.json: ${analyzers.map((a) => a.language).join(", ")}`);
 

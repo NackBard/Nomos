@@ -15,7 +15,8 @@
     "go",
     "typescript",
     "javascript",
-    "python"
+    "python",
+    "java"
   ],
   "parity": [
     {
@@ -26,7 +27,8 @@
         "go": "oc.Mixed",
         "typescript": "cohesion.Mixed",
         "javascript": "cohesion.Mixed",
-        "python": "cohesion.Mixed"
+        "python": "cohesion.Mixed",
+        "java": "oc.Mixed"
       }
     },
     {
@@ -37,7 +39,8 @@
         "go": "oc.Mixed",
         "typescript": "cohesion.Mixed",
         "javascript": "cohesion.Mixed",
-        "python": "cohesion.Mixed"
+        "python": "cohesion.Mixed",
+        "java": "oc.Mixed"
       }
     },
     {
@@ -48,7 +51,8 @@
         "go": "oc.Mixed",
         "typescript": "cohesion.Mixed",
         "javascript": "cohesion.Mixed",
-        "python": "cohesion.Mixed"
+        "python": "cohesion.Mixed",
+        "java": "oc.Mixed"
       }
     },
     {
@@ -59,7 +63,8 @@
         "go": "oc.Mixed",
         "typescript": "cohesion.Mixed",
         "javascript": "cohesion.Mixed",
-        "python": "cohesion.Mixed"
+        "python": "cohesion.Mixed",
+        "java": "oc.Mixed"
       }
     },
     {
@@ -70,7 +75,8 @@
         "go": "oc.Mixed",
         "typescript": "cohesion.Mixed",
         "javascript": "cohesion.Mixed",
-        "python": "cohesion.Mixed"
+        "python": "cohesion.Mixed",
+        "java": "oc.Mixed"
       }
     },
     {
@@ -81,7 +87,8 @@
         "go": "oc.Mixed",
         "typescript": "cohesion.Mixed",
         "javascript": "cohesion.Mixed",
-        "python": "cohesion.Mixed"
+        "python": "cohesion.Mixed",
+        "java": "oc.Mixed"
       }
     }
   ]

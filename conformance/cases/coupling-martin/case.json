@@ -16,7 +16,8 @@
     "go",
     "typescript",
     "javascript",
-    "python"
+    "python",
+    "java"
   ],
   "parity": [
     {
@@ -27,7 +28,8 @@
         "go": "shop/domain",
         "typescript": "domain",
         "javascript": "domain",
-        "python": "domain"
+        "python": "domain",
+        "java": "shop.domain"
       }
     },
     {
@@ -38,7 +40,8 @@
         "go": "shop/domain",
         "typescript": "domain",
         "javascript": "domain",
-        "python": "domain"
+        "python": "domain",
+        "java": "shop.domain"
       }
     },
     {
@@ -49,7 +52,8 @@
         "go": "shop/domain",
         "typescript": "domain",
         "javascript": "domain",
-        "python": "domain"
+        "python": "domain",
+        "java": "shop.domain"
       }
     },
     {
@@ -59,7 +63,8 @@
         "csharp": "Shop.Domain",
         "go": "shop/domain",
         "typescript": "domain",
-        "python": "domain"
+        "python": "domain",
+        "java": "shop.domain"
       }
     },
     {
@@ -69,7 +74,8 @@
         "csharp": "Shop.Domain",
         "go": "shop/domain",
         "typescript": "domain",
-        "python": "domain"
+        "python": "domain",
+        "java": "shop.domain"
       }
     },
     {
@@ -80,7 +86,8 @@
         "go": "shop/infra",
         "typescript": "infra",
         "javascript": "infra",
-        "python": "infra"
+        "python": "infra",
+        "java": "shop.infra"
       }
     },
     {
@@ -91,7 +98,8 @@
         "go": "shop/infra",
         "typescript": "infra",
         "javascript": "infra",
-        "python": "infra"
+        "python": "infra",
+        "java": "shop.infra"
       }
     },
     {
@@ -102,7 +110,8 @@
         "go": "shop/infra",
         "typescript": "infra",
         "javascript": "infra",
-        "python": "infra"
+        "python": "infra",
+        "java": "shop.infra"
       }
     },
     {
@@ -112,7 +121,8 @@
         "csharp": "Shop.Infra",
         "go": "shop/infra",
         "typescript": "infra",
-        "python": "infra"
+        "python": "infra",
+        "java": "shop.infra"
       }
     },
     {
@@ -122,7 +132,8 @@
         "csharp": "Shop.Infra",
         "go": "shop/infra",
         "typescript": "infra",
-        "python": "infra"
+        "python": "infra",
+        "java": "shop.infra"
       }
     },
     {
@@ -133,7 +144,8 @@
         "go": "shop/services",
         "typescript": "services",
         "javascript": "services",
-        "python": "services"
+        "python": "services",
+        "java": "shop.services"
       }
     },
     {
@@ -144,7 +156,8 @@
         "go": "shop/services",
         "typescript": "services",
         "javascript": "services",
-        "python": "services"
+        "python": "services",
+        "java": "shop.services"
       }
     },
     {
@@ -155,7 +168,8 @@
         "go": "shop/services",
         "typescript": "services",
         "javascript": "services",
-        "python": "services"
+        "python": "services",
+        "java": "shop.services"
       }
     },
     {
@@ -165,7 +179,8 @@
         "csharp": "Shop.Services",
         "go": "shop/services",
         "typescript": "services",
-        "python": "services"
+        "python": "services",
+        "java": "shop.services"
       }
     },
     {
@@ -175,7 +190,8 @@
         "csharp": "Shop.Services",
         "go": "shop/services",
         "typescript": "services",
-        "python": "services"
+        "python": "services",
+        "java": "shop.services"
       }
     },
     {
@@ -186,7 +202,8 @@
         "go": "shop/app",
         "typescript": "app",
         "javascript": "app",
-        "python": "app"
+        "python": "app",
+        "java": "shop.app"
       }
     },
     {
@@ -197,7 +214,8 @@
         "go": "shop/app",
         "typescript": "app",
         "javascript": "app",
-        "python": "app"
+        "python": "app",
+        "java": "shop.app"
       }
     },
     {
@@ -208,7 +226,8 @@
         "go": "shop/app",
         "typescript": "app",
         "javascript": "app",
-        "python": "app"
+        "python": "app",
+        "java": "shop.app"
       }
     },
     {
@@ -218,7 +237,8 @@
         "csharp": "Shop.App",
         "go": "shop/app",
         "typescript": "app",
-        "python": "app"
+        "python": "app",
+        "java": "shop.app"
       }
     },
     {
@@ -228,7 +248,8 @@
         "csharp": "Shop.App",
         "go": "shop/app",
         "typescript": "app",
-        "python": "app"
+        "python": "app",
+        "java": "shop.app"
       }
     }
   ]

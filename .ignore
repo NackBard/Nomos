@@ -6,6 +6,8 @@ analyzers/typescript/src/rules.json
 analyzers/typescript/src/practices.json
 analyzers/python/nomos_python/rules.json
 analyzers/python/nomos_python/practices.json
+analyzers/java/src/nomos/java/rules.json
+analyzers/java/src/nomos/java/practices.json
 extension/rules.json
 extension/practices.json
 ci/rules.json

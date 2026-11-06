@@ -12,25 +12,32 @@ export const RegistryFileName = "analyzers.json";
 export const BundleFolderName = "bundle";
 
 /**
- * A program the analyzer runs on, such as a language runtime: asked from another VS Code extension and, when `path` is
- * given, looked up among programs in PATH (D-057). The extension knows no language; everything here is data.
+ * A program the analyzer runs on, such as a language runtime: asked from another VS Code extension, read from VS Code
+ * settings and environment variables that name its folder (D-058) and, when `path` is given, looked up among programs
+ * in PATH (D-057). The extension knows no language; everything here is data.
  */
 export interface RuntimeRequirement {
   /** Shown to the person when the runtime is missing. */
   name: string;
-  /** Marketplace id of the extension that provides the runtime. */
-  extension: string;
+  /** Marketplace id of the extension that provides the runtime; without it no extension is asked (D-058). */
+  extension?: string;
   /** Command of that extension; it receives `argument`, with `${folder}` in its strings replaced, plus `requestingExtensionId`. */
-  command: string;
-  argument: Record<string, unknown>;
+  command?: string;
+  argument?: Record<string, unknown>;
   /** Field of the command's result that holds the executable path; without it the result is the path itself. */
   resultField?: string;
+  /** VS Code settings, read for the folder, whose value is the folder the runtime is installed in (D-058). */
+  settings?: string[];
+  /** Environment variables whose value is that folder, tried after the settings. */
+  environment?: string[];
+  /** The program inside such a folder, `/`-separated and without the platform's executable suffix, such as `bin/tool`. */
+  home?: string;
   /**
    * Programs looked up in PATH, in order, when the extension is not installed or gives no usable program. With them the
    * extension is optional: it is never installed on the person's behalf.
    */
   path?: string[];
-  /** Arguments that make a program exit with code 0 only when it is usable, such as a version check. */
+  /** Arguments that make a program exit with code 0 only when it is usable, such as a version check; `${bundle}` is the registry folder. */
   check?: string[];
   /** Page that tells how to install the runtime, offered when no program is usable. */
   installUrl?: string;
@@ -40,6 +47,10 @@ export interface RuntimeRequirement {
 export interface RuntimeHost {
   hasExtension(id: string): boolean;
   execute(command: string, argument: Record<string, unknown>): Promise<unknown>;
+  /** The value of a VS Code setting for the folder. */
+  setting(key: string, folder: string): unknown;
+  /** The value of an environment variable. */
+  environment(name: string): string | undefined;
   /** Whether the program starts and exits with code 0 for these arguments. */
   usable(program: string, args: string[]): Promise<boolean>;
 }
@@ -58,19 +69,38 @@ function unquote(text: string): string {
   return trimmed.length >= 2 && trimmed.startsWith('"') && trimmed.endsWith('"') ? trimmed.slice(1, -1) : trimmed;
 }
 
+/** The program `home` names inside an installation folder, with the executable suffix of the platform. */
+export function programIn(folder: string, home: string, platform: string = process.platform): string {
+  const separator = platform === "win32" ? "\\" : "/";
+  const base = folder.replace(/[\\/]+$/, "");
+  return base + separator + home.split("/").join(separator) + (platform === "win32" ? ".exe" : "");
+}
+
 /**
- * The program of an optional runtime (one with `path`): the extension's answer for the folder if it passes `check`,
- * otherwise the first program in PATH that does; undefined when none is usable.
+ * The program of an optional runtime (one with `path`), the first that passes `check`: the extension's answer for the
+ * folder, then the folders the settings and the environment variables name, then the programs in PATH; undefined when
+ * none is usable.
  */
-export async function findRuntime(requirement: RuntimeRequirement, folder: string, host: RuntimeHost): Promise<string | undefined> {
-  const check = requirement.check ?? [];
-  if (host.hasExtension(requirement.extension)) {
+export async function findRuntime(requirement: RuntimeRequirement, folder: string, host: RuntimeHost, bundle = ""): Promise<string | undefined> {
+  const check = (requirement.check ?? []).map((part) => part.replaceAll("${bundle}", bundle));
+  if (requirement.extension && requirement.command && host.hasExtension(requirement.extension)) {
     try {
-      const result = await host.execute(requirement.command, runtimeArgument(requirement.argument, folder) as Record<string, unknown>);
+      const result = await host.execute(requirement.command, runtimeArgument(requirement.argument ?? {}, folder) as Record<string, unknown>);
       const value = requirement.resultField ? (result as Record<string, unknown> | undefined)?.[requirement.resultField] : result;
       if (typeof value === "string" && value.trim() && (await host.usable(unquote(value), check))) return unquote(value);
     } catch {
       // The extension could not answer; PATH may still have a program.
+    }
+  }
+  if (requirement.home) {
+    const homes = [
+      ...(requirement.settings ?? []).map((key) => host.setting(key, folder)),
+      ...(requirement.environment ?? []).map((name) => host.environment(name)),
+    ];
+    for (const home of homes) {
+      if (typeof home !== "string" || !home.trim()) continue;
+      const program = programIn(home.trim(), requirement.home);
+      if (await host.usable(program, check)) return program;
     }
   }
   for (const program of requirement.path ?? []) {

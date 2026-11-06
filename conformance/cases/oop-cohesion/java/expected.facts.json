@@ -1,0 +1,248 @@
+{
+  "schemaVersion": "1.3.0",
+  "analyzer": {
+    "name": "hand-computed",
+    "version": "0.0.0",
+    "language": "java"
+  },
+  "files": [
+    {
+      "path": "Errors.java",
+      "lines": 7,
+      "loc": 5
+    },
+    {
+      "path": "Mixed.java",
+      "lines": 31,
+      "loc": 24
+    }
+  ],
+  "modules": [
+    {
+      "id": "oc",
+      "name": "oc",
+      "files": [
+        "Errors.java",
+        "Mixed.java"
+      ],
+      "loc": 29,
+      "metrics": {
+        "ca": 0,
+        "ce": 0,
+        "instability": null,
+        "abstractness": 0,
+        "distance": null
+      },
+      "paradigmEvidence": []
+    }
+  ],
+  "types": [
+    {
+      "id": "oc.Data",
+      "name": "Data",
+      "module": "oc",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "Mixed.java",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 4,
+        "memberCount": 2,
+        "methodCount": 0,
+        "dit": 0,
+        "cbo": 0,
+        "lcom4": null,
+        "wmc": 0,
+        "atfd": 0,
+        "tcc": null
+      }
+    },
+    {
+      "id": "oc.Mixed",
+      "name": "Mixed",
+      "module": "oc",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "Mixed.java",
+        "startLine": 8
+      },
+      "metrics": {
+        "lines": 21,
+        "memberCount": 7,
+        "methodCount": 4,
+        "dit": 0,
+        "cbo": 1,
+        "lcom4": 3,
+        "wmc": 4,
+        "atfd": 2,
+        "tcc": 0.1667
+      }
+    },
+    {
+      "id": "oc.Derived",
+      "name": "Derived",
+      "module": "oc",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "Mixed.java",
+        "startLine": 30
+      },
+      "metrics": {
+        "lines": 2,
+        "memberCount": 0,
+        "methodCount": 0,
+        "dit": 1,
+        "cbo": 1,
+        "lcom4": null,
+        "wmc": 0,
+        "atfd": 0,
+        "tcc": null
+      }
+    },
+    {
+      "id": "oc.Fail",
+      "name": "Fail",
+      "module": "oc",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "Errors.java",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 2,
+        "memberCount": 0,
+        "methodCount": 0,
+        "dit": 1,
+        "cbo": 0,
+        "lcom4": null,
+        "wmc": 0,
+        "atfd": 0,
+        "tcc": null
+      }
+    },
+    {
+      "id": "oc.DeepFail",
+      "name": "DeepFail",
+      "module": "oc",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "Errors.java",
+        "startLine": 6
+      },
+      "metrics": {
+        "lines": 2,
+        "memberCount": 0,
+        "methodCount": 0,
+        "dit": 2,
+        "cbo": 1,
+        "lcom4": null,
+        "wmc": 0,
+        "atfd": 0,
+        "tcc": null
+      }
+    }
+  ],
+  "functions": [
+    {
+      "id": "oc.Mixed.incA",
+      "name": "incA",
+      "module": "oc",
+      "type": "oc.Mixed",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Mixed.java",
+        "startLine": 13
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3
+      }
+    },
+    {
+      "id": "oc.Mixed.readA",
+      "name": "readA",
+      "module": "oc",
+      "type": "oc.Mixed",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Mixed.java",
+        "startLine": 17
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3
+      }
+    },
+    {
+      "id": "oc.Mixed.incB",
+      "name": "incB",
+      "module": "oc",
+      "type": "oc.Mixed",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Mixed.java",
+        "startLine": 21
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3
+      }
+    },
+    {
+      "id": "oc.Mixed.peek",
+      "name": "peek",
+      "module": "oc",
+      "type": "oc.Mixed",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Mixed.java",
+        "startLine": 25
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "from": "oc.DeepFail",
+      "to": "oc.Fail",
+      "kind": "inheritance",
+      "phase": "runtime"
+    },
+    {
+      "from": "oc.Derived",
+      "to": "oc.Mixed",
+      "kind": "inheritance",
+      "phase": "runtime"
+    },
+    {
+      "from": "oc.Mixed",
+      "to": "oc.Data",
+      "kind": "type-ref",
+      "phase": "runtime"
+    }
+  ],
+  "cycles": [],
+  "skippedRules": [],
+  "diagnostics": []
+}

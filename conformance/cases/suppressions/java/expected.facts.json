@@ -1,0 +1,189 @@
+{
+  "schemaVersion": "1.3.0",
+  "analyzer": {
+    "name": "hand-computed",
+    "version": "0.0.0",
+    "language": "java"
+  },
+  "files": [
+    {
+      "path": "Code.java",
+      "lines": 15,
+      "loc": 8
+    },
+    {
+      "path": "Whole.java",
+      "lines": 6,
+      "loc": 4
+    }
+  ],
+  "modules": [
+    {
+      "id": "sup.code",
+      "name": "sup.code",
+      "files": [
+        "Code.java"
+      ],
+      "loc": 8,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "sup.whole",
+      "name": "sup.whole",
+      "files": [
+        "Whole.java"
+      ],
+      "loc": 4,
+      "metrics": {},
+      "paradigmEvidence": []
+    }
+  ],
+  "types": [
+    {
+      "id": "sup.code.Loops",
+      "name": "Loops",
+      "module": "sup.code",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "Code.java",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 13,
+        "methodCount": 5
+      }
+    },
+    {
+      "id": "sup.whole.Quiet",
+      "name": "Quiet",
+      "module": "sup.whole",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "Whole.java",
+        "startLine": 4
+      },
+      "metrics": {
+        "lines": 3,
+        "methodCount": 1
+      }
+    }
+  ],
+  "functions": [
+    {
+      "id": "sup.code.Loops.reported",
+      "name": "reported",
+      "module": "sup.code",
+      "type": "sup.code.Loops",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Code.java",
+        "startLine": 4
+      },
+      "metrics": {
+        "cyclomatic": 3,
+        "maxNesting": 2,
+        "parameterCount": 1,
+        "lines": 1
+      }
+    },
+    {
+      "id": "sup.code.Loops.next",
+      "name": "next",
+      "module": "sup.code",
+      "type": "sup.code.Loops",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Code.java",
+        "startLine": 7
+      },
+      "metrics": {
+        "cyclomatic": 3,
+        "maxNesting": 2,
+        "parameterCount": 1,
+        "lines": 1
+      }
+    },
+    {
+      "id": "sup.code.Loops.same",
+      "name": "same",
+      "module": "sup.code",
+      "type": "sup.code.Loops",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Code.java",
+        "startLine": 9
+      },
+      "metrics": {
+        "cyclomatic": 3,
+        "maxNesting": 2,
+        "parameterCount": 1,
+        "lines": 1
+      }
+    },
+    {
+      "id": "sup.code.Loops.otherRule",
+      "name": "otherRule",
+      "module": "sup.code",
+      "type": "sup.code.Loops",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Code.java",
+        "startLine": 12
+      },
+      "metrics": {
+        "cyclomatic": 3,
+        "maxNesting": 2,
+        "parameterCount": 1,
+        "lines": 1
+      }
+    },
+    {
+      "id": "sup.code.Loops.reasoned",
+      "name": "reasoned",
+      "module": "sup.code",
+      "type": "sup.code.Loops",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Code.java",
+        "startLine": 14
+      },
+      "metrics": {
+        "cyclomatic": 3,
+        "maxNesting": 2,
+        "parameterCount": 1,
+        "lines": 1
+      }
+    },
+    {
+      "id": "sup.whole.Quiet.pairs",
+      "name": "pairs",
+      "module": "sup.whole",
+      "type": "sup.whole.Quiet",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Whole.java",
+        "startLine": 5
+      },
+      "metrics": {
+        "cyclomatic": 3,
+        "maxNesting": 2,
+        "parameterCount": 1,
+        "lines": 1,
+        "timeDegree": 2
+      }
+    }
+  ],
+  "dependencies": [],
+  "cycles": [],
+  "skippedRules": [],
+  "diagnostics": []
+}

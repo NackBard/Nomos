@@ -1,0 +1,49 @@
+{
+  "schemaVersion": "1.3.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "java" },
+  "files": [
+    { "path": "funcs/Calc.java", "lines": 13, "loc": 10 },
+    { "path": "plain/Mode.java", "lines": 6, "loc": 5 },
+    { "path": "shapes/Shape.java", "lines": 4, "loc": 3 },
+    { "path": "shapes/ShapeBase.java", "lines": 5, "loc": 4 },
+    { "path": "shapes/Square.java", "lines": 5, "loc": 4 }
+  ],
+  "modules": [
+    { "id": "pe.funcs", "name": "pe.funcs", "files": ["funcs/Calc.java"], "loc": 10, "metrics": {},
+      "paradigmEvidence": [
+        { "paradigm": "functional", "kind": "fp.pure-functions", "count": 1, "description": "functions that provably have no effects (conservative)", "examples": ["pe.funcs.Calc.add"] },
+        { "paradigm": "oop", "kind": "oop.classes", "count": 1, "description": "classes with methods or fields", "examples": ["pe.funcs.Calc"] },
+        { "paradigm": "structural", "kind": "str.global-state", "count": 1, "description": "static mutable fields", "examples": ["pe.funcs.Calc.counter"] }
+      ] },
+    { "id": "pe.plain", "name": "pe.plain", "files": ["plain/Mode.java"], "loc": 5, "metrics": {}, "paradigmEvidence": [] },
+    { "id": "pe.shapes", "name": "pe.shapes", "files": ["shapes/Shape.java", "shapes/ShapeBase.java", "shapes/Square.java"], "loc": 11, "metrics": {},
+      "paradigmEvidence": [
+        { "paradigm": "oop", "kind": "oop.abstractions", "count": 2, "description": "interfaces and abstract classes", "examples": ["pe.shapes.Shape", "pe.shapes.ShapeBase"] },
+        { "paradigm": "oop", "kind": "oop.classes", "count": 2, "description": "classes with methods or fields", "examples": ["pe.shapes.ShapeBase", "pe.shapes.Square"] },
+        { "paradigm": "oop", "kind": "oop.inheritance", "count": 1, "description": "project types inheriting project types", "examples": ["pe.shapes.Square"] },
+        { "paradigm": "oop", "kind": "oop.mutable-state-classes", "count": 2, "description": "classes with mutable instance state", "examples": ["pe.shapes.ShapeBase", "pe.shapes.Square"] }
+      ] }
+  ],
+  "types": [
+    { "id": "pe.funcs.Calc", "name": "Calc", "module": "pe.funcs", "kind": "class", "isAbstract": false, "location": { "file": "funcs/Calc.java", "startLine": 3 }, "metrics": { "lines": 11, "memberCount": 3, "methodCount": 2, "dit": 0 } },
+    { "id": "pe.plain.Mode", "name": "Mode", "module": "pe.plain", "kind": "enum", "isAbstract": false, "location": { "file": "plain/Mode.java", "startLine": 3 }, "metrics": { "lines": 4 } },
+    { "id": "pe.shapes.Shape", "name": "Shape", "module": "pe.shapes", "kind": "interface", "isAbstract": true, "location": { "file": "shapes/Shape.java", "startLine": 3 }, "metrics": { "lines": 2, "memberCount": 0 } },
+    { "id": "pe.shapes.ShapeBase", "name": "ShapeBase", "module": "pe.shapes", "kind": "class", "isAbstract": true, "location": { "file": "shapes/ShapeBase.java", "startLine": 3 }, "metrics": { "lines": 3, "memberCount": 1, "dit": 0 } },
+    { "id": "pe.shapes.Square", "name": "Square", "module": "pe.shapes", "kind": "class", "isAbstract": false, "location": { "file": "shapes/Square.java", "startLine": 3 }, "metrics": { "lines": 3, "memberCount": 1, "dit": 1 } }
+  ],
+  "functions": [
+    { "id": "pe.funcs.Calc.add", "name": "add", "module": "pe.funcs", "type": "pe.funcs.Calc", "kind": "method", "visibility": "public", "location": { "file": "funcs/Calc.java", "startLine": 6 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 2, "lines": 3 } },
+    { "id": "pe.funcs.Calc.bump", "name": "bump", "module": "pe.funcs", "type": "pe.funcs.Calc", "kind": "method", "visibility": "public", "location": { "file": "funcs/Calc.java", "startLine": 10 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 0, "lines": 3 } }
+  ],
+  "dependencies": [
+    { "from": "pe.shapes.Square", "to": "pe.shapes.ShapeBase", "kind": "inheritance", "phase": "runtime" }
+  ],
+  "cycles": [],
+  "skippedRules": [
+    { "ruleId": "CC002", "module": "pe.plain", "reason": "paradigm-not-detected", "message": "OOP rule not applicable: module has no classes" },
+    { "ruleId": "OOP002", "module": "pe.plain", "reason": "paradigm-not-detected", "message": "OOP rule not applicable: module has no classes" },
+    { "ruleId": "STR002", "module": "pe.funcs", "reason": "paradigm-not-detected", "message": "Structural rule not applicable: module has no free functions or branching" },
+    { "ruleId": "STR002", "module": "pe.shapes", "reason": "paradigm-not-detected", "message": "Structural rule not applicable: module has no free functions or branching" }
+  ],
+  "diagnostics": []
+}

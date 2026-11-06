@@ -14,14 +14,15 @@
     "csharp": "node src/cli.ts run --analyzer \"csharp=dotnet analyzers/csharp/src/Nomos.Analyzer.CSharp/bin/Debug/net10.0/nomos-csharp.dll\"",
     "go": "go build -C ../../analyzers/go -o bin/nomos-go.exe ./cmd/nomos-go && node src/cli.ts run --analyzer \"go=analyzers/go/bin/nomos-go.exe\"",
     "typescript": "node src/cli.ts run --analyzer \"typescript=node analyzers/typescript/src/main.ts\" --analyzer \"javascript=node analyzers/typescript/src/main.ts --language javascript\"",
-    "all": "dotnet build ../../analyzers/csharp/Nomos.slnx -v q && go build -C ../../analyzers/go -o bin/nomos-go.exe ./cmd/nomos-go && node src/cli.ts run --analyzer \"csharp=dotnet analyzers/csharp/src/Nomos.Analyzer.CSharp/bin/Debug/net10.0/nomos-csharp.dll\" --analyzer \"go=analyzers/go/bin/nomos-go.exe\" --analyzer \"typescript=node analyzers/typescript/src/main.ts\" --analyzer \"javascript=node analyzers/typescript/src/main.ts --language javascript\" --analyzer \"python=node analyzers/python/run.mjs\"",
+    "all": "dotnet build ../../analyzers/csharp/Nomos.slnx -v q && go build -C ../../analyzers/go -o bin/nomos-go.exe ./cmd/nomos-go && node src/cli.ts run --analyzer \"csharp=dotnet analyzers/csharp/src/Nomos.Analyzer.CSharp/bin/Debug/net10.0/nomos-csharp.dll\" --analyzer \"go=analyzers/go/bin/nomos-go.exe\" --analyzer \"typescript=node analyzers/typescript/src/main.ts\" --analyzer \"javascript=node analyzers/typescript/src/main.ts --language javascript\" --analyzer \"python=node analyzers/python/run.mjs\" --analyzer \"java=node analyzers/java/run.mjs\"",
     "go-rules": "node src/write-go-rules.ts",
     "spec-json": "node src/write-go-rules.ts",
     "fetch-sarif-schema": "node src/fetch-sarif-schema.ts",
     "selftest": "node src/cli.ts run --analyzer \"csharp=node conformance/runner/src/echo-analyzer.ts\"",
     "rules-doc": "node src/write-rules-doc.ts",
     "typecheck": "tsc --noEmit",
-    "python": "node src/cli.ts run --analyzer \"python=node analyzers/python/run.mjs\""
+    "python": "node src/cli.ts run --analyzer \"python=node analyzers/python/run.mjs\"",
+    "java": "node src/cli.ts run --analyzer \"java=node analyzers/java/run.mjs\""
   },
   "dependencies": {
     "ajv": "8.20.0",

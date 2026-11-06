@@ -12,7 +12,8 @@
     "go",
     "typescript",
     "javascript",
-    "python"
+    "python",
+    "java"
   ],
   "expectSarif": true
 }

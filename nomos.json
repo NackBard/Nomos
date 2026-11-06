@@ -67,6 +67,18 @@
         "**/node_modules/**",
         "extension/bundle/**"
       ]
+    },
+    {
+      "language": "java",
+      "command": [
+        "node",
+        "analyzers/java/run.mjs"
+      ],
+      "exclude": [
+        "conformance/**",
+        "**/node_modules/**",
+        "extension/bundle/**"
+      ]
     }
   ],
   "layers": [

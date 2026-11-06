@@ -1,0 +1,515 @@
+{
+  "schemaVersion": "1.3.0",
+  "analyzer": {
+    "name": "hand-computed",
+    "version": "0.0.0",
+    "language": "java"
+  },
+  "files": [
+    {
+      "path": "Estimates.java",
+      "lines": 82,
+      "loc": 72
+    },
+    {
+      "path": "Memory.java",
+      "lines": 65,
+      "loc": 55
+    }
+  ],
+  "modules": [
+    {
+      "id": "alg.code",
+      "name": "alg.code",
+      "files": [
+        "Estimates.java",
+        "Memory.java"
+      ],
+      "loc": 127,
+      "metrics": {},
+      "paradigmEvidence": []
+    }
+  ],
+  "types": [
+    {
+      "id": "alg.code.Box",
+      "name": "Box",
+      "module": "alg.code",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "Memory.java",
+        "startLine": 63
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1
+      }
+    },
+    {
+      "id": "alg.code.Estimates",
+      "name": "Estimates",
+      "module": "alg.code",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "Estimates.java",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 80,
+        "memberCount": 10,
+        "methodCount": 10
+      }
+    },
+    {
+      "id": "alg.code.Memory",
+      "name": "Memory",
+      "module": "alg.code",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "Memory.java",
+        "startLine": 6
+      },
+      "metrics": {
+        "lines": 56,
+        "memberCount": 8,
+        "methodCount": 8
+      }
+    }
+  ],
+  "functions": [
+    {
+      "id": "alg.code.Estimates.constant",
+      "name": "constant",
+      "module": "alg.code",
+      "type": "alg.code.Estimates",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Estimates.java",
+        "startLine": 4
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 1,
+        "lines": 3,
+        "timeDegree": 0,
+        "timeLogFactor": 0,
+        "timeExponential": 0,
+        "spaceDegree": 0,
+        "allocationDepth": 0
+      }
+    },
+    {
+      "id": "alg.code.Estimates.linear",
+      "name": "linear",
+      "module": "alg.code",
+      "type": "alg.code.Estimates",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Estimates.java",
+        "startLine": 8
+      },
+      "metrics": {
+        "cyclomatic": 2,
+        "maxNesting": 1,
+        "parameterCount": 1,
+        "lines": 7,
+        "timeDegree": 1,
+        "timeLogFactor": 0,
+        "timeExponential": 0,
+        "spaceDegree": 0,
+        "allocationDepth": 0
+      }
+    },
+    {
+      "id": "alg.code.Estimates.quadratic",
+      "name": "quadratic",
+      "module": "alg.code",
+      "type": "alg.code.Estimates",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Estimates.java",
+        "startLine": 16
+      },
+      "metrics": {
+        "cyclomatic": 3,
+        "maxNesting": 2,
+        "parameterCount": 2,
+        "lines": 9,
+        "timeDegree": 2,
+        "timeLogFactor": 0,
+        "timeExponential": 0,
+        "spaceDegree": 0,
+        "allocationDepth": 0
+      }
+    },
+    {
+      "id": "alg.code.Estimates.halving",
+      "name": "halving",
+      "module": "alg.code",
+      "type": "alg.code.Estimates",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Estimates.java",
+        "startLine": 26
+      },
+      "metrics": {
+        "cyclomatic": 2,
+        "maxNesting": 1,
+        "parameterCount": 1,
+        "lines": 7,
+        "timeDegree": 0,
+        "timeLogFactor": 1,
+        "timeExponential": 0,
+        "spaceDegree": 0,
+        "allocationDepth": 0
+      }
+    },
+    {
+      "id": "alg.code.Estimates.linearLog",
+      "name": "linearLog",
+      "module": "alg.code",
+      "type": "alg.code.Estimates",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Estimates.java",
+        "startLine": 34
+      },
+      "metrics": {
+        "cyclomatic": 2,
+        "maxNesting": 1,
+        "parameterCount": 1,
+        "lines": 7,
+        "timeDegree": 1,
+        "timeLogFactor": 1,
+        "timeExponential": 0,
+        "spaceDegree": 0,
+        "allocationDepth": 0
+      }
+    },
+    {
+      "id": "alg.code.Estimates.fixed",
+      "name": "fixed",
+      "module": "alg.code",
+      "type": "alg.code.Estimates",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Estimates.java",
+        "startLine": 42
+      },
+      "metrics": {
+        "cyclomatic": 2,
+        "maxNesting": 1,
+        "parameterCount": 0,
+        "lines": 7,
+        "timeDegree": 0,
+        "timeLogFactor": 0,
+        "timeExponential": 0,
+        "spaceDegree": 0,
+        "allocationDepth": 0
+      }
+    },
+    {
+      "id": "alg.code.Estimates.fib",
+      "name": "fib",
+      "module": "alg.code",
+      "type": "alg.code.Estimates",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Estimates.java",
+        "startLine": 50
+      },
+      "metrics": {
+        "cyclomatic": 2,
+        "maxNesting": 1,
+        "parameterCount": 1,
+        "lines": 6,
+        "timeDegree": null,
+        "timeLogFactor": null,
+        "timeExponential": 1,
+        "spaceDegree": 1,
+        "allocationDepth": 0
+      }
+    },
+    {
+      "id": "alg.code.Estimates.factorial",
+      "name": "factorial",
+      "module": "alg.code",
+      "type": "alg.code.Estimates",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Estimates.java",
+        "startLine": 57
+      },
+      "metrics": {
+        "cyclomatic": 2,
+        "maxNesting": 1,
+        "parameterCount": 1,
+        "lines": 6,
+        "timeDegree": 1,
+        "timeLogFactor": 0,
+        "timeExponential": 0,
+        "spaceDegree": 1,
+        "allocationDepth": 0
+      }
+    },
+    {
+      "id": "alg.code.Estimates.search",
+      "name": "search",
+      "module": "alg.code",
+      "type": "alg.code.Estimates",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Estimates.java",
+        "startLine": 64
+      },
+      "metrics": {
+        "cyclomatic": 3,
+        "maxNesting": 1,
+        "parameterCount": 3,
+        "lines": 10,
+        "timeDegree": 0,
+        "timeLogFactor": 1,
+        "timeExponential": 0,
+        "spaceDegree": 1,
+        "allocationDepth": 0
+      }
+    },
+    {
+      "id": "alg.code.Estimates.cubicViaCallee",
+      "name": "cubicViaCallee",
+      "module": "alg.code",
+      "type": "alg.code.Estimates",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Estimates.java",
+        "startLine": 75
+      },
+      "metrics": {
+        "cyclomatic": 2,
+        "maxNesting": 1,
+        "parameterCount": 1,
+        "lines": 7,
+        "timeDegree": 3,
+        "timeLogFactor": 0,
+        "timeExponential": 0,
+        "spaceDegree": 0,
+        "allocationDepth": 0
+      }
+    },
+    {
+      "id": "alg.code.Memory.none",
+      "name": "none",
+      "module": "alg.code",
+      "type": "alg.code.Memory",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Memory.java",
+        "startLine": 7
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 1,
+        "lines": 3,
+        "timeDegree": 0,
+        "timeLogFactor": 0,
+        "timeExponential": 0,
+        "spaceDegree": 0,
+        "allocationDepth": 0
+      }
+    },
+    {
+      "id": "alg.code.Memory.grows",
+      "name": "grows",
+      "module": "alg.code",
+      "type": "alg.code.Memory",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Memory.java",
+        "startLine": 11
+      },
+      "metrics": {
+        "cyclomatic": 2,
+        "maxNesting": 1,
+        "parameterCount": 1,
+        "lines": 7,
+        "timeDegree": 1,
+        "timeLogFactor": 0,
+        "timeExponential": 0,
+        "spaceDegree": 1,
+        "allocationDepth": 0
+      }
+    },
+    {
+      "id": "alg.code.Memory.grid",
+      "name": "grid",
+      "module": "alg.code",
+      "type": "alg.code.Memory",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Memory.java",
+        "startLine": 19
+      },
+      "metrics": {
+        "cyclomatic": 3,
+        "maxNesting": 2,
+        "parameterCount": 2,
+        "lines": 9,
+        "timeDegree": 2,
+        "timeLogFactor": 0,
+        "timeExponential": 0,
+        "spaceDegree": 2,
+        "allocationDepth": 0
+      }
+    },
+    {
+      "id": "alg.code.Memory.sized",
+      "name": "sized",
+      "module": "alg.code",
+      "type": "alg.code.Memory",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Memory.java",
+        "startLine": 29
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 1,
+        "lines": 3,
+        "timeDegree": 0,
+        "timeLogFactor": 0,
+        "timeExponential": 0,
+        "spaceDegree": 1,
+        "allocationDepth": 0
+      }
+    },
+    {
+      "id": "alg.code.Memory.constant",
+      "name": "constant",
+      "module": "alg.code",
+      "type": "alg.code.Memory",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Memory.java",
+        "startLine": 33
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3,
+        "timeDegree": 0,
+        "timeLogFactor": 0,
+        "timeExponential": 0,
+        "spaceDegree": 0,
+        "allocationDepth": 0
+      }
+    },
+    {
+      "id": "alg.code.Memory.deep",
+      "name": "deep",
+      "module": "alg.code",
+      "type": "alg.code.Memory",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Memory.java",
+        "startLine": 37
+      },
+      "metrics": {
+        "cyclomatic": 2,
+        "maxNesting": 1,
+        "parameterCount": 1,
+        "lines": 6,
+        "timeDegree": 1,
+        "timeLogFactor": 0,
+        "timeExponential": 0,
+        "spaceDegree": 1,
+        "allocationDepth": 0
+      }
+    },
+    {
+      "id": "alg.code.Memory.newInNested",
+      "name": "newInNested",
+      "module": "alg.code",
+      "type": "alg.code.Memory",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Memory.java",
+        "startLine": 44
+      },
+      "metrics": {
+        "cyclomatic": 3,
+        "maxNesting": 2,
+        "parameterCount": 2,
+        "lines": 9,
+        "timeDegree": 2,
+        "timeLogFactor": 0,
+        "timeExponential": 0,
+        "spaceDegree": 0,
+        "allocationDepth": 2
+      }
+    },
+    {
+      "id": "alg.code.Memory.newInLoop",
+      "name": "newInLoop",
+      "module": "alg.code",
+      "type": "alg.code.Memory",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Memory.java",
+        "startLine": 54
+      },
+      "metrics": {
+        "cyclomatic": 2,
+        "maxNesting": 1,
+        "parameterCount": 1,
+        "lines": 7,
+        "timeDegree": 1,
+        "timeLogFactor": 0,
+        "timeExponential": 0,
+        "spaceDegree": 0,
+        "allocationDepth": 1
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "from": "alg.code.Memory",
+      "to": "alg.code.Box",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "alg.code.Memory",
+      "to": "alg.code.Box",
+      "kind": "type-ref",
+      "phase": "runtime"
+    }
+  ],
+  "cycles": [],
+  "skippedRules": [],
+  "diagnostics": []
+}

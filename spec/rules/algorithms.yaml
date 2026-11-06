@@ -51,6 +51,7 @@ rules:
       concatJoin: { text: "Each step copies the whole string so far. Collecting the parts in an array and joining once avoids this.", ru: "Каждый шаг копирует всю накопленную строку. Сбор частей в массив и одно соединение через join этого избегают." }
       searchSetDict: { text: "Each iteration scans the list. A set or dict built once makes the lookup constant-time.", ru: "Каждая итерация просматривает список. set или dict, построенные один раз, дают поиск за постоянное время." }
       concatListJoin: { text: "Each step copies the whole string so far. Collecting the parts in a list and joining once avoids this.", ru: "Каждый шаг копирует всю накопленную строку. Сбор частей в список и одно соединение через join этого избегают." }
+      searchHashMap: { text: "Each iteration scans the list. A HashSet or HashMap built once makes the lookup constant-time.", ru: "Каждая итерация просматривает список. HashSet или HashMap, построенные один раз, дают поиск за постоянное время." }
   - id: ALG003
     category: Algorithms
     title: Allocation in hot loop

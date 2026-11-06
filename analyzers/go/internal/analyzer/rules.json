@@ -122,6 +122,10 @@
       "concatListJoin": {
         "text": "Each step copies the whole string so far. Collecting the parts in a list and joining once avoids this.",
         "ru": "Каждый шаг копирует всю накопленную строку. Сбор частей в список и одно соединение через join этого избегают."
+      },
+      "searchHashMap": {
+        "text": "Each iteration scans the list. A HashSet or HashMap built once makes the lookup constant-time.",
+        "ru": "Каждая итерация просматривает список. HashSet или HashMap, построенные один раз, дают поиск за постоянное время."
       }
     }
   },

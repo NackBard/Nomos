@@ -6,6 +6,9 @@ TestResults/
 *.suo
 .vs/
 
+# Java (analyzers/java): class files and jars that run.mjs builds
+analyzers/java/build/
+
 # Python (analyzers/python): bytecode of the tests
 __pycache__/
 

@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1.3.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "java" },
+  "files": [
+    { "path": "Broken.java", "lines": 1, "loc": 1, "parsed": false },
+    { "path": "Ok.java", "lines": 5, "loc": 4, "module": "pf" }
+  ],
+  "modules": [
+    { "id": "(global)", "name": "(global)", "files": ["Broken.java"], "loc": 1, "metrics": {}, "paradigmEvidence": [] },
+    { "id": "pf", "name": "pf", "files": ["Ok.java"], "loc": 4, "metrics": {}, "paradigmEvidence": [] }
+  ],
+  "types": [
+    { "id": "pf.Ok", "name": "Ok", "module": "pf", "kind": "class", "isAbstract": false, "location": { "file": "Ok.java", "startLine": 3 }, "metrics": { "lines": 3, "memberCount": 1 } }
+  ],
+  "functions": [],
+  "dependencies": [],
+  "cycles": [],
+  "skippedRules": [],
+  "diagnostics": [
+    { "level": "warning", "message": "Syntax errors: the declarations of this file may be incomplete in the facts.", "file": "Broken.java", "code": "syntax-error" }
+  ]
+}

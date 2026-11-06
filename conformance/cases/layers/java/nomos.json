@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "1.0.0",
+  "analyzers": [{ "language": "java", "command": ["nomos-java"] }],
+  "layers": [
+    { "name": "Domain", "patterns": ["*.Domain"], "mayDependOn": [] },
+    { "name": "Services", "patterns": ["*.Services"], "mayDependOn": ["Domain"] },
+    { "name": "Web", "patterns": ["*.Web"], "mayDependOn": ["Services"] }
+  ]
+}

@@ -136,17 +136,17 @@ export function activate(context: vscode.ExtensionContext): NomosApi {
   }
 
   async function requiredRuntime(requirement: RuntimeRequirement, language: string): Promise<string> {
-    if (!vscode.extensions.getExtension(requirement.extension)) {
+    if (!vscode.extensions.getExtension((requirement.extension ?? ""))) {
       const install = t("Install");
       const choice = await vscode.window.showInformationMessage(
-        t("Nomos needs {0} to analyze the {1} files of this workspace. The extension {2} provides it.", requirement.name, language, requirement.extension), install);
-      if (choice !== install) throw new Error(t("{0}: skipped, {1} is not available (the extension {2} was not installed)", language, requirement.name, requirement.extension));
-      await vscode.commands.executeCommand("workbench.extensions.installExtension", requirement.extension);
+        t("Nomos needs {0} to analyze the {1} files of this workspace. The extension {2} provides it.", requirement.name, language, (requirement.extension ?? "")), install);
+      if (choice !== install) throw new Error(t("{0}: skipped, {1} is not available (the extension {2} was not installed)", language, requirement.name, (requirement.extension ?? "")));
+      await vscode.commands.executeCommand("workbench.extensions.installExtension", (requirement.extension ?? ""));
     }
     const result = await vscode.commands.executeCommand<Record<string, unknown> | undefined>(
-      requirement.command, { ...requirement.argument, requestingExtensionId: context.extension.id });
+      requirement.command ?? "", { ...requirement.argument, requestingExtensionId: context.extension.id });
     const value = requirement.resultField ? result?.[requirement.resultField] : result;
-    if (typeof value !== "string" || !value) throw new Error(t("{0}: {1} did not provide {2}", language, requirement.extension, requirement.name));
+    if (typeof value !== "string" || !value) throw new Error(t("{0}: {1} did not provide {2}", language, requirement.extension ?? "", requirement.name));
     return value;
   }
 
@@ -154,13 +154,18 @@ export function activate(context: vscode.ExtensionContext): NomosApi {
     const host: RuntimeHost = {
       hasExtension: (id) => vscode.extensions.getExtension(id) !== undefined,
       execute: (command, argument) => Promise.resolve(vscode.commands.executeCommand(command, { ...argument, requestingExtensionId: context.extension.id })),
+      setting: (key, folder) => vscode.workspace.getConfiguration(undefined, vscode.Uri.file(folder)).get(key),
+      environment: (name) => process.env[name],
       usable: (program, args) => new Promise((resolve) => execFile(program, args, { timeout: 20000, windowsHide: true }, (error) => resolve(!error))),
     };
-    const found = await findRuntime(requirement, folder, host);
+    const found = await findRuntime(requirement, folder, host, bundleFolder);
     if (found) return found;
     const open = t("Open download page");
-    const message = t("Nomos needs {0} to analyze the {1} files of this workspace. Neither the extension {2} nor PATH ({3}) gives one.",
-      requirement.name, language, requirement.extension, (requirement.path ?? []).join(", "));
+    const programs = (requirement.path ?? []).join(", ");
+    const message = requirement.extension
+      ? t("Nomos needs {0} to analyze the {1} files of this workspace. Neither the extension {2} nor PATH ({3}) gives one.", requirement.name, language, requirement.extension, programs)
+      : t("Nomos needs {0} to analyze the {1} files of this workspace. None of the settings and variables {2} nor PATH ({3}) gives one.",
+        requirement.name, language, [...(requirement.settings ?? []), ...(requirement.environment ?? [])].join(", "), programs);
     void vscode.window.showWarningMessage(message, ...(requirement.installUrl ? [open] : [])).then((choice) => {
       if (choice === open && requirement.installUrl) void vscode.env.openExternal(vscode.Uri.parse(requirement.installUrl));
     });

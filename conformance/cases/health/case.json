@@ -10,7 +10,8 @@
     "go",
     "typescript",
     "javascript",
-    "python"
+    "python",
+    "java"
   ],
   "tolerance": {
     "metrics": {

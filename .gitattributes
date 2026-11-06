@@ -9,6 +9,8 @@ analyzers/typescript/src/rules.json linguist-generated
 analyzers/typescript/src/practices.json linguist-generated
 analyzers/python/nomos_python/rules.json linguist-generated
 analyzers/python/nomos_python/practices.json linguist-generated
+analyzers/java/src/nomos/java/rules.json linguist-generated
+analyzers/java/src/nomos/java/practices.json linguist-generated
 extension/rules.json linguist-generated
 extension/practices.json linguist-generated
 ci/rules.json linguist-generated

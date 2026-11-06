@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "1.3.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "java" },
+  "files": [
+    { "path": "Calc.java", "lines": 7, "loc": 6, "coverage": 25 },
+    { "path": "Left.java", "lines": 12, "loc": 11, "coverage": 100 },
+    { "path": "Right.java", "lines": 12, "loc": 11 }
+  ],
+  "modules": [
+    { "id": "mnt.code", "name": "mnt.code", "files": ["Calc.java", "Left.java", "Right.java"], "loc": 28, "metrics": {}, "paradigmEvidence": [] }
+  ],
+  "types": [
+    { "id": "mnt.code.Calc", "name": "Calc", "module": "mnt.code", "kind": "class", "isAbstract": false, "location": { "file": "Calc.java", "startLine": 3 }, "metrics": { "lines": 5 } },
+    { "id": "mnt.code.Left", "name": "Left", "module": "mnt.code", "kind": "class", "isAbstract": false, "location": { "file": "Left.java", "startLine": 3 }, "metrics": { "lines": 10, "memberCount": 8 } },
+    { "id": "mnt.code.Right", "name": "Right", "module": "mnt.code", "kind": "class", "isAbstract": false, "location": { "file": "Right.java", "startLine": 3 }, "metrics": { "lines": 10, "memberCount": 8 } }
+  ],
+  "functions": [
+    { "id": "mnt.code.Calc.add", "name": "add", "module": "mnt.code", "type": "mnt.code.Calc", "kind": "method", "visibility": "public", "location": { "file": "Calc.java", "startLine": 4 },
+      "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 2, "lines": 3, "halsteadVolume": 30.8794, "maintainabilityIndex": 79.027 } }
+  ],
+  "dependencies": [],
+  "cycles": [],
+  "skippedRules": [
+    { "ruleId": "DSN003", "reason": "missing-input", "message": "No layers in the configuration" }
+  ],
+  "diagnostics": []
+}

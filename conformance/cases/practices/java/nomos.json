@@ -1,0 +1,6 @@
+{
+  "schemaVersion": "1.1.0",
+  "analyzers": [{ "language": "java", "command": ["nomos-java"] }],
+  "practices": ["security"],
+  "rules": { "SEC001": { "enabled": false } }
+}

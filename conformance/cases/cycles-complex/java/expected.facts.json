@@ -1,0 +1,825 @@
+{
+  "schemaVersion": "1.3.0",
+  "analyzer": {
+    "name": "hand-computed",
+    "version": "0.0.0",
+    "language": "java"
+  },
+  "files": [
+    {
+      "path": "A1.java",
+      "lines": 5,
+      "loc": 4
+    },
+    {
+      "path": "A2.java",
+      "lines": 4,
+      "loc": 3
+    },
+    {
+      "path": "B1.java",
+      "lines": 12,
+      "loc": 9
+    },
+    {
+      "path": "B4.java",
+      "lines": 4,
+      "loc": 3
+    },
+    {
+      "path": "Base.java",
+      "lines": 10,
+      "loc": 8
+    },
+    {
+      "path": "C1.java",
+      "lines": 8,
+      "loc": 6
+    },
+    {
+      "path": "D1.java",
+      "lines": 5,
+      "loc": 4
+    },
+    {
+      "path": "N1.java",
+      "lines": 22,
+      "loc": 17
+    },
+    {
+      "path": "P.java",
+      "lines": 14,
+      "loc": 11
+    },
+    {
+      "path": "Top.java",
+      "lines": 21,
+      "loc": 16
+    },
+    {
+      "path": "X1.java",
+      "lines": 10,
+      "loc": 8
+    },
+    {
+      "path": "Y1.java",
+      "lines": 9,
+      "loc": 7
+    }
+  ],
+  "modules": [
+    {
+      "id": "cx.a",
+      "name": "cx.a",
+      "files": [
+        "A1.java",
+        "A2.java"
+      ],
+      "loc": 7,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "cx.b",
+      "name": "cx.b",
+      "files": [
+        "B1.java",
+        "B4.java"
+      ],
+      "loc": 12,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "cx.c",
+      "name": "cx.c",
+      "files": [
+        "C1.java"
+      ],
+      "loc": 6,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "cx.d",
+      "name": "cx.d",
+      "files": [
+        "D1.java"
+      ],
+      "loc": 4,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "cx.dag",
+      "name": "cx.dag",
+      "files": [
+        "Top.java"
+      ],
+      "loc": 16,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "cx.eight",
+      "name": "cx.eight",
+      "files": [
+        "P.java"
+      ],
+      "loc": 11,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "cx.left",
+      "name": "cx.left",
+      "files": [
+        "X1.java"
+      ],
+      "loc": 8,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "cx.mixed",
+      "name": "cx.mixed",
+      "files": [
+        "Base.java"
+      ],
+      "loc": 8,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "cx.right",
+      "name": "cx.right",
+      "files": [
+        "Y1.java"
+      ],
+      "loc": 7,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "cx.ring",
+      "name": "cx.ring",
+      "files": [
+        "N1.java"
+      ],
+      "loc": 17,
+      "metrics": {},
+      "paradigmEvidence": []
+    }
+  ],
+  "types": [
+    {
+      "id": "cx.a.A1",
+      "name": "A1",
+      "module": "cx.a",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "A1.java",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1
+      }
+    },
+    {
+      "id": "cx.a.A2",
+      "name": "A2",
+      "module": "cx.a",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "A2.java",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 2,
+        "memberCount": 0
+      }
+    },
+    {
+      "id": "cx.b.B1",
+      "name": "B1",
+      "module": "cx.b",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "B1.java",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 2,
+        "memberCount": 0
+      }
+    },
+    {
+      "id": "cx.b.B2",
+      "name": "B2",
+      "module": "cx.b",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "B1.java",
+        "startLine": 6
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1
+      }
+    },
+    {
+      "id": "cx.b.B3",
+      "name": "B3",
+      "module": "cx.b",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "B1.java",
+        "startLine": 10
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1
+      }
+    },
+    {
+      "id": "cx.b.B4",
+      "name": "B4",
+      "module": "cx.b",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "B4.java",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 2,
+        "memberCount": 0
+      }
+    },
+    {
+      "id": "cx.c.C1",
+      "name": "C1",
+      "module": "cx.c",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "C1.java",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 2,
+        "memberCount": 0
+      }
+    },
+    {
+      "id": "cx.c.C2",
+      "name": "C2",
+      "module": "cx.c",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "C1.java",
+        "startLine": 6
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1
+      }
+    },
+    {
+      "id": "cx.d.D1",
+      "name": "D1",
+      "module": "cx.d",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "D1.java",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1
+      }
+    },
+    {
+      "id": "cx.dag.Top",
+      "name": "Top",
+      "module": "cx.dag",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "Top.java",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 4,
+        "memberCount": 2
+      }
+    },
+    {
+      "id": "cx.dag.Mid1",
+      "name": "Mid1",
+      "module": "cx.dag",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "Top.java",
+        "startLine": 8
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1
+      }
+    },
+    {
+      "id": "cx.dag.Mid2",
+      "name": "Mid2",
+      "module": "cx.dag",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "Top.java",
+        "startLine": 12
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1
+      }
+    },
+    {
+      "id": "cx.dag.Bottom",
+      "name": "Bottom",
+      "module": "cx.dag",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "Top.java",
+        "startLine": 16
+      },
+      "metrics": {
+        "lines": 2,
+        "memberCount": 0
+      }
+    },
+    {
+      "id": "cx.dag.Self",
+      "name": "Self",
+      "module": "cx.dag",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "Top.java",
+        "startLine": 19
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1
+      }
+    },
+    {
+      "id": "cx.eight.P",
+      "name": "P",
+      "module": "cx.eight",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "P.java",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1
+      }
+    },
+    {
+      "id": "cx.eight.Q",
+      "name": "Q",
+      "module": "cx.eight",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "P.java",
+        "startLine": 7
+      },
+      "metrics": {
+        "lines": 4,
+        "memberCount": 2
+      }
+    },
+    {
+      "id": "cx.eight.S",
+      "name": "S",
+      "module": "cx.eight",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "P.java",
+        "startLine": 12
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1
+      }
+    },
+    {
+      "id": "cx.left.X1",
+      "name": "X1",
+      "module": "cx.left",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "X1.java",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1
+      }
+    },
+    {
+      "id": "cx.left.X2",
+      "name": "X2",
+      "module": "cx.left",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "X1.java",
+        "startLine": 7
+      },
+      "metrics": {
+        "lines": 4,
+        "memberCount": 2
+      }
+    },
+    {
+      "id": "cx.mixed.Base",
+      "name": "Base",
+      "module": "cx.mixed",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "Base.java",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 5,
+        "memberCount": 1
+      }
+    },
+    {
+      "id": "cx.mixed.Derived",
+      "name": "Derived",
+      "module": "cx.mixed",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "Base.java",
+        "startLine": 9
+      },
+      "metrics": {
+        "lines": 2,
+        "memberCount": 0
+      }
+    },
+    {
+      "id": "cx.right.Y1",
+      "name": "Y1",
+      "module": "cx.right",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "Y1.java",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1
+      }
+    },
+    {
+      "id": "cx.right.Y2",
+      "name": "Y2",
+      "module": "cx.right",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "Y1.java",
+        "startLine": 7
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1
+      }
+    },
+    {
+      "id": "cx.ring.N1",
+      "name": "N1",
+      "module": "cx.ring",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "N1.java",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1
+      }
+    },
+    {
+      "id": "cx.ring.N2",
+      "name": "N2",
+      "module": "cx.ring",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "N1.java",
+        "startLine": 7
+      },
+      "metrics": {
+        "lines": 4,
+        "memberCount": 2
+      }
+    },
+    {
+      "id": "cx.ring.N3",
+      "name": "N3",
+      "module": "cx.ring",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "N1.java",
+        "startLine": 12
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1
+      }
+    },
+    {
+      "id": "cx.ring.N4",
+      "name": "N4",
+      "module": "cx.ring",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "N1.java",
+        "startLine": 16
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1
+      }
+    },
+    {
+      "id": "cx.ring.N5",
+      "name": "N5",
+      "module": "cx.ring",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "N1.java",
+        "startLine": 20
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1
+      }
+    }
+  ],
+  "functions": [
+    {
+      "id": "cx.mixed.Base.make",
+      "name": "make",
+      "module": "cx.mixed",
+      "type": "cx.mixed.Base",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Base.java",
+        "startLine": 4
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "from": "cx.a.A1",
+      "to": "cx.b.B1",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "cx.b.B2",
+      "to": "cx.a.A2",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "cx.b.B3",
+      "to": "cx.c.C1",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "cx.c.C2",
+      "to": "cx.b.B4",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "cx.d.D1",
+      "to": "cx.a.A1",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "cx.dag.Top",
+      "to": "cx.dag.Mid1",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "cx.dag.Top",
+      "to": "cx.dag.Mid2",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "cx.dag.Mid1",
+      "to": "cx.dag.Bottom",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "cx.dag.Mid2",
+      "to": "cx.dag.Bottom",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "cx.eight.P",
+      "to": "cx.eight.Q",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "cx.eight.Q",
+      "to": "cx.eight.P",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "cx.eight.Q",
+      "to": "cx.eight.S",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "cx.eight.S",
+      "to": "cx.eight.Q",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "cx.left.X1",
+      "to": "cx.left.X2",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "cx.left.X2",
+      "to": "cx.left.X1",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "cx.left.X2",
+      "to": "cx.right.Y1",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "cx.right.Y1",
+      "to": "cx.right.Y2",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "cx.right.Y2",
+      "to": "cx.right.Y1",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "cx.mixed.Base",
+      "to": "cx.mixed.Derived",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "cx.mixed.Derived",
+      "to": "cx.mixed.Base",
+      "kind": "inheritance",
+      "phase": "runtime"
+    },
+    {
+      "from": "cx.ring.N1",
+      "to": "cx.ring.N2",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "cx.ring.N2",
+      "to": "cx.ring.N3",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "cx.ring.N2",
+      "to": "cx.ring.N4",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "cx.ring.N3",
+      "to": "cx.ring.N4",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "cx.ring.N4",
+      "to": "cx.ring.N5",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "cx.ring.N5",
+      "to": "cx.ring.N1",
+      "kind": "type-ref",
+      "phase": "runtime"
+    }
+  ],
+  "cycles": [
+    {
+      "level": "type",
+      "members": [
+        "cx.eight.P",
+        "cx.eight.Q",
+        "cx.eight.S"
+      ]
+    },
+    {
+      "level": "type",
+      "members": [
+        "cx.left.X1",
+        "cx.left.X2"
+      ]
+    },
+    {
+      "level": "type",
+      "members": [
+        "cx.mixed.Base",
+        "cx.mixed.Derived"
+      ]
+    },
+    {
+      "level": "type",
+      "members": [
+        "cx.right.Y1",
+        "cx.right.Y2"
+      ]
+    },
+    {
+      "level": "type",
+      "members": [
+        "cx.ring.N1",
+        "cx.ring.N2",
+        "cx.ring.N3",
+        "cx.ring.N4",
+        "cx.ring.N5"
+      ]
+    },
+    {
+      "level": "module",
+      "members": [
+        "cx.a",
+        "cx.b",
+        "cx.c"
+      ]
+    }
+  ],
+  "skippedRules": [],
+  "diagnostics": []
+}

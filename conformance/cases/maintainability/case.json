@@ -15,7 +15,8 @@
     "go",
     "typescript",
     "javascript",
-    "python"
+    "python",
+    "java"
   ],
   "expectSarif": true,
   "config": true,
@@ -25,7 +26,8 @@
       "scope": "function",
       "entities": {
         "csharp": "Mnt.Code.Calc.Add",
-        "go": "mnt.Add"
+        "go": "mnt.Add",
+        "java": "mnt.code.Calc.add"
       }
     },
     {
@@ -33,7 +35,8 @@
       "scope": "function",
       "entities": {
         "csharp": "Mnt.Code.Calc.Add",
-        "go": "mnt.Add"
+        "go": "mnt.Add",
+        "java": "mnt.code.Calc.add"
       }
     }
   ]

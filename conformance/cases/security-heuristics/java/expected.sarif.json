@@ -1,0 +1,29 @@
+{
+  "results": [
+    {
+      "ruleId": "SEC001",
+      "file": "Store.java",
+      "startLine": 4
+    },
+    {
+      "ruleId": "SEC001",
+      "file": "Store.java",
+      "startLine": 6
+    },
+    {
+      "ruleId": "SEC003",
+      "file": "Store.java",
+      "startLine": 9
+    },
+    {
+      "ruleId": "SEC003",
+      "file": "Store.java",
+      "startLine": 17
+    },
+    {
+      "ruleId": "SEC003",
+      "file": "Store.java",
+      "startLine": 21
+    }
+  ]
+}

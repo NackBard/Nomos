@@ -1,0 +1,44 @@
+{
+  "results": [
+    {
+      "ruleId": "DSN006",
+      "file": "C4.java",
+      "startLine": 3,
+      "measured": {
+        "metric": "blastRadius",
+        "value": 8,
+        "threshold": 4
+      }
+    },
+    {
+      "ruleId": "DSN006",
+      "file": "C4.java",
+      "startLine": 6,
+      "measured": {
+        "metric": "blastRadius",
+        "value": 7,
+        "threshold": 4
+      }
+    },
+    {
+      "ruleId": "DSN006",
+      "file": "C4.java",
+      "startLine": 10,
+      "measured": {
+        "metric": "blastRadius",
+        "value": 6,
+        "threshold": 4
+      }
+    },
+    {
+      "ruleId": "DSN006",
+      "file": "C4.java",
+      "startLine": 14,
+      "measured": {
+        "metric": "blastRadius",
+        "value": 5,
+        "threshold": 4
+      }
+    }
+  ]
+}

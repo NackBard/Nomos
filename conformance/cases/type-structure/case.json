@@ -9,7 +9,8 @@
     "csharp",
     "go",
     "typescript",
-    "python"
+    "python",
+    "java"
   ],
   "exceptions": [
     {

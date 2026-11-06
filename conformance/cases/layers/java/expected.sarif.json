@@ -1,0 +1,19 @@
+{
+  "results": [
+    {
+      "ruleId": "DSN003",
+      "file": "Entity.java",
+      "startLine": 4
+    },
+    {
+      "ruleId": "DSN003",
+      "file": "Page.java",
+      "startLine": 5
+    },
+    {
+      "ruleId": "DSN003",
+      "file": "Rich.java",
+      "startLine": 5
+    }
+  ]
+}

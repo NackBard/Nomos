@@ -36,6 +36,10 @@
     {
       "language": "python",
       "reason": "PAT rules are not implemented for Python yet; they are not in supportedRules of the Python analyzer and are recorded as not-supported (D-057)."
+    },
+    {
+      "language": "java",
+      "reason": "PAT rules are not written for Java; they are not in supportedRules of the Java analyzer and are recorded as not-supported (D-058)."
     }
   ]
 }

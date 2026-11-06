@@ -1,0 +1,34 @@
+{
+  "results": [
+    {
+      "ruleId": "DSN002",
+      "file": "A1.java",
+      "startLine": 1
+    },
+    {
+      "ruleId": "DSN002",
+      "file": "Base.java",
+      "startLine": 3
+    },
+    {
+      "ruleId": "DSN002",
+      "file": "N1.java",
+      "startLine": 3
+    },
+    {
+      "ruleId": "DSN002",
+      "file": "P.java",
+      "startLine": 3
+    },
+    {
+      "ruleId": "DSN002",
+      "file": "X1.java",
+      "startLine": 3
+    },
+    {
+      "ruleId": "DSN002",
+      "file": "Y1.java",
+      "startLine": 3
+    }
+  ]
+}

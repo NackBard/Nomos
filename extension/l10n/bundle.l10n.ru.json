@@ -147,5 +147,6 @@
   "{0}: {1} nodes, {2} edges, {3} in cycles": "{0}: {1} {1|узел|узла|узлов}, {2} {2|связь|связи|связей}, в циклах: {3}",
   "Open download page": "Открыть страницу загрузки",
   "Nomos needs {0} to analyze the {1} files of this workspace. Neither the extension {2} nor PATH ({3}) gives one.": "Nomos нужен {0}, чтобы проанализировать файлы {1} в этой рабочей области. Его не дают ни расширение {2}, ни PATH ({3}).",
-  "{0}: skipped, {1} was not found": "{0}: пропущено, {1} не найден"
+  "{0}: skipped, {1} was not found": "{0}: пропущено, {1} не найден",
+  "Nomos needs {0} to analyze the {1} files of this workspace. None of the settings and variables {2} nor PATH ({3}) gives one.": "Nomos нужен {0}, чтобы проанализировать файлы {1} в этой рабочей области. Его не дают ни настройки и переменные {2}, ни PATH ({3})."
 }

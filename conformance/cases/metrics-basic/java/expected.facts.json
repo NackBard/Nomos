@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "1.3.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "java" },
+  "files": [
+    { "path": "Basics.java", "lines": 46, "loc": 39 }
+  ],
+  "modules": [
+    { "id": "metrics", "name": "metrics", "files": ["Basics.java"], "loc": 39, "metrics": { "ca": 0, "ce": 0, "instability": null, "abstractness": 0, "distance": null }, "paradigmEvidence": [] }
+  ],
+  "types": [
+    { "id": "metrics.Basics", "name": "Basics", "module": "metrics", "kind": "class", "isAbstract": false, "location": { "file": "Basics.java", "startLine": 3 },
+      "metrics": { "lines": 44, "memberCount": 4, "methodCount": 4, "dit": 0, "cbo": 0, "lcom4": null, "wmc": 15 } }
+  ],
+  "functions": [
+    { "id": "metrics.Basics.straight", "name": "straight", "module": "metrics", "type": "metrics.Basics", "kind": "method", "visibility": "public", "location": { "file": "Basics.java", "startLine": 4 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 1, "lines": 3 } },
+    { "id": "metrics.Basics.branches", "name": "branches", "module": "metrics", "type": "metrics.Basics", "kind": "method", "visibility": "public", "location": { "file": "Basics.java", "startLine": 9 }, "metrics": { "cyclomatic": 5, "maxNesting": 1, "parameterCount": 2, "lines": 9 } },
+    { "id": "metrics.Basics.loops", "name": "loops", "module": "metrics", "type": "metrics.Basics", "kind": "method", "visibility": "public", "location": { "file": "Basics.java", "startLine": 19 }, "metrics": { "cyclomatic": 4, "maxNesting": 3, "parameterCount": 2, "lines": 12 } },
+    { "id": "metrics.Basics.switches", "name": "switches", "module": "metrics", "type": "metrics.Basics", "kind": "method", "visibility": "public", "location": { "file": "Basics.java", "startLine": 32 }, "metrics": { "cyclomatic": 5, "maxNesting": 2, "parameterCount": 2, "lines": 14 } }
+  ],
+  "dependencies": [],
+  "cycles": [],
+  "skippedRules": [],
+  "diagnostics": []
+}

@@ -1,0 +1,397 @@
+{
+  "schemaVersion": "1.3.0",
+  "analyzer": {
+    "name": "hand-computed",
+    "version": "0.0.0",
+    "language": "java"
+  },
+  "files": [
+    {
+      "path": "Structure.java",
+      "lines": 58,
+      "loc": 45
+    }
+  ],
+  "modules": [
+    {
+      "id": "ts",
+      "name": "ts",
+      "files": [
+        "Structure.java"
+      ],
+      "loc": 45,
+      "metrics": {},
+      "paradigmEvidence": []
+    }
+  ],
+  "types": [
+    {
+      "id": "ts.Shape",
+      "name": "Shape",
+      "module": "ts",
+      "kind": "interface",
+      "isAbstract": true,
+      "location": {
+        "file": "Structure.java",
+        "startLine": 7
+      },
+      "metrics": {}
+    },
+    {
+      "id": "ts.Base",
+      "name": "Base",
+      "module": "ts",
+      "kind": "class",
+      "isAbstract": true,
+      "location": {
+        "file": "Structure.java",
+        "startLine": 11
+      },
+      "metrics": {},
+      "members": [
+        {
+          "name": "name",
+          "kind": "field",
+          "visibility": "protected",
+          "typeName": "String"
+        }
+      ]
+    },
+    {
+      "id": "ts.Unit",
+      "name": "Unit",
+      "module": "ts",
+      "kind": "enum",
+      "isAbstract": false,
+      "location": {
+        "file": "Structure.java",
+        "startLine": 17
+      },
+      "metrics": {},
+      "members": [
+        {
+          "name": "MM",
+          "kind": "literal",
+          "visibility": "public"
+        },
+        {
+          "name": "CM",
+          "kind": "literal",
+          "visibility": "public"
+        }
+      ]
+    },
+    {
+      "id": "ts.Square",
+      "name": "Square",
+      "module": "ts",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "Structure.java",
+        "startLine": 22
+      },
+      "metrics": {},
+      "members": [
+        {
+          "name": "SIDES",
+          "kind": "constant",
+          "visibility": "public",
+          "typeName": "int"
+        },
+        {
+          "name": "side",
+          "kind": "field",
+          "visibility": "private",
+          "typeName": "double"
+        },
+        {
+          "name": "created",
+          "kind": "field",
+          "visibility": "public",
+          "typeName": "int",
+          "isStatic": true
+        },
+        {
+          "name": "unit",
+          "kind": "field",
+          "visibility": "public",
+          "typeName": "Unit",
+          "type": "ts.Unit"
+        }
+      ]
+    },
+    {
+      "id": "ts.Drawing",
+      "name": "Drawing",
+      "module": "ts",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "Structure.java",
+        "startLine": 38
+      },
+      "metrics": {},
+      "typeParameters": [
+        "T"
+      ],
+      "members": [
+        {
+          "name": "items",
+          "kind": "field",
+          "visibility": "private",
+          "typeName": "List<T>",
+          "isCollection": true
+        },
+        {
+          "name": "frame",
+          "kind": "field",
+          "visibility": "private",
+          "typeName": "Optional<Square>",
+          "type": "ts.Square"
+        }
+      ]
+    },
+    {
+      "id": "ts.Painter",
+      "name": "Painter",
+      "module": "ts",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "Structure.java",
+        "startLine": 51
+      },
+      "metrics": {}
+    },
+    {
+      "id": "ts.Point",
+      "name": "Point",
+      "module": "ts",
+      "kind": "record",
+      "isAbstract": false,
+      "location": {
+        "file": "Structure.java",
+        "startLine": 57
+      },
+      "metrics": {},
+      "members": [
+        {
+          "name": "x",
+          "kind": "property",
+          "visibility": "public",
+          "typeName": "int"
+        },
+        {
+          "name": "y",
+          "kind": "property",
+          "visibility": "public",
+          "typeName": "int"
+        }
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "id": "ts.Shape.area",
+      "name": "area",
+      "module": "ts",
+      "type": "ts.Shape",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Structure.java",
+        "startLine": 8
+      },
+      "parameters": [],
+      "returnTypeName": "double",
+      "isAbstract": true,
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "ts.Base.area",
+      "name": "area",
+      "module": "ts",
+      "type": "ts.Base",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Structure.java",
+        "startLine": 14
+      },
+      "parameters": [],
+      "returnTypeName": "double",
+      "isAbstract": true,
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "ts.Square.Square",
+      "name": "Square",
+      "module": "ts",
+      "type": "ts.Square",
+      "kind": "constructor",
+      "visibility": "public",
+      "location": {
+        "file": "Structure.java",
+        "startLine": 28
+      },
+      "parameters": [
+        {
+          "name": "side",
+          "typeName": "double"
+        }
+      ],
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 1,
+        "lines": 3
+      }
+    },
+    {
+      "id": "ts.Square.area",
+      "name": "area",
+      "module": "ts",
+      "type": "ts.Square",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Structure.java",
+        "startLine": 33
+      },
+      "parameters": [],
+      "returnTypeName": "double",
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3
+      }
+    },
+    {
+      "id": "ts.Drawing.add",
+      "name": "add",
+      "module": "ts",
+      "type": "ts.Drawing",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Structure.java",
+        "startLine": 42
+      },
+      "parameters": [
+        {
+          "name": "item",
+          "typeName": "T"
+        },
+        {
+          "name": "tags",
+          "typeName": "String..."
+        }
+      ],
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 2,
+        "lines": 3
+      }
+    },
+    {
+      "id": "ts.Drawing.empty",
+      "name": "empty",
+      "module": "ts",
+      "type": "ts.Drawing",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Structure.java",
+        "startLine": 46
+      },
+      "parameters": [],
+      "returnTypeName": "Drawing<T>",
+      "isStatic": true,
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3
+      }
+    },
+    {
+      "id": "ts.Painter.paint",
+      "name": "paint",
+      "module": "ts",
+      "type": "ts.Painter",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Structure.java",
+        "startLine": 52
+      },
+      "parameters": [
+        {
+          "name": "square",
+          "typeName": "Square"
+        }
+      ],
+      "returnTypeName": "double",
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 1,
+        "lines": 3
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "from": "ts.Base",
+      "to": "ts.Shape",
+      "kind": "inheritance",
+      "phase": "runtime"
+    },
+    {
+      "from": "ts.Square",
+      "to": "ts.Base",
+      "kind": "inheritance",
+      "phase": "runtime"
+    },
+    {
+      "from": "ts.Square",
+      "to": "ts.Unit",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "ts.Drawing",
+      "to": "ts.Square",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "ts.Painter",
+      "to": "ts.Square",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "ts.Painter",
+      "to": "ts.Square",
+      "kind": "call",
+      "phase": "runtime"
+    }
+  ],
+  "cycles": [],
+  "skippedRules": [],
+  "diagnostics": []
+}

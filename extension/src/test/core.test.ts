@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import test from "node:test";
-import { RegistryFileName, findRuntime, implicitWorkspace, launchConfig, readRegistry, runtimeArgument, selectBundled, writeWorkspaceFile } from "../core/bundle";
+import { RegistryFileName, findRuntime, programIn, implicitWorkspace, launchConfig, readRegistry, runtimeArgument, selectBundled, writeWorkspaceFile } from "../core/bundle";
 import type { RuntimeHost, RuntimeRequirement } from "../core/bundle";
 import { ContractError, checkContract } from "../core/contracts";
 import type { AnalysisRun, Facts, Finding } from "../core/model";
@@ -287,6 +287,8 @@ const optionalRuntime: RuntimeRequirement = {
 function fakeHost(options: { extension?: boolean; answer?: unknown; usable: string[]; calls?: unknown[] }): RuntimeHost {
   return {
     hasExtension: () => options.extension ?? false,
+    setting: () => undefined,
+    environment: () => undefined,
     execute: async (command, argument) => {
       options.calls?.push({ command, argument });
       if (options.answer instanceof Error) throw options.answer;
@@ -315,6 +317,44 @@ test("an optional runtime falls back to PATH when the extension is missing, fail
 
 test("an optional runtime without a usable program is not found", async () => {
   assert.equal(await findRuntime(optionalRuntime, "/w", fakeHost({ extension: true, answer: "toy", usable: [] })), undefined);
+});
+
+/** A runtime found through folders that settings and environment variables name (D-058); names are placeholders. */
+const homeRuntime: RuntimeRequirement = {
+  name: "Toy kit", settings: ["toy.home", "toy.legacyHome"], environment: ["TOY_HOME"], home: "bin/toy", path: ["toy"],
+  check: ["-jar", "${bundle}/toy/probe.jar"], installUrl: "https://example.org/toy",
+};
+
+function homeHost(values: { settings?: Record<string, unknown>; environment?: Record<string, string>; usable: string[]; checks?: string[][] }): RuntimeHost {
+  return {
+    hasExtension: () => false,
+    execute: async () => assert.fail("no extension is asked"),
+    setting: (key, folder) => {
+      assert.equal(folder, "/w");
+      return values.settings?.[key];
+    },
+    environment: (name) => values.environment?.[name],
+    usable: async (program, args) => {
+      values.checks?.push(args);
+      return values.usable.includes(program);
+    },
+  };
+}
+
+test("a runtime without an extension comes from the settings, then the environment, then PATH", async () => {
+  const toy = (folder: string) => programIn(folder, "bin/toy");
+  const checks: string[][] = [];
+  assert.equal(await findRuntime(homeRuntime, "/w", homeHost({ settings: { "toy.legacyHome": "/opt/old" }, environment: { TOY_HOME: "/opt/env" }, usable: [toy("/opt/old"), toy("/opt/env")], checks }), "/ext/bundle"),
+    toy("/opt/old"), "the first setting is empty, the second names a usable folder");
+  assert.deepEqual(checks[0], ["-jar", "/ext/bundle/toy/probe.jar"], "the registry folder goes into the check");
+  assert.equal(await findRuntime(homeRuntime, "/w", homeHost({ settings: { "toy.home": "/opt/broken" }, environment: { TOY_HOME: "/opt/env/" }, usable: [toy("/opt/env")] })), toy("/opt/env"));
+  assert.equal(await findRuntime(homeRuntime, "/w", homeHost({ settings: { "toy.home": 3 }, usable: ["toy"] })), "toy", "a value that is not a folder is skipped");
+  assert.equal(await findRuntime(homeRuntime, "/w", homeHost({ usable: [] })), undefined);
+});
+
+test("a program inside a folder has the executable suffix of the platform", () => {
+  assert.equal(programIn("/opt/kit/", "bin/toy", "linux"), "/opt/kit/bin/toy");
+  assert.equal(programIn("C:\\Kit\\", "bin/toy", "win32"), "C:\\Kit\\bin\\toy.exe");
 });
 
 test("the folder goes into every string of the runtime argument", () => {

@@ -86,6 +86,9 @@
                 "search": {
                   "text": "Likely quadratic: {0} on a sequence inside a loop"
                 },
+                "searchHashMap": {
+                  "text": "Each iteration scans the list. A HashSet or HashMap built once makes the lookup constant-time."
+                },
                 "searchHashSet": {
                   "text": "Each iteration scans the sequence. A HashSet or Dictionary built once makes the lookup constant-time."
                 },
