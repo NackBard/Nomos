@@ -1,2 +1,14 @@
 * text=auto eol=lf
 *.dll binary
+
+# Generated (D-056): the rule catalog from spec (npm run spec-json in conformance/runner),
+# golden files of the C# analyzer (NOMOS_UPDATE_GOLDEN) and npm lock files.
+analyzers/go/internal/analyzer/rules.json linguist-generated
+analyzers/go/internal/analyzer/practices.json linguist-generated
+analyzers/typescript/src/rules.json linguist-generated
+analyzers/typescript/src/practices.json linguist-generated
+extension/rules.json linguist-generated
+extension/practices.json linguist-generated
+ci/rules.json linguist-generated
+analyzers/csharp/tests/fixtures/golden/expected.* linguist-generated
+**/package-lock.json linguist-generated

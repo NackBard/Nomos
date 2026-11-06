@@ -1,0 +1,11 @@
+# Kept out of ripgrep searches (D-056). These files are generated: search
+# spec/rules, spec/practices.yaml or the analyzer sources instead.
+analyzers/go/internal/analyzer/rules.json
+analyzers/go/internal/analyzer/practices.json
+analyzers/typescript/src/rules.json
+analyzers/typescript/src/practices.json
+extension/rules.json
+extension/practices.json
+ci/rules.json
+analyzers/csharp/tests/fixtures/golden/expected.*
+package-lock.json

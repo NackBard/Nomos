@@ -6,3 +6,4 @@ tsconfig.json
 *.vsix
 out/e2e/**
 .vscode-test/**
+CLAUDE.md

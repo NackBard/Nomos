@@ -37,4 +37,4 @@ nomos-csharp analyze --root <путь> [--sarif <файл>] [--config <nomos.jso
 - [Архитектура и конфигурация](docs/ARCHITECTURE.md)
 - [Каталог правил](docs/ANALYZERS.md)
 - [Как добавить анализатор, язык, парадигму](docs/EXTENDING.md)
-- [Журнал решений и отложенные задачи](docs/DECISIONS.md)
+- [Журнал решений и открытые вопросы](docs/DECISIONS.md), сами решения — [docs/decisions](docs/decisions/)
