@@ -1,0 +1,91 @@
+{
+  "schemaVersion": "1.2.0",
+  "analyzer": {
+    "name": "hand-computed",
+    "version": "0.0.0",
+    "language": "python"
+  },
+  "files": [
+    {
+      "path": "store.py",
+      "lines": 15,
+      "loc": 9
+    }
+  ],
+  "modules": [
+    {
+      "id": "store",
+      "name": "store",
+      "files": [
+        "store.py"
+      ],
+      "loc": 9,
+      "metrics": {},
+      "paradigmEvidence": []
+    }
+  ],
+  "functions": [
+    {
+      "id": "store.query",
+      "name": "query",
+      "module": "store",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "store.py",
+        "startLine": 6
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 1,
+        "lines": 2
+      }
+    },
+    {
+      "id": "store.fixed",
+      "name": "fixed",
+      "module": "store",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "store.py",
+        "startLine": 10
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 2
+      }
+    },
+    {
+      "id": "store.formatted",
+      "name": "formatted",
+      "module": "store",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "store.py",
+        "startLine": 14
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 1,
+        "lines": 2
+      }
+    }
+  ],
+  "skippedRules": [
+    {
+      "ruleId": "SEC002",
+      "reason": "not-supported",
+      "message": "m"
+    }
+  ],
+  "types": [],
+  "dependencies": [],
+  "cycles": [],
+  "diagnostics": []
+}

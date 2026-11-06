@@ -1,0 +1,46 @@
+{
+  "schemaVersion": "1.2.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "python" },
+  "files": [
+    { "path": "cyc.py", "lines": 36, "loc": 21 }
+  ],
+  "modules": [
+    { "id": "cyc", "name": "cyc", "files": ["cyc.py"], "loc": 21, "metrics": {}, "paradigmEvidence": [] }
+  ],
+  "types": [
+    { "id": "cyc.A", "name": "A", "module": "cyc", "kind": "class", "isAbstract": false, "location": { "file": "cyc.py", "startLine": 4 }, "metrics": { "lines": 3 } },
+    { "id": "cyc.B", "name": "B", "module": "cyc", "kind": "class", "isAbstract": false, "location": { "file": "cyc.py", "startLine": 9 }, "metrics": { "lines": 3 } },
+    { "id": "cyc.C", "name": "C", "module": "cyc", "kind": "class", "isAbstract": false, "location": { "file": "cyc.py", "startLine": 14 }, "metrics": { "lines": 3 } },
+    { "id": "cyc.D", "name": "D", "module": "cyc", "kind": "class", "isAbstract": false, "location": { "file": "cyc.py", "startLine": 19 }, "metrics": { "lines": 4 } },
+    { "id": "cyc.E", "name": "E", "module": "cyc", "kind": "class", "isAbstract": false, "location": { "file": "cyc.py", "startLine": 25 }, "metrics": { "lines": 3 } },
+    { "id": "cyc.F", "name": "F", "module": "cyc", "kind": "class", "isAbstract": false, "location": { "file": "cyc.py", "startLine": 31 }, "metrics": { "lines": 2 } },
+    { "id": "cyc.G", "name": "G", "module": "cyc", "kind": "class", "isAbstract": false, "location": { "file": "cyc.py", "startLine": 35 }, "metrics": { "lines": 2 } }
+  ],
+  "functions": [
+    { "id": "cyc.A.next", "name": "next", "module": "cyc", "type": "cyc.A", "kind": "method", "location": { "file": "cyc.py", "startLine": 5 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 0, "lines": 2 } },
+    { "id": "cyc.B.next", "name": "next", "module": "cyc", "type": "cyc.B", "kind": "method", "location": { "file": "cyc.py", "startLine": 10 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 0, "lines": 2 } },
+    { "id": "cyc.C.next", "name": "next", "module": "cyc", "type": "cyc.C", "kind": "method", "location": { "file": "cyc.py", "startLine": 15 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 0, "lines": 2 } },
+    { "id": "cyc.D.__init__", "name": "__init__", "module": "cyc", "type": "cyc.D", "kind": "constructor", "location": { "file": "cyc.py", "startLine": 20 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 0, "lines": 3 } },
+    { "id": "cyc.E.peer", "name": "peer", "module": "cyc", "type": "cyc.E", "kind": "method", "location": { "file": "cyc.py", "startLine": 26 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 0, "lines": 2 } }
+  ],
+  "dependencies": [
+    { "from": "cyc.A", "to": "cyc.B", "kind": "type-ref", "phase": "type-only" },
+    { "from": "cyc.A", "to": "cyc.B", "kind": "call", "phase": "runtime" },
+    { "from": "cyc.B", "to": "cyc.C", "kind": "type-ref", "phase": "type-only" },
+    { "from": "cyc.B", "to": "cyc.C", "kind": "call", "phase": "runtime" },
+    { "from": "cyc.C", "to": "cyc.A", "kind": "type-ref", "phase": "type-only" },
+    { "from": "cyc.C", "to": "cyc.A", "kind": "call", "phase": "runtime" },
+    { "from": "cyc.D", "to": "cyc.E", "kind": "call", "phase": "runtime" },
+    { "from": "cyc.D", "to": "cyc.A", "kind": "call", "phase": "runtime" },
+    { "from": "cyc.E", "to": "cyc.D", "kind": "type-ref", "phase": "type-only" },
+    { "from": "cyc.E", "to": "cyc.D", "kind": "call", "phase": "runtime" },
+    { "from": "cyc.F", "to": "cyc.G", "kind": "type-ref", "phase": "type-only" },
+    { "from": "cyc.G", "to": "cyc.F", "kind": "type-ref", "phase": "type-only" }
+  ],
+  "cycles": [
+    { "level": "type", "members": ["cyc.A", "cyc.B", "cyc.C"] },
+    { "level": "type", "members": ["cyc.D", "cyc.E"] }
+  ],
+  "skippedRules": [],
+  "diagnostics": []
+}

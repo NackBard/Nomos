@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "1.0.0",
+  "analyzers": [{ "language": "python", "command": ["nomos-python"] }],
+  "rules": {
+    "MNT002": { "threshold": { "minIndex": 85 } },
+    "MNT003": { "threshold": { "minTokens": 25 } },
+    "MNT004": { "threshold": { "report": "coverage.info", "minCoverage": 50 } }
+  }
+}

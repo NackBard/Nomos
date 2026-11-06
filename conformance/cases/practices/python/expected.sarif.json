@@ -1,0 +1,9 @@
+{
+  "results": [
+    {
+      "ruleId": "SEC003",
+      "file": "store.py",
+      "startLine": 5
+    }
+  ]
+}

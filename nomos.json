@@ -55,6 +55,18 @@
         "**/node_modules/**",
         "extension/bundle/**"
       ]
+    },
+    {
+      "language": "python",
+      "command": [
+        "node",
+        "analyzers/python/run.mjs"
+      ],
+      "exclude": [
+        "conformance/**",
+        "**/node_modules/**",
+        "extension/bundle/**"
+      ]
     }
   ],
   "layers": [

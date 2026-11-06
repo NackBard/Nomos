@@ -41,7 +41,8 @@ if (bundled) {
   };
   walk(folder);
   const present = (analyzer) => analyzer.files.some((glob) => !/^\*\*\/\*\.[^/*]+$/.test(glob) || extensions.has(glob.slice(3)));
-  const runtimes = [...new Set(JSON.parse(fs.readFileSync(registry, "utf8")).analyzers.filter(present).flatMap((a) => (a.runtime ? [a.runtime.extension] : [])))];
+  // A runtime with PATH programs (`path`) works without its extension, which is then not installed (D-057).
+  const runtimes = [...new Set(JSON.parse(fs.readFileSync(registry, "utf8")).analyzers.filter(present).flatMap((a) => (a.runtime && !a.runtime.path ? [a.runtime.extension] : [])))];
   const cli = spawnSync(process.platform === "win32" ? "where" : "which", ["code"], { encoding: "utf8" }).stdout.split(/\r?\n/).find(Boolean);
   for (const id of runtimes) {
     // The CLI script is a .cmd on Windows, which only starts through a shell; the arguments are fixed here.

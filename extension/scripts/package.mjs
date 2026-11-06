@@ -103,6 +103,32 @@ const analyzers = [];
   }
 }
 
+// Python: the sources run on the person's interpreter in isolated mode (-I), the one the Python extension selected for
+// the folder or one from PATH; the same files serve every platform (D-057). __pycache__ and tests stay out.
+{
+  const source = path.join(repository, "analyzers", "python");
+  const out = path.join(bundle, "python");
+  fs.mkdirSync(path.join(out, "nomos_python"), { recursive: true });
+  fs.copyFileSync(path.join(source, "main.py"), path.join(out, "main.py"));
+  for (const file of fs.readdirSync(path.join(source, "nomos_python")).filter((f) => f.endsWith(".py") || f.endsWith(".json"))) {
+    fs.copyFileSync(path.join(source, "nomos_python", file), path.join(out, "nomos_python", file));
+  }
+  const { language, files } = manifest(process.execPath, [path.join(source, "run.mjs")]);
+  analyzers.push({
+    language, files,
+    command: ["${runtime}", "-I", "${bundle}/python/main.py"],
+    runtime: {
+      name: "Python 3.10 or newer",
+      extension: "ms-python.python",
+      command: "python.interpreterPath",
+      argument: { workspaceFolder: "${folder}" },
+      path: ["python3", "python", "py"],
+      check: ["-I", "-c", "import sys; sys.exit(sys.version_info < (3, 10))"],
+      installUrl: "https://www.python.org/downloads/",
+    },
+  });
+}
+
 fs.writeFileSync(path.join(bundle, "analyzers.json"), JSON.stringify({ analyzers }, null, 2) + "\n");
 console.log(`bundle/analyzers.json: ${analyzers.map((a) => a.language).join(", ")}`);
 

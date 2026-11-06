@@ -2,8 +2,8 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import test from "node:test";
-import { RegistryFileName, implicitWorkspace, launchConfig, readRegistry, selectBundled, writeWorkspaceFile } from "../core/bundle";
-import type { RuntimeRequirement } from "../core/bundle";
+import { RegistryFileName, findRuntime, implicitWorkspace, launchConfig, readRegistry, runtimeArgument, selectBundled, writeWorkspaceFile } from "../core/bundle";
+import type { RuntimeHost, RuntimeRequirement } from "../core/bundle";
 import { ContractError, checkContract } from "../core/contracts";
 import type { AnalysisRun, Facts, Finding } from "../core/model";
 import { choiceToStore, describePractices, readPractices } from "../core/practices";
@@ -277,6 +277,49 @@ test("a command that cannot start is a readable error", async () => {
 function temporaryFolder(): string {
   return fs.mkdtempSync(path.join(fs.realpathSync(process.env.TEMP ?? process.env.TMPDIR ?? "/tmp"), "nomos-"));
 }
+
+/** An optional runtime as a registry would describe it; the names are placeholders, the extension knows no language. */
+const optionalRuntime: RuntimeRequirement = {
+  name: "Toy 3", extension: "toy.toy", command: "toy.interpreterPath", argument: { workspaceFolder: "${folder}" },
+  path: ["toy3", "toy"], check: ["--version-at-least", "3"], installUrl: "https://example.org/toy",
+};
+
+function fakeHost(options: { extension?: boolean; answer?: unknown; usable: string[]; calls?: unknown[] }): RuntimeHost {
+  return {
+    hasExtension: () => options.extension ?? false,
+    execute: async (command, argument) => {
+      options.calls?.push({ command, argument });
+      if (options.answer instanceof Error) throw options.answer;
+      return options.answer;
+    },
+    usable: async (program, args) => {
+      assert.deepEqual(args, ["--version-at-least", "3"]);
+      return options.usable.includes(program);
+    },
+  };
+}
+
+test("an optional runtime is the extension's answer for the folder when it passes the check", async () => {
+  const calls: unknown[] = [];
+  const found = await findRuntime(optionalRuntime, "/work/app", fakeHost({ extension: true, answer: '"/opt/toy 3/bin/toy"', usable: ["/opt/toy 3/bin/toy"], calls }));
+  assert.equal(found, "/opt/toy 3/bin/toy", "a quoted answer is a plain path");
+  assert.deepEqual(calls, [{ command: "toy.interpreterPath", argument: { workspaceFolder: "/work/app" } }]);
+});
+
+test("an optional runtime falls back to PATH when the extension is missing, fails or gives an unusable program", async () => {
+  assert.equal(await findRuntime(optionalRuntime, "/w", fakeHost({ usable: ["toy"] })), "toy");
+  assert.equal(await findRuntime(optionalRuntime, "/w", fakeHost({ extension: true, answer: new Error("not ready"), usable: ["toy3", "toy"] })), "toy3");
+  assert.equal(await findRuntime(optionalRuntime, "/w", fakeHost({ extension: true, answer: "toy-old", usable: ["toy"] })), "toy");
+  assert.equal(await findRuntime({ ...optionalRuntime, resultField: "path" }, "/w", fakeHost({ extension: true, answer: { path: "/x/toy" }, usable: ["/x/toy"] })), "/x/toy");
+});
+
+test("an optional runtime without a usable program is not found", async () => {
+  assert.equal(await findRuntime(optionalRuntime, "/w", fakeHost({ extension: true, answer: "toy", usable: [] })), undefined);
+});
+
+test("the folder goes into every string of the runtime argument", () => {
+  assert.deepEqual(runtimeArgument({ a: "${folder}/x", b: ["${folder}", 1], c: { d: "${folder}" }, e: true }, "/w"), { a: "/w/x", b: ["/w", 1], c: { d: "/w" }, e: true });
+});
 
 test("a build without bundled analyzers has no registry", () => {
   assert.equal(readRegistry(temporaryFolder()), undefined);

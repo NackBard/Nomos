@@ -1,0 +1,6 @@
+{
+  "schemaVersion": "1.1.0",
+  "analyzers": [{ "language": "python", "command": ["nomos-python"] }],
+  "practices": ["security"],
+  "rules": { "SEC001": { "enabled": false } }
+}

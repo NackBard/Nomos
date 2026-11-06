@@ -6,6 +6,9 @@ TestResults/
 *.suo
 .vs/
 
+# Python (analyzers/python): bytecode of the tests
+__pycache__/
+
 # Node (conformance/runner, future extension/)
 node_modules/
 *.tsbuildinfo

@@ -62,6 +62,9 @@
                 "concatJoin": {
                   "text": "Each step copies the whole string so far. Collecting the parts in an array and joining once avoids this."
                 },
+                "concatListJoin": {
+                  "text": "Each step copies the whole string so far. Collecting the parts in a list and joining once avoids this."
+                },
                 "concatStringBuilder": {
                   "text": "Each step copies the whole string so far. StringBuilder grows in amortized constant time."
                 },
@@ -94,6 +97,9 @@
                 },
                 "searchSet": {
                   "text": "Each iteration scans the array. A Set or Map built once makes the lookup constant-time."
+                },
+                "searchSetDict": {
+                  "text": "Each iteration scans the list. A set or dict built once makes the lookup constant-time."
                 },
                 "slicesSearch": {
                   "text": "Likely quadratic: slices.{0} inside a loop"

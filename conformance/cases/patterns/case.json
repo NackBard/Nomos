@@ -32,6 +32,10 @@
     {
       "language": "javascript",
       "reason": "PAT rules are not implemented for JavaScript yet; they are not in supportedRules of the TypeScript analyzer and are recorded as not-supported (D-055)."
+    },
+    {
+      "language": "python",
+      "reason": "PAT rules are not implemented for Python yet; they are not in supportedRules of the Python analyzer and are recorded as not-supported (D-057)."
     }
   ]
 }

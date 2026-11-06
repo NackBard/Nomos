@@ -1,0 +1,116 @@
+{
+  "schemaVersion": "1.2.0",
+  "analyzer": {
+    "name": "hand-computed",
+    "version": "0.0.0",
+    "language": "python"
+  },
+  "files": [
+    {
+      "path": "big/store.py",
+      "lines": 403,
+      "loc": 300
+    },
+    {
+      "path": "tiny/box.py",
+      "lines": 2,
+      "loc": 2
+    }
+  ],
+  "modules": [
+    {
+      "id": "big.store",
+      "name": "store",
+      "files": [
+        "big/store.py"
+      ],
+      "loc": 300,
+      "metrics": {},
+      "paradigmEvidence": [],
+      "health": {
+        "score": 90.5,
+        "categories": [],
+        "explanation": [
+          "100 * exp(-0.6 / 0.3 / 20)"
+        ]
+      }
+    },
+    {
+      "id": "tiny.box",
+      "name": "box",
+      "files": [
+        "tiny/box.py"
+      ],
+      "loc": 2,
+      "metrics": {},
+      "paradigmEvidence": [],
+      "health": {
+        "score": 100,
+        "categories": [],
+        "explanation": [
+          "no findings"
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "id": "big.store.Store",
+      "name": "Store",
+      "module": "big.store",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "big/store.py",
+        "startLine": 103
+      },
+      "metrics": {
+        "memberCount": 292
+      }
+    },
+    {
+      "id": "tiny.box.Box",
+      "name": "Box",
+      "module": "tiny.box",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "tiny/box.py",
+        "startLine": 1
+      },
+      "metrics": {
+        "memberCount": 1
+      }
+    }
+  ],
+  "functions": [
+    {
+      "id": "big.store.pairs",
+      "name": "pairs",
+      "module": "big.store",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "big/store.py",
+        "startLine": 398
+      },
+      "metrics": {
+        "cyclomatic": 3,
+        "maxNesting": 2,
+        "parameterCount": 2,
+        "lines": 6
+      }
+    }
+  ],
+  "health": {
+    "score": 90.5,
+    "categories": [],
+    "explanation": [
+      "(90.48 * 300 + 100 * 2) / 302"
+    ]
+  },
+  "dependencies": [],
+  "cycles": [],
+  "skippedRules": [],
+  "diagnostics": []
+}

@@ -1,0 +1,266 @@
+{
+  "schemaVersion": "1.2.0",
+  "analyzer": {
+    "name": "hand-computed",
+    "version": "0.0.0",
+    "language": "python"
+  },
+  "files": [
+    {
+      "path": "domain/domain/rich.py",
+      "lines": 8,
+      "loc": 5
+    },
+    {
+      "path": "domain/entity.py",
+      "lines": 5,
+      "loc": 3
+    },
+    {
+      "path": "extra/tool.py",
+      "lines": 1,
+      "loc": 1
+    },
+    {
+      "path": "services/svc.py",
+      "lines": 1,
+      "loc": 1
+    },
+    {
+      "path": "tools/tool.py",
+      "lines": 5,
+      "loc": 3
+    },
+    {
+      "path": "web/page.py",
+      "lines": 9,
+      "loc": 7
+    }
+  ],
+  "modules": [
+    {
+      "id": "domain.entity",
+      "name": "entity",
+      "files": [
+        "domain/entity.py"
+      ],
+      "loc": 3,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "domain.domain.rich",
+      "name": "rich",
+      "files": [
+        "domain/domain/rich.py"
+      ],
+      "loc": 5,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "extra.tool",
+      "name": "tool",
+      "files": [
+        "extra/tool.py"
+      ],
+      "loc": 1,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "services.svc",
+      "name": "svc",
+      "files": [
+        "services/svc.py"
+      ],
+      "loc": 1,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "tools.tool",
+      "name": "tool",
+      "files": [
+        "tools/tool.py"
+      ],
+      "loc": 3,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "web.page",
+      "name": "page",
+      "files": [
+        "web/page.py"
+      ],
+      "loc": 7,
+      "metrics": {},
+      "paradigmEvidence": []
+    }
+  ],
+  "types": [
+    {
+      "id": "domain.entity.Entity",
+      "name": "Entity",
+      "module": "domain.entity",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "domain/entity.py",
+        "startLine": 4
+      },
+      "metrics": {}
+    },
+    {
+      "id": "domain.domain.rich.Rich",
+      "name": "Rich",
+      "module": "domain.domain.rich",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "domain/domain/rich.py",
+        "startLine": 6
+      },
+      "metrics": {}
+    },
+    {
+      "id": "extra.tool.Tool",
+      "name": "Tool",
+      "module": "extra.tool",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "extra/tool.py",
+        "startLine": 1
+      },
+      "metrics": {}
+    },
+    {
+      "id": "services.svc.Svc",
+      "name": "Svc",
+      "module": "services.svc",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "services/svc.py",
+        "startLine": 1
+      },
+      "metrics": {}
+    },
+    {
+      "id": "tools.tool.Tool",
+      "name": "Tool",
+      "module": "tools.tool",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "tools/tool.py",
+        "startLine": 4
+      },
+      "metrics": {}
+    },
+    {
+      "id": "web.page.Page",
+      "name": "Page",
+      "module": "web.page",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "web/page.py",
+        "startLine": 6
+      },
+      "metrics": {}
+    }
+  ],
+  "dependencies": [
+    {
+      "from": "domain.entity.Entity",
+      "to": "services.svc.Svc",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "domain.domain.rich.Rich",
+      "to": "domain.entity.Entity",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "domain.domain.rich.Rich",
+      "to": "web.page.Page",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "tools.tool.Tool",
+      "to": "web.page.Page",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "web.page.Page",
+      "to": "services.svc.Svc",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "web.page.Page",
+      "to": "domain.entity.Entity",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "web.page.Page",
+      "to": "extra.tool.Tool",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "domain.entity",
+      "to": "services.svc",
+      "kind": "import",
+      "phase": "runtime"
+    },
+    {
+      "from": "domain.domain.rich",
+      "to": "domain.entity",
+      "kind": "import",
+      "phase": "runtime"
+    },
+    {
+      "from": "domain.domain.rich",
+      "to": "web.page",
+      "kind": "import",
+      "phase": "runtime"
+    },
+    {
+      "from": "tools.tool",
+      "to": "web.page",
+      "kind": "import",
+      "phase": "runtime"
+    },
+    {
+      "from": "web.page",
+      "to": "domain.entity",
+      "kind": "import",
+      "phase": "runtime"
+    },
+    {
+      "from": "web.page",
+      "to": "extra.tool",
+      "kind": "import",
+      "phase": "runtime"
+    },
+    {
+      "from": "web.page",
+      "to": "services.svc",
+      "kind": "import",
+      "phase": "runtime"
+    }
+  ],
+  "functions": [],
+  "cycles": [],
+  "skippedRules": [],
+  "diagnostics": []
+}

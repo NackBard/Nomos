@@ -15,6 +15,7 @@
     "csharp",
     "go",
     "typescript",
-    "javascript"
+    "javascript",
+    "python"
   ]
 }

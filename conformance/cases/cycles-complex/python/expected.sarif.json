@@ -1,0 +1,39 @@
+{
+  "results": [
+    {
+      "ruleId": "DSN002",
+      "file": "eight.py",
+      "startLine": 1
+    },
+    {
+      "ruleId": "DSN002",
+      "file": "funcs.py",
+      "startLine": 1
+    },
+    {
+      "ruleId": "DSN002",
+      "file": "left.py",
+      "startLine": 4
+    },
+    {
+      "ruleId": "DSN002",
+      "file": "mixed.py",
+      "startLine": 1
+    },
+    {
+      "ruleId": "DSN002",
+      "file": "ping.py",
+      "startLine": 1
+    },
+    {
+      "ruleId": "DSN002",
+      "file": "right.py",
+      "startLine": 1
+    },
+    {
+      "ruleId": "DSN002",
+      "file": "ring.py",
+      "startLine": 1
+    }
+  ]
+}

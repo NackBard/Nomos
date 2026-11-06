@@ -14,7 +14,8 @@
     "csharp",
     "go",
     "typescript",
-    "javascript"
+    "javascript",
+    "python"
   ],
   "parity": [
     {
@@ -24,7 +25,8 @@
         "csharp": "Oc.Mixed",
         "go": "oc.Mixed",
         "typescript": "cohesion.Mixed",
-        "javascript": "cohesion.Mixed"
+        "javascript": "cohesion.Mixed",
+        "python": "cohesion.Mixed"
       }
     },
     {
@@ -34,7 +36,8 @@
         "csharp": "Oc.Mixed",
         "go": "oc.Mixed",
         "typescript": "cohesion.Mixed",
-        "javascript": "cohesion.Mixed"
+        "javascript": "cohesion.Mixed",
+        "python": "cohesion.Mixed"
       }
     },
     {
@@ -44,7 +47,8 @@
         "csharp": "Oc.Mixed",
         "go": "oc.Mixed",
         "typescript": "cohesion.Mixed",
-        "javascript": "cohesion.Mixed"
+        "javascript": "cohesion.Mixed",
+        "python": "cohesion.Mixed"
       }
     },
     {
@@ -54,7 +58,8 @@
         "csharp": "Oc.Mixed",
         "go": "oc.Mixed",
         "typescript": "cohesion.Mixed",
-        "javascript": "cohesion.Mixed"
+        "javascript": "cohesion.Mixed",
+        "python": "cohesion.Mixed"
       }
     },
     {
@@ -64,7 +69,8 @@
         "csharp": "Oc.Mixed",
         "go": "oc.Mixed",
         "typescript": "cohesion.Mixed",
-        "javascript": "cohesion.Mixed"
+        "javascript": "cohesion.Mixed",
+        "python": "cohesion.Mixed"
       }
     },
     {
@@ -74,7 +80,8 @@
         "csharp": "Oc.Mixed",
         "go": "oc.Mixed",
         "typescript": "cohesion.Mixed",
-        "javascript": "cohesion.Mixed"
+        "javascript": "cohesion.Mixed",
+        "python": "cohesion.Mixed"
       }
     }
   ]

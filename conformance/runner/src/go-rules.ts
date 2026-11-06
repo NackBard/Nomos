@@ -8,6 +8,9 @@ export const goPracticesPath = path.join(repoRoot, "analyzers", "go", "internal"
 /** The TypeScript analyzer reads the same JSON: it has no YAML dependency either (D-055). */
 export const typescriptRulesPath = path.join(repoRoot, "analyzers", "typescript", "src", "rules.json");
 export const typescriptPracticesPath = path.join(repoRoot, "analyzers", "typescript", "src", "practices.json");
+/** The Python analyzer reads them with json from the standard library (D-057). */
+export const pythonRulesPath = path.join(repoRoot, "analyzers", "python", "nomos_python", "rules.json");
+export const pythonPracticesPath = path.join(repoRoot, "analyzers", "python", "nomos_python", "practices.json");
 /** The extension lists the practices to choose from; it reads them as data (D-051). */
 export const extensionPracticesPath = path.join(repoRoot, "extension", "practices.json");
 /** The extension and ci show rule texts and finding templates in the interface language (spec/l10n.md, D-052). */
@@ -36,8 +39,10 @@ export function generatedFiles(): { file: string; content: string }[] {
     { file: extensionRulesPath, content: rules },
     { file: ciRulesPath, content: rules },
     { file: typescriptRulesPath, content: rules },
+    { file: pythonRulesPath, content: rules },
     { file: goPracticesPath, content: practices },
     { file: extensionPracticesPath, content: practices },
     { file: typescriptPracticesPath, content: practices },
+    { file: pythonPracticesPath, content: practices },
   ];
 }

@@ -1,0 +1,84 @@
+{
+  "schemaVersion": "1.2.0",
+  "analyzer": {
+    "name": "hand-computed",
+    "version": "0.0.0",
+    "language": "python"
+  },
+  "files": [
+    {
+      "path": "store.py",
+      "lines": 9,
+      "loc": 5
+    }
+  ],
+  "modules": [
+    {
+      "id": "store",
+      "name": "store",
+      "files": [
+        "store.py"
+      ],
+      "loc": 5,
+      "metrics": {},
+      "paradigmEvidence": []
+    }
+  ],
+  "functions": [
+    {
+      "id": "store.find",
+      "name": "find",
+      "module": "store",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "store.py",
+        "startLine": 4
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 1,
+        "lines": 2
+      }
+    },
+    {
+      "id": "store.total",
+      "name": "total",
+      "module": "store",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "store.py",
+        "startLine": 8
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 6,
+        "lines": 2
+      }
+    }
+  ],
+  "skippedRules": [
+    {
+      "ruleId": "CC003",
+      "reason": "disabled-by-config",
+      "message": "m"
+    },
+    {
+      "ruleId": "DSN001",
+      "reason": "disabled-by-config",
+      "message": "m"
+    },
+    {
+      "ruleId": "SEC001",
+      "reason": "disabled-by-config",
+      "message": "m"
+    }
+  ],
+  "types": [],
+  "dependencies": [],
+  "cycles": [],
+  "diagnostics": []
+}

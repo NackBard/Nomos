@@ -22,7 +22,8 @@
     "csharp",
     "go",
     "typescript",
-    "javascript"
+    "javascript",
+    "python"
   ],
   "parity": [
     {
@@ -32,7 +33,8 @@
         "csharp": "Metrics.Basics.Straight",
         "go": "metrics.Straight",
         "typescript": "basics.straight",
-        "javascript": "basics.straight"
+        "javascript": "basics.straight",
+        "python": "basics.straight"
       }
     },
     {
@@ -42,7 +44,8 @@
         "csharp": "Metrics.Basics.Straight",
         "go": "metrics.Straight",
         "typescript": "basics.straight",
-        "javascript": "basics.straight"
+        "javascript": "basics.straight",
+        "python": "basics.straight"
       }
     },
     {
@@ -52,7 +55,8 @@
         "csharp": "Metrics.Basics.Straight",
         "go": "metrics.Straight",
         "typescript": "basics.straight",
-        "javascript": "basics.straight"
+        "javascript": "basics.straight",
+        "python": "basics.straight"
       }
     },
     {
@@ -62,7 +66,8 @@
         "csharp": "Metrics.Basics.Branches",
         "go": "metrics.Branches",
         "typescript": "basics.branches",
-        "javascript": "basics.branches"
+        "javascript": "basics.branches",
+        "python": "basics.branches"
       }
     },
     {
@@ -72,7 +77,8 @@
         "csharp": "Metrics.Basics.Branches",
         "go": "metrics.Branches",
         "typescript": "basics.branches",
-        "javascript": "basics.branches"
+        "javascript": "basics.branches",
+        "python": "basics.branches"
       }
     },
     {
@@ -82,7 +88,8 @@
         "csharp": "Metrics.Basics.Branches",
         "go": "metrics.Branches",
         "typescript": "basics.branches",
-        "javascript": "basics.branches"
+        "javascript": "basics.branches",
+        "python": "basics.branches"
       }
     },
     {
@@ -92,7 +99,8 @@
         "csharp": "Metrics.Basics.Loops",
         "go": "metrics.Loops",
         "typescript": "basics.loops",
-        "javascript": "basics.loops"
+        "javascript": "basics.loops",
+        "python": "basics.loops"
       }
     },
     {
@@ -102,7 +110,8 @@
         "csharp": "Metrics.Basics.Loops",
         "go": "metrics.Loops",
         "typescript": "basics.loops",
-        "javascript": "basics.loops"
+        "javascript": "basics.loops",
+        "python": "basics.loops"
       }
     },
     {
@@ -112,7 +121,8 @@
         "csharp": "Metrics.Basics.Loops",
         "go": "metrics.Loops",
         "typescript": "basics.loops",
-        "javascript": "basics.loops"
+        "javascript": "basics.loops",
+        "python": "basics.loops"
       }
     }
   ]

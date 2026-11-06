@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "1.0.0",
+  "analyzers": [{ "language": "python", "command": ["nomos-python"] }],
+  "layers": [
+    { "name": "Domain", "patterns": ["domain.*"], "mayDependOn": [] },
+    { "name": "Services", "patterns": ["services.*"], "mayDependOn": ["Domain"] },
+    { "name": "Web", "patterns": ["web.*"], "mayDependOn": ["Services"] }
+  ]
+}

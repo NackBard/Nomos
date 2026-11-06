@@ -49,6 +49,8 @@ rules:
       concatStringBuilder: { text: "Each step copies the whole string so far. StringBuilder grows in amortized constant time.", ru: "Каждый шаг копирует всю накопленную строку. StringBuilder растёт за амортизированное постоянное время." }
       concatBuilder: { text: "Each step copies the whole string so far. strings.Builder grows in amortized constant time.", ru: "Каждый шаг копирует всю накопленную строку. strings.Builder растёт за амортизированное постоянное время." }
       concatJoin: { text: "Each step copies the whole string so far. Collecting the parts in an array and joining once avoids this.", ru: "Каждый шаг копирует всю накопленную строку. Сбор частей в массив и одно соединение через join этого избегают." }
+      searchSetDict: { text: "Each iteration scans the list. A set or dict built once makes the lookup constant-time.", ru: "Каждая итерация просматривает список. set или dict, построенные один раз, дают поиск за постоянное время." }
+      concatListJoin: { text: "Each step copies the whole string so far. Collecting the parts in a list and joining once avoids this.", ru: "Каждый шаг копирует всю накопленную строку. Сбор частей в список и одно соединение через join этого избегают." }
   - id: ALG003
     category: Algorithms
     title: Allocation in hot loop

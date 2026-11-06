@@ -16,7 +16,8 @@
     "csharp",
     "go",
     "typescript",
-    "javascript"
+    "javascript",
+    "python"
   ],
   "expectSarif": true,
   "parity": [
@@ -27,7 +28,8 @@
         "csharp": "Alg.Code.Estimates.Quadratic",
         "go": "alg.Quadratic",
         "typescript": "estimates.quadratic",
-        "javascript": "estimates.quadratic"
+        "javascript": "estimates.quadratic",
+        "python": "estimates.quadratic"
       }
     },
     {
@@ -37,7 +39,8 @@
         "csharp": "Alg.Code.Estimates.Quadratic",
         "go": "alg.Quadratic",
         "typescript": "estimates.quadratic",
-        "javascript": "estimates.quadratic"
+        "javascript": "estimates.quadratic",
+        "python": "estimates.quadratic"
       }
     },
     {
@@ -47,7 +50,8 @@
         "csharp": "Alg.Code.Estimates.Quadratic",
         "go": "alg.Quadratic",
         "typescript": "estimates.quadratic",
-        "javascript": "estimates.quadratic"
+        "javascript": "estimates.quadratic",
+        "python": "estimates.quadratic"
       }
     },
     {
@@ -57,7 +61,8 @@
         "csharp": "Alg.Code.Estimates.Halving",
         "go": "alg.Halving",
         "typescript": "estimates.halving",
-        "javascript": "estimates.halving"
+        "javascript": "estimates.halving",
+        "python": "estimates.halving"
       }
     },
     {
@@ -67,7 +72,8 @@
         "csharp": "Alg.Code.Estimates.Halving",
         "go": "alg.Halving",
         "typescript": "estimates.halving",
-        "javascript": "estimates.halving"
+        "javascript": "estimates.halving",
+        "python": "estimates.halving"
       }
     },
     {
@@ -77,7 +83,8 @@
         "csharp": "Alg.Code.Estimates.Halving",
         "go": "alg.Halving",
         "typescript": "estimates.halving",
-        "javascript": "estimates.halving"
+        "javascript": "estimates.halving",
+        "python": "estimates.halving"
       }
     },
     {
@@ -87,7 +94,8 @@
         "csharp": "Alg.Code.Estimates.LinearLog",
         "go": "alg.LinearLog",
         "typescript": "estimates.linearLog",
-        "javascript": "estimates.linearLog"
+        "javascript": "estimates.linearLog",
+        "python": "estimates.linear_log"
       }
     },
     {
@@ -97,7 +105,8 @@
         "csharp": "Alg.Code.Estimates.LinearLog",
         "go": "alg.LinearLog",
         "typescript": "estimates.linearLog",
-        "javascript": "estimates.linearLog"
+        "javascript": "estimates.linearLog",
+        "python": "estimates.linear_log"
       }
     },
     {
@@ -107,7 +116,8 @@
         "csharp": "Alg.Code.Estimates.LinearLog",
         "go": "alg.LinearLog",
         "typescript": "estimates.linearLog",
-        "javascript": "estimates.linearLog"
+        "javascript": "estimates.linearLog",
+        "python": "estimates.linear_log"
       }
     },
     {
@@ -117,7 +127,8 @@
         "csharp": "Alg.Code.Estimates.Factorial",
         "go": "alg.Factorial",
         "typescript": "estimates.factorial",
-        "javascript": "estimates.factorial"
+        "javascript": "estimates.factorial",
+        "python": "estimates.factorial"
       }
     },
     {
@@ -127,7 +138,8 @@
         "csharp": "Alg.Code.Estimates.Factorial",
         "go": "alg.Factorial",
         "typescript": "estimates.factorial",
-        "javascript": "estimates.factorial"
+        "javascript": "estimates.factorial",
+        "python": "estimates.factorial"
       }
     },
     {
@@ -137,7 +149,8 @@
         "csharp": "Alg.Code.Estimates.Factorial",
         "go": "alg.Factorial",
         "typescript": "estimates.factorial",
-        "javascript": "estimates.factorial"
+        "javascript": "estimates.factorial",
+        "python": "estimates.factorial"
       }
     },
     {
@@ -147,7 +160,8 @@
         "csharp": "Alg.Code.Estimates.Search",
         "go": "alg.Search",
         "typescript": "estimates.search",
-        "javascript": "estimates.search"
+        "javascript": "estimates.search",
+        "python": "estimates.search"
       }
     },
     {
@@ -157,7 +171,8 @@
         "csharp": "Alg.Code.Estimates.Search",
         "go": "alg.Search",
         "typescript": "estimates.search",
-        "javascript": "estimates.search"
+        "javascript": "estimates.search",
+        "python": "estimates.search"
       }
     },
     {
@@ -167,7 +182,8 @@
         "csharp": "Alg.Code.Estimates.Search",
         "go": "alg.Search",
         "typescript": "estimates.search",
-        "javascript": "estimates.search"
+        "javascript": "estimates.search",
+        "python": "estimates.search"
       }
     },
     {
@@ -177,7 +193,8 @@
         "csharp": "Alg.Code.Estimates.CubicViaCallee",
         "go": "alg.CubicViaCallee",
         "typescript": "estimates.cubicViaCallee",
-        "javascript": "estimates.cubicViaCallee"
+        "javascript": "estimates.cubicViaCallee",
+        "python": "estimates.cubic_via_callee"
       }
     },
     {
@@ -187,7 +204,8 @@
         "csharp": "Alg.Code.Estimates.CubicViaCallee",
         "go": "alg.CubicViaCallee",
         "typescript": "estimates.cubicViaCallee",
-        "javascript": "estimates.cubicViaCallee"
+        "javascript": "estimates.cubicViaCallee",
+        "python": "estimates.cubic_via_callee"
       }
     },
     {
@@ -197,7 +215,8 @@
         "csharp": "Alg.Code.Estimates.CubicViaCallee",
         "go": "alg.CubicViaCallee",
         "typescript": "estimates.cubicViaCallee",
-        "javascript": "estimates.cubicViaCallee"
+        "javascript": "estimates.cubicViaCallee",
+        "python": "estimates.cubic_via_callee"
       }
     },
     {
@@ -207,7 +226,8 @@
         "csharp": "Alg.Code.Memory.Grid",
         "go": "alg.Grid",
         "typescript": "memory.grid",
-        "javascript": "memory.grid"
+        "javascript": "memory.grid",
+        "python": "memory.grid"
       }
     },
     {
@@ -217,7 +237,8 @@
         "csharp": "Alg.Code.Memory.Grid",
         "go": "alg.Grid",
         "typescript": "memory.grid",
-        "javascript": "memory.grid"
+        "javascript": "memory.grid",
+        "python": "memory.grid"
       }
     },
     {
@@ -227,7 +248,8 @@
         "csharp": "Alg.Code.Memory.Grid",
         "go": "alg.Grid",
         "typescript": "memory.grid",
-        "javascript": "memory.grid"
+        "javascript": "memory.grid",
+        "python": "memory.grid"
       }
     },
     {
@@ -237,7 +259,8 @@
         "csharp": "Alg.Code.Memory.NewInNested",
         "go": "alg.NewInNested",
         "typescript": "memory.newInNested",
-        "javascript": "memory.newInNested"
+        "javascript": "memory.newInNested",
+        "python": "memory.new_in_nested"
       }
     }
   ]

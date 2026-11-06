@@ -1,0 +1,14 @@
+{
+  "results": [
+    {
+      "ruleId": "ALG001",
+      "file": "code.py",
+      "startLine": 1
+    },
+    {
+      "ruleId": "ALG001",
+      "file": "code.py",
+      "startLine": 27
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "results": [
+    {
+      "ruleId": "DSN003",
+      "file": "domain/entity.py",
+      "startLine": 5
+    },
+    {
+      "ruleId": "DSN003",
+      "file": "domain/domain/rich.py",
+      "startLine": 8
+    },
+    {
+      "ruleId": "DSN003",
+      "file": "web/page.py",
+      "startLine": 8
+    }
+  ]
+}

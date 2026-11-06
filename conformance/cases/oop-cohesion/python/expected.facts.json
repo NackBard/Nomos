@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "1.2.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "python" },
+  "files": [
+    { "path": "cohesion.py", "lines": 28, "loc": 18 },
+    { "path": "errors.py", "lines": 4, "loc": 2 }
+  ],
+  "modules": [
+    { "id": "cohesion", "name": "cohesion", "files": ["cohesion.py"], "loc": 18, "metrics": {  }, "paradigmEvidence": [] },
+    { "id": "errors", "name": "errors", "files": ["errors.py"], "loc": 2, "metrics": {  }, "paradigmEvidence": [] }
+  ],
+  "types": [
+    { "id": "cohesion.Data", "name": "Data", "module": "cohesion", "kind": "class", "isAbstract": false, "location": { "file": "cohesion.py", "startLine": 5 }, "metrics": { "lines": 3, "memberCount": 2, "methodCount": 0, "dit": 0, "cbo": 0, "lcom4": null, "wmc": 0, "atfd": 0, "tcc": null } },
+    { "id": "cohesion.Mixed", "name": "Mixed", "module": "cohesion", "kind": "class", "isAbstract": false, "location": { "file": "cohesion.py", "startLine": 10 }, "metrics": { "lines": 16, "memberCount": 7, "methodCount": 4, "dit": 0, "cbo": 1, "lcom4": 3, "wmc": 4, "atfd": 2, "tcc": 0.1667 } },
+    { "id": "cohesion.Derived", "name": "Derived", "module": "cohesion", "kind": "class", "isAbstract": false, "location": { "file": "cohesion.py", "startLine": 28 }, "metrics": { "lines": 1, "memberCount": 0, "methodCount": 0, "dit": 1, "cbo": 1, "lcom4": null, "wmc": 0, "atfd": 0, "tcc": null } },
+    { "id": "errors.Fail", "name": "Fail", "module": "errors", "kind": "class", "isAbstract": false, "location": { "file": "errors.py", "startLine": 1 }, "metrics": { "dit": 1, "cbo": 0 } },
+    { "id": "errors.DeepFail", "name": "DeepFail", "module": "errors", "kind": "class", "isAbstract": false, "location": { "file": "errors.py", "startLine": 4 }, "metrics": { "dit": 2, "cbo": 1 } }
+  ],
+  "functions": [
+    { "id": "cohesion.Mixed.inc_a", "name": "inc_a", "module": "cohesion", "type": "cohesion.Mixed", "kind": "method", "visibility": "public", "location": { "file": "cohesion.py", "startLine": 15 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 0, "lines": 2 } },
+    { "id": "cohesion.Mixed.read_a", "name": "read_a", "module": "cohesion", "type": "cohesion.Mixed", "kind": "method", "visibility": "public", "location": { "file": "cohesion.py", "startLine": 18 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 0, "lines": 2 } },
+    { "id": "cohesion.Mixed.inc_b", "name": "inc_b", "module": "cohesion", "type": "cohesion.Mixed", "kind": "method", "visibility": "public", "location": { "file": "cohesion.py", "startLine": 21 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 0, "lines": 2 } },
+    { "id": "cohesion.Mixed.peek", "name": "peek", "module": "cohesion", "type": "cohesion.Mixed", "kind": "method", "visibility": "public", "location": { "file": "cohesion.py", "startLine": 24 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 0, "lines": 2 } }
+  ],
+  "dependencies": [
+    { "from": "cohesion.Mixed", "to": "cohesion.Data", "kind": "type-ref", "phase": "type-only" },
+    { "from": "cohesion.Mixed", "to": "cohesion.Data", "kind": "call", "phase": "runtime" },
+    { "from": "cohesion.Mixed", "to": "cohesion.Data", "kind": "type-ref", "phase": "runtime" },
+    { "from": "cohesion.Derived", "to": "cohesion.Mixed", "kind": "inheritance", "phase": "runtime" },
+    { "from": "errors.DeepFail", "to": "errors.Fail", "kind": "inheritance", "phase": "runtime" }
+  ],
+  "cycles": [
+  ],
+  "skippedRules": [
+  ],
+  "diagnostics": []
+}

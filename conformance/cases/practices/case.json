@@ -11,7 +11,8 @@
     "csharp",
     "go",
     "typescript",
-    "javascript"
+    "javascript",
+    "python"
   ],
   "expectSarif": true,
   "config": true

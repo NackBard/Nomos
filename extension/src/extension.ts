@@ -1,9 +1,10 @@
+import { execFile } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import * as vscode from "vscode";
 import { createHash } from "node:crypto";
-import { BundleFolderName, implicitWorkspace, launchConfig, readRegistry, selectBundled, writeWorkspaceFile } from "./core/bundle";
-import type { RuntimeRequirement } from "./core/bundle";
+import { BundleFolderName, findRuntime, implicitWorkspace, launchConfig, readRegistry, selectBundled, writeWorkspaceFile } from "./core/bundle";
+import type { RuntimeHost, RuntimeRequirement } from "./core/bundle";
 import type { AnalysisRun, AnalyzerConfig, Finding, Workspace } from "./core/model";
 import { RulesFileName, localizeFinding, readRules } from "./core/l10n";
 import type { Translate } from "./core/l10n";
@@ -119,28 +120,51 @@ export function activate(context: vscode.ExtensionContext): NomosApi {
   /** Practices per analyzed folder, for the status bar tooltip. */
   let practiceLines: string[] = [];
 
-  /** Asks the extension that provides a runtime for its path, installing that extension on the person's consent. */
-  function runtimePath(requirement: RuntimeRequirement, language: string): Promise<string> {
-    const key = requirement.extension + "\n" + requirement.command;
+  /**
+   * The program a runtime requirement names. A required runtime comes from its extension, installed on the person's
+   * consent; an optional one (with `path`) is the extension's answer for the folder or a program in PATH (D-057).
+   */
+  function runtimePath(requirement: RuntimeRequirement, language: string, folder: string): Promise<string> {
+    const optional = requirement.path !== undefined;
+    const key = requirement.extension + "\n" + requirement.command + (optional ? "\n" + folder : "");
     const known = runtimes.get(key);
     if (known) return known;
-    const pending = (async () => {
-      if (!vscode.extensions.getExtension(requirement.extension)) {
-        const install = t("Install");
-        const choice = await vscode.window.showInformationMessage(
-          t("Nomos needs {0} to analyze the {1} files of this workspace. The extension {2} provides it.", requirement.name, language, requirement.extension), install);
-        if (choice !== install) throw new Error(t("{0}: skipped, {1} is not available (the extension {2} was not installed)", language, requirement.name, requirement.extension));
-        await vscode.commands.executeCommand("workbench.extensions.installExtension", requirement.extension);
-      }
-      const result = await vscode.commands.executeCommand<Record<string, unknown> | undefined>(
-        requirement.command, { ...requirement.argument, requestingExtensionId: context.extension.id });
-      const value = result?.[requirement.resultField];
-      if (typeof value !== "string" || !value) throw new Error(t("{0}: {1} did not provide {2}", language, requirement.extension, requirement.name));
-      return value;
-    })();
+    const pending = optional ? optionalRuntime(requirement, language, folder) : requiredRuntime(requirement, language);
     runtimes.set(key, pending);
     pending.catch(() => runtimes.delete(key));
     return pending;
+  }
+
+  async function requiredRuntime(requirement: RuntimeRequirement, language: string): Promise<string> {
+    if (!vscode.extensions.getExtension(requirement.extension)) {
+      const install = t("Install");
+      const choice = await vscode.window.showInformationMessage(
+        t("Nomos needs {0} to analyze the {1} files of this workspace. The extension {2} provides it.", requirement.name, language, requirement.extension), install);
+      if (choice !== install) throw new Error(t("{0}: skipped, {1} is not available (the extension {2} was not installed)", language, requirement.name, requirement.extension));
+      await vscode.commands.executeCommand("workbench.extensions.installExtension", requirement.extension);
+    }
+    const result = await vscode.commands.executeCommand<Record<string, unknown> | undefined>(
+      requirement.command, { ...requirement.argument, requestingExtensionId: context.extension.id });
+    const value = requirement.resultField ? result?.[requirement.resultField] : result;
+    if (typeof value !== "string" || !value) throw new Error(t("{0}: {1} did not provide {2}", language, requirement.extension, requirement.name));
+    return value;
+  }
+
+  async function optionalRuntime(requirement: RuntimeRequirement, language: string, folder: string): Promise<string> {
+    const host: RuntimeHost = {
+      hasExtension: (id) => vscode.extensions.getExtension(id) !== undefined,
+      execute: (command, argument) => Promise.resolve(vscode.commands.executeCommand(command, { ...argument, requestingExtensionId: context.extension.id })),
+      usable: (program, args) => new Promise((resolve) => execFile(program, args, { timeout: 20000, windowsHide: true }, (error) => resolve(!error))),
+    };
+    const found = await findRuntime(requirement, folder, host);
+    if (found) return found;
+    const open = t("Open download page");
+    const message = t("Nomos needs {0} to analyze the {1} files of this workspace. Neither the extension {2} nor PATH ({3}) gives one.",
+      requirement.name, language, requirement.extension, (requirement.path ?? []).join(", "));
+    void vscode.window.showWarningMessage(message, ...(requirement.installUrl ? [open] : [])).then((choice) => {
+      if (choice === open && requirement.installUrl) void vscode.env.openExternal(vscode.Uri.parse(requirement.installUrl));
+    });
+    throw new Error(t("{0}: skipped, {1} was not found", language, requirement.name));
   }
 
   /** nomos.json decides when present; otherwise the bundled analyzers that find their files (D-046). */
@@ -156,7 +180,7 @@ export function activate(context: vscode.ExtensionContext): NomosApi {
       language: analyzer.language,
       folder,
       prepare: async () => {
-        const runtime = analyzer.runtime ? await runtimePath(analyzer.runtime, analyzer.language) : undefined;
+        const runtime = analyzer.runtime ? await runtimePath(analyzer.runtime, analyzer.language, folder) : undefined;
         const config = launchConfig(analyzer, bundleFolder, storage, runtime);
         const practices = settingPractices(folder);
         const workspace = implicitWorkspace(config, practices);

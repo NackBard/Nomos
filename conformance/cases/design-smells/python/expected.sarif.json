@@ -1,0 +1,24 @@
+{
+  "results": [
+    {
+      "ruleId": "DSN004",
+      "file": "report/god.py",
+      "startLine": 9,
+      "measured": {
+        "metric": "wmc",
+        "value": 8,
+        "threshold": 7
+      }
+    },
+    {
+      "ruleId": "DSN005",
+      "file": "report/printer.py",
+      "startLine": 9,
+      "measured": {
+        "metric": "foreignMembers",
+        "value": 3,
+        "threshold": 3
+      }
+    }
+  ]
+}

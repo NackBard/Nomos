@@ -10,7 +10,8 @@
     "csharp",
     "go",
     "typescript",
-    "javascript"
+    "javascript",
+    "python"
   ],
   "expectSarif": true,
   "config": true,
@@ -22,7 +23,8 @@
         "csharp": "Blast.Chain.C1",
         "go": "blast/chain.C1",
         "typescript": "chain.C1",
-        "javascript": "chain.C1"
+        "javascript": "chain.C1",
+        "python": "chain.C1"
       }
     },
     {
@@ -32,7 +34,8 @@
         "csharp": "Blast.Chain.C4",
         "go": "blast/chain.C4",
         "typescript": "chain.C4",
-        "javascript": "chain.C4"
+        "javascript": "chain.C4",
+        "python": "chain.C4"
       }
     },
     {
@@ -42,7 +45,8 @@
         "csharp": "Blast.Diamond.Bottom",
         "go": "blast/diamond.Bottom",
         "typescript": "diamond.Bottom",
-        "javascript": "diamond.Bottom"
+        "javascript": "diamond.Bottom",
+        "python": "diamond.Bottom"
       }
     },
     {
@@ -52,7 +56,8 @@
         "csharp": "Blast.Ring.R2",
         "go": "blast/ring.R2",
         "typescript": "ring.R2",
-        "javascript": "ring.R2"
+        "javascript": "ring.R2",
+        "python": "ring.R2"
       }
     },
     {
@@ -62,7 +67,8 @@
         "csharp": "Blast.Ring.Leaf",
         "go": "blast/ring.Leaf",
         "typescript": "ring.Leaf",
-        "javascript": "ring.Leaf"
+        "javascript": "ring.Leaf",
+        "python": "ring.Leaf"
       }
     },
     {
@@ -72,7 +78,8 @@
         "csharp": "Blast.Ring.Tail",
         "go": "blast/ring.Tail",
         "typescript": "ring.Tail",
-        "javascript": "ring.Tail"
+        "javascript": "ring.Tail",
+        "python": "ring.Tail"
       }
     }
   ]

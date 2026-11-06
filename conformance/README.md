@@ -43,6 +43,7 @@ npm run rules-doc    # пересобрать docs/ANALYZERS.md из spec/rules
 npm run csharp       # собранный анализатор C#: dotnet build analyzers/csharp/Nomos.slnx, затем harness на всех случаях
 npm run go           # сборка и все случаи для Go
 npm run typescript   # все случаи для TypeScript и JavaScript (один анализатор, два языка)
+npm run python       # все случаи для Python; интерпретатор 3.10+ ищет analyzers/python/run.mjs (NOMOS_PYTHON, python3, python, py)
 npm run all          # все анализаторы и parity между ними
 npm run go-rules     # пересобрать rules.json анализатора Go из spec/rules
 node src/cli.ts run --analyzer "csharp=<команда>" [--case cycles]

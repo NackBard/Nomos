@@ -1,0 +1,44 @@
+{
+  "results": [
+    {
+      "ruleId": "DSN006",
+      "file": "chain.py",
+      "startLine": 1,
+      "measured": {
+        "metric": "blastRadius",
+        "value": 8,
+        "threshold": 4
+      }
+    },
+    {
+      "ruleId": "DSN006",
+      "file": "chain.py",
+      "startLine": 4,
+      "measured": {
+        "metric": "blastRadius",
+        "value": 7,
+        "threshold": 4
+      }
+    },
+    {
+      "ruleId": "DSN006",
+      "file": "chain.py",
+      "startLine": 8,
+      "measured": {
+        "metric": "blastRadius",
+        "value": 6,
+        "threshold": 4
+      }
+    },
+    {
+      "ruleId": "DSN006",
+      "file": "chain.py",
+      "startLine": 12,
+      "measured": {
+        "metric": "blastRadius",
+        "value": 5,
+        "threshold": 4
+      }
+    }
+  ]
+}

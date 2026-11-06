@@ -1,0 +1,24 @@
+{
+  "results": [
+    {
+      "ruleId": "SEC001",
+      "file": "store.py",
+      "startLine": 1
+    },
+    {
+      "ruleId": "SEC001",
+      "file": "store.py",
+      "startLine": 3
+    },
+    {
+      "ruleId": "SEC003",
+      "file": "store.py",
+      "startLine": 7
+    },
+    {
+      "ruleId": "SEC003",
+      "file": "store.py",
+      "startLine": 15
+    }
+  ]
+}

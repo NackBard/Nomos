@@ -20,6 +20,10 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           node-version: 22.18
+      # The oldest Python the analyzer supports (D-057): conformance and the report run on it.
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.10"
       - name: Contracts, spec/rules and cases
         working-directory: conformance/runner
         run: |
@@ -44,6 +48,9 @@ jobs:
           npm ci
           npm run typecheck
           npm test
+      - name: Analyzer Python
+        working-directory: analyzers/python
+        run: python -I -m unittest discover -s tests -v
       - name: Conformance and parity
         working-directory: conformance/runner
         run: npm run all

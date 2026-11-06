@@ -1,0 +1,152 @@
+{
+  "schemaVersion": "1.2.0",
+  "analyzer": {
+    "name": "hand-computed",
+    "version": "0.0.0",
+    "language": "python"
+  },
+  "files": [
+    {
+      "path": "code.py",
+      "lines": 40,
+      "loc": 30
+    },
+    {
+      "path": "whole/whole.py",
+      "lines": 7,
+      "loc": 6
+    }
+  ],
+  "modules": [
+    {
+      "id": "code",
+      "name": "code",
+      "files": [
+        "code.py"
+      ],
+      "loc": 30,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "whole.whole",
+      "name": "whole",
+      "files": [
+        "whole/whole.py"
+      ],
+      "loc": 6,
+      "metrics": {},
+      "paradigmEvidence": []
+    }
+  ],
+  "functions": [
+    {
+      "id": "code.reported",
+      "name": "reported",
+      "module": "code",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "code.py",
+        "startLine": 1
+      },
+      "metrics": {
+        "cyclomatic": 3,
+        "maxNesting": 2,
+        "parameterCount": 1,
+        "lines": 6
+      }
+    },
+    {
+      "id": "code.next_line",
+      "name": "next_line",
+      "module": "code",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "code.py",
+        "startLine": 10
+      },
+      "metrics": {
+        "cyclomatic": 3,
+        "maxNesting": 2,
+        "parameterCount": 1,
+        "lines": 6
+      }
+    },
+    {
+      "id": "code.same",
+      "name": "same",
+      "module": "code",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "code.py",
+        "startLine": 18
+      },
+      "metrics": {
+        "cyclomatic": 3,
+        "maxNesting": 2,
+        "parameterCount": 1,
+        "lines": 6
+      }
+    },
+    {
+      "id": "code.other_rule",
+      "name": "other_rule",
+      "module": "code",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "code.py",
+        "startLine": 27
+      },
+      "metrics": {
+        "cyclomatic": 3,
+        "maxNesting": 2,
+        "parameterCount": 1,
+        "lines": 6
+      }
+    },
+    {
+      "id": "code.reasoned",
+      "name": "reasoned",
+      "module": "code",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "code.py",
+        "startLine": 35
+      },
+      "metrics": {
+        "cyclomatic": 3,
+        "maxNesting": 2,
+        "parameterCount": 1,
+        "lines": 6
+      }
+    },
+    {
+      "id": "whole.whole.pairs",
+      "name": "pairs",
+      "module": "whole.whole",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "whole/whole.py",
+        "startLine": 2
+      },
+      "metrics": {
+        "cyclomatic": 3,
+        "maxNesting": 2,
+        "parameterCount": 1,
+        "lines": 6,
+        "timeDegree": 2
+      }
+    }
+  ],
+  "types": [],
+  "dependencies": [],
+  "cycles": [],
+  "skippedRules": [],
+  "diagnostics": []
+}

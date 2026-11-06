@@ -1,0 +1,645 @@
+{
+  "schemaVersion": "1.2.0",
+  "analyzer": {
+    "name": "hand-computed",
+    "version": "0.0.0",
+    "language": "python"
+  },
+  "files": [
+    {
+      "path": "structure.py",
+      "lines": 96,
+      "loc": 62
+    }
+  ],
+  "modules": [
+    {
+      "id": "structure",
+      "name": "structure",
+      "files": [
+        "structure.py"
+      ],
+      "loc": 62,
+      "metrics": {},
+      "paradigmEvidence": []
+    }
+  ],
+  "types": [
+    {
+      "id": "structure.Shape",
+      "name": "Shape",
+      "module": "structure",
+      "kind": "protocol",
+      "isAbstract": true,
+      "location": {
+        "file": "structure.py",
+        "startLine": 8
+      },
+      "metrics": {}
+    },
+    {
+      "id": "structure.Named",
+      "name": "Named",
+      "module": "structure",
+      "kind": "protocol",
+      "isAbstract": true,
+      "location": {
+        "file": "structure.py",
+        "startLine": 12
+      },
+      "metrics": {},
+      "members": [
+        {
+          "name": "label",
+          "kind": "field",
+          "visibility": "public",
+          "typeName": "str"
+        }
+      ]
+    },
+    {
+      "id": "structure.Cell",
+      "name": "Cell",
+      "module": "structure",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "structure.py",
+        "startLine": 18
+      },
+      "metrics": {},
+      "members": [
+        {
+          "name": "x",
+          "kind": "field",
+          "visibility": "public"
+        },
+        {
+          "name": "y",
+          "kind": "field",
+          "visibility": "public"
+        }
+      ]
+    },
+    {
+      "id": "structure.Base",
+      "name": "Base",
+      "module": "structure",
+      "kind": "class",
+      "isAbstract": true,
+      "location": {
+        "file": "structure.py",
+        "startLine": 24
+      },
+      "metrics": {},
+      "members": [
+        {
+          "name": "_title",
+          "kind": "field",
+          "visibility": "private"
+        }
+      ],
+      "satisfies": [
+        "structure.Shape"
+      ]
+    },
+    {
+      "id": "structure.Square",
+      "name": "Square",
+      "module": "structure",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "structure.py",
+        "startLine": 35
+      },
+      "metrics": {},
+      "members": [
+        {
+          "name": "count",
+          "kind": "field",
+          "visibility": "public",
+          "typeName": "ClassVar[int]",
+          "isStatic": true
+        },
+        {
+          "name": "side",
+          "kind": "field",
+          "visibility": "public",
+          "typeName": "float"
+        },
+        {
+          "name": "cells",
+          "kind": "field",
+          "visibility": "public",
+          "typeName": "list[Cell]",
+          "type": "structure.Cell",
+          "isCollection": true
+        },
+        {
+          "name": "by_key",
+          "kind": "field",
+          "visibility": "public",
+          "typeName": "dict[str, Cell]",
+          "type": "structure.Cell",
+          "isCollection": true
+        },
+        {
+          "name": "_secret",
+          "kind": "field",
+          "visibility": "private",
+          "typeName": "Cell | None",
+          "type": "structure.Cell"
+        },
+        {
+          "name": "perimeter",
+          "kind": "property",
+          "visibility": "public",
+          "typeName": "float"
+        }
+      ],
+      "satisfies": [
+        "structure.Shape"
+      ]
+    },
+    {
+      "id": "structure.Circle",
+      "name": "Circle",
+      "module": "structure",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "structure.py",
+        "startLine": 68
+      },
+      "metrics": {},
+      "members": [
+        {
+          "name": "label",
+          "kind": "field",
+          "visibility": "public",
+          "typeName": "str"
+        }
+      ],
+      "satisfies": [
+        "structure.Named",
+        "structure.Shape"
+      ]
+    },
+    {
+      "id": "structure.Color",
+      "name": "Color",
+      "module": "structure",
+      "kind": "enum",
+      "isAbstract": false,
+      "location": {
+        "file": "structure.py",
+        "startLine": 78
+      },
+      "metrics": {},
+      "members": [
+        {
+          "name": "RED",
+          "kind": "literal",
+          "visibility": "public"
+        },
+        {
+          "name": "GREEN",
+          "kind": "literal",
+          "visibility": "public"
+        }
+      ]
+    },
+    {
+      "id": "structure.Box",
+      "name": "Box",
+      "module": "structure",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "structure.py",
+        "startLine": 83
+      },
+      "metrics": {},
+      "typeParameters": [
+        "T"
+      ],
+      "members": [
+        {
+          "name": "item",
+          "kind": "field",
+          "visibility": "public",
+          "typeName": "T | None"
+        }
+      ]
+    },
+    {
+      "id": "structure.Point",
+      "name": "Point",
+      "module": "structure",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "structure.py",
+        "startLine": 87
+      },
+      "metrics": {},
+      "members": [
+        {
+          "name": "x",
+          "kind": "field",
+          "visibility": "public",
+          "typeName": "float"
+        },
+        {
+          "name": "y",
+          "kind": "field",
+          "visibility": "public",
+          "typeName": "float"
+        }
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "id": "structure.Shape.area",
+      "name": "area",
+      "module": "structure",
+      "type": "structure.Shape",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "structure.py",
+        "startLine": 9
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      },
+      "parameters": [],
+      "returnTypeName": "float",
+      "isAbstract": true
+    },
+    {
+      "id": "structure.Named.name",
+      "name": "name",
+      "module": "structure",
+      "type": "structure.Named",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "structure.py",
+        "startLine": 15
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      },
+      "parameters": [],
+      "returnTypeName": "str",
+      "isAbstract": true
+    },
+    {
+      "id": "structure.Cell.__init__",
+      "name": "__init__",
+      "module": "structure",
+      "type": "structure.Cell",
+      "kind": "constructor",
+      "visibility": "public",
+      "location": {
+        "file": "structure.py",
+        "startLine": 19
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3
+      },
+      "parameters": []
+    },
+    {
+      "id": "structure.Base.__init__",
+      "name": "__init__",
+      "module": "structure",
+      "type": "structure.Base",
+      "kind": "constructor",
+      "visibility": "public",
+      "location": {
+        "file": "structure.py",
+        "startLine": 25
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 1,
+        "lines": 2
+      },
+      "parameters": [
+        {
+          "name": "title",
+          "typeName": "str"
+        }
+      ]
+    },
+    {
+      "id": "structure.Base.name",
+      "name": "name",
+      "module": "structure",
+      "type": "structure.Base",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "structure.py",
+        "startLine": 28
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 2
+      },
+      "parameters": [],
+      "returnTypeName": "str"
+    },
+    {
+      "id": "structure.Base.area",
+      "name": "area",
+      "module": "structure",
+      "type": "structure.Base",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "structure.py",
+        "startLine": 32
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      },
+      "parameters": [],
+      "returnTypeName": "float",
+      "isAbstract": true
+    },
+    {
+      "id": "structure.Square.__init__",
+      "name": "__init__",
+      "module": "structure",
+      "type": "structure.Square",
+      "kind": "constructor",
+      "visibility": "public",
+      "location": {
+        "file": "structure.py",
+        "startLine": 42
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 4
+      },
+      "parameters": []
+    },
+    {
+      "id": "structure.Square.create",
+      "name": "create",
+      "module": "structure",
+      "type": "structure.Square",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "structure.py",
+        "startLine": 48
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 2
+      },
+      "parameters": [],
+      "returnTypeName": "Square",
+      "isStatic": true
+    },
+    {
+      "id": "structure.Square.perimeter.get",
+      "name": "get",
+      "module": "structure",
+      "type": "structure.Square",
+      "kind": "accessor",
+      "visibility": "public",
+      "location": {
+        "file": "structure.py",
+        "startLine": 52
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 2
+      },
+      "parameters": [],
+      "returnTypeName": "float"
+    },
+    {
+      "id": "structure.Square.perimeter.set",
+      "name": "set",
+      "module": "structure",
+      "type": "structure.Square",
+      "kind": "accessor",
+      "visibility": "public",
+      "location": {
+        "file": "structure.py",
+        "startLine": 56
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 1,
+        "lines": 2
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "typeName": "float"
+        }
+      ]
+    },
+    {
+      "id": "structure.Square.area",
+      "name": "area",
+      "module": "structure",
+      "type": "structure.Square",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "structure.py",
+        "startLine": 59
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 2
+      },
+      "parameters": [],
+      "returnTypeName": "float"
+    },
+    {
+      "id": "structure.Square.resize",
+      "name": "resize",
+      "module": "structure",
+      "type": "structure.Square",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "structure.py",
+        "startLine": 62
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 2,
+        "lines": 4
+      },
+      "parameters": [
+        {
+          "name": "by",
+          "typeName": "float"
+        },
+        {
+          "name": "*labels",
+          "typeName": "str"
+        }
+      ],
+      "returnTypeName": "tuple[float, tuple[str, ...]]"
+    },
+    {
+      "id": "structure.Circle.area",
+      "name": "area",
+      "module": "structure",
+      "type": "structure.Circle",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "structure.py",
+        "startLine": 71
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 2
+      },
+      "parameters": [],
+      "returnTypeName": "float"
+    },
+    {
+      "id": "structure.Circle.name",
+      "name": "name",
+      "module": "structure",
+      "type": "structure.Circle",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "structure.py",
+        "startLine": 74
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 2
+      },
+      "parameters": [],
+      "returnTypeName": "str"
+    },
+    {
+      "id": "structure.paint",
+      "name": "paint",
+      "module": "structure",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "structure.py",
+        "startLine": 92
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 1,
+        "lines": 2
+      },
+      "parameters": [
+        {
+          "name": "s",
+          "typeName": "Shape"
+        }
+      ],
+      "returnTypeName": "float"
+    },
+    {
+      "id": "structure.twice",
+      "name": "twice",
+      "module": "structure",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "structure.py",
+        "startLine": 96
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 1,
+        "lines": 1
+      },
+      "parameters": [
+        {
+          "name": "n"
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "from": "structure.Named",
+      "to": "structure.Shape",
+      "kind": "inheritance",
+      "phase": "runtime"
+    },
+    {
+      "from": "structure.Square",
+      "to": "structure.Base",
+      "kind": "inheritance",
+      "phase": "runtime"
+    },
+    {
+      "from": "structure.Square",
+      "to": "structure.Cell",
+      "kind": "type-ref",
+      "phase": "type-only"
+    },
+    {
+      "from": "structure.paint",
+      "to": "structure.Shape",
+      "kind": "type-ref",
+      "phase": "type-only"
+    },
+    {
+      "from": "structure.paint",
+      "to": "structure.Shape",
+      "kind": "call",
+      "phase": "runtime"
+    }
+  ],
+  "cycles": [],
+  "skippedRules": [],
+  "diagnostics": []
+}

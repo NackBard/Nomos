@@ -4,6 +4,8 @@ analyzers/go/internal/analyzer/rules.json
 analyzers/go/internal/analyzer/practices.json
 analyzers/typescript/src/rules.json
 analyzers/typescript/src/practices.json
+analyzers/python/nomos_python/rules.json
+analyzers/python/nomos_python/practices.json
 extension/rules.json
 extension/practices.json
 ci/rules.json

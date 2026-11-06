@@ -1,0 +1,72 @@
+{
+  "schemaVersion": "1.2.0",
+  "analyzer": {
+    "name": "hand-computed",
+    "version": "0.0.0",
+    "language": "python"
+  },
+  "files": [
+    {
+      "path": "broken.py",
+      "lines": 1,
+      "loc": 1,
+      "parsed": false
+    },
+    {
+      "path": "good.py",
+      "lines": 2,
+      "loc": 2
+    }
+  ],
+  "modules": [
+    {
+      "id": "broken",
+      "name": "broken",
+      "files": [
+        "broken.py"
+      ],
+      "loc": 1,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "good",
+      "name": "good",
+      "files": [
+        "good.py"
+      ],
+      "loc": 2,
+      "metrics": {},
+      "paradigmEvidence": []
+    }
+  ],
+  "types": [
+    {
+      "id": "good.Ok",
+      "name": "Ok",
+      "module": "good",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "good.py",
+        "startLine": 1
+      },
+      "metrics": {
+        "lines": 2,
+        "memberCount": 1
+      }
+    }
+  ],
+  "diagnostics": [
+    {
+      "level": "warning",
+      "message": "m",
+      "file": "broken.py",
+      "code": "syntax-error"
+    }
+  ],
+  "functions": [],
+  "dependencies": [],
+  "cycles": [],
+  "skippedRules": []
+}

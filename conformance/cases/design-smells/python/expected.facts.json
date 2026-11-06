@@ -1,0 +1,363 @@
+{
+  "schemaVersion": "1.2.0",
+  "analyzer": {
+    "name": "hand-computed",
+    "version": "0.0.0",
+    "language": "python"
+  },
+  "files": [
+    {
+      "path": "data/order.py",
+      "lines": 4,
+      "loc": 4
+    },
+    {
+      "path": "report/god.py",
+      "lines": 33,
+      "loc": 25
+    },
+    {
+      "path": "report/printer.py",
+      "lines": 24,
+      "loc": 15
+    }
+  ],
+  "modules": [
+    {
+      "id": "data.order",
+      "name": "order",
+      "files": [
+        "data/order.py"
+      ],
+      "loc": 4,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "report.god",
+      "name": "god",
+      "files": [
+        "report/god.py"
+      ],
+      "loc": 25,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "report.printer",
+      "name": "printer",
+      "files": [
+        "report/printer.py"
+      ],
+      "loc": 15,
+      "metrics": {},
+      "paradigmEvidence": []
+    }
+  ],
+  "types": [
+    {
+      "id": "data.order.Order",
+      "name": "Order",
+      "module": "data.order",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "data/order.py",
+        "startLine": 1
+      },
+      "metrics": {
+        "lines": 4,
+        "memberCount": 3
+      }
+    },
+    {
+      "id": "report.god.God",
+      "name": "God",
+      "module": "report.god",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "report/god.py",
+        "startLine": 9
+      },
+      "metrics": {
+        "lines": 25,
+        "memberCount": 8,
+        "methodCount": 4,
+        "wmc": 8,
+        "atfd": 3,
+        "tcc": 0
+      }
+    },
+    {
+      "id": "report.printer.Printer",
+      "name": "Printer",
+      "module": "report.printer",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "report/printer.py",
+        "startLine": 4
+      },
+      "metrics": {
+        "lines": 13,
+        "memberCount": 6,
+        "methodCount": 3,
+        "wmc": 3,
+        "atfd": 3,
+        "tcc": 0
+      }
+    }
+  ],
+  "functions": [
+    {
+      "id": "report.god.God.one",
+      "name": "one",
+      "module": "report.god",
+      "type": "report.god.God",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "report/god.py",
+        "startLine": 15
+      },
+      "metrics": {
+        "cyclomatic": 2,
+        "maxNesting": 1,
+        "parameterCount": 1,
+        "lines": 4,
+        "foreignMembers": 1,
+        "ownMembers": 1
+      }
+    },
+    {
+      "id": "report.god.God.two",
+      "name": "two",
+      "module": "report.god",
+      "type": "report.god.God",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "report/god.py",
+        "startLine": 20
+      },
+      "metrics": {
+        "cyclomatic": 2,
+        "maxNesting": 1,
+        "parameterCount": 1,
+        "lines": 4,
+        "foreignMembers": 1,
+        "ownMembers": 1
+      }
+    },
+    {
+      "id": "report.god.God.three",
+      "name": "three",
+      "module": "report.god",
+      "type": "report.god.God",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "report/god.py",
+        "startLine": 25
+      },
+      "metrics": {
+        "cyclomatic": 2,
+        "maxNesting": 1,
+        "parameterCount": 1,
+        "lines": 4,
+        "foreignMembers": 1,
+        "ownMembers": 1
+      }
+    },
+    {
+      "id": "report.god.God.four",
+      "name": "four",
+      "module": "report.god",
+      "type": "report.god.God",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "report/god.py",
+        "startLine": 30
+      },
+      "metrics": {
+        "cyclomatic": 2,
+        "maxNesting": 1,
+        "parameterCount": 1,
+        "lines": 4,
+        "foreignMembers": 1,
+        "ownMembers": 1
+      }
+    },
+    {
+      "id": "report.printer.Printer.envy",
+      "name": "envy",
+      "module": "report.printer",
+      "type": "report.printer.Printer",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "report/printer.py",
+        "startLine": 9
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 1,
+        "lines": 2,
+        "foreignMembers": 3,
+        "ownMembers": 0
+      }
+    },
+    {
+      "id": "report.printer.Printer.balanced",
+      "name": "balanced",
+      "module": "report.printer",
+      "type": "report.printer.Printer",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "report/printer.py",
+        "startLine": 12
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 1,
+        "lines": 2,
+        "foreignMembers": 3,
+        "ownMembers": 3
+      }
+    },
+    {
+      "id": "report.printer.Printer.few",
+      "name": "few",
+      "module": "report.printer",
+      "type": "report.printer.Printer",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "report/printer.py",
+        "startLine": 15
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 1,
+        "lines": 2,
+        "foreignMembers": 2,
+        "ownMembers": 0
+      }
+    },
+    {
+      "id": "report.printer.new_printer",
+      "name": "new_printer",
+      "module": "report.printer",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "report/printer.py",
+        "startLine": 19
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 2,
+        "foreignMembers": null,
+        "ownMembers": null
+      }
+    },
+    {
+      "id": "report.printer.total",
+      "name": "total",
+      "module": "report.printer",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "report/printer.py",
+        "startLine": 23
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 1,
+        "lines": 2,
+        "foreignMembers": null,
+        "ownMembers": null
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "from": "report.god.God",
+      "to": "data.order.Order",
+      "kind": "type-ref",
+      "phase": "type-only"
+    },
+    {
+      "from": "report.god.God",
+      "to": "data.order.Order",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "report.printer.Printer",
+      "to": "data.order.Order",
+      "kind": "type-ref",
+      "phase": "type-only"
+    },
+    {
+      "from": "report.printer.Printer",
+      "to": "data.order.Order",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "report.printer.new_printer",
+      "to": "report.printer.Printer",
+      "kind": "type-ref",
+      "phase": "type-only"
+    },
+    {
+      "from": "report.printer.new_printer",
+      "to": "report.printer.Printer",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "report.printer.total",
+      "to": "data.order.Order",
+      "kind": "type-ref",
+      "phase": "type-only"
+    },
+    {
+      "from": "report.printer.total",
+      "to": "data.order.Order",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "report.god",
+      "to": "data.order",
+      "kind": "import",
+      "phase": "type-only"
+    },
+    {
+      "from": "report.printer",
+      "to": "data.order",
+      "kind": "import",
+      "phase": "runtime"
+    }
+  ],
+  "skippedRules": [
+    {
+      "ruleId": "DSN003",
+      "reason": "missing-input",
+      "message": "m"
+    }
+  ],
+  "cycles": [],
+  "diagnostics": []
+}
