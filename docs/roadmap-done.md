@@ -130,6 +130,10 @@
 
 Сделано, D-057: анализатор `analyzers/python` на `ast` и `tokenize`, все случаи conformance, кроме `patterns` (исключение), `parity` совпадает; механизм сред расширения обобщён данными реестра (`path`, `check`, `installUrl`, строковый результат команды); e2e без `nomos.json` прошёл на Python из `PATH`.
 
+## Этап 14. Java
+
+Сделано, D-058: javac Tree API без внешних зависимостей, одна компиляция без classpath, модуль — пакет, JDK 17+ из настроек расширения Java, `JAVA_HOME` или `PATH`; conformance пройден, e2e без `nomos.json` прошёл (2026-11-06: 4 находки, 3 CodeLens в `src/shop/Cart.java`).
+
 ## Миграция существующего .NET-кода (часть этапа 2)
 
 1. ~~Создать `analyzers/csharp/`, перенести туда `src/` и `tests/` (с пересборкой ссылок в `Directory.Build.props`, `Directory.Packages.props`, `Nomos.slnx`).~~ Сделано, D-027.
