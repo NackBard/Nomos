@@ -1,0 +1,49 @@
+{
+  "schemaVersion": "1.3.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "kotlin" },
+  "files": [
+    { "path": "app/Program.kt", "lines": 9, "loc": 7 },
+    { "path": "domain/Entity.kt", "lines": 5, "loc": 4 },
+    { "path": "domain/Repo.kt", "lines": 4, "loc": 3 },
+    { "path": "infra/SqlRepo.kt", "lines": 8, "loc": 6 },
+    { "path": "services/OrderService.kt", "lines": 9, "loc": 7 }
+  ],
+  "modules": [
+    { "id": "shop.app", "name": "shop.app", "files": ["app/Program.kt"], "loc": 7,
+      "metrics": { "ca": 0, "ce": 2, "instability": 1, "abstractness": 0, "distance": 0 }, "paradigmEvidence": [] },
+    { "id": "shop.domain", "name": "shop.domain", "files": ["domain/Entity.kt", "domain/Repo.kt"], "loc": 7,
+      "metrics": { "ca": 2, "ce": 0, "instability": 0, "abstractness": 0.5, "distance": 0.5 }, "paradigmEvidence": [] },
+    { "id": "shop.infra", "name": "shop.infra", "files": ["infra/SqlRepo.kt"], "loc": 6,
+      "metrics": { "ca": 1, "ce": 2, "instability": 0.6667, "abstractness": 0, "distance": 0.3333 }, "paradigmEvidence": [] },
+    { "id": "shop.services", "name": "shop.services", "files": ["services/OrderService.kt"], "loc": 7,
+      "metrics": { "ca": 1, "ce": 2, "instability": 0.6667, "abstractness": 0, "distance": 0.3333 }, "paradigmEvidence": [] }
+  ],
+  "types": [
+    { "id": "shop.app.Program", "name": "Program", "module": "shop.app", "kind": "class", "isAbstract": false, "location": { "file": "app/Program.kt", "startLine": 6 },
+      "metrics": { "lines": 4, "memberCount": 2, "methodCount": 0, "dit": 0, "cbo": 2 } },
+    { "id": "shop.domain.Entity", "name": "Entity", "module": "shop.domain", "kind": "class", "isAbstract": false, "location": { "file": "domain/Entity.kt", "startLine": 3 },
+      "metrics": { "lines": 3, "memberCount": 1, "methodCount": 0, "dit": 0, "cbo": 0 } },
+    { "id": "shop.domain.Repo", "name": "Repo", "module": "shop.domain", "kind": "interface", "isAbstract": true, "location": { "file": "domain/Repo.kt", "startLine": 3 },
+      "metrics": { "lines": 2, "memberCount": 0, "methodCount": 0 } },
+    { "id": "shop.infra.SqlRepo", "name": "SqlRepo", "module": "shop.infra", "kind": "class", "isAbstract": false, "location": { "file": "infra/SqlRepo.kt", "startLine": 6 },
+      "metrics": { "lines": 3, "memberCount": 1, "methodCount": 0, "dit": 0, "cbo": 2 } },
+    { "id": "shop.services.OrderService", "name": "OrderService", "module": "shop.services", "kind": "class", "isAbstract": false, "location": { "file": "services/OrderService.kt", "startLine": 6 },
+      "metrics": { "lines": 4, "memberCount": 2, "methodCount": 0, "dit": 0, "cbo": 2 } }
+  ],
+  "functions": [],
+  "dependencies": [
+    { "from": "shop.app.Program", "to": "shop.infra.SqlRepo", "kind": "type-ref", "phase": "runtime" },
+    { "from": "shop.app.Program", "to": "shop.services.OrderService", "kind": "type-ref", "phase": "runtime" },
+    { "from": "shop.infra.SqlRepo", "to": "shop.domain.Entity", "kind": "type-ref", "phase": "runtime" },
+    { "from": "shop.infra.SqlRepo", "to": "shop.domain.Repo", "kind": "inheritance", "phase": "runtime" },
+    { "from": "shop.services.OrderService", "to": "shop.domain.Entity", "kind": "type-ref", "phase": "runtime" },
+    { "from": "shop.services.OrderService", "to": "shop.domain.Repo", "kind": "type-ref", "phase": "runtime" },
+    { "from": "shop.app", "to": "shop.infra", "kind": "import", "phase": "runtime" },
+    { "from": "shop.app", "to": "shop.services", "kind": "import", "phase": "runtime" },
+    { "from": "shop.infra", "to": "shop.domain", "kind": "import", "phase": "runtime" },
+    { "from": "shop.services", "to": "shop.domain", "kind": "import", "phase": "runtime" }
+  ],
+  "cycles": [],
+  "skippedRules": [],
+  "diagnostics": []
+}

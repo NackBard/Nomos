@@ -1,0 +1,19 @@
+{
+  "results": [
+    {
+      "ruleId": "DSN003",
+      "file": "Entity.kt",
+      "startLine": 4
+    },
+    {
+      "ruleId": "DSN003",
+      "file": "Page.kt",
+      "startLine": 5
+    },
+    {
+      "ruleId": "DSN003",
+      "file": "Rich.kt",
+      "startLine": 5
+    }
+  ]
+}

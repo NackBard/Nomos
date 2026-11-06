@@ -24,7 +24,8 @@
     "typescript",
     "javascript",
     "python",
-    "java"
+    "java",
+    "kotlin"
   ],
   "parity": [
     {
@@ -36,7 +37,8 @@
         "typescript": "basics.straight",
         "javascript": "basics.straight",
         "python": "basics.straight",
-        "java": "metrics.Basics.straight"
+        "java": "metrics.Basics.straight",
+        "kotlin": "metrics.Basics.straight"
       }
     },
     {
@@ -48,7 +50,8 @@
         "typescript": "basics.straight",
         "javascript": "basics.straight",
         "python": "basics.straight",
-        "java": "metrics.Basics.straight"
+        "java": "metrics.Basics.straight",
+        "kotlin": "metrics.Basics.straight"
       }
     },
     {
@@ -60,7 +63,8 @@
         "typescript": "basics.straight",
         "javascript": "basics.straight",
         "python": "basics.straight",
-        "java": "metrics.Basics.straight"
+        "java": "metrics.Basics.straight",
+        "kotlin": "metrics.Basics.straight"
       }
     },
     {
@@ -72,7 +76,8 @@
         "typescript": "basics.branches",
         "javascript": "basics.branches",
         "python": "basics.branches",
-        "java": "metrics.Basics.branches"
+        "java": "metrics.Basics.branches",
+        "kotlin": "metrics.Basics.branches"
       }
     },
     {
@@ -84,7 +89,8 @@
         "typescript": "basics.branches",
         "javascript": "basics.branches",
         "python": "basics.branches",
-        "java": "metrics.Basics.branches"
+        "java": "metrics.Basics.branches",
+        "kotlin": "metrics.Basics.branches"
       }
     },
     {
@@ -96,7 +102,8 @@
         "typescript": "basics.branches",
         "javascript": "basics.branches",
         "python": "basics.branches",
-        "java": "metrics.Basics.branches"
+        "java": "metrics.Basics.branches",
+        "kotlin": "metrics.Basics.branches"
       }
     },
     {
@@ -108,7 +115,8 @@
         "typescript": "basics.loops",
         "javascript": "basics.loops",
         "python": "basics.loops",
-        "java": "metrics.Basics.loops"
+        "java": "metrics.Basics.loops",
+        "kotlin": "metrics.Basics.loops"
       }
     },
     {
@@ -120,7 +128,8 @@
         "typescript": "basics.loops",
         "javascript": "basics.loops",
         "python": "basics.loops",
-        "java": "metrics.Basics.loops"
+        "java": "metrics.Basics.loops",
+        "kotlin": "metrics.Basics.loops"
       }
     },
     {
@@ -132,7 +141,8 @@
         "typescript": "basics.loops",
         "javascript": "basics.loops",
         "python": "basics.loops",
-        "java": "metrics.Basics.loops"
+        "java": "metrics.Basics.loops",
+        "kotlin": "metrics.Basics.loops"
       }
     }
   ]

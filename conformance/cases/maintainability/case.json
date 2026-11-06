@@ -16,7 +16,8 @@
     "typescript",
     "javascript",
     "python",
-    "java"
+    "java",
+    "kotlin"
   ],
   "expectSarif": true,
   "config": true,

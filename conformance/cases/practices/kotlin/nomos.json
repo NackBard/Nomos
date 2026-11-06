@@ -1,0 +1,6 @@
+{
+  "schemaVersion": "1.1.0",
+  "analyzers": [{ "language": "kotlin", "command": ["nomos-kotlin"] }],
+  "practices": ["security"],
+  "rules": { "SEC001": { "enabled": false } }
+}

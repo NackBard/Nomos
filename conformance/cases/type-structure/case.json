@@ -10,7 +10,8 @@
     "go",
     "typescript",
     "python",
-    "java"
+    "java",
+    "kotlin"
   ],
   "exceptions": [
     {

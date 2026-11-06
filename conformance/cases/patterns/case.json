@@ -40,6 +40,10 @@
     {
       "language": "java",
       "reason": "PAT rules are not written for Java; they are not in supportedRules of the Java analyzer and are recorded as not-supported (D-058)."
+    },
+    {
+      "language": "kotlin",
+      "reason": "PAT rules are not written for Kotlin; they are not in supportedRules of the Kotlin analyzer and are recorded as not-supported (D-059)."
     }
   ]
 }

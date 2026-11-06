@@ -1,0 +1,14 @@
+{
+  "results": [
+    {
+      "ruleId": "ALG001",
+      "file": "Code.kt",
+      "startLine": 4
+    },
+    {
+      "ruleId": "ALG001",
+      "file": "Code.kt",
+      "startLine": 12
+    }
+  ]
+}

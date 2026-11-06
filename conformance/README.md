@@ -44,6 +44,8 @@ npm run csharp       # собранный анализатор C#: dotnet build 
 npm run go           # сборка и все случаи для Go
 npm run typescript   # все случаи для TypeScript и JavaScript (один анализатор, два языка)
 npm run python       # все случаи для Python; интерпретатор 3.10+ ищет analyzers/python/run.mjs (NOMOS_PYTHON, python3, python, py)
+npm run java         # все случаи для Java; JDK 17+ ищет analyzers/java/run.mjs (NOMOS_JAVA, JAVA_HOME, java)
+npm run kotlin       # все случаи для Kotlin; сначала node analyzers/kotlin/run.mjs --fetch (jar компилятора), Java 17+ как у Java
 npm run all          # все анализаторы и parity между ними
 npm run go-rules     # пересобрать rules.json анализатора Go из spec/rules
 node src/cli.ts run --analyzer "csharp=<команда>" [--case cycles]

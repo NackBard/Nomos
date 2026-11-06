@@ -1,0 +1,24 @@
+{
+  "results": [
+    {
+      "ruleId": "DSN004",
+      "file": "God.kt",
+      "startLine": 5,
+      "measured": {
+        "metric": "wmc",
+        "value": 8,
+        "threshold": 7
+      }
+    },
+    {
+      "ruleId": "DSN005",
+      "file": "Printer.kt",
+      "startLine": 15,
+      "measured": {
+        "metric": "foreignMembers",
+        "value": 3,
+        "threshold": 3
+      }
+    }
+  ]
+}

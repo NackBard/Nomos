@@ -1,0 +1,123 @@
+{
+  "schemaVersion": "1.3.0",
+  "analyzer": {
+    "name": "hand-computed",
+    "version": "0.0.0",
+    "language": "kotlin"
+  },
+  "files": [
+    {
+      "path": "Store.kt",
+      "lines": 23,
+      "loc": 18
+    }
+  ],
+  "modules": [
+    {
+      "id": "sec.code",
+      "name": "sec.code",
+      "files": [
+        "Store.kt"
+      ],
+      "loc": 18,
+      "metrics": {},
+      "paradigmEvidence": []
+    }
+  ],
+  "types": [
+    {
+      "id": "sec.code.Store",
+      "name": "Store",
+      "module": "sec.code",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "Store.kt",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 21,
+        "memberCount": 7,
+        "methodCount": 4
+      }
+    }
+  ],
+  "functions": [
+    {
+      "id": "sec.code.Store.query",
+      "name": "query",
+      "module": "sec.code",
+      "type": "sec.code.Store",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Store.kt",
+        "startLine": 8
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 1,
+        "lines": 3
+      }
+    },
+    {
+      "id": "sec.code.Store.fixed",
+      "name": "fixed",
+      "module": "sec.code",
+      "type": "sec.code.Store",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Store.kt",
+        "startLine": 12
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3
+      }
+    },
+    {
+      "id": "sec.code.Store.formatted",
+      "name": "formatted",
+      "module": "sec.code",
+      "type": "sec.code.Store",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Store.kt",
+        "startLine": 16
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 1,
+        "lines": 3
+      }
+    },
+    {
+      "id": "sec.code.Store.format",
+      "name": "format",
+      "module": "sec.code",
+      "type": "sec.code.Store",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Store.kt",
+        "startLine": 20
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 1,
+        "lines": 3
+      }
+    }
+  ],
+  "dependencies": [],
+  "cycles": [],
+  "skippedRules": [],
+  "diagnostics": []
+}

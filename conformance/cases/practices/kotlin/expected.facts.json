@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "1.3.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "kotlin" },
+  "files": [ { "path": "Shop.kt", "lines": 13, "loc": 10 } ],
+  "modules": [
+    { "id": "prac.code", "name": "prac.code", "files": ["Shop.kt"], "loc": 10, "metrics": {}, "paradigmEvidence": [] }
+  ],
+  "types": [
+    { "id": "prac.code.Shop", "name": "Shop", "module": "prac.code", "kind": "class", "isAbstract": false, "location": { "file": "Shop.kt", "startLine": 3 }, "metrics": { "lines": 11, "memberCount": 3, "methodCount": 2 } }
+  ],
+  "functions": [
+    { "id": "prac.code.Shop.find", "name": "find", "module": "prac.code", "type": "prac.code.Shop", "kind": "method", "visibility": "public", "location": { "file": "Shop.kt", "startLine": 6 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 1, "lines": 3 } },
+    { "id": "prac.code.Shop.sum", "name": "sum", "module": "prac.code", "type": "prac.code.Shop", "kind": "method", "visibility": "public", "location": { "file": "Shop.kt", "startLine": 10 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 6, "lines": 3 } }
+  ],
+  "dependencies": [],
+  "cycles": [],
+  "skippedRules": [
+    { "ruleId": "CC003", "reason": "disabled-by-config", "message": "outside the selected practice security" },
+    { "ruleId": "DSN001", "reason": "disabled-by-config", "message": "outside the selected practice security" },
+    { "ruleId": "SEC001", "reason": "disabled-by-config", "message": "switched off by rules in nomos.json" }
+  ],
+  "diagnostics": []
+}

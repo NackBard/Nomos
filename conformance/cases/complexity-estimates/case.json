@@ -18,7 +18,8 @@
     "typescript",
     "javascript",
     "python",
-    "java"
+    "java",
+    "kotlin"
   ],
   "expectSarif": true,
   "parity": [
@@ -31,7 +32,8 @@
         "typescript": "estimates.quadratic",
         "javascript": "estimates.quadratic",
         "python": "estimates.quadratic",
-        "java": "alg.code.Estimates.quadratic"
+        "java": "alg.code.Estimates.quadratic",
+        "kotlin": "alg.code.Estimates.quadratic"
       }
     },
     {
@@ -43,7 +45,8 @@
         "typescript": "estimates.quadratic",
         "javascript": "estimates.quadratic",
         "python": "estimates.quadratic",
-        "java": "alg.code.Estimates.quadratic"
+        "java": "alg.code.Estimates.quadratic",
+        "kotlin": "alg.code.Estimates.quadratic"
       }
     },
     {
@@ -55,7 +58,8 @@
         "typescript": "estimates.quadratic",
         "javascript": "estimates.quadratic",
         "python": "estimates.quadratic",
-        "java": "alg.code.Estimates.quadratic"
+        "java": "alg.code.Estimates.quadratic",
+        "kotlin": "alg.code.Estimates.quadratic"
       }
     },
     {
@@ -67,7 +71,8 @@
         "typescript": "estimates.halving",
         "javascript": "estimates.halving",
         "python": "estimates.halving",
-        "java": "alg.code.Estimates.halving"
+        "java": "alg.code.Estimates.halving",
+        "kotlin": "alg.code.Estimates.halving"
       }
     },
     {
@@ -79,7 +84,8 @@
         "typescript": "estimates.halving",
         "javascript": "estimates.halving",
         "python": "estimates.halving",
-        "java": "alg.code.Estimates.halving"
+        "java": "alg.code.Estimates.halving",
+        "kotlin": "alg.code.Estimates.halving"
       }
     },
     {
@@ -91,7 +97,8 @@
         "typescript": "estimates.halving",
         "javascript": "estimates.halving",
         "python": "estimates.halving",
-        "java": "alg.code.Estimates.halving"
+        "java": "alg.code.Estimates.halving",
+        "kotlin": "alg.code.Estimates.halving"
       }
     },
     {
@@ -103,7 +110,8 @@
         "typescript": "estimates.linearLog",
         "javascript": "estimates.linearLog",
         "python": "estimates.linear_log",
-        "java": "alg.code.Estimates.linearLog"
+        "java": "alg.code.Estimates.linearLog",
+        "kotlin": "alg.code.Estimates.linearLog"
       }
     },
     {
@@ -115,7 +123,8 @@
         "typescript": "estimates.linearLog",
         "javascript": "estimates.linearLog",
         "python": "estimates.linear_log",
-        "java": "alg.code.Estimates.linearLog"
+        "java": "alg.code.Estimates.linearLog",
+        "kotlin": "alg.code.Estimates.linearLog"
       }
     },
     {
@@ -127,7 +136,8 @@
         "typescript": "estimates.linearLog",
         "javascript": "estimates.linearLog",
         "python": "estimates.linear_log",
-        "java": "alg.code.Estimates.linearLog"
+        "java": "alg.code.Estimates.linearLog",
+        "kotlin": "alg.code.Estimates.linearLog"
       }
     },
     {
@@ -139,7 +149,8 @@
         "typescript": "estimates.factorial",
         "javascript": "estimates.factorial",
         "python": "estimates.factorial",
-        "java": "alg.code.Estimates.factorial"
+        "java": "alg.code.Estimates.factorial",
+        "kotlin": "alg.code.Estimates.factorial"
       }
     },
     {
@@ -151,7 +162,8 @@
         "typescript": "estimates.factorial",
         "javascript": "estimates.factorial",
         "python": "estimates.factorial",
-        "java": "alg.code.Estimates.factorial"
+        "java": "alg.code.Estimates.factorial",
+        "kotlin": "alg.code.Estimates.factorial"
       }
     },
     {
@@ -163,7 +175,8 @@
         "typescript": "estimates.factorial",
         "javascript": "estimates.factorial",
         "python": "estimates.factorial",
-        "java": "alg.code.Estimates.factorial"
+        "java": "alg.code.Estimates.factorial",
+        "kotlin": "alg.code.Estimates.factorial"
       }
     },
     {
@@ -175,7 +188,8 @@
         "typescript": "estimates.search",
         "javascript": "estimates.search",
         "python": "estimates.search",
-        "java": "alg.code.Estimates.search"
+        "java": "alg.code.Estimates.search",
+        "kotlin": "alg.code.Estimates.search"
       }
     },
     {
@@ -187,7 +201,8 @@
         "typescript": "estimates.search",
         "javascript": "estimates.search",
         "python": "estimates.search",
-        "java": "alg.code.Estimates.search"
+        "java": "alg.code.Estimates.search",
+        "kotlin": "alg.code.Estimates.search"
       }
     },
     {
@@ -199,7 +214,8 @@
         "typescript": "estimates.search",
         "javascript": "estimates.search",
         "python": "estimates.search",
-        "java": "alg.code.Estimates.search"
+        "java": "alg.code.Estimates.search",
+        "kotlin": "alg.code.Estimates.search"
       }
     },
     {
@@ -211,7 +227,8 @@
         "typescript": "estimates.cubicViaCallee",
         "javascript": "estimates.cubicViaCallee",
         "python": "estimates.cubic_via_callee",
-        "java": "alg.code.Estimates.cubicViaCallee"
+        "java": "alg.code.Estimates.cubicViaCallee",
+        "kotlin": "alg.code.Estimates.cubicViaCallee"
       }
     },
     {
@@ -223,7 +240,8 @@
         "typescript": "estimates.cubicViaCallee",
         "javascript": "estimates.cubicViaCallee",
         "python": "estimates.cubic_via_callee",
-        "java": "alg.code.Estimates.cubicViaCallee"
+        "java": "alg.code.Estimates.cubicViaCallee",
+        "kotlin": "alg.code.Estimates.cubicViaCallee"
       }
     },
     {
@@ -235,7 +253,8 @@
         "typescript": "estimates.cubicViaCallee",
         "javascript": "estimates.cubicViaCallee",
         "python": "estimates.cubic_via_callee",
-        "java": "alg.code.Estimates.cubicViaCallee"
+        "java": "alg.code.Estimates.cubicViaCallee",
+        "kotlin": "alg.code.Estimates.cubicViaCallee"
       }
     },
     {
@@ -247,7 +266,8 @@
         "typescript": "memory.grid",
         "javascript": "memory.grid",
         "python": "memory.grid",
-        "java": "alg.code.Memory.grid"
+        "java": "alg.code.Memory.grid",
+        "kotlin": "alg.code.Memory.grid"
       }
     },
     {
@@ -259,7 +279,8 @@
         "typescript": "memory.grid",
         "javascript": "memory.grid",
         "python": "memory.grid",
-        "java": "alg.code.Memory.grid"
+        "java": "alg.code.Memory.grid",
+        "kotlin": "alg.code.Memory.grid"
       }
     },
     {
@@ -271,7 +292,8 @@
         "typescript": "memory.grid",
         "javascript": "memory.grid",
         "python": "memory.grid",
-        "java": "alg.code.Memory.grid"
+        "java": "alg.code.Memory.grid",
+        "kotlin": "alg.code.Memory.grid"
       }
     },
     {
@@ -283,7 +305,8 @@
         "typescript": "memory.newInNested",
         "javascript": "memory.newInNested",
         "python": "memory.new_in_nested",
-        "java": "alg.code.Memory.newInNested"
+        "java": "alg.code.Memory.newInNested",
+        "kotlin": "alg.code.Memory.newInNested"
       }
     }
   ]

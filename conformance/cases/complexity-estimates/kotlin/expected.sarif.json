@@ -1,0 +1,74 @@
+{
+  "results": [
+    {
+      "ruleId": "ALG001",
+      "file": "Estimates.kt",
+      "startLine": 16,
+      "measured": {
+        "metric": "timeDegree",
+        "value": 2,
+        "threshold": 2
+      }
+    },
+    {
+      "ruleId": "ALG001",
+      "file": "Estimates.kt",
+      "startLine": 52,
+      "measured": {
+        "metric": "timeExponential",
+        "value": 1,
+        "threshold": 1
+      }
+    },
+    {
+      "ruleId": "ALG001",
+      "file": "Estimates.kt",
+      "startLine": 77,
+      "measured": {
+        "metric": "timeDegree",
+        "value": 3,
+        "threshold": 2
+      }
+    },
+    {
+      "ruleId": "ALG001",
+      "file": "Memory.kt",
+      "startLine": 16,
+      "measured": {
+        "metric": "timeDegree",
+        "value": 2,
+        "threshold": 2
+      }
+    },
+    {
+      "ruleId": "ALG001",
+      "file": "Memory.kt",
+      "startLine": 41,
+      "measured": {
+        "metric": "timeDegree",
+        "value": 2,
+        "threshold": 2
+      }
+    },
+    {
+      "ruleId": "ALG003",
+      "file": "Memory.kt",
+      "startLine": 45,
+      "measured": {
+        "metric": "allocationDepth",
+        "value": 2,
+        "threshold": 2
+      }
+    },
+    {
+      "ruleId": "ALG004",
+      "file": "Memory.kt",
+      "startLine": 16,
+      "measured": {
+        "metric": "spaceDegree",
+        "value": 2,
+        "threshold": 2
+      }
+    }
+  ]
+}

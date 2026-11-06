@@ -1,0 +1,423 @@
+{
+  "schemaVersion": "1.3.0",
+  "analyzer": {
+    "name": "hand-computed",
+    "version": "0.0.0",
+    "language": "kotlin"
+  },
+  "files": [
+    {
+      "path": "Structure.kt",
+      "lines": 52,
+      "loc": 40
+    }
+  ],
+  "modules": [
+    {
+      "id": "ts",
+      "name": "ts",
+      "files": [
+        "Structure.kt"
+      ],
+      "loc": 40,
+      "metrics": {},
+      "paradigmEvidence": []
+    }
+  ],
+  "types": [
+    {
+      "id": "ts.Shape",
+      "name": "Shape",
+      "module": "ts",
+      "kind": "interface",
+      "isAbstract": true,
+      "location": {
+        "file": "Structure.kt",
+        "startLine": 3
+      },
+      "metrics": {}
+    },
+    {
+      "id": "ts.Base",
+      "name": "Base",
+      "module": "ts",
+      "kind": "class",
+      "isAbstract": true,
+      "location": {
+        "file": "Structure.kt",
+        "startLine": 7
+      },
+      "metrics": {},
+      "members": [
+        {
+          "name": "name",
+          "kind": "property",
+          "visibility": "protected",
+          "typeName": "String"
+        }
+      ]
+    },
+    {
+      "id": "ts.Scale",
+      "name": "Scale",
+      "module": "ts",
+      "kind": "enum",
+      "isAbstract": false,
+      "location": {
+        "file": "Structure.kt",
+        "startLine": 13
+      },
+      "metrics": {},
+      "members": [
+        {
+          "name": "MM",
+          "kind": "literal",
+          "visibility": "public"
+        },
+        {
+          "name": "CM",
+          "kind": "literal",
+          "visibility": "public"
+        }
+      ]
+    },
+    {
+      "id": "ts.Square",
+      "name": "Square",
+      "module": "ts",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "Structure.kt",
+        "startLine": 18
+      },
+      "metrics": {},
+      "members": [
+        {
+          "name": "side",
+          "kind": "property",
+          "visibility": "private",
+          "typeName": "Double"
+        },
+        {
+          "name": "unit",
+          "kind": "property",
+          "visibility": "public",
+          "typeName": "Scale?",
+          "type": "ts.Scale"
+        },
+        {
+          "name": "SIDES",
+          "kind": "constant",
+          "visibility": "public"
+        },
+        {
+          "name": "created",
+          "kind": "property",
+          "visibility": "public",
+          "isStatic": true
+        }
+      ]
+    },
+    {
+      "id": "ts.Drawing",
+      "name": "Drawing",
+      "module": "ts",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "Structure.kt",
+        "startLine": 31
+      },
+      "metrics": {},
+      "typeParameters": [
+        "T"
+      ],
+      "members": [
+        {
+          "name": "items",
+          "kind": "property",
+          "visibility": "private",
+          "typeName": "MutableList<T>",
+          "isCollection": true
+        },
+        {
+          "name": "frame",
+          "kind": "property",
+          "visibility": "private",
+          "typeName": "Square?",
+          "type": "ts.Square"
+        }
+      ]
+    },
+    {
+      "id": "ts.Painter",
+      "name": "Painter",
+      "module": "ts",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "Structure.kt",
+        "startLine": 46
+      },
+      "metrics": {}
+    },
+    {
+      "id": "ts.Point",
+      "name": "Point",
+      "module": "ts",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "Structure.kt",
+        "startLine": 52
+      },
+      "metrics": {},
+      "members": [
+        {
+          "name": "x",
+          "kind": "property",
+          "visibility": "public",
+          "typeName": "Int"
+        },
+        {
+          "name": "y",
+          "kind": "property",
+          "visibility": "public",
+          "typeName": "Int"
+        }
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "id": "ts.Shape.area",
+      "name": "area",
+      "module": "ts",
+      "type": "ts.Shape",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Structure.kt",
+        "startLine": 4
+      },
+      "parameters": [],
+      "returnTypeName": "Double",
+      "isAbstract": true,
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "ts.Base.area",
+      "name": "area",
+      "module": "ts",
+      "type": "ts.Base",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Structure.kt",
+        "startLine": 10
+      },
+      "parameters": [],
+      "returnTypeName": "Double",
+      "isAbstract": true,
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "ts.Square.Square",
+      "name": "Square",
+      "module": "ts",
+      "type": "ts.Square",
+      "kind": "constructor",
+      "visibility": "public",
+      "location": {
+        "file": "Structure.kt",
+        "startLine": 18
+      },
+      "parameters": [
+        {
+          "name": "side",
+          "typeName": "Double"
+        }
+      ],
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 1,
+        "lines": 1
+      }
+    },
+    {
+      "id": "ts.Square.area",
+      "name": "area",
+      "module": "ts",
+      "type": "ts.Square",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Structure.kt",
+        "startLine": 21
+      },
+      "parameters": [],
+      "returnTypeName": "Double",
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3
+      }
+    },
+    {
+      "id": "ts.Drawing.add",
+      "name": "add",
+      "module": "ts",
+      "type": "ts.Drawing",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Structure.kt",
+        "startLine": 35
+      },
+      "parameters": [
+        {
+          "name": "item",
+          "typeName": "T"
+        },
+        {
+          "name": "tags",
+          "typeName": "vararg String"
+        }
+      ],
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 2,
+        "lines": 3
+      }
+    },
+    {
+      "id": "ts.Drawing.empty",
+      "name": "empty",
+      "module": "ts",
+      "type": "ts.Drawing",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Structure.kt",
+        "startLine": 40
+      },
+      "parameters": [],
+      "returnTypeName": "Drawing<T>",
+      "isStatic": true,
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3
+      }
+    },
+    {
+      "id": "ts.Painter.paint",
+      "name": "paint",
+      "module": "ts",
+      "type": "ts.Painter",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Structure.kt",
+        "startLine": 47
+      },
+      "parameters": [
+        {
+          "name": "square",
+          "typeName": "Square"
+        }
+      ],
+      "returnTypeName": "Double",
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 1,
+        "lines": 3
+      }
+    },
+    {
+      "id": "ts.Point.Point",
+      "name": "Point",
+      "module": "ts",
+      "type": "ts.Point",
+      "kind": "constructor",
+      "visibility": "public",
+      "location": {
+        "file": "Structure.kt",
+        "startLine": 52
+      },
+      "parameters": [
+        {
+          "name": "x",
+          "typeName": "Int"
+        },
+        {
+          "name": "y",
+          "typeName": "Int"
+        }
+      ],
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 2,
+        "lines": 1
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "from": "ts.Base",
+      "to": "ts.Shape",
+      "kind": "inheritance",
+      "phase": "runtime"
+    },
+    {
+      "from": "ts.Square",
+      "to": "ts.Base",
+      "kind": "inheritance",
+      "phase": "runtime"
+    },
+    {
+      "from": "ts.Square",
+      "to": "ts.Scale",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "ts.Drawing",
+      "to": "ts.Square",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "ts.Painter",
+      "to": "ts.Square",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "ts.Painter",
+      "to": "ts.Square",
+      "kind": "call",
+      "phase": "runtime"
+    }
+  ],
+  "cycles": [],
+  "skippedRules": [],
+  "diagnostics": []
+}

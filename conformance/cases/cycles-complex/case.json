@@ -12,7 +12,8 @@
     "typescript",
     "javascript",
     "python",
-    "java"
+    "java",
+    "kotlin"
   ],
   "expectSarif": true
 }

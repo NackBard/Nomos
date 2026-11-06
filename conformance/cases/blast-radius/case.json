@@ -12,7 +12,8 @@
     "typescript",
     "javascript",
     "python",
-    "java"
+    "java",
+    "kotlin"
   ],
   "expectSarif": true,
   "config": true,
@@ -26,7 +27,8 @@
         "typescript": "chain.C1",
         "javascript": "chain.C1",
         "python": "chain.C1",
-        "java": "blast.chain.C1"
+        "java": "blast.chain.C1",
+        "kotlin": "blast.chain.C1"
       }
     },
     {
@@ -38,7 +40,8 @@
         "typescript": "chain.C4",
         "javascript": "chain.C4",
         "python": "chain.C4",
-        "java": "blast.chain.C4"
+        "java": "blast.chain.C4",
+        "kotlin": "blast.chain.C4"
       }
     },
     {
@@ -50,7 +53,8 @@
         "typescript": "diamond.Bottom",
         "javascript": "diamond.Bottom",
         "python": "diamond.Bottom",
-        "java": "blast.diamond.Bottom"
+        "java": "blast.diamond.Bottom",
+        "kotlin": "blast.diamond.Bottom"
       }
     },
     {
@@ -62,7 +66,8 @@
         "typescript": "ring.R2",
         "javascript": "ring.R2",
         "python": "ring.R2",
-        "java": "blast.ring.R2"
+        "java": "blast.ring.R2",
+        "kotlin": "blast.ring.R2"
       }
     },
     {
@@ -74,7 +79,8 @@
         "typescript": "ring.Leaf",
         "javascript": "ring.Leaf",
         "python": "ring.Leaf",
-        "java": "blast.ring.Leaf"
+        "java": "blast.ring.Leaf",
+        "kotlin": "blast.ring.Leaf"
       }
     },
     {
@@ -86,7 +92,8 @@
         "typescript": "ring.Tail",
         "javascript": "ring.Tail",
         "python": "ring.Tail",
-        "java": "blast.ring.Tail"
+        "java": "blast.ring.Tail",
+        "kotlin": "blast.ring.Tail"
       }
     }
   ]

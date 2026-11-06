@@ -32,13 +32,15 @@ conformance/ ── прогоняет каждый анализатор на э
 | `analyzers/go/` | анализатор Go на `go/parser` и `go/types` | |
 | `analyzers/typescript/` | анализатор TypeScript и JavaScript на TypeScript Compiler API | |
 | `analyzers/python/` | анализатор Python на `ast` и `tokenize` стандартной библиотеки | |
+| `analyzers/java/` | анализатор Java на javac Tree API (`jdk.compiler`) | |
+| `analyzers/kotlin/` | анализатор Kotlin на PSI из `kotlin-compiler-embeddable` | |
 | `analyzers/<язык>/` | будущие анализаторы | |
 | `extension/` | расширение VS Code, только потребитель контрактов | |
 | `conformance/` | фикстуры, эталонные facts, harness | |
 | `ci/` | запуск анализаторов без IDE, отчёты md/html из facts и SARIF, baseline | |
 | `docs/` | эта документация | |
 
-Анализатор Go лежит в `analyzers/go/`, точка входа `cmd/nomos-go`, зависимостей вне стандартной библиотеки нет. Анализатор TypeScript и JavaScript лежит в `analyzers/typescript/`, точка входа `src/main.ts`; язык выбирает первый аргумент `--language javascript`, единственная зависимость — компилятор `typescript` (D-055). Анализатор Python лежит в `analyzers/python/`, точка входа `main.py`, запускается интерпретатором пользователя в изолированном режиме (`python -I`), зависимостей вне стандартной библиотеки нет (D-057). Анализатор C# лежит в `analyzers/csharp/` (`src/`, `tests/`, `Nomos.slnx`, `Directory.*`). Точка входа — `src/Nomos.Analyzer.CSharp` (`nomos-csharp`), она говорит по протоколу `manifest`/`analyze`.
+Анализатор Go лежит в `analyzers/go/`, точка входа `cmd/nomos-go`, зависимостей вне стандартной библиотеки нет. Анализатор TypeScript и JavaScript лежит в `analyzers/typescript/`, точка входа `src/main.ts`; язык выбирает первый аргумент `--language javascript`, единственная зависимость — компилятор `typescript` (D-055). Анализатор Python лежит в `analyzers/python/`, точка входа `main.py`, запускается интерпретатором пользователя в изолированном режиме (`python -I`), зависимостей вне стандартной библиотеки нет (D-057). Анализатор Java лежит в `analyzers/java/`, собирается и запускается `run.mjs` на JDK 17+ пользователя, зависимостей вне JDK нет (D-058). Анализатор Kotlin лежит в `analyzers/kotlin/`, написан на Kotlin, разбирает код PSI из компилятора Kotlin (`kotlin-compiler-embeddable`, версия и суммы — `deps.json`, загрузка — `run.mjs --fetch`) и запускается на Java 17+ пользователя (D-059). Анализатор C# лежит в `analyzers/csharp/` (`src/`, `tests/`, `Nomos.slnx`, `Directory.*`). Точка входа — `src/Nomos.Analyzer.CSharp` (`nomos-csharp`), она говорит по протоколу `manifest`/`analyze`.
 
 ## Контракты
 

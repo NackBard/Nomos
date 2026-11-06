@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1.3.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "kotlin" },
+  "files": [
+    { "path": "Broken.kt", "lines": 1, "loc": 1, "parsed": false },
+    { "path": "Ok.kt", "lines": 5, "loc": 4, "module": "pf" }
+  ],
+  "modules": [
+    { "id": "(global)", "name": "(global)", "files": ["Broken.kt"], "loc": 1, "metrics": {}, "paradigmEvidence": [] },
+    { "id": "pf", "name": "pf", "files": ["Ok.kt"], "loc": 4, "metrics": {}, "paradigmEvidence": [] }
+  ],
+  "types": [
+    { "id": "pf.Ok", "name": "Ok", "module": "pf", "kind": "class", "isAbstract": false, "location": { "file": "Ok.kt", "startLine": 3 }, "metrics": { "lines": 3, "memberCount": 1 } }
+  ],
+  "functions": [],
+  "dependencies": [],
+  "cycles": [],
+  "skippedRules": [],
+  "diagnostics": [
+    { "level": "warning", "message": "Syntax errors: the declarations of this file may be incomplete in the facts.", "file": "Broken.kt", "code": "syntax-error" }
+  ]
+}

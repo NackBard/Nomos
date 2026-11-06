@@ -79,6 +79,18 @@
         "**/node_modules/**",
         "extension/bundle/**"
       ]
+    },
+    {
+      "language": "kotlin",
+      "command": [
+        "node",
+        "analyzers/kotlin/run.mjs"
+      ],
+      "exclude": [
+        "conformance/**",
+        "**/node_modules/**",
+        "extension/bundle/**"
+      ]
     }
   ],
   "layers": [

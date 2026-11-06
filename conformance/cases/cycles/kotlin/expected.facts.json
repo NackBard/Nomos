@@ -1,0 +1,52 @@
+{
+  "schemaVersion": "1.3.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "kotlin" },
+  "files": [
+    { "path": "A1.kt", "lines": 5, "loc": 4 },
+    { "path": "B1.kt", "lines": 5, "loc": 4 },
+    { "path": "C1.kt", "lines": 5, "loc": 4 },
+    { "path": "D1.kt", "lines": 10, "loc": 8 },
+    { "path": "E1.kt", "lines": 5, "loc": 4 },
+    { "path": "E2.kt", "lines": 4, "loc": 3 },
+    { "path": "F1.kt", "lines": 4, "loc": 3 },
+    { "path": "F2.kt", "lines": 5, "loc": 4 }
+  ],
+  "modules": [
+    { "id": "cyc.a", "name": "cyc.a", "files": ["A1.kt"], "loc": 4, "metrics": {}, "paradigmEvidence": [] },
+    { "id": "cyc.b", "name": "cyc.b", "files": ["B1.kt"], "loc": 4, "metrics": {}, "paradigmEvidence": [] },
+    { "id": "cyc.c", "name": "cyc.c", "files": ["C1.kt"], "loc": 4, "metrics": {}, "paradigmEvidence": [] },
+    { "id": "cyc.d", "name": "cyc.d", "files": ["D1.kt"], "loc": 8, "metrics": {}, "paradigmEvidence": [] },
+    { "id": "cyc.e", "name": "cyc.e", "files": ["E1.kt", "E2.kt"], "loc": 7, "metrics": {}, "paradigmEvidence": [] },
+    { "id": "cyc.f", "name": "cyc.f", "files": ["F1.kt", "F2.kt"], "loc": 7, "metrics": {}, "paradigmEvidence": [] }
+  ],
+  "types": [
+    { "id": "cyc.a.A1", "name": "A1", "module": "cyc.a", "kind": "class", "isAbstract": false, "location": { "file": "A1.kt", "startLine": 3 }, "metrics": { "lines": 3, "memberCount": 1 } },
+    { "id": "cyc.b.B1", "name": "B1", "module": "cyc.b", "kind": "class", "isAbstract": false, "location": { "file": "B1.kt", "startLine": 3 }, "metrics": { "lines": 3, "memberCount": 1 } },
+    { "id": "cyc.c.C1", "name": "C1", "module": "cyc.c", "kind": "class", "isAbstract": false, "location": { "file": "C1.kt", "startLine": 3 }, "metrics": { "lines": 3, "memberCount": 1 } },
+    { "id": "cyc.d.D1", "name": "D1", "module": "cyc.d", "kind": "class", "isAbstract": false, "location": { "file": "D1.kt", "startLine": 3 }, "metrics": { "lines": 4, "memberCount": 2 } },
+    { "id": "cyc.d.D2", "name": "D2", "module": "cyc.d", "kind": "class", "isAbstract": false, "location": { "file": "D1.kt", "startLine": 8 }, "metrics": { "lines": 3, "memberCount": 1 } },
+    { "id": "cyc.e.E1", "name": "E1", "module": "cyc.e", "kind": "class", "isAbstract": false, "location": { "file": "E1.kt", "startLine": 3 }, "metrics": { "lines": 3, "memberCount": 1 } },
+    { "id": "cyc.e.E2", "name": "E2", "module": "cyc.e", "kind": "class", "isAbstract": false, "location": { "file": "E2.kt", "startLine": 3 }, "metrics": { "lines": 2, "memberCount": 0 } },
+    { "id": "cyc.f.F1", "name": "F1", "module": "cyc.f", "kind": "class", "isAbstract": false, "location": { "file": "F1.kt", "startLine": 3 }, "metrics": { "lines": 2, "memberCount": 0 } },
+    { "id": "cyc.f.F2", "name": "F2", "module": "cyc.f", "kind": "class", "isAbstract": false, "location": { "file": "F2.kt", "startLine": 3 }, "metrics": { "lines": 3, "memberCount": 1 } }
+  ],
+  "functions": [],
+  "dependencies": [
+    { "from": "cyc.a.A1", "to": "cyc.b.B1", "kind": "type-ref", "phase": "runtime" },
+    { "from": "cyc.b.B1", "to": "cyc.c.C1", "kind": "type-ref", "phase": "runtime" },
+    { "from": "cyc.c.C1", "to": "cyc.a.A1", "kind": "type-ref", "phase": "runtime" },
+    { "from": "cyc.d.D1", "to": "cyc.a.A1", "kind": "type-ref", "phase": "runtime" },
+    { "from": "cyc.d.D1", "to": "cyc.d.D2", "kind": "type-ref", "phase": "runtime" },
+    { "from": "cyc.d.D2", "to": "cyc.d.D1", "kind": "type-ref", "phase": "runtime" },
+    { "from": "cyc.e.E1", "to": "cyc.f.F1", "kind": "type-ref", "phase": "runtime" },
+    { "from": "cyc.f.F2", "to": "cyc.e.E2", "kind": "type-ref", "phase": "runtime" }
+  ],
+  "cycles": [
+    { "level": "type", "members": ["cyc.a.A1", "cyc.b.B1", "cyc.c.C1"] },
+    { "level": "type", "members": ["cyc.d.D1", "cyc.d.D2"] },
+    { "level": "module", "members": ["cyc.a", "cyc.b", "cyc.c"] },
+    { "level": "module", "members": ["cyc.e", "cyc.f"] }
+  ],
+  "skippedRules": [],
+  "diagnostics": []
+}

@@ -50,3 +50,7 @@ Thumbs.db
 
 analyzers/go/bin/
 ci/node_modules/
+
+# Kotlin (analyzers/kotlin): jars from Maven Central (run.mjs --fetch) and what run.mjs builds
+analyzers/kotlin/lib/
+analyzers/kotlin/build/

@@ -1,0 +1,29 @@
+{
+  "results": [
+    {
+      "ruleId": "SEC001",
+      "file": "Store.kt",
+      "startLine": 4
+    },
+    {
+      "ruleId": "SEC001",
+      "file": "Store.kt",
+      "startLine": 6
+    },
+    {
+      "ruleId": "SEC003",
+      "file": "Store.kt",
+      "startLine": 9
+    },
+    {
+      "ruleId": "SEC003",
+      "file": "Store.kt",
+      "startLine": 17
+    },
+    {
+      "ruleId": "SEC003",
+      "file": "Store.kt",
+      "startLine": 21
+    }
+  ]
+}

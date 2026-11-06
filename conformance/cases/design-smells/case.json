@@ -17,7 +17,8 @@
     "typescript",
     "javascript",
     "python",
-    "java"
+    "java",
+    "kotlin"
   ],
   "expectSarif": true,
   "config": true,
@@ -31,7 +32,8 @@
         "typescript": "report/printer.Printer.envy",
         "javascript": "report/printer.Printer.envy",
         "python": "report.printer.Printer.envy",
-        "java": "smell.report.Printer.envy"
+        "java": "smell.report.Printer.envy",
+        "kotlin": "smell.report.Printer.envy"
       }
     },
     {
@@ -43,7 +45,8 @@
         "typescript": "report/printer.Printer.envy",
         "javascript": "report/printer.Printer.envy",
         "python": "report.printer.Printer.envy",
-        "java": "smell.report.Printer.envy"
+        "java": "smell.report.Printer.envy",
+        "kotlin": "smell.report.Printer.envy"
       }
     },
     {
@@ -55,7 +58,8 @@
         "typescript": "report/printer.Printer.balanced",
         "javascript": "report/printer.Printer.balanced",
         "python": "report.printer.Printer.balanced",
-        "java": "smell.report.Printer.balanced"
+        "java": "smell.report.Printer.balanced",
+        "kotlin": "smell.report.Printer.balanced"
       }
     },
     {
@@ -67,7 +71,8 @@
         "typescript": "report/printer.Printer.balanced",
         "javascript": "report/printer.Printer.balanced",
         "python": "report.printer.Printer.balanced",
-        "java": "smell.report.Printer.balanced"
+        "java": "smell.report.Printer.balanced",
+        "kotlin": "smell.report.Printer.balanced"
       }
     },
     {
@@ -79,7 +84,8 @@
         "typescript": "report/printer.Printer.few",
         "javascript": "report/printer.Printer.few",
         "python": "report.printer.Printer.few",
-        "java": "smell.report.Printer.few"
+        "java": "smell.report.Printer.few",
+        "kotlin": "smell.report.Printer.few"
       }
     },
     {
@@ -91,7 +97,8 @@
         "typescript": "report/god.God",
         "javascript": "report/god.God",
         "python": "report.god.God",
-        "java": "smell.report.God"
+        "java": "smell.report.God",
+        "kotlin": "smell.report.God"
       }
     },
     {
@@ -103,7 +110,8 @@
         "typescript": "report/god.God",
         "javascript": "report/god.God",
         "python": "report.god.God",
-        "java": "smell.report.God"
+        "java": "smell.report.God",
+        "kotlin": "smell.report.God"
       }
     },
     {
@@ -115,7 +123,8 @@
         "typescript": "report/god.God",
         "javascript": "report/god.God",
         "python": "report.god.God",
-        "java": "smell.report.God"
+        "java": "smell.report.God",
+        "kotlin": "smell.report.God"
       }
     }
   ]

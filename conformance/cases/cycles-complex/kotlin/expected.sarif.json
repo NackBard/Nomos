@@ -1,0 +1,34 @@
+{
+  "results": [
+    {
+      "ruleId": "DSN002",
+      "file": "A1.kt",
+      "startLine": 1
+    },
+    {
+      "ruleId": "DSN002",
+      "file": "Base.kt",
+      "startLine": 3
+    },
+    {
+      "ruleId": "DSN002",
+      "file": "N1.kt",
+      "startLine": 3
+    },
+    {
+      "ruleId": "DSN002",
+      "file": "P.kt",
+      "startLine": 3
+    },
+    {
+      "ruleId": "DSN002",
+      "file": "X1.kt",
+      "startLine": 3
+    },
+    {
+      "ruleId": "DSN002",
+      "file": "Y1.kt",
+      "startLine": 3
+    }
+  ]
+}

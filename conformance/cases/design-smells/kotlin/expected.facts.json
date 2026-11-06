@@ -1,0 +1,375 @@
+{
+  "schemaVersion": "1.3.0",
+  "analyzer": {
+    "name": "hand-computed",
+    "version": "0.0.0",
+    "language": "kotlin"
+  },
+  "files": [
+    {
+      "path": "God.kt",
+      "lines": 38,
+      "loc": 32
+    },
+    {
+      "path": "Money.kt",
+      "lines": 4,
+      "loc": 3
+    },
+    {
+      "path": "Order.kt",
+      "lines": 7,
+      "loc": 6
+    },
+    {
+      "path": "Printer.kt",
+      "lines": 36,
+      "loc": 28
+    }
+  ],
+  "modules": [
+    {
+      "id": "smell.data",
+      "name": "smell.data",
+      "files": [
+        "Money.kt",
+        "Order.kt"
+      ],
+      "loc": 9,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "smell.report",
+      "name": "smell.report",
+      "files": [
+        "God.kt",
+        "Printer.kt"
+      ],
+      "loc": 60,
+      "metrics": {},
+      "paradigmEvidence": []
+    }
+  ],
+  "types": [
+    {
+      "id": "smell.data.Money",
+      "name": "Money",
+      "module": "smell.data",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "Money.kt",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 2,
+        "memberCount": 4
+      }
+    },
+    {
+      "id": "smell.data.Order",
+      "name": "Order",
+      "module": "smell.data",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "Order.kt",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 5,
+        "memberCount": 3
+      }
+    },
+    {
+      "id": "smell.report.God",
+      "name": "God",
+      "module": "smell.report",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "God.kt",
+        "startLine": 5
+      },
+      "metrics": {
+        "lines": 34,
+        "memberCount": 8,
+        "methodCount": 4,
+        "wmc": 8,
+        "atfd": 3,
+        "tcc": 0
+      }
+    },
+    {
+      "id": "smell.report.Printer",
+      "name": "Printer",
+      "module": "smell.report",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "Printer.kt",
+        "startLine": 6
+      },
+      "metrics": {
+        "lines": 31,
+        "memberCount": 9,
+        "methodCount": 6,
+        "wmc": 6,
+        "atfd": 6,
+        "tcc": 0
+      }
+    }
+  ],
+  "functions": [
+    {
+      "id": "smell.data.Money.Money",
+      "name": "Money",
+      "module": "smell.data",
+      "type": "smell.data.Money",
+      "kind": "constructor",
+      "visibility": "public",
+      "location": {
+        "file": "Money.kt",
+        "startLine": 3
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 3,
+        "lines": 1,
+        "foreignMembers": null,
+        "ownMembers": null
+      }
+    },
+    {
+      "id": "smell.report.God.one",
+      "name": "one",
+      "module": "smell.report",
+      "type": "smell.report.God",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "God.kt",
+        "startLine": 11
+      },
+      "metrics": {
+        "cyclomatic": 2,
+        "maxNesting": 1,
+        "parameterCount": 1,
+        "lines": 6,
+        "foreignMembers": 1,
+        "ownMembers": 1
+      }
+    },
+    {
+      "id": "smell.report.God.two",
+      "name": "two",
+      "module": "smell.report",
+      "type": "smell.report.God",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "God.kt",
+        "startLine": 18
+      },
+      "metrics": {
+        "cyclomatic": 2,
+        "maxNesting": 1,
+        "parameterCount": 1,
+        "lines": 6,
+        "foreignMembers": 1,
+        "ownMembers": 1
+      }
+    },
+    {
+      "id": "smell.report.God.three",
+      "name": "three",
+      "module": "smell.report",
+      "type": "smell.report.God",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "God.kt",
+        "startLine": 25
+      },
+      "metrics": {
+        "cyclomatic": 2,
+        "maxNesting": 1,
+        "parameterCount": 1,
+        "lines": 6,
+        "foreignMembers": 1,
+        "ownMembers": 1
+      }
+    },
+    {
+      "id": "smell.report.God.four",
+      "name": "four",
+      "module": "smell.report",
+      "type": "smell.report.God",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "God.kt",
+        "startLine": 32
+      },
+      "metrics": {
+        "cyclomatic": 2,
+        "maxNesting": 1,
+        "parameterCount": 1,
+        "lines": 6,
+        "foreignMembers": 1,
+        "ownMembers": 1
+      }
+    },
+    {
+      "id": "smell.report.Printer.Printer",
+      "name": "Printer",
+      "module": "smell.report",
+      "type": "smell.report.Printer",
+      "kind": "constructor",
+      "visibility": "public",
+      "location": {
+        "file": "Printer.kt",
+        "startLine": 11
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3,
+        "foreignMembers": null,
+        "ownMembers": null
+      }
+    },
+    {
+      "id": "smell.report.Printer.envy",
+      "name": "envy",
+      "module": "smell.report",
+      "type": "smell.report.Printer",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Printer.kt",
+        "startLine": 15
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 1,
+        "lines": 3,
+        "foreignMembers": 3,
+        "ownMembers": 0
+      }
+    },
+    {
+      "id": "smell.report.Printer.balanced",
+      "name": "balanced",
+      "module": "smell.report",
+      "type": "smell.report.Printer",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Printer.kt",
+        "startLine": 19
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 1,
+        "lines": 3,
+        "foreignMembers": 3,
+        "ownMembers": 3
+      }
+    },
+    {
+      "id": "smell.report.Printer.few",
+      "name": "few",
+      "module": "smell.report",
+      "type": "smell.report.Printer",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Printer.kt",
+        "startLine": 23
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 1,
+        "lines": 3,
+        "foreignMembers": 2,
+        "ownMembers": 0
+      }
+    },
+    {
+      "id": "smell.report.Printer.readsMoney",
+      "name": "readsMoney",
+      "module": "smell.report",
+      "type": "smell.report.Printer",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Printer.kt",
+        "startLine": 27
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 1,
+        "lines": 3,
+        "foreignMembers": 0,
+        "ownMembers": 0
+      }
+    },
+    {
+      "id": "smell.report.Printer.sum",
+      "name": "sum",
+      "module": "smell.report",
+      "type": "smell.report.Printer",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "Printer.kt",
+        "startLine": 32
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 1,
+        "lines": 3,
+        "foreignMembers": null,
+        "ownMembers": null
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "from": "smell.report.God",
+      "to": "smell.data.Order",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "smell.report.Printer",
+      "to": "smell.data.Money",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "smell.report.Printer",
+      "to": "smell.data.Order",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "smell.report",
+      "to": "smell.data",
+      "kind": "import",
+      "phase": "runtime"
+    }
+  ],
+  "cycles": [],
+  "skippedRules": [],
+  "diagnostics": []
+}

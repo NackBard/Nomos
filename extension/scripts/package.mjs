@@ -153,6 +153,29 @@ const analyzers = [];
   });
 }
 
+// Kotlin: the analyzer jar and the jars of the Kotlin compiler it parses with (kotlin-compiler-embeddable, about
+// 60 MB, the same for every platform) run on the person's Java 17+, found as for Java. A JRE is enough: the check runs
+// the manifest without asking for the compiler module (D-059). nomos-kotlin.jar names the other jars in its Class-Path.
+{
+  const out = path.join(bundle, "kotlin");
+  const runner = path.join(repository, "analyzers", "kotlin", "run.mjs");
+  run(process.execPath, [runner, "--bundle", out], { stdio: ["ignore", "inherit", "inherit"] });
+  const { language, files } = manifest(process.execPath, [runner]);
+  analyzers.push({
+    language, files,
+    command: ["${runtime}", "-jar", "${bundle}/kotlin/nomos-kotlin.jar"],
+    runtime: {
+      name: "Java 17 or newer",
+      settings: ["java.jdt.ls.java.home", "java.home"],
+      environment: ["JAVA_HOME"],
+      home: "bin/java",
+      path: ["java"],
+      check: ["-jar", "${bundle}/kotlin/nomos-kotlin.jar", "manifest"],
+      installUrl: "https://adoptium.net/",
+    },
+  });
+}
+
 fs.writeFileSync(path.join(bundle, "analyzers.json"), JSON.stringify({ analyzers }, null, 2) + "\n");
 console.log(`bundle/analyzers.json: ${analyzers.map((a) => a.language).join(", ")}`);
 

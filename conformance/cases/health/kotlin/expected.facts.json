@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "1.3.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "kotlin" },
+  "files": [
+    { "path": "Box.kt", "lines": 5, "loc": 4 },
+    { "path": "Store.kt", "lines": 401, "loc": 300 }
+  ],
+  "modules": [
+    { "id": "health.big", "name": "health.big", "files": ["Store.kt"], "loc": 300, "metrics": {}, "paradigmEvidence": [], "health": { "score": 90.5, "categories": [], "explanation": ["100 * exp(-0.6 / 0.3 / 20)"] } },
+    { "id": "health.tiny", "name": "health.tiny", "files": ["Box.kt"], "loc": 4, "metrics": {}, "paradigmEvidence": [], "health": { "score": 100, "categories": [], "explanation": ["no findings in the only weighted category"] } }
+  ],
+  "types": [
+    { "id": "health.big.Store", "name": "Store", "module": "health.big", "kind": "class", "isAbstract": false, "location": { "file": "Store.kt", "startLine": 3 }, "metrics": { "lines": 399, "memberCount": 289, "methodCount": 1 } },
+    { "id": "health.tiny.Box", "name": "Box", "module": "health.tiny", "kind": "class", "isAbstract": false, "location": { "file": "Box.kt", "startLine": 3 }, "metrics": { "lines": 3, "memberCount": 1 } }
+  ],
+  "functions": [
+    { "id": "health.big.Store.pairs", "name": "pairs", "module": "health.big", "type": "health.big.Store", "kind": "method", "visibility": "public", "location": { "file": "Store.kt", "startLine": 392 }, "metrics": { "cyclomatic": 3, "maxNesting": 2, "parameterCount": 2, "lines": 9 } }
+  ],
+  "dependencies": [],
+  "cycles": [],
+  "health": { "score": 90.6, "categories": [], "explanation": ["(90.48 * 300 + 100 * 4) / 304"] },
+  "skippedRules": [],
+  "diagnostics": []
+}

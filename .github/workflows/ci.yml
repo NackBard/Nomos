@@ -59,6 +59,12 @@ jobs:
       - name: Analyzer Java
         working-directory: analyzers/java
         run: node run.mjs --test
+      # The Kotlin compiler jars come from Maven Central at the versions and hashes of deps.json (D-059).
+      - name: Analyzer Kotlin
+        working-directory: analyzers/kotlin
+        run: |
+          node run.mjs --fetch
+          node run.mjs --test
       - name: Conformance and parity
         working-directory: conformance/runner
         run: npm run all

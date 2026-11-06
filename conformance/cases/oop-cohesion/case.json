@@ -16,7 +16,8 @@
     "typescript",
     "javascript",
     "python",
-    "java"
+    "java",
+    "kotlin"
   ],
   "parity": [
     {
@@ -28,7 +29,8 @@
         "typescript": "cohesion.Mixed",
         "javascript": "cohesion.Mixed",
         "python": "cohesion.Mixed",
-        "java": "oc.Mixed"
+        "java": "oc.Mixed",
+        "kotlin": "oc.Mixed"
       }
     },
     {
@@ -40,7 +42,8 @@
         "typescript": "cohesion.Mixed",
         "javascript": "cohesion.Mixed",
         "python": "cohesion.Mixed",
-        "java": "oc.Mixed"
+        "java": "oc.Mixed",
+        "kotlin": "oc.Mixed"
       }
     },
     {
@@ -52,7 +55,8 @@
         "typescript": "cohesion.Mixed",
         "javascript": "cohesion.Mixed",
         "python": "cohesion.Mixed",
-        "java": "oc.Mixed"
+        "java": "oc.Mixed",
+        "kotlin": "oc.Mixed"
       }
     },
     {
@@ -64,7 +68,8 @@
         "typescript": "cohesion.Mixed",
         "javascript": "cohesion.Mixed",
         "python": "cohesion.Mixed",
-        "java": "oc.Mixed"
+        "java": "oc.Mixed",
+        "kotlin": "oc.Mixed"
       }
     },
     {
@@ -76,7 +81,8 @@
         "typescript": "cohesion.Mixed",
         "javascript": "cohesion.Mixed",
         "python": "cohesion.Mixed",
-        "java": "oc.Mixed"
+        "java": "oc.Mixed",
+        "kotlin": "oc.Mixed"
       }
     },
     {
@@ -88,7 +94,8 @@
         "typescript": "cohesion.Mixed",
         "javascript": "cohesion.Mixed",
         "python": "cohesion.Mixed",
-        "java": "oc.Mixed"
+        "java": "oc.Mixed",
+        "kotlin": "oc.Mixed"
       }
     }
   ]

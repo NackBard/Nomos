@@ -1,0 +1,232 @@
+{
+  "schemaVersion": "1.3.0",
+  "analyzer": {
+    "name": "hand-computed",
+    "version": "0.0.0",
+    "language": "kotlin"
+  },
+  "files": [
+    {
+      "path": "Entity.kt",
+      "lines": 5,
+      "loc": 4
+    },
+    {
+      "path": "Page.kt",
+      "lines": 7,
+      "loc": 6
+    },
+    {
+      "path": "Rich.kt",
+      "lines": 6,
+      "loc": 5
+    },
+    {
+      "path": "Svc.kt",
+      "lines": 5,
+      "loc": 4
+    },
+    {
+      "path": "Tool.kt",
+      "lines": 5,
+      "loc": 4
+    }
+  ],
+  "modules": [
+    {
+      "id": "app.domain",
+      "name": "app.domain",
+      "files": [
+        "Entity.kt"
+      ],
+      "loc": 4,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "app.domain.domain",
+      "name": "app.domain.domain",
+      "files": [
+        "Rich.kt"
+      ],
+      "loc": 5,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "app.services",
+      "name": "app.services",
+      "files": [
+        "Svc.kt"
+      ],
+      "loc": 4,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "app.tools",
+      "name": "app.tools",
+      "files": [
+        "Tool.kt"
+      ],
+      "loc": 4,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "app.web",
+      "name": "app.web",
+      "files": [
+        "Page.kt"
+      ],
+      "loc": 6,
+      "metrics": {},
+      "paradigmEvidence": []
+    }
+  ],
+  "types": [
+    {
+      "id": "app.domain.Entity",
+      "name": "Entity",
+      "module": "app.domain",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "Entity.kt",
+        "startLine": 3
+      },
+      "metrics": {}
+    },
+    {
+      "id": "app.domain.domain.Rich",
+      "name": "Rich",
+      "module": "app.domain.domain",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "Rich.kt",
+        "startLine": 3
+      },
+      "metrics": {}
+    },
+    {
+      "id": "app.services.Svc",
+      "name": "Svc",
+      "module": "app.services",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "Svc.kt",
+        "startLine": 3
+      },
+      "metrics": {}
+    },
+    {
+      "id": "app.tools.Tool",
+      "name": "Tool",
+      "module": "app.tools",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "Tool.kt",
+        "startLine": 3
+      },
+      "metrics": {}
+    },
+    {
+      "id": "app.web.Page",
+      "name": "Page",
+      "module": "app.web",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "Page.kt",
+        "startLine": 3
+      },
+      "metrics": {}
+    }
+  ],
+  "functions": [],
+  "dependencies": [
+    {
+      "from": "app.domain.Entity",
+      "to": "app.services.Svc",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "app.domain.domain.Rich",
+      "to": "app.domain.Entity",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "app.domain.domain.Rich",
+      "to": "app.web.Page",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "app.services.Svc",
+      "to": "app.domain.Entity",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "app.tools.Tool",
+      "to": "app.web.Page",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "app.web.Page",
+      "to": "app.domain.Entity",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "app.web.Page",
+      "to": "app.services.Svc",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "app.web.Page",
+      "to": "app.tools.Tool",
+      "kind": "type-ref",
+      "phase": "runtime"
+    }
+  ],
+  "cycles": [
+    {
+      "level": "type",
+      "members": [
+        "app.domain.Entity",
+        "app.services.Svc"
+      ]
+    },
+    {
+      "level": "type",
+      "members": [
+        "app.tools.Tool",
+        "app.web.Page"
+      ]
+    },
+    {
+      "level": "module",
+      "members": [
+        "app.domain",
+        "app.services"
+      ]
+    },
+    {
+      "level": "module",
+      "members": [
+        "app.tools",
+        "app.web"
+      ]
+    }
+  ],
+  "skippedRules": [],
+  "diagnostics": []
+}
