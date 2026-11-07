@@ -3,3 +3,5 @@ contracts/
 .vscode-test/
 *.vsix
 bundle/
+packs/
+dist/

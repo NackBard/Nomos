@@ -1,7 +1,7 @@
-// Builds a platform-specific .vsix with the analyzers inside (D-046).
-//   node scripts/package.mjs [--target win32-x64]   (default: this machine)
-// This is build tooling, not shipped code: it may name languages. The shipped extension only reads
-// bundle/analyzers.json, which is written here from each analyzer's own manifest.
+// Builds the core .vsix and a .vsix per language pack into dist/ (D-046, D-056, D-062).
+//   node scripts/package.mjs [--target win32-x64] [--only nomos,nomos-go] [--bundle-only]   (target: this machine)
+// This is build tooling, not shipped code: it may name languages. The shipped core reads only the registry entries
+// of the packs and packs.json, both written here from each analyzer's own manifest.
 import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
@@ -203,7 +203,59 @@ const analyzers = [];
 fs.writeFileSync(path.join(bundle, "analyzers.json"), JSON.stringify({ analyzers }, null, 2) + "\n");
 console.log(`bundle/analyzers.json: ${analyzers.map((a) => a.language).join(", ")}`);
 
+// Language packs (D-056, D-062): one extension per analyzer folder of the bundle, without code, that depends on the
+// core and holds its registry entries under "nomos" in package.json. Only a pack with a native program is per target.
+const packInfo = {
+  csharp: { title: "C#" }, go: { title: "Go", native: true }, typescript: { title: "TypeScript and JavaScript" },
+  python: { title: "Python" }, java: { title: "Java" }, kotlin: { title: "Kotlin" }, ruby: { title: "Ruby" },
+};
+const folderOf = (analyzer) => analyzer.command.find((part) => part.startsWith("${bundle}/")).split("/")[1];
+for (const analyzer of analyzers) if (!packInfo[folderOf(analyzer)]) throw new Error(`${analyzer.language}: no language pack for bundle/${folderOf(analyzer)}`);
+const packs = Object.keys(packInfo).map((folder) => ({ folder, name: `nomos-${folder}`, ...packInfo[folder], analyzers: analyzers.filter((a) => folderOf(a) === folder) }));
+
+// The core knows the packs it can offer by name and files (D-062); the list is the same on every target.
+const known = packs.map((pack) => ({ name: pack.name, analyzers: pack.analyzers.map(({ language, files }) => ({ language, files })) }));
+fs.writeFileSync(path.join(extension, "packs.json"), JSON.stringify(known, null, 2) + "\n");
+console.log(`packs.json: ${packs.map((p) => p.name).join(", ")}`);
+
 if (!process.argv.includes("--bundle-only")) {
-  run(process.execPath, [path.join(extension, "node_modules", "@vscode", "vsce", "vsce"), "package", "--target", target, "--allow-missing-repository", "--skip-license", "-o", `nomos-${target}.vsix`],
-    { cwd: extension, stdio: ["ignore", "inherit", "inherit"] });
+  const core = JSON.parse(fs.readFileSync(path.join(extension, "package.json"), "utf8"));
+  const vsce = path.join(extension, "node_modules", "@vscode", "vsce", "vsce");
+  const legal = [];
+  const out = path.join(extension, "dist");
+  fs.mkdirSync(out, { recursive: true });
+  const onlyIndex = process.argv.indexOf("--only");
+  const only = onlyIndex > 0 ? process.argv[onlyIndex + 1].split(",") : undefined;
+
+  // The core is the same on every platform: it carries no analyzer.
+  if (!only || only.includes(core.name)) {
+    run(process.execPath, [vsce, "package", ...legal, "-o", path.join(out, `${core.name}-${core.version}.vsix`)], { cwd: extension, stdio: ["ignore", "inherit", "inherit"] });
+  }
+  for (const pack of packs.filter((p) => !only || only.includes(p.name))) {
+    const folder = path.join(extension, "packs", pack.name);
+    fs.rmSync(folder, { recursive: true, force: true });
+    fs.mkdirSync(folder, { recursive: true });
+    fs.cpSync(path.join(bundle, pack.folder), path.join(folder, "bundle", pack.folder), { recursive: true });
+    const manifest = {
+      name: pack.name,
+      displayName: `Nomos: ${pack.title}`,
+      description: `${pack.title} analyzer for Nomos: statistics and heuristic observations, without verdicts.`,
+      version: core.version,
+      publisher: core.publisher,
+      ...(core.license ? { license: core.license } : {}),
+      ...(core.repository ? { repository: core.repository } : {}),
+      ...(core.private ? { private: true } : {}),
+      engines: core.engines,
+      categories: ["Linters"],
+      extensionDependencies: [`${core.publisher}.${core.name}`],
+      files: ["bundle/**", "README.md"],
+      nomos: { analyzers: pack.analyzers },
+    };
+    fs.writeFileSync(path.join(folder, "package.json"), JSON.stringify(manifest, null, 2) + "\n");
+    fs.writeFileSync(path.join(folder, "README.md"), `# Nomos: ${pack.title}\n\nThe ${pack.title} analyzer of Nomos. It has no code of its own in VS Code: the Nomos extension, installed with it, runs the analyzer and shows the result.\n`);
+    fs.copyFileSync(path.join(extension, "..", "LICENSE"), path.join(folder, "LICENSE"));
+    const file = `${pack.name}-${pack.native ? target + "-" : ""}${core.version}.vsix`;
+    run(process.execPath, [vsce, "package", ...(pack.native ? ["--target", target] : []), ...legal, "--no-dependencies", "-o", path.join(out, file)],
+      { cwd: folder, stdio: ["ignore", "inherit", "inherit"] });
+  }
 }

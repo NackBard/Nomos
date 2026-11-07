@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import test from "node:test";
-import { RegistryFileName, findRuntime, programIn, implicitWorkspace, launchConfig, readRegistry, runtimeArgument, selectBundled, writeWorkspaceFile } from "../core/bundle";
+import { PacksFileName, RegistryFileName, collectRegistry, findRuntime, missingPacks, readPacks, programIn, implicitWorkspace, launchConfig, readRegistry, runtimeArgument, selectBundled, writeWorkspaceFile } from "../core/bundle";
 import type { RuntimeHost, RuntimeRequirement } from "../core/bundle";
 import { ContractError, checkContract } from "../core/contracts";
 import type { AnalysisRun, Facts, Finding } from "../core/model";
@@ -501,4 +501,34 @@ test("SARIF template keys reach the finding", () => {
   assert.deepEqual(finding.messageArguments, ["Run", "52"]);
   assert.equal(finding.explanationId, "limit");
   assert.deepEqual(finding.explanationArguments, ["40"]);
+});
+
+test("language packs give registry entries from their package.json, ahead of the core's own bundle (D-062)", () => {
+  const pack = (id: string, language: string) => ({ id, extensionPath: `/ext/${id}`, packageJSON: { nomos: { analyzers: [{ language, command: ["${bundle}/x"], files: [`**/*.${language}`] }] } } });
+  const registry = collectRegistry(
+    [pack("pub.zeta", "toy"), { id: "other.ext", extensionPath: "/ext/other", packageJSON: { name: "other" } }, pack("pub.alpha", "toy")],
+    { analyzers: [{ language: "toy", command: [], files: [] }, { language: "own", command: [], files: [] }] }, "/core/bundle");
+  assert.deepEqual(registry.analyzers.map((a) => [a.language, a.folder]), [["toy", path.join("/ext/pub.alpha", "bundle")], ["own", "/core/bundle"]]);
+  const config = launchConfig(registry.analyzers[0], "/core/bundle", temporaryFolder());
+  assert.deepEqual(config.command, [`${path.join("/ext/pub.alpha", "bundle")}/x`], "${bundle} is the folder of the pack");
+});
+
+test("a known pack is offered only when its files exist and nothing installed reads them", async () => {
+  const known = [
+    { name: "nomos-toy", analyzers: [{ language: "toy", files: ["**/*.toy"] }, { language: "toyscript", files: ["**/*.tys"] }] },
+    { name: "nomos-own", analyzers: [{ language: "own", files: ["**/*.own"] }] },
+    { name: "nomos-gone", analyzers: [{ language: "gone", files: ["**/*.gone"] }] },
+    { name: "nomos-held", analyzers: [{ language: "held", files: ["**/*.held"] }] },
+  ];
+  const present = new Set(["**/*.toy", "**/*.own", "**/*.held"]);
+  const missing = await missingPacks(known, "pub", ["Pub.Nomos-Held"], { analyzers: [{ language: "own", command: [], files: [] }] },
+    async (globs) => globs.some((g) => present.has(g)));
+  assert.deepEqual(missing, [{ id: "pub.nomos-toy", languages: ["toy"] }]);
+});
+
+test("the list of known packs is optional", () => {
+  const folder = temporaryFolder();
+  assert.deepEqual(readPacks(path.join(folder, PacksFileName)), []);
+  fs.writeFileSync(path.join(folder, PacksFileName), JSON.stringify([{ name: "nomos-toy", analyzers: [] }]));
+  assert.deepEqual(readPacks(path.join(folder, PacksFileName)), [{ name: "nomos-toy", analyzers: [] }]);
 });

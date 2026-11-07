@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import YAML from "yaml";
+import { placeholders } from "./l10n.ts";
 import { practicesFile, repoRoot, rulesDir } from "./paths.ts";
 
 export const goRulesPath = path.join(repoRoot, "analyzers", "go", "internal", "analyzer", "rules.json");
@@ -60,4 +61,26 @@ export function generatedFiles(): { file: string; content: string }[] {
     { file: kotlinPracticesPath, content: practices },
     { file: rubyPracticesPath, content: practices },
   ];
+}
+
+interface CatalogRule { id: string; messages?: Record<string, { text: string }> }
+
+/**
+ * Message keys that both catalogs have but whose English templates use different arguments. A core translates
+ * findings by its own catalog (D-056), so such a key would show a newer analyzer's arguments in the old template;
+ * spec gives a new key instead (D-062). Changing only the wording keeps the key.
+ */
+export function keysWithChangedArguments(previous: CatalogRule[], next: CatalogRule[]): string[] {
+  const before = new Map(previous.map((r) => [r.id, r]));
+  const problems: string[] = [];
+  for (const rule of next) {
+    for (const [key, message] of Object.entries(rule.messages ?? {})) {
+      const old = before.get(rule.id)?.messages?.[key];
+      if (!old) continue;
+      const was = [...placeholders(old.text)].sort().join(",");
+      const now = [...placeholders(message.text)].sort().join(",");
+      if (was !== now) problems.push(`${rule.id}.${key}: arguments {${was}} became {${now}}`);
+    }
+  }
+  return problems;
 }

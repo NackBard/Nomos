@@ -7,7 +7,7 @@ import { interfaceTranslator } from "../ui/translate";
 
 /** Runs inside a real VS Code on the folder given by scripts/run-e2e.mjs. */
 export async function run(): Promise<void> {
-  const extension = vscode.extensions.getExtension<NomosApi>("nomos.nomos");
+  const extension = vscode.extensions.getExtension<NomosApi>("honestarchitector.nomos");
   assert.ok(extension, "the extension is not installed in the test host");
   const api = await extension.activate();
 
@@ -40,6 +40,12 @@ export async function run(): Promise<void> {
   } else {
     // Without nomos.json the bundled analyzers run (D-046); a small clean project may have no findings.
     for (const each of runs) assert.ok(each.facts.files.length > 0, `${each.language} analyzed no files`);
+    // With language packs installed (npm run e2e -- <folder> --packs) every analyzer that ran comes from its pack (D-062).
+    if (process.env.NOMOS_E2E_PACKS) {
+      const own = extension.extensionPath;
+      const folders = new Map(api.registry().analyzers.map((a) => [a.language, a.folder ?? own]));
+      for (const each of runs) assert.ok(!folders.get(each.language)!.startsWith(own), `${each.language} ran from the core's bundle, not from its pack`);
+    }
     // Practices chosen in the settings reach the analyzer through the extension's own workspace file (D-050, D-051).
     const settings = vscode.workspace.getConfiguration("nomos", folder);
     await settings.update("practices", ["security"], vscode.ConfigurationTarget.WorkspaceFolder);

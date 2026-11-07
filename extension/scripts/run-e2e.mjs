@@ -1,5 +1,6 @@
 // Starts the installed VS Code with this extension on a folder (default: the repository, which holds nomos.json).
-// Usage: npm run e2e [-- <folder>]. VSCODE_EXE overrides the executable.
+// Usage: npm run e2e [-- <folder> [--packs]]. VSCODE_EXE overrides the executable. With --packs the core and the language
+// packs of dist/ (npm run package) are installed into the test profile and the analyzers must run from the packs (D-062).
 import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
@@ -7,7 +8,8 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const extension = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const folder = path.resolve(process.argv[2] ?? path.join(extension, ".."));
+const packs = process.argv.includes("--packs");
+const folder = path.resolve(process.argv.slice(2).find((a) => !a.startsWith("--")) ?? path.join(extension, ".."));
 
 function findCode() {
   if (process.env.VSCODE_EXE) return process.env.VSCODE_EXE;
@@ -18,7 +20,7 @@ function findCode() {
   return fs.existsSync(beside) ? beside : script;
 }
 
-const env = { ...process.env };
+const env = { ...process.env, ...(packs ? { NOMOS_E2E_PACKS: "1" } : {}) };
 delete env.ELECTRON_RUN_AS_NODE;
 const profile = fs.mkdtempSync(path.join(os.tmpdir(), "nomos-e2e-"));
 
@@ -44,9 +46,16 @@ if (bundled) {
   // A runtime with PATH programs (`path`) works without its extension, which is then not installed (D-057).
   const runtimes = [...new Set(JSON.parse(fs.readFileSync(registry, "utf8")).analyzers.filter(present).flatMap((a) => (a.runtime && !a.runtime.path ? [a.runtime.extension] : [])))];
   const cli = spawnSync(process.platform === "win32" ? "where" : "which", ["code"], { encoding: "utf8" }).stdout.split(/\r?\n/).find(Boolean);
-  for (const id of runtimes) {
+  // The core goes first: the packs depend on it, and it is not in the Marketplace yet. The development copy of the core
+  // then replaces the installed one, while the packs stay.
+  const dist = path.join(extension, "dist");
+  const vsix = packs ? fs.readdirSync(dist).filter((f) => f.endsWith(".vsix")).sort((a, b) => Number(b.startsWith("nomos-0")) - Number(a.startsWith("nomos-0")) || (a < b ? -1 : 1)).map((f) => path.join(dist, f)) : [];
+  if (packs && !vsix.length) throw new Error("dist/ has no .vsix; run: npm run package");
+  // Only the Windows shell needs the quotes; without a shell they would become part of the argument.
+  const quote = (text) => (process.platform === "win32" ? `"${text}"` : text);
+  for (const id of [...runtimes, ...vsix]) {
     // The CLI script is a .cmd on Windows, which only starts through a shell; the arguments are fixed here.
-    const install = spawnSync(process.platform === "win32" ? `"${cli}"` : cli, [`--extensions-dir="${extensionsDir}"`, "--install-extension", id], { env, stdio: "inherit", shell: process.platform === "win32" });
+    const install = spawnSync(process.platform === "win32" ? `"${cli}"` : cli, [`--extensions-dir=${quote(extensionsDir)}`, "--install-extension", quote(id)], { env, stdio: "inherit", shell: process.platform === "win32" });
     if (install.status !== 0) throw new Error(`could not install ${id} into the test profile`);
   }
 } else {

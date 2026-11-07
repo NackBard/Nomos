@@ -1,0 +1,91 @@
+[
+  {
+    "name": "nomos-csharp",
+    "analyzers": [
+      {
+        "language": "csharp",
+        "files": [
+          "**/*.cs"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "nomos-go",
+    "analyzers": [
+      {
+        "language": "go",
+        "files": [
+          "**/*.go"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "nomos-typescript",
+    "analyzers": [
+      {
+        "language": "typescript",
+        "files": [
+          "**/*.ts",
+          "**/*.tsx",
+          "**/*.mts",
+          "**/*.cts"
+        ]
+      },
+      {
+        "language": "javascript",
+        "files": [
+          "**/*.js",
+          "**/*.jsx",
+          "**/*.mjs",
+          "**/*.cjs"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "nomos-python",
+    "analyzers": [
+      {
+        "language": "python",
+        "files": [
+          "**/*.py"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "nomos-java",
+    "analyzers": [
+      {
+        "language": "java",
+        "files": [
+          "**/*.java"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "nomos-kotlin",
+    "analyzers": [
+      {
+        "language": "kotlin",
+        "files": [
+          "**/*.kt"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "nomos-ruby",
+    "analyzers": [
+      {
+        "language": "ruby",
+        "files": [
+          "**/*.rb"
+        ]
+      }
+    ]
+  }
+]

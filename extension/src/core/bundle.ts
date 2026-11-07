@@ -119,9 +119,74 @@ export interface BundledAnalyzer {
   /** `files` of the analyzer's manifest, copied when the bundle was built. */
   files: string[];
   runtime?: RuntimeRequirement;
+  /** The folder `${bundle}` stands for: the `bundle` folder of the language pack; the core's own bundle when absent. */
+  folder?: string;
 }
 
 export interface Registry { analyzers: BundledAnalyzer[] }
+
+/** Key of a language pack's package.json that holds its registry entries (D-062). */
+export const PackageKey = "nomos";
+
+/** What VS Code tells about an installed extension; a language pack is one whose package.json has `nomos.analyzers`. */
+export interface InstalledExtension { id: string; extensionPath: string; packageJSON: unknown }
+
+/**
+ * The registry of the installed language packs (D-062), then the analyzers of the core's own bundle, which development
+ * and e2e use. Packs are read in id order; a language goes to the first entry that names it. Nothing of a pack runs here.
+ */
+export function collectRegistry(extensions: InstalledExtension[], own: Registry | undefined, ownFolder: string): Registry {
+  const analyzers: BundledAnalyzer[] = [];
+  const languages = new Set<string>();
+  const add = (analyzer: BundledAnalyzer, folder: string) => {
+    if (languages.has(analyzer.language)) return;
+    languages.add(analyzer.language);
+    analyzers.push({ ...analyzer, folder });
+  };
+  const packs = [...extensions].sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
+  for (const extension of packs) {
+    const entries = (extension.packageJSON as { [PackageKey]?: Registry } | undefined)?.[PackageKey]?.analyzers;
+    if (!Array.isArray(entries)) continue;
+    for (const analyzer of entries) add(analyzer, path.join(extension.extensionPath, BundleFolderName));
+  }
+  for (const analyzer of own?.analyzers ?? []) add(analyzer, analyzer.folder ?? ownFolder);
+  return { analyzers };
+}
+
+/** A language pack the core knows of without it being installed: the name of its extension and the files it reads. */
+export interface KnownPack { name: string; analyzers: { language: string; files: string[] }[] }
+
+/** The list of known packs next to the core, written by the build from the analyzers' manifests (D-062). */
+export const PacksFileName = "packs.json";
+
+export function readPacks(file: string): KnownPack[] {
+  if (!fs.existsSync(file)) return [];
+  const packs = parseJson(fs.readFileSync(file, "utf8"), PacksFileName);
+  if (!Array.isArray(packs)) throw new Error(`${PacksFileName}: expected an array of packs`);
+  return packs as KnownPack[];
+}
+
+/** A pack to offer: its extension id, which is the core's publisher and the pack's name, and the languages it adds. */
+export interface MissingPack { id: string; languages: string[] }
+
+/**
+ * The known packs worth offering for a folder: not installed, no analyzer in the registry for any of their languages,
+ * and files of them in the folder. `hasFiles` answers whether any of the globs matches under the folder.
+ */
+export async function missingPacks(known: KnownPack[], publisher: string, installed: Iterable<string>, registry: Registry,
+  hasFiles: (globs: string[]) => Promise<boolean>): Promise<MissingPack[]> {
+  const ids = new Set([...installed].map((id) => id.toLowerCase()));
+  const languages = new Set(registry.analyzers.map((a) => a.language));
+  const missing: MissingPack[] = [];
+  for (const pack of known) {
+    const id = `${publisher}.${pack.name}`;
+    if (ids.has(id.toLowerCase()) || pack.analyzers.some((a) => languages.has(a.language))) continue;
+    const found: string[] = [];
+    for (const analyzer of pack.analyzers) if (await hasFiles(analyzer.files)) found.push(analyzer.language);
+    if (found.length) missing.push({ id, languages: found });
+  }
+  return missing;
+}
 
 /** The registry in `folder`, or undefined for a build without bundled analyzers. */
 export function readRegistry(folder: string): Registry | undefined {
@@ -168,7 +233,8 @@ export function writeWorkspaceFile(workspace: Workspace, storage: string, key: s
  * Turns a bundled analyzer into a launch configuration. The working directory is the extension's storage,
  * so the SARIF file does not land in the analyzed project.
  */
-export function launchConfig(analyzer: BundledAnalyzer, bundleFolder: string, storage: string, runtimePath?: string): AnalyzerConfig {
+export function launchConfig(analyzer: BundledAnalyzer, ownBundle: string, storage: string, runtimePath?: string): AnalyzerConfig {
+  const bundleFolder = analyzer.folder ?? ownBundle;
   if (analyzer.runtime && !runtimePath) throw new Error(`${analyzer.language}: ${analyzer.runtime.name} is required`);
   const command = analyzer.command.map((part) => part.replaceAll("${bundle}", bundleFolder).replaceAll("${runtime}", runtimePath ?? "").replaceAll("${node}", process.execPath));
   // VS Code does not create an extension's storage folder; a missing working directory fails the start with ENOENT.

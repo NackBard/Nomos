@@ -3,9 +3,13 @@
   "displayName": "Nomos",
   "description": "%description%",
   "version": "0.1.0",
-  "publisher": "nomos",
+  "publisher": "honestarchitector",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NackBard/Nomos.git"
+  },
   "private": true,
-  "license": "UNLICENSED",
+  "license": "MIT",
   "engines": {
     "vscode": "^1.90.0"
   },

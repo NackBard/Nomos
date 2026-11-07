@@ -18,5 +18,6 @@ analyzers/ruby/lib/nomos_ruby/practices.json linguist-generated
 extension/rules.json linguist-generated
 extension/practices.json linguist-generated
 ci/rules.json linguist-generated
+extension/packs.json linguist-generated
 analyzers/csharp/tests/fixtures/golden/expected.* linguist-generated
 **/package-lock.json linguist-generated

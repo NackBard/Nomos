@@ -3,8 +3,8 @@ import fs from "node:fs";
 import path from "node:path";
 import * as vscode from "vscode";
 import { createHash } from "node:crypto";
-import { BundleFolderName, findRuntime, implicitWorkspace, launchConfig, readRegistry, selectBundled, writeWorkspaceFile } from "./core/bundle";
-import type { RuntimeHost, RuntimeRequirement } from "./core/bundle";
+import { BundleFolderName, PacksFileName, collectRegistry, findRuntime, implicitWorkspace, launchConfig, missingPacks, readPacks, readRegistry, selectBundled, writeWorkspaceFile } from "./core/bundle";
+import type { Registry, RuntimeHost, RuntimeRequirement } from "./core/bundle";
 import type { AnalysisRun, AnalyzerConfig, Finding, Workspace } from "./core/model";
 import { RulesFileName, localizeFinding, readRules } from "./core/l10n";
 import type { Translate } from "./core/l10n";
@@ -18,8 +18,11 @@ import { interfaceTranslator } from "./ui/translate";
 import { FindingsTree, ParadigmsTree, locationOf } from "./ui/trees";
 import type { TreeTexts } from "./ui/trees";
 
+/** Language packs the person declined to be asked about again, kept in globalState (D-062). */
+const DeclinedPacksKey = "nomos.declinedPacks";
+
 /** What the end-to-end test reads; the extension has no other public surface. */
-export interface NomosApi { runs(): AnalysisRun[]; errors(): string[] }
+export interface NomosApi { runs(): AnalysisRun[]; errors(): string[]; registry(): Registry }
 
 const severities: Record<Finding["level"], vscode.DiagnosticSeverity> = {
   error: vscode.DiagnosticSeverity.Error,
@@ -115,6 +118,13 @@ export function activate(context: vscode.ExtensionContext): NomosApi {
   const runtimes = new Map<string, Promise<string>>();
   const catalog = readPractices(context.asAbsolutePath(PracticesFileName));
   const rules = readRules(context.asAbsolutePath(RulesFileName));
+  const knownPacks = readPacks(context.asAbsolutePath(PacksFileName));
+  /** Packs offered in this session, so that each analysis does not ask again. */
+  const offered = new Set<string>();
+  /** Packs that would analyze files found by the last analysis, for the status bar tooltip. */
+  let missingIds = new Set<string>();
+  /** Whether an analysis has run, so that a change of extensions before it starts nothing. */
+  let analyzed = false;
   const t = interfaceTranslator();
   const texts: TreeTexts = { t, rules, unchosen: (run, ruleId) => unchosenPractices(catalog, folderPractices(run.root), ruleId, t) };
   /** Practices per analyzed folder, for the status bar tooltip. */
@@ -124,12 +134,12 @@ export function activate(context: vscode.ExtensionContext): NomosApi {
    * The program a runtime requirement names. A required runtime comes from its extension, installed on the person's
    * consent; an optional one (with `path`) is the extension's answer for the folder or a program in PATH (D-057).
    */
-  function runtimePath(requirement: RuntimeRequirement, language: string, folder: string): Promise<string> {
+  function runtimePath(requirement: RuntimeRequirement, language: string, folder: string, bundle: string): Promise<string> {
     const optional = requirement.path !== undefined;
     const key = requirement.extension + "\n" + requirement.command + (optional ? "\n" + folder : "");
     const known = runtimes.get(key);
     if (known) return known;
-    const pending = optional ? optionalRuntime(requirement, language, folder) : requiredRuntime(requirement, language);
+    const pending = optional ? optionalRuntime(requirement, language, folder, bundle) : requiredRuntime(requirement, language);
     runtimes.set(key, pending);
     pending.catch(() => runtimes.delete(key));
     return pending;
@@ -150,7 +160,7 @@ export function activate(context: vscode.ExtensionContext): NomosApi {
     return value;
   }
 
-  async function optionalRuntime(requirement: RuntimeRequirement, language: string, folder: string): Promise<string> {
+  async function optionalRuntime(requirement: RuntimeRequirement, language: string, folder: string, bundle: string): Promise<string> {
     const host: RuntimeHost = {
       hasExtension: (id) => vscode.extensions.getExtension(id) !== undefined,
       execute: (command, argument) => Promise.resolve(vscode.commands.executeCommand(command, { ...argument, requestingExtensionId: context.extension.id })),
@@ -158,7 +168,7 @@ export function activate(context: vscode.ExtensionContext): NomosApi {
       environment: (name) => process.env[name],
       usable: (program, args) => new Promise((resolve) => execFile(program, args, { timeout: 20000, windowsHide: true }, (error) => resolve(!error))),
     };
-    const found = await findRuntime(requirement, folder, host, bundleFolder);
+    const found = await findRuntime(requirement, folder, host, bundle);
     if (found) return found;
     const open = t("Open download page");
     const programs = (requirement.path ?? []).join(", ");
@@ -172,20 +182,46 @@ export function activate(context: vscode.ExtensionContext): NomosApi {
     throw new Error(t("{0}: skipped, {1} was not found", language, requirement.name));
   }
 
-  /** nomos.json decides when present; otherwise the bundled analyzers that find their files (D-046). */
+  /** The analyzers of the installed language packs, then those of the core's own bundle (D-062). */
+  function registry(): Registry {
+    const extensions = vscode.extensions.all.map((e) => ({ id: e.id, extensionPath: e.extensionPath, packageJSON: e.packageJSON as unknown }));
+    return collectRegistry(extensions, readRegistry(bundleFolder), bundleFolder);
+  }
+
+  /** Offers the known packs whose files the folder has; each pack once a session, never after "Don't ask again". */
+  async function offerPacks(folder: string, installed: Registry): Promise<void> {
+    const publisher = String((context.extension.packageJSON as { publisher?: string }).publisher);
+    const missing = await missingPacks(knownPacks, publisher, vscode.extensions.all.map((e) => e.id), installed, (globs) => hasFiles(folder, globs));
+    for (const pack of missing) {
+      missingIds.add(pack.id);
+      const declined = context.globalState.get<string[]>(DeclinedPacksKey, []);
+      if (offered.has(pack.id) || declined.includes(pack.id)) continue;
+      offered.add(pack.id);
+      const install = t("Install");
+      const never = t("Don't ask again");
+      void vscode.window.showInformationMessage(t("Nomos can analyze the {0} files of this workspace with the language pack {1}.", pack.languages.join(", "), pack.id), install, never)
+        .then(async (choice) => {
+          // Installing changes the extensions; the listener below analyzes again.
+          if (choice === install) await vscode.commands.executeCommand("workbench.extensions.installExtension", pack.id);
+          else if (choice === never) await context.globalState.update(DeclinedPacksKey, [...declined, pack.id]);
+        });
+    }
+  }
+
+  /** nomos.json decides when present; otherwise the installed analyzers that find their files (D-046, D-062). */
   async function plan(folder: string): Promise<Planned[]> {
     if (fs.existsSync(path.join(folder, WorkspaceFileName))) {
       const workspace = readWorkspace(folder);
       return workspace.analyzers.map((config) => ({ language: config.language, folder, prepare: async () => ({ config, workspace }) }));
     }
-    const registry = readRegistry(bundleFolder);
-    if (!registry) return [];
-    const selected = await selectBundled(registry, (globs) => hasFiles(folder, globs));
+    const installed = registry();
+    await offerPacks(folder, installed);
+    const selected = await selectBundled(installed, (globs) => hasFiles(folder, globs));
     return selected.map((analyzer) => ({
       language: analyzer.language,
       folder,
       prepare: async () => {
-        const runtime = analyzer.runtime ? await runtimePath(analyzer.runtime, analyzer.language, folder) : undefined;
+        const runtime = analyzer.runtime ? await runtimePath(analyzer.runtime, analyzer.language, folder, analyzer.folder ?? bundleFolder) : undefined;
         const config = launchConfig(analyzer, bundleFolder, storage, runtime);
         const practices = settingPractices(folder);
         const workspace = implicitWorkspace(config, practices);
@@ -226,7 +262,8 @@ export function activate(context: vscode.ExtensionContext): NomosApi {
     if (planned === 0) {
       // "0 findings" here would read as a clean result although nothing ran.
       status.text = `$(telescope) ${t("Nomos: nothing to analyze")}`;
-      status.tooltip = t("No folder has a nomos.json or files that a bundled analyzer reads. Click to analyze again.");
+      status.tooltip = [t("No folder has a nomos.json or files that an installed analyzer reads. Click to analyze again."),
+        ...(missingIds.size ? [t("Language packs for the files found: {0}", [...missingIds].join(", "))] : [])].join("\n");
     } else {
       const counted = total === 1 ? t("Nomos: {0} finding", total) : t("Nomos: {0} findings", total);
       status.text = `$(telescope) ${counted}${scores ? ` · ${t("health {0}", scores)}` : ""}`;
@@ -242,6 +279,8 @@ export function activate(context: vscode.ExtensionContext): NomosApi {
     const fresh: AnalysisRun[] = [];
     const failures: string[] = [];
     let planned = 0;
+    missingIds = new Set<string>();
+    analyzed = true;
     const lines: string[] = [];
     await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: t("Nomos: analyzing") }, async () => {
       for (const folder of workspaceFolders()) {
@@ -324,6 +363,10 @@ export function activate(context: vscode.ExtensionContext): NomosApi {
     vscode.commands.registerCommand("nomos.openGraphWindow", () => openGraphWindow(context, () => runs)),
     vscode.commands.registerCommand("nomos.choosePractices", choosePractices),
     vscode.commands.registerCommand("nomos.exportClassDiagram", (target?: DiagramTarget) => exportClassDiagram(runs, target)),
+    // A language pack installed, removed, enabled or disabled changes what can run (D-062).
+    vscode.extensions.onDidChange(() => {
+      if (analyzed && !running) void analyzeAll();
+    }),
     vscode.workspace.onDidChangeConfiguration((event) => {
       if (event.affectsConfiguration("nomos.practices")) void analyzeAll();
       if (event.affectsConfiguration("nomos.diagnostics")) showDiagnostics();
@@ -333,7 +376,7 @@ export function activate(context: vscode.ExtensionContext): NomosApi {
       if (!own && vscode.workspace.getConfiguration("nomos").get<boolean>("analyzeOnSave", false)) void analyzeAll();
     }),
   );
-  return { runs: () => runs, errors: () => errors };
+  return { runs: () => runs, errors: () => errors, registry };
 }
 
 export function deactivate(): void {}

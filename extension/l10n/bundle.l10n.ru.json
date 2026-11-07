@@ -14,7 +14,6 @@
   "Module whose types to export": "Модуль, типы которого выгрузить",
   "Modules": "Модули",
   "No data yet: run Nomos: Analyze Workspace.": "Данных пока нет: запустите «Nomos: Анализ рабочей области».",
-  "No folder has a nomos.json or files that a bundled analyzer reads. Click to analyze again.": "Ни в одной папке нет nomos.json или файлов, которые читает встроенный анализатор. Щёлкните, чтобы повторить анализ.",
   "No rules skipped in this module": "В этом модуле правила не пропускались",
   "Nomos needs {0} to analyze the {1} files of this workspace. The extension {2} provides it.": "Nomos нужен {0}, чтобы проанализировать файлы {1} в этой рабочей области. Его предоставляет расширение {2}.",
   "Nomos: Dependency Graph": "Nomos: граф зависимостей",
@@ -148,5 +147,9 @@
   "Open download page": "Открыть страницу загрузки",
   "Nomos needs {0} to analyze the {1} files of this workspace. Neither the extension {2} nor PATH ({3}) gives one.": "Nomos нужен {0}, чтобы проанализировать файлы {1} в этой рабочей области. Его не дают ни расширение {2}, ни PATH ({3}).",
   "{0}: skipped, {1} was not found": "{0}: пропущено, {1} не найден",
-  "Nomos needs {0} to analyze the {1} files of this workspace. None of the settings and variables {2} nor PATH ({3}) gives one.": "Nomos нужен {0}, чтобы проанализировать файлы {1} в этой рабочей области. Его не дают ни настройки и переменные {2}, ни PATH ({3})."
+  "Nomos needs {0} to analyze the {1} files of this workspace. None of the settings and variables {2} nor PATH ({3}) gives one.": "Nomos нужен {0}, чтобы проанализировать файлы {1} в этой рабочей области. Его не дают ни настройки и переменные {2}, ни PATH ({3}).",
+  "No folder has a nomos.json or files that an installed analyzer reads. Click to analyze again.": "Ни в одной папке нет nomos.json или файлов, которые читает установленный анализатор. Щёлкните, чтобы повторить анализ.",
+  "Language packs for the files found: {0}": "Языковые пакеты для найденных файлов: {0}",
+  "Don't ask again": "Больше не спрашивать",
+  "Nomos can analyze the {0} files of this workspace with the language pack {1}.": "Nomos может анализировать файлы {0} в этой рабочей области, если поставить языковой пакет {1}."
 }

@@ -7,3 +7,6 @@ tsconfig.json
 out/e2e/**
 .vscode-test/**
 CLAUDE.md
+bundle/**
+packs/**
+dist/**
