@@ -1,0 +1,74 @@
+{
+  "results": [
+    {
+      "ruleId": "ALG001",
+      "file": "estimates.rb",
+      "startLine": 16,
+      "measured": {
+        "metric": "timeDegree",
+        "value": 2,
+        "threshold": 2
+      }
+    },
+    {
+      "ruleId": "ALG001",
+      "file": "estimates.rb",
+      "startLine": 52,
+      "measured": {
+        "metric": "timeExponential",
+        "value": 1,
+        "threshold": 1
+      }
+    },
+    {
+      "ruleId": "ALG001",
+      "file": "estimates.rb",
+      "startLine": 73,
+      "measured": {
+        "metric": "timeDegree",
+        "value": 3,
+        "threshold": 2
+      }
+    },
+    {
+      "ruleId": "ALG001",
+      "file": "memory.rb",
+      "startLine": 16,
+      "measured": {
+        "metric": "timeDegree",
+        "value": 2,
+        "threshold": 2
+      }
+    },
+    {
+      "ruleId": "ALG001",
+      "file": "memory.rb",
+      "startLine": 40,
+      "measured": {
+        "metric": "timeDegree",
+        "value": 2,
+        "threshold": 2
+      }
+    },
+    {
+      "ruleId": "ALG003",
+      "file": "memory.rb",
+      "startLine": 44,
+      "measured": {
+        "metric": "allocationDepth",
+        "value": 2,
+        "threshold": 2
+      }
+    },
+    {
+      "ruleId": "ALG004",
+      "file": "memory.rb",
+      "startLine": 16,
+      "measured": {
+        "metric": "spaceDegree",
+        "value": 2,
+        "threshold": 2
+      }
+    }
+  ]
+}

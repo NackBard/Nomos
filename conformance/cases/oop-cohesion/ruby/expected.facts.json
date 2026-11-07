@@ -1,0 +1,237 @@
+{
+  "schemaVersion": "1.3.0",
+  "analyzer": {
+    "name": "hand-computed",
+    "version": "0.0.0",
+    "language": "ruby"
+  },
+  "files": [
+    {
+      "path": "cohesion.rb",
+      "lines": 27,
+      "loc": 20
+    },
+    {
+      "path": "errors.rb",
+      "lines": 7,
+      "loc": 6
+    }
+  ],
+  "modules": [
+    {
+      "id": "Cohesion",
+      "name": "Cohesion",
+      "files": [
+        "cohesion.rb"
+      ],
+      "loc": 20,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "Errors",
+      "name": "Errors",
+      "files": [
+        "errors.rb"
+      ],
+      "loc": 6,
+      "metrics": {},
+      "paradigmEvidence": []
+    }
+  ],
+  "types": [
+    {
+      "id": "Cohesion::Data",
+      "name": "Data",
+      "module": "Cohesion",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "cohesion.rb",
+        "startLine": 2
+      },
+      "metrics": {
+        "lines": 1,
+        "memberCount": 2,
+        "methodCount": 0,
+        "dit": 0,
+        "cbo": 0,
+        "lcom4": null,
+        "wmc": 0,
+        "atfd": 0,
+        "tcc": null
+      }
+    },
+    {
+      "id": "Cohesion::Mixed",
+      "name": "Mixed",
+      "module": "Cohesion",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "cohesion.rb",
+        "startLine": 4
+      },
+      "metrics": {
+        "lines": 20,
+        "memberCount": 7,
+        "methodCount": 4,
+        "dit": 0,
+        "cbo": 1,
+        "lcom4": 3,
+        "wmc": 4,
+        "atfd": 2,
+        "tcc": 0.1667
+      }
+    },
+    {
+      "id": "Cohesion::Derived",
+      "name": "Derived",
+      "module": "Cohesion",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "cohesion.rb",
+        "startLine": 25
+      },
+      "metrics": {
+        "lines": 2,
+        "memberCount": 0,
+        "methodCount": 0,
+        "dit": 1,
+        "cbo": 1,
+        "lcom4": null,
+        "wmc": 0,
+        "atfd": 0,
+        "tcc": null
+      }
+    },
+    {
+      "id": "Errors::Fail",
+      "name": "Fail",
+      "module": "Errors",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "errors.rb",
+        "startLine": 2
+      },
+      "metrics": {
+        "dit": 1,
+        "cbo": 0
+      }
+    },
+    {
+      "id": "Errors::DeepFail",
+      "name": "DeepFail",
+      "module": "Errors",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "errors.rb",
+        "startLine": 5
+      },
+      "metrics": {
+        "dit": 2,
+        "cbo": 1
+      }
+    }
+  ],
+  "functions": [
+    {
+      "id": "Cohesion::Mixed#inc_a",
+      "name": "inc_a",
+      "module": "Cohesion",
+      "type": "Cohesion::Mixed",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "cohesion.rb",
+        "startLine": 8
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3
+      }
+    },
+    {
+      "id": "Cohesion::Mixed#read_a",
+      "name": "read_a",
+      "module": "Cohesion",
+      "type": "Cohesion::Mixed",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "cohesion.rb",
+        "startLine": 12
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3
+      }
+    },
+    {
+      "id": "Cohesion::Mixed#inc_b",
+      "name": "inc_b",
+      "module": "Cohesion",
+      "type": "Cohesion::Mixed",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "cohesion.rb",
+        "startLine": 16
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3
+      }
+    },
+    {
+      "id": "Cohesion::Mixed#peek",
+      "name": "peek",
+      "module": "Cohesion",
+      "type": "Cohesion::Mixed",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "cohesion.rb",
+        "startLine": 20
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "from": "Cohesion::Mixed",
+      "to": "Cohesion::Data",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "Cohesion::Derived",
+      "to": "Cohesion::Mixed",
+      "kind": "inheritance",
+      "phase": "runtime"
+    },
+    {
+      "from": "Errors::DeepFail",
+      "to": "Errors::Fail",
+      "kind": "inheritance",
+      "phase": "runtime"
+    }
+  ],
+  "cycles": [],
+  "skippedRules": [],
+  "diagnostics": []
+}

@@ -19,7 +19,8 @@
     "javascript",
     "python",
     "java",
-    "kotlin"
+    "kotlin",
+    "ruby"
   ],
   "expectSarif": true,
   "parity": [
@@ -33,7 +34,8 @@
         "javascript": "estimates.quadratic",
         "python": "estimates.quadratic",
         "java": "alg.code.Estimates.quadratic",
-        "kotlin": "alg.code.Estimates.quadratic"
+        "kotlin": "alg.code.Estimates.quadratic",
+        "ruby": "Alg::Code::Estimates#quadratic"
       }
     },
     {
@@ -46,7 +48,8 @@
         "javascript": "estimates.quadratic",
         "python": "estimates.quadratic",
         "java": "alg.code.Estimates.quadratic",
-        "kotlin": "alg.code.Estimates.quadratic"
+        "kotlin": "alg.code.Estimates.quadratic",
+        "ruby": "Alg::Code::Estimates#quadratic"
       }
     },
     {
@@ -59,7 +62,8 @@
         "javascript": "estimates.quadratic",
         "python": "estimates.quadratic",
         "java": "alg.code.Estimates.quadratic",
-        "kotlin": "alg.code.Estimates.quadratic"
+        "kotlin": "alg.code.Estimates.quadratic",
+        "ruby": "Alg::Code::Estimates#quadratic"
       }
     },
     {
@@ -72,7 +76,8 @@
         "javascript": "estimates.halving",
         "python": "estimates.halving",
         "java": "alg.code.Estimates.halving",
-        "kotlin": "alg.code.Estimates.halving"
+        "kotlin": "alg.code.Estimates.halving",
+        "ruby": "Alg::Code::Estimates#halving"
       }
     },
     {
@@ -85,7 +90,8 @@
         "javascript": "estimates.halving",
         "python": "estimates.halving",
         "java": "alg.code.Estimates.halving",
-        "kotlin": "alg.code.Estimates.halving"
+        "kotlin": "alg.code.Estimates.halving",
+        "ruby": "Alg::Code::Estimates#halving"
       }
     },
     {
@@ -98,7 +104,8 @@
         "javascript": "estimates.halving",
         "python": "estimates.halving",
         "java": "alg.code.Estimates.halving",
-        "kotlin": "alg.code.Estimates.halving"
+        "kotlin": "alg.code.Estimates.halving",
+        "ruby": "Alg::Code::Estimates#halving"
       }
     },
     {
@@ -111,7 +118,8 @@
         "javascript": "estimates.linearLog",
         "python": "estimates.linear_log",
         "java": "alg.code.Estimates.linearLog",
-        "kotlin": "alg.code.Estimates.linearLog"
+        "kotlin": "alg.code.Estimates.linearLog",
+        "ruby": "Alg::Code::Estimates#linear_log"
       }
     },
     {
@@ -124,7 +132,8 @@
         "javascript": "estimates.linearLog",
         "python": "estimates.linear_log",
         "java": "alg.code.Estimates.linearLog",
-        "kotlin": "alg.code.Estimates.linearLog"
+        "kotlin": "alg.code.Estimates.linearLog",
+        "ruby": "Alg::Code::Estimates#linear_log"
       }
     },
     {
@@ -137,7 +146,8 @@
         "javascript": "estimates.linearLog",
         "python": "estimates.linear_log",
         "java": "alg.code.Estimates.linearLog",
-        "kotlin": "alg.code.Estimates.linearLog"
+        "kotlin": "alg.code.Estimates.linearLog",
+        "ruby": "Alg::Code::Estimates#linear_log"
       }
     },
     {
@@ -150,7 +160,8 @@
         "javascript": "estimates.factorial",
         "python": "estimates.factorial",
         "java": "alg.code.Estimates.factorial",
-        "kotlin": "alg.code.Estimates.factorial"
+        "kotlin": "alg.code.Estimates.factorial",
+        "ruby": "Alg::Code::Estimates#factorial"
       }
     },
     {
@@ -163,7 +174,8 @@
         "javascript": "estimates.factorial",
         "python": "estimates.factorial",
         "java": "alg.code.Estimates.factorial",
-        "kotlin": "alg.code.Estimates.factorial"
+        "kotlin": "alg.code.Estimates.factorial",
+        "ruby": "Alg::Code::Estimates#factorial"
       }
     },
     {
@@ -176,7 +188,8 @@
         "javascript": "estimates.factorial",
         "python": "estimates.factorial",
         "java": "alg.code.Estimates.factorial",
-        "kotlin": "alg.code.Estimates.factorial"
+        "kotlin": "alg.code.Estimates.factorial",
+        "ruby": "Alg::Code::Estimates#factorial"
       }
     },
     {
@@ -189,7 +202,8 @@
         "javascript": "estimates.search",
         "python": "estimates.search",
         "java": "alg.code.Estimates.search",
-        "kotlin": "alg.code.Estimates.search"
+        "kotlin": "alg.code.Estimates.search",
+        "ruby": "Alg::Code::Estimates#search"
       }
     },
     {
@@ -202,7 +216,8 @@
         "javascript": "estimates.search",
         "python": "estimates.search",
         "java": "alg.code.Estimates.search",
-        "kotlin": "alg.code.Estimates.search"
+        "kotlin": "alg.code.Estimates.search",
+        "ruby": "Alg::Code::Estimates#search"
       }
     },
     {
@@ -215,7 +230,8 @@
         "javascript": "estimates.search",
         "python": "estimates.search",
         "java": "alg.code.Estimates.search",
-        "kotlin": "alg.code.Estimates.search"
+        "kotlin": "alg.code.Estimates.search",
+        "ruby": "Alg::Code::Estimates#search"
       }
     },
     {
@@ -228,7 +244,8 @@
         "javascript": "estimates.cubicViaCallee",
         "python": "estimates.cubic_via_callee",
         "java": "alg.code.Estimates.cubicViaCallee",
-        "kotlin": "alg.code.Estimates.cubicViaCallee"
+        "kotlin": "alg.code.Estimates.cubicViaCallee",
+        "ruby": "Alg::Code::Estimates#cubic_via_callee"
       }
     },
     {
@@ -241,7 +258,8 @@
         "javascript": "estimates.cubicViaCallee",
         "python": "estimates.cubic_via_callee",
         "java": "alg.code.Estimates.cubicViaCallee",
-        "kotlin": "alg.code.Estimates.cubicViaCallee"
+        "kotlin": "alg.code.Estimates.cubicViaCallee",
+        "ruby": "Alg::Code::Estimates#cubic_via_callee"
       }
     },
     {
@@ -254,7 +272,8 @@
         "javascript": "estimates.cubicViaCallee",
         "python": "estimates.cubic_via_callee",
         "java": "alg.code.Estimates.cubicViaCallee",
-        "kotlin": "alg.code.Estimates.cubicViaCallee"
+        "kotlin": "alg.code.Estimates.cubicViaCallee",
+        "ruby": "Alg::Code::Estimates#cubic_via_callee"
       }
     },
     {
@@ -267,7 +286,8 @@
         "javascript": "memory.grid",
         "python": "memory.grid",
         "java": "alg.code.Memory.grid",
-        "kotlin": "alg.code.Memory.grid"
+        "kotlin": "alg.code.Memory.grid",
+        "ruby": "Alg::Code::Memory#grid"
       }
     },
     {
@@ -280,7 +300,8 @@
         "javascript": "memory.grid",
         "python": "memory.grid",
         "java": "alg.code.Memory.grid",
-        "kotlin": "alg.code.Memory.grid"
+        "kotlin": "alg.code.Memory.grid",
+        "ruby": "Alg::Code::Memory#grid"
       }
     },
     {
@@ -293,7 +314,8 @@
         "javascript": "memory.grid",
         "python": "memory.grid",
         "java": "alg.code.Memory.grid",
-        "kotlin": "alg.code.Memory.grid"
+        "kotlin": "alg.code.Memory.grid",
+        "ruby": "Alg::Code::Memory#grid"
       }
     },
     {
@@ -306,7 +328,8 @@
         "javascript": "memory.newInNested",
         "python": "memory.new_in_nested",
         "java": "alg.code.Memory.newInNested",
-        "kotlin": "alg.code.Memory.newInNested"
+        "kotlin": "alg.code.Memory.newInNested",
+        "ruby": "Alg::Code::Memory#new_in_nested"
       }
     }
   ]

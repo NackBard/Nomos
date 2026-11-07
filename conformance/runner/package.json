@@ -14,7 +14,7 @@
     "csharp": "node src/cli.ts run --analyzer \"csharp=dotnet analyzers/csharp/src/Nomos.Analyzer.CSharp/bin/Debug/net10.0/nomos-csharp.dll\"",
     "go": "go build -C ../../analyzers/go -o bin/nomos-go.exe ./cmd/nomos-go && node src/cli.ts run --analyzer \"go=analyzers/go/bin/nomos-go.exe\"",
     "typescript": "node src/cli.ts run --analyzer \"typescript=node analyzers/typescript/src/main.ts\" --analyzer \"javascript=node analyzers/typescript/src/main.ts --language javascript\"",
-    "all": "dotnet build ../../analyzers/csharp/Nomos.slnx -v q && go build -C ../../analyzers/go -o bin/nomos-go.exe ./cmd/nomos-go && node src/cli.ts run --analyzer \"csharp=dotnet analyzers/csharp/src/Nomos.Analyzer.CSharp/bin/Debug/net10.0/nomos-csharp.dll\" --analyzer \"go=analyzers/go/bin/nomos-go.exe\" --analyzer \"typescript=node analyzers/typescript/src/main.ts\" --analyzer \"javascript=node analyzers/typescript/src/main.ts --language javascript\" --analyzer \"python=node analyzers/python/run.mjs\" --analyzer \"java=node analyzers/java/run.mjs\" --analyzer \"kotlin=node analyzers/kotlin/run.mjs\"",
+    "all": "dotnet build ../../analyzers/csharp/Nomos.slnx -v q && go build -C ../../analyzers/go -o bin/nomos-go.exe ./cmd/nomos-go && node src/cli.ts run --analyzer \"csharp=dotnet analyzers/csharp/src/Nomos.Analyzer.CSharp/bin/Debug/net10.0/nomos-csharp.dll\" --analyzer \"go=analyzers/go/bin/nomos-go.exe\" --analyzer \"typescript=node analyzers/typescript/src/main.ts\" --analyzer \"javascript=node analyzers/typescript/src/main.ts --language javascript\" --analyzer \"python=node analyzers/python/run.mjs\" --analyzer \"java=node analyzers/java/run.mjs\" --analyzer \"kotlin=node analyzers/kotlin/run.mjs\" --analyzer \"ruby=node analyzers/ruby/run.mjs\"",
     "go-rules": "node src/write-go-rules.ts",
     "spec-json": "node src/write-go-rules.ts",
     "fetch-sarif-schema": "node src/fetch-sarif-schema.ts",
@@ -23,7 +23,8 @@
     "typecheck": "tsc --noEmit",
     "python": "node src/cli.ts run --analyzer \"python=node analyzers/python/run.mjs\"",
     "java": "node src/cli.ts run --analyzer \"java=node analyzers/java/run.mjs\"",
-    "kotlin": "node src/cli.ts run --analyzer \"kotlin=node analyzers/kotlin/run.mjs\""
+    "kotlin": "node src/cli.ts run --analyzer \"kotlin=node analyzers/kotlin/run.mjs\"",
+    "ruby": "node src/cli.ts run --analyzer \"ruby=node analyzers/ruby/run.mjs\""
   },
   "dependencies": {
     "ajv": "8.20.0",

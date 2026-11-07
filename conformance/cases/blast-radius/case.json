@@ -13,7 +13,8 @@
     "javascript",
     "python",
     "java",
-    "kotlin"
+    "kotlin",
+    "ruby"
   ],
   "expectSarif": true,
   "config": true,
@@ -28,7 +29,8 @@
         "javascript": "chain.C1",
         "python": "chain.C1",
         "java": "blast.chain.C1",
-        "kotlin": "blast.chain.C1"
+        "kotlin": "blast.chain.C1",
+        "ruby": "Blast::Chain::C1"
       }
     },
     {
@@ -41,7 +43,8 @@
         "javascript": "chain.C4",
         "python": "chain.C4",
         "java": "blast.chain.C4",
-        "kotlin": "blast.chain.C4"
+        "kotlin": "blast.chain.C4",
+        "ruby": "Blast::Chain::C4"
       }
     },
     {
@@ -54,7 +57,8 @@
         "javascript": "diamond.Bottom",
         "python": "diamond.Bottom",
         "java": "blast.diamond.Bottom",
-        "kotlin": "blast.diamond.Bottom"
+        "kotlin": "blast.diamond.Bottom",
+        "ruby": "Blast::Diamond::Bottom"
       }
     },
     {
@@ -67,7 +71,8 @@
         "javascript": "ring.R2",
         "python": "ring.R2",
         "java": "blast.ring.R2",
-        "kotlin": "blast.ring.R2"
+        "kotlin": "blast.ring.R2",
+        "ruby": "Blast::Ring::R2"
       }
     },
     {
@@ -80,7 +85,8 @@
         "javascript": "ring.Leaf",
         "python": "ring.Leaf",
         "java": "blast.ring.Leaf",
-        "kotlin": "blast.ring.Leaf"
+        "kotlin": "blast.ring.Leaf",
+        "ruby": "Blast::Ring::Leaf"
       }
     },
     {
@@ -93,7 +99,8 @@
         "javascript": "ring.Tail",
         "python": "ring.Tail",
         "java": "blast.ring.Tail",
-        "kotlin": "blast.ring.Tail"
+        "kotlin": "blast.ring.Tail",
+        "ruby": "Blast::Ring::Tail"
       }
     }
   ]

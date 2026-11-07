@@ -25,7 +25,8 @@
     "javascript",
     "python",
     "java",
-    "kotlin"
+    "kotlin",
+    "ruby"
   ],
   "parity": [
     {
@@ -38,7 +39,8 @@
         "javascript": "basics.straight",
         "python": "basics.straight",
         "java": "metrics.Basics.straight",
-        "kotlin": "metrics.Basics.straight"
+        "kotlin": "metrics.Basics.straight",
+        "ruby": "Metrics::Basics.straight"
       }
     },
     {
@@ -51,7 +53,8 @@
         "javascript": "basics.straight",
         "python": "basics.straight",
         "java": "metrics.Basics.straight",
-        "kotlin": "metrics.Basics.straight"
+        "kotlin": "metrics.Basics.straight",
+        "ruby": "Metrics::Basics.straight"
       }
     },
     {
@@ -64,7 +67,8 @@
         "javascript": "basics.straight",
         "python": "basics.straight",
         "java": "metrics.Basics.straight",
-        "kotlin": "metrics.Basics.straight"
+        "kotlin": "metrics.Basics.straight",
+        "ruby": "Metrics::Basics.straight"
       }
     },
     {
@@ -77,7 +81,8 @@
         "javascript": "basics.branches",
         "python": "basics.branches",
         "java": "metrics.Basics.branches",
-        "kotlin": "metrics.Basics.branches"
+        "kotlin": "metrics.Basics.branches",
+        "ruby": "Metrics::Basics.branches"
       }
     },
     {
@@ -90,7 +95,8 @@
         "javascript": "basics.branches",
         "python": "basics.branches",
         "java": "metrics.Basics.branches",
-        "kotlin": "metrics.Basics.branches"
+        "kotlin": "metrics.Basics.branches",
+        "ruby": "Metrics::Basics.branches"
       }
     },
     {
@@ -103,7 +109,8 @@
         "javascript": "basics.branches",
         "python": "basics.branches",
         "java": "metrics.Basics.branches",
-        "kotlin": "metrics.Basics.branches"
+        "kotlin": "metrics.Basics.branches",
+        "ruby": "Metrics::Basics.branches"
       }
     },
     {
@@ -116,7 +123,8 @@
         "javascript": "basics.loops",
         "python": "basics.loops",
         "java": "metrics.Basics.loops",
-        "kotlin": "metrics.Basics.loops"
+        "kotlin": "metrics.Basics.loops",
+        "ruby": "Metrics::Basics.loops"
       }
     },
     {
@@ -129,7 +137,8 @@
         "javascript": "basics.loops",
         "python": "basics.loops",
         "java": "metrics.Basics.loops",
-        "kotlin": "metrics.Basics.loops"
+        "kotlin": "metrics.Basics.loops",
+        "ruby": "Metrics::Basics.loops"
       }
     },
     {
@@ -142,7 +151,8 @@
         "javascript": "basics.loops",
         "python": "basics.loops",
         "java": "metrics.Basics.loops",
-        "kotlin": "metrics.Basics.loops"
+        "kotlin": "metrics.Basics.loops",
+        "ruby": "Metrics::Basics.loops"
       }
     }
   ]

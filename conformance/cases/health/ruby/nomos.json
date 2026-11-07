@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "1.0.0",
+  "analyzers": [
+    {
+      "language": "ruby",
+      "command": [
+        "nomos-ruby"
+      ]
+    }
+  ],
+  "scoring": {
+    "categoryWeights": {
+      "Algorithms": 1,
+      "CleanCode": 0,
+      "Design": 0,
+      "Maintainability": 0,
+      "Paradigm": 0,
+      "Patterns": 0,
+      "Principles": 0,
+      "Security": 0
+    }
+  }
+}

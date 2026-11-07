@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "1.0.0",
+  "analyzers": [
+    {
+      "language": "ruby",
+      "command": [
+        "nomos-ruby"
+      ]
+    }
+  ],
+  "layers": [
+    {
+      "name": "Domain",
+      "patterns": [
+        "*::Domain"
+      ],
+      "mayDependOn": []
+    },
+    {
+      "name": "Services",
+      "patterns": [
+        "*::Services"
+      ],
+      "mayDependOn": [
+        "Domain"
+      ]
+    },
+    {
+      "name": "Web",
+      "patterns": [
+        "*::Web"
+      ],
+      "mayDependOn": [
+        "Services"
+      ]
+    }
+  ]
+}

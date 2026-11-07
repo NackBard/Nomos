@@ -1,0 +1,34 @@
+{
+  "results": [
+    {
+      "ruleId": "DSN002",
+      "file": "a1.rb",
+      "startLine": 1
+    },
+    {
+      "ruleId": "DSN002",
+      "file": "p.rb",
+      "startLine": 3
+    },
+    {
+      "ruleId": "DSN002",
+      "file": "x1.rb",
+      "startLine": 3
+    },
+    {
+      "ruleId": "DSN002",
+      "file": "base.rb",
+      "startLine": 3
+    },
+    {
+      "ruleId": "DSN002",
+      "file": "y1.rb",
+      "startLine": 3
+    },
+    {
+      "ruleId": "DSN002",
+      "file": "n1.rb",
+      "startLine": 3
+    }
+  ]
+}

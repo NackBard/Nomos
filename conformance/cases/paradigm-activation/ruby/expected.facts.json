@@ -1,0 +1,326 @@
+{
+  "schemaVersion": "1.3.0",
+  "analyzer": {
+    "name": "hand-computed",
+    "version": "0.0.0",
+    "language": "ruby"
+  },
+  "cycles": [],
+  "diagnostics": [],
+  "files": [
+    {
+      "path": "dispatch.rb",
+      "lines": 19,
+      "loc": 15
+    },
+    {
+      "path": "flow.rb",
+      "lines": 5,
+      "loc": 5
+    },
+    {
+      "path": "global.rb",
+      "lines": 5,
+      "loc": 4
+    },
+    {
+      "path": "hof.rb",
+      "lines": 5,
+      "loc": 5
+    },
+    {
+      "path": "lambdas.rb",
+      "lines": 5,
+      "loc": 5
+    }
+  ],
+  "modules": [
+    {
+      "id": "Dispatch",
+      "name": "Dispatch",
+      "files": [
+        "dispatch.rb"
+      ],
+      "loc": 15,
+      "metrics": {},
+      "paradigmEvidence": [
+        {
+          "paradigm": "oop",
+          "kind": "oop.classes",
+          "count": 1,
+          "description": "d"
+        },
+        {
+          "paradigm": "oop",
+          "kind": "oop.mutable-state-classes",
+          "count": 1,
+          "description": "d"
+        },
+        {
+          "paradigm": "structural",
+          "kind": "str.free-functions",
+          "count": 1,
+          "description": "d"
+        },
+        {
+          "paradigm": "structural",
+          "kind": "str.control-flow",
+          "count": 1,
+          "description": "d"
+        },
+        {
+          "paradigm": "functional",
+          "kind": "fp.pure-functions",
+          "count": 1,
+          "description": "d"
+        }
+      ],
+      "activeParadigms": [
+        "functional",
+        "oop",
+        "structural"
+      ]
+    },
+    {
+      "id": "Flow",
+      "name": "Flow",
+      "files": [
+        "flow.rb"
+      ],
+      "loc": 5,
+      "metrics": {},
+      "paradigmEvidence": [
+        {
+          "paradigm": "structural",
+          "kind": "str.free-functions",
+          "count": 1,
+          "description": "d"
+        },
+        {
+          "paradigm": "structural",
+          "kind": "str.control-flow",
+          "count": 1,
+          "description": "d"
+        }
+      ],
+      "activeParadigms": [
+        "structural"
+      ]
+    },
+    {
+      "id": "Global",
+      "name": "Global",
+      "files": [
+        "global.rb"
+      ],
+      "loc": 4,
+      "metrics": {},
+      "paradigmEvidence": [
+        {
+          "paradigm": "structural",
+          "kind": "str.global-state",
+          "count": 2,
+          "description": "d"
+        }
+      ],
+      "activeParadigms": []
+    },
+    {
+      "id": "Hof",
+      "name": "Hof",
+      "files": [
+        "hof.rb"
+      ],
+      "loc": 5,
+      "metrics": {},
+      "paradigmEvidence": [
+        {
+          "paradigm": "structural",
+          "kind": "str.free-functions",
+          "count": 1,
+          "description": "d"
+        },
+        {
+          "paradigm": "functional",
+          "kind": "fp.higher-order",
+          "count": 1,
+          "description": "d"
+        }
+      ],
+      "activeParadigms": [
+        "functional",
+        "structural"
+      ]
+    },
+    {
+      "id": "Lambdas",
+      "name": "Lambdas",
+      "files": [
+        "lambdas.rb"
+      ],
+      "loc": 5,
+      "metrics": {},
+      "paradigmEvidence": [
+        {
+          "paradigm": "structural",
+          "kind": "str.free-functions",
+          "count": 1,
+          "description": "d"
+        },
+        {
+          "paradigm": "functional",
+          "kind": "fp.lambdas",
+          "count": 2,
+          "description": "d"
+        }
+      ],
+      "activeParadigms": [
+        "structural"
+      ]
+    }
+  ],
+  "types": [
+    {
+      "id": "Dispatch::A",
+      "name": "A",
+      "module": "Dispatch",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "dispatch.rb",
+        "startLine": 2
+      },
+      "metrics": {}
+    },
+    {
+      "id": "Dispatch::B",
+      "name": "B",
+      "module": "Dispatch",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "dispatch.rb",
+        "startLine": 6
+      },
+      "metrics": {}
+    },
+    {
+      "id": "Dispatch::C",
+      "name": "C",
+      "module": "Dispatch",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "dispatch.rb",
+        "startLine": 9
+      },
+      "metrics": {}
+    }
+  ],
+  "functions": [
+    {
+      "id": "Dispatch.route",
+      "name": "route",
+      "module": "Dispatch",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "dispatch.rb",
+        "startLine": 12
+      },
+      "metrics": {
+        "cyclomatic": 4,
+        "maxNesting": 1,
+        "parameterCount": 1,
+        "lines": 7,
+        "typeTests": 3
+      }
+    },
+    {
+      "id": "Flow.log",
+      "name": "log",
+      "module": "Flow",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "flow.rb",
+        "startLine": 2
+      },
+      "metrics": {
+        "cyclomatic": 2,
+        "maxNesting": 1,
+        "parameterCount": 1,
+        "lines": 3
+      }
+    },
+    {
+      "id": "Hof.twice",
+      "name": "twice",
+      "module": "Hof",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "hof.rb",
+        "startLine": 2
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 2,
+        "lines": 3,
+        "hofOrder": 2
+      }
+    },
+    {
+      "id": "Lambdas.scan",
+      "name": "scan",
+      "module": "Lambdas",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "lambdas.rb",
+        "startLine": 2
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 1,
+        "lines": 3,
+        "lambdaNesting": 2
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "from": "Dispatch.route",
+      "to": "Dispatch::A",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "Dispatch.route",
+      "to": "Dispatch::B",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "Dispatch.route",
+      "to": "Dispatch::C",
+      "kind": "type-ref",
+      "phase": "runtime"
+    }
+  ],
+  "skippedRules": [
+    {
+      "ruleId": "FUN005",
+      "reason": "disabled-by-config",
+      "message": "m"
+    },
+    {
+      "ruleId": "OOP002",
+      "reason": "paradigm-not-detected",
+      "message": "m",
+      "module": "Flow"
+    }
+  ]
+}

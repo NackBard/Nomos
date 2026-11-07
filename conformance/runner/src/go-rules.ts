@@ -17,6 +17,9 @@ export const javaPracticesPath = path.join(repoRoot, "analyzers", "java", "src",
 /** The Kotlin analyzer reads them as resources of its jar with its own JSON reader (D-059). */
 export const kotlinRulesPath = path.join(repoRoot, "analyzers", "kotlin", "src", "nomos", "kotlin", "rules.json");
 export const kotlinPracticesPath = path.join(repoRoot, "analyzers", "kotlin", "src", "nomos", "kotlin", "practices.json");
+/** The Ruby analyzer reads them with json from the standard library (D-061). */
+export const rubyRulesPath = path.join(repoRoot, "analyzers", "ruby", "lib", "nomos_ruby", "rules.json");
+export const rubyPracticesPath = path.join(repoRoot, "analyzers", "ruby", "lib", "nomos_ruby", "practices.json");
 /** The extension lists the practices to choose from; it reads them as data (D-051). */
 export const extensionPracticesPath = path.join(repoRoot, "extension", "practices.json");
 /** The extension and ci show rule texts and finding templates in the interface language (spec/l10n.md, D-052). */
@@ -48,11 +51,13 @@ export function generatedFiles(): { file: string; content: string }[] {
     { file: pythonRulesPath, content: rules },
     { file: javaRulesPath, content: rules },
     { file: kotlinRulesPath, content: rules },
+    { file: rubyRulesPath, content: rules },
     { file: goPracticesPath, content: practices },
     { file: extensionPracticesPath, content: practices },
     { file: typescriptPracticesPath, content: practices },
     { file: pythonPracticesPath, content: practices },
     { file: javaPracticesPath, content: practices },
     { file: kotlinPracticesPath, content: practices },
+    { file: rubyPracticesPath, content: practices },
   ];
 }

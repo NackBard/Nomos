@@ -1,0 +1,19 @@
+{
+  "results": [
+    {
+      "ruleId": "DSN003",
+      "file": "entity.rb",
+      "startLine": 4
+    },
+    {
+      "ruleId": "DSN003",
+      "file": "page.rb",
+      "startLine": 5
+    },
+    {
+      "ruleId": "DSN003",
+      "file": "rich.rb",
+      "startLine": 6
+    }
+  ]
+}

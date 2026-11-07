@@ -1,0 +1,515 @@
+{
+  "schemaVersion": "1.3.0",
+  "analyzer": {
+    "name": "hand-computed",
+    "version": "0.0.0",
+    "language": "ruby"
+  },
+  "files": [
+    {
+      "path": "estimates.rb",
+      "lines": 82,
+      "loc": 69
+    },
+    {
+      "path": "memory.rb",
+      "lines": 63,
+      "loc": 54
+    }
+  ],
+  "modules": [
+    {
+      "id": "Alg::Code",
+      "name": "Code",
+      "files": [
+        "estimates.rb",
+        "memory.rb"
+      ],
+      "loc": 123,
+      "metrics": {},
+      "paradigmEvidence": []
+    }
+  ],
+  "types": [
+    {
+      "id": "Alg::Code::Estimates",
+      "name": "Estimates",
+      "module": "Alg::Code",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "estimates.rb",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 78,
+        "memberCount": 10,
+        "methodCount": 10
+      }
+    },
+    {
+      "id": "Alg::Code::Memory",
+      "name": "Memory",
+      "module": "Alg::Code",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "memory.rb",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 55,
+        "memberCount": 8,
+        "methodCount": 8
+      }
+    },
+    {
+      "id": "Alg::Code::Box",
+      "name": "Box",
+      "module": "Alg::Code",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "memory.rb",
+        "startLine": 59
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1
+      }
+    }
+  ],
+  "functions": [
+    {
+      "id": "Alg::Code::Estimates#constant",
+      "name": "constant",
+      "module": "Alg::Code",
+      "type": "Alg::Code::Estimates",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "estimates.rb",
+        "startLine": 4
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 1,
+        "lines": 3,
+        "timeDegree": 0,
+        "timeLogFactor": 0,
+        "timeExponential": 0,
+        "spaceDegree": 0,
+        "allocationDepth": 0
+      }
+    },
+    {
+      "id": "Alg::Code::Estimates#linear",
+      "name": "linear",
+      "module": "Alg::Code",
+      "type": "Alg::Code::Estimates",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "estimates.rb",
+        "startLine": 8
+      },
+      "metrics": {
+        "cyclomatic": 2,
+        "maxNesting": 1,
+        "parameterCount": 1,
+        "lines": 7,
+        "timeDegree": 1,
+        "timeLogFactor": 0,
+        "timeExponential": 0,
+        "spaceDegree": 0,
+        "allocationDepth": 0
+      }
+    },
+    {
+      "id": "Alg::Code::Estimates#quadratic",
+      "name": "quadratic",
+      "module": "Alg::Code",
+      "type": "Alg::Code::Estimates",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "estimates.rb",
+        "startLine": 16
+      },
+      "metrics": {
+        "cyclomatic": 3,
+        "maxNesting": 2,
+        "parameterCount": 2,
+        "lines": 9,
+        "timeDegree": 2,
+        "timeLogFactor": 0,
+        "timeExponential": 0,
+        "spaceDegree": 0,
+        "allocationDepth": 0
+      }
+    },
+    {
+      "id": "Alg::Code::Estimates#halving",
+      "name": "halving",
+      "module": "Alg::Code",
+      "type": "Alg::Code::Estimates",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "estimates.rb",
+        "startLine": 26
+      },
+      "metrics": {
+        "cyclomatic": 2,
+        "maxNesting": 1,
+        "parameterCount": 1,
+        "lines": 9,
+        "timeDegree": 0,
+        "timeLogFactor": 1,
+        "timeExponential": 0,
+        "spaceDegree": 0,
+        "allocationDepth": 0
+      }
+    },
+    {
+      "id": "Alg::Code::Estimates#linear_log",
+      "name": "linear_log",
+      "module": "Alg::Code",
+      "type": "Alg::Code::Estimates",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "estimates.rb",
+        "startLine": 36
+      },
+      "metrics": {
+        "cyclomatic": 2,
+        "maxNesting": 1,
+        "parameterCount": 1,
+        "lines": 7,
+        "timeDegree": 1,
+        "timeLogFactor": 1,
+        "timeExponential": 0,
+        "spaceDegree": 0,
+        "allocationDepth": 0
+      }
+    },
+    {
+      "id": "Alg::Code::Estimates#fixed",
+      "name": "fixed",
+      "module": "Alg::Code",
+      "type": "Alg::Code::Estimates",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "estimates.rb",
+        "startLine": 44
+      },
+      "metrics": {
+        "cyclomatic": 2,
+        "maxNesting": 1,
+        "parameterCount": 0,
+        "lines": 7,
+        "timeDegree": 0,
+        "timeLogFactor": 0,
+        "timeExponential": 0,
+        "spaceDegree": 0,
+        "allocationDepth": 0
+      }
+    },
+    {
+      "id": "Alg::Code::Estimates#fib",
+      "name": "fib",
+      "module": "Alg::Code",
+      "type": "Alg::Code::Estimates",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "estimates.rb",
+        "startLine": 52
+      },
+      "metrics": {
+        "cyclomatic": 2,
+        "maxNesting": 1,
+        "parameterCount": 1,
+        "lines": 5,
+        "timeDegree": null,
+        "timeLogFactor": null,
+        "timeExponential": 1,
+        "spaceDegree": 1,
+        "allocationDepth": 0
+      }
+    },
+    {
+      "id": "Alg::Code::Estimates#factorial",
+      "name": "factorial",
+      "module": "Alg::Code",
+      "type": "Alg::Code::Estimates",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "estimates.rb",
+        "startLine": 58
+      },
+      "metrics": {
+        "cyclomatic": 2,
+        "maxNesting": 1,
+        "parameterCount": 1,
+        "lines": 5,
+        "timeDegree": 1,
+        "timeLogFactor": 0,
+        "timeExponential": 0,
+        "spaceDegree": 1,
+        "allocationDepth": 0
+      }
+    },
+    {
+      "id": "Alg::Code::Estimates#search",
+      "name": "search",
+      "module": "Alg::Code",
+      "type": "Alg::Code::Estimates",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "estimates.rb",
+        "startLine": 64
+      },
+      "metrics": {
+        "cyclomatic": 3,
+        "maxNesting": 1,
+        "parameterCount": 3,
+        "lines": 8,
+        "timeDegree": 0,
+        "timeLogFactor": 1,
+        "timeExponential": 0,
+        "spaceDegree": 1,
+        "allocationDepth": 0
+      }
+    },
+    {
+      "id": "Alg::Code::Estimates#cubic_via_callee",
+      "name": "cubic_via_callee",
+      "module": "Alg::Code",
+      "type": "Alg::Code::Estimates",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "estimates.rb",
+        "startLine": 73
+      },
+      "metrics": {
+        "cyclomatic": 2,
+        "maxNesting": 1,
+        "parameterCount": 1,
+        "lines": 7,
+        "timeDegree": 3,
+        "timeLogFactor": 0,
+        "timeExponential": 0,
+        "spaceDegree": 0,
+        "allocationDepth": 0
+      }
+    },
+    {
+      "id": "Alg::Code::Memory#none",
+      "name": "none",
+      "module": "Alg::Code",
+      "type": "Alg::Code::Memory",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "memory.rb",
+        "startLine": 4
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 1,
+        "lines": 3,
+        "timeDegree": 0,
+        "timeLogFactor": 0,
+        "timeExponential": 0,
+        "spaceDegree": 0,
+        "allocationDepth": 0
+      }
+    },
+    {
+      "id": "Alg::Code::Memory#grows",
+      "name": "grows",
+      "module": "Alg::Code",
+      "type": "Alg::Code::Memory",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "memory.rb",
+        "startLine": 8
+      },
+      "metrics": {
+        "cyclomatic": 2,
+        "maxNesting": 1,
+        "parameterCount": 1,
+        "lines": 7,
+        "timeDegree": 1,
+        "timeLogFactor": 0,
+        "timeExponential": 0,
+        "spaceDegree": 1,
+        "allocationDepth": 0
+      }
+    },
+    {
+      "id": "Alg::Code::Memory#grid",
+      "name": "grid",
+      "module": "Alg::Code",
+      "type": "Alg::Code::Memory",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "memory.rb",
+        "startLine": 16
+      },
+      "metrics": {
+        "cyclomatic": 3,
+        "maxNesting": 2,
+        "parameterCount": 2,
+        "lines": 9,
+        "timeDegree": 2,
+        "timeLogFactor": 0,
+        "timeExponential": 0,
+        "spaceDegree": 2,
+        "allocationDepth": 0
+      }
+    },
+    {
+      "id": "Alg::Code::Memory#sized",
+      "name": "sized",
+      "module": "Alg::Code",
+      "type": "Alg::Code::Memory",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "memory.rb",
+        "startLine": 26
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 1,
+        "lines": 3,
+        "timeDegree": 0,
+        "timeLogFactor": 0,
+        "timeExponential": 0,
+        "spaceDegree": 1,
+        "allocationDepth": 0
+      }
+    },
+    {
+      "id": "Alg::Code::Memory#constant",
+      "name": "constant",
+      "module": "Alg::Code",
+      "type": "Alg::Code::Memory",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "memory.rb",
+        "startLine": 30
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3,
+        "timeDegree": 0,
+        "timeLogFactor": 0,
+        "timeExponential": 0,
+        "spaceDegree": 0,
+        "allocationDepth": 0
+      }
+    },
+    {
+      "id": "Alg::Code::Memory#deep",
+      "name": "deep",
+      "module": "Alg::Code",
+      "type": "Alg::Code::Memory",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "memory.rb",
+        "startLine": 34
+      },
+      "metrics": {
+        "cyclomatic": 2,
+        "maxNesting": 1,
+        "parameterCount": 1,
+        "lines": 5,
+        "timeDegree": 1,
+        "timeLogFactor": 0,
+        "timeExponential": 0,
+        "spaceDegree": 1,
+        "allocationDepth": 0
+      }
+    },
+    {
+      "id": "Alg::Code::Memory#new_in_nested",
+      "name": "new_in_nested",
+      "module": "Alg::Code",
+      "type": "Alg::Code::Memory",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "memory.rb",
+        "startLine": 40
+      },
+      "metrics": {
+        "cyclomatic": 3,
+        "maxNesting": 2,
+        "parameterCount": 2,
+        "lines": 9,
+        "timeDegree": 2,
+        "timeLogFactor": 0,
+        "timeExponential": 0,
+        "spaceDegree": 0,
+        "allocationDepth": 2
+      }
+    },
+    {
+      "id": "Alg::Code::Memory#new_in_loop",
+      "name": "new_in_loop",
+      "module": "Alg::Code",
+      "type": "Alg::Code::Memory",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "memory.rb",
+        "startLine": 50
+      },
+      "metrics": {
+        "cyclomatic": 2,
+        "maxNesting": 1,
+        "parameterCount": 1,
+        "lines": 7,
+        "timeDegree": 1,
+        "timeLogFactor": 0,
+        "timeExponential": 0,
+        "spaceDegree": 0,
+        "allocationDepth": 1
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "from": "Alg::Code::Memory",
+      "to": "Alg::Code::Box",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "Alg::Code::Memory",
+      "to": "Alg::Code::Box",
+      "kind": "type-ref",
+      "phase": "runtime"
+    }
+  ],
+  "cycles": [],
+  "skippedRules": [],
+  "diagnostics": []
+}

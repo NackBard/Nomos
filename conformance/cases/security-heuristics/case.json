@@ -14,7 +14,8 @@
     "javascript",
     "python",
     "java",
-    "kotlin"
+    "kotlin",
+    "ruby"
   ],
   "expectSarif": true
 }

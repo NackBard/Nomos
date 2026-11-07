@@ -1,0 +1,14 @@
+{
+  "results": [
+    {
+      "ruleId": "ALG001",
+      "file": "code.rb",
+      "startLine": 1
+    },
+    {
+      "ruleId": "ALG001",
+      "file": "code.rb",
+      "startLine": 33
+    }
+  ]
+}

@@ -1,0 +1,143 @@
+{
+  "schemaVersion": "1.3.0",
+  "analyzer": {
+    "name": "hand-computed",
+    "version": "0.0.0",
+    "language": "ruby"
+  },
+  "cycles": [],
+  "files": [
+    {
+      "path": "code.rb",
+      "lines": 51,
+      "loc": 45
+    },
+    {
+      "path": "whole/whole.rb",
+      "lines": 10,
+      "loc": 9
+    }
+  ],
+  "modules": [
+    {
+      "id": "(global)",
+      "name": "(global)",
+      "files": [
+        "code.rb",
+        "whole/whole.rb"
+      ],
+      "loc": 54,
+      "metrics": {},
+      "paradigmEvidence": []
+    }
+  ],
+  "types": [],
+  "functions": [
+    {
+      "id": "reported",
+      "name": "reported",
+      "module": "(global)",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "code.rb",
+        "startLine": 1
+      },
+      "metrics": {
+        "cyclomatic": 3,
+        "maxNesting": 2,
+        "parameterCount": 1,
+        "lines": 9
+      }
+    },
+    {
+      "id": "next_line",
+      "name": "next_line",
+      "module": "(global)",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "code.rb",
+        "startLine": 12
+      },
+      "metrics": {
+        "cyclomatic": 3,
+        "maxNesting": 2,
+        "parameterCount": 1,
+        "lines": 9
+      }
+    },
+    {
+      "id": "same",
+      "name": "same",
+      "module": "(global)",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "code.rb",
+        "startLine": 22
+      },
+      "metrics": {
+        "cyclomatic": 3,
+        "maxNesting": 2,
+        "parameterCount": 1,
+        "lines": 9
+      }
+    },
+    {
+      "id": "other_rule",
+      "name": "other_rule",
+      "module": "(global)",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "code.rb",
+        "startLine": 33
+      },
+      "metrics": {
+        "cyclomatic": 3,
+        "maxNesting": 2,
+        "parameterCount": 1,
+        "lines": 9
+      }
+    },
+    {
+      "id": "reasoned",
+      "name": "reasoned",
+      "module": "(global)",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "code.rb",
+        "startLine": 43
+      },
+      "metrics": {
+        "cyclomatic": 3,
+        "maxNesting": 2,
+        "parameterCount": 1,
+        "lines": 9
+      }
+    },
+    {
+      "id": "pairs",
+      "name": "pairs",
+      "module": "(global)",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "whole/whole.rb",
+        "startLine": 2
+      },
+      "metrics": {
+        "cyclomatic": 3,
+        "maxNesting": 2,
+        "parameterCount": 1,
+        "lines": 9,
+        "timeDegree": 2
+      }
+    }
+  ],
+  "dependencies": [],
+  "skippedRules": [],
+  "diagnostics": []
+}

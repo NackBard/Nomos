@@ -11,7 +11,8 @@
     "typescript",
     "python",
     "java",
-    "kotlin"
+    "kotlin",
+    "ruby"
   ],
   "exceptions": [
     {

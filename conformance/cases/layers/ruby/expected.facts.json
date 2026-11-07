@@ -1,0 +1,392 @@
+{
+  "schemaVersion": "1.3.0",
+  "analyzer": {
+    "name": "hand-computed",
+    "version": "0.0.0",
+    "language": "ruby"
+  },
+  "files": [
+    {
+      "path": "entity.rb",
+      "lines": 7,
+      "loc": 7
+    },
+    {
+      "path": "page.rb",
+      "lines": 9,
+      "loc": 9
+    },
+    {
+      "path": "rich.rb",
+      "lines": 10,
+      "loc": 10
+    },
+    {
+      "path": "svc.rb",
+      "lines": 7,
+      "loc": 7
+    },
+    {
+      "path": "tool.rb",
+      "lines": 7,
+      "loc": 7
+    }
+  ],
+  "modules": [
+    {
+      "id": "App::Domain",
+      "name": "Domain",
+      "files": [
+        "entity.rb"
+      ],
+      "loc": 7,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "App::Web",
+      "name": "Web",
+      "files": [
+        "page.rb"
+      ],
+      "loc": 9,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "App::Domain::Domain",
+      "name": "Domain",
+      "files": [
+        "rich.rb"
+      ],
+      "loc": 10,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "App::Services",
+      "name": "Services",
+      "files": [
+        "svc.rb"
+      ],
+      "loc": 7,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "App::Tools",
+      "name": "Tools",
+      "files": [
+        "tool.rb"
+      ],
+      "loc": 7,
+      "metrics": {},
+      "paradigmEvidence": []
+    }
+  ],
+  "types": [
+    {
+      "id": "App::Domain::Entity",
+      "name": "Entity",
+      "module": "App::Domain",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "entity.rb",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1
+      }
+    },
+    {
+      "id": "App::Web::Page",
+      "name": "Page",
+      "module": "App::Web",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "page.rb",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 5,
+        "memberCount": 3
+      }
+    },
+    {
+      "id": "App::Domain::Domain::Rich",
+      "name": "Rich",
+      "module": "App::Domain::Domain",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "rich.rb",
+        "startLine": 4
+      },
+      "metrics": {
+        "lines": 4,
+        "memberCount": 2
+      }
+    },
+    {
+      "id": "App::Services::Svc",
+      "name": "Svc",
+      "module": "App::Services",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "svc.rb",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1
+      }
+    },
+    {
+      "id": "App::Tools::Tool",
+      "name": "Tool",
+      "module": "App::Tools",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "tool.rb",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1
+      }
+    }
+  ],
+  "functions": [
+    {
+      "id": "App::Domain::Entity#owner",
+      "name": "owner",
+      "module": "App::Domain",
+      "type": "App::Domain::Entity",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "entity.rb",
+        "startLine": 4
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "App::Web::Page#service",
+      "name": "service",
+      "module": "App::Web",
+      "type": "App::Web::Page",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "page.rb",
+        "startLine": 4
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "App::Web::Page#shortcut",
+      "name": "shortcut",
+      "module": "App::Web",
+      "type": "App::Web::Page",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "page.rb",
+        "startLine": 5
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "App::Web::Page#helper",
+      "name": "helper",
+      "module": "App::Web",
+      "type": "App::Web::Page",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "page.rb",
+        "startLine": 6
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "App::Domain::Domain::Rich#base",
+      "name": "base",
+      "module": "App::Domain::Domain",
+      "type": "App::Domain::Domain::Rich",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "rich.rb",
+        "startLine": 5
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "App::Domain::Domain::Rich#page",
+      "name": "page",
+      "module": "App::Domain::Domain",
+      "type": "App::Domain::Domain::Rich",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "rich.rb",
+        "startLine": 6
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "App::Services::Svc#item",
+      "name": "item",
+      "module": "App::Services",
+      "type": "App::Services::Svc",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "svc.rb",
+        "startLine": 4
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "App::Tools::Tool#target",
+      "name": "target",
+      "module": "App::Tools",
+      "type": "App::Tools::Tool",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "tool.rb",
+        "startLine": 4
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "from": "App::Domain::Entity",
+      "to": "App::Services::Svc",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "App::Web::Page",
+      "to": "App::Services::Svc",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "App::Web::Page",
+      "to": "App::Domain::Entity",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "App::Web::Page",
+      "to": "App::Tools::Tool",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "App::Domain::Domain::Rich",
+      "to": "App::Domain::Entity",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "App::Domain::Domain::Rich",
+      "to": "App::Web::Page",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "App::Services::Svc",
+      "to": "App::Domain::Entity",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "App::Tools::Tool",
+      "to": "App::Web::Page",
+      "kind": "type-ref",
+      "phase": "runtime"
+    }
+  ],
+  "cycles": [
+    {
+      "level": "type",
+      "members": [
+        "App::Domain::Entity",
+        "App::Services::Svc"
+      ]
+    },
+    {
+      "level": "type",
+      "members": [
+        "App::Tools::Tool",
+        "App::Web::Page"
+      ]
+    },
+    {
+      "level": "module",
+      "members": [
+        "App::Domain",
+        "App::Services"
+      ]
+    },
+    {
+      "level": "module",
+      "members": [
+        "App::Tools",
+        "App::Web"
+      ]
+    }
+  ],
+  "skippedRules": [],
+  "diagnostics": []
+}

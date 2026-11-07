@@ -1,0 +1,595 @@
+{
+  "schemaVersion": "1.3.0",
+  "analyzer": {
+    "name": "hand-computed",
+    "version": "0.0.0",
+    "language": "ruby"
+  },
+  "files": [
+    {
+      "path": "chain.rb",
+      "lines": 24,
+      "loc": 21
+    },
+    {
+      "path": "diamond.rb",
+      "lines": 24,
+      "loc": 21
+    },
+    {
+      "path": "ring.rb",
+      "lines": 37,
+      "loc": 32
+    }
+  ],
+  "modules": [
+    {
+      "id": "Blast::Chain",
+      "name": "Chain",
+      "files": [
+        "chain.rb"
+      ],
+      "loc": 21,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "Blast::Diamond",
+      "name": "Diamond",
+      "files": [
+        "diamond.rb"
+      ],
+      "loc": 21,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "Blast::Ring",
+      "name": "Ring",
+      "files": [
+        "ring.rb"
+      ],
+      "loc": 32,
+      "metrics": {},
+      "paradigmEvidence": []
+    }
+  ],
+  "types": [
+    {
+      "id": "Blast::Chain::C1",
+      "name": "C1",
+      "module": "Blast::Chain",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "chain.rb",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 2,
+        "memberCount": 0,
+        "blastRadius": 8
+      }
+    },
+    {
+      "id": "Blast::Chain::C2",
+      "name": "C2",
+      "module": "Blast::Chain",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "chain.rb",
+        "startLine": 6
+      },
+      "metrics": {
+        "lines": 5,
+        "memberCount": 2,
+        "blastRadius": 7
+      }
+    },
+    {
+      "id": "Blast::Chain::C3",
+      "name": "C3",
+      "module": "Blast::Chain",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "chain.rb",
+        "startLine": 12
+      },
+      "metrics": {
+        "lines": 5,
+        "memberCount": 2,
+        "blastRadius": 6
+      }
+    },
+    {
+      "id": "Blast::Chain::C4",
+      "name": "C4",
+      "module": "Blast::Chain",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "chain.rb",
+        "startLine": 18
+      },
+      "metrics": {
+        "lines": 5,
+        "memberCount": 2,
+        "blastRadius": 5
+      }
+    },
+    {
+      "id": "Blast::Diamond::Bottom",
+      "name": "Bottom",
+      "module": "Blast::Diamond",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "diamond.rb",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 5,
+        "memberCount": 1,
+        "blastRadius": 3
+      }
+    },
+    {
+      "id": "Blast::Diamond::Left",
+      "name": "Left",
+      "module": "Blast::Diamond",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "diamond.rb",
+        "startLine": 9
+      },
+      "metrics": {
+        "lines": 2,
+        "memberCount": 0,
+        "blastRadius": 1
+      }
+    },
+    {
+      "id": "Blast::Diamond::Right",
+      "name": "Right",
+      "module": "Blast::Diamond",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "diamond.rb",
+        "startLine": 12
+      },
+      "metrics": {
+        "lines": 5,
+        "memberCount": 2,
+        "blastRadius": 1
+      }
+    },
+    {
+      "id": "Blast::Diamond::Top",
+      "name": "Top",
+      "module": "Blast::Diamond",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "diamond.rb",
+        "startLine": 18
+      },
+      "metrics": {
+        "lines": 5,
+        "memberCount": 1,
+        "blastRadius": 0
+      }
+    },
+    {
+      "id": "Blast::Ring::R1",
+      "name": "R1",
+      "module": "Blast::Ring",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "ring.rb",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 5,
+        "memberCount": 2,
+        "blastRadius": 3
+      }
+    },
+    {
+      "id": "Blast::Ring::R2",
+      "name": "R2",
+      "module": "Blast::Ring",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "ring.rb",
+        "startLine": 9
+      },
+      "metrics": {
+        "lines": 5,
+        "memberCount": 2,
+        "blastRadius": 3
+      }
+    },
+    {
+      "id": "Blast::Ring::R3",
+      "name": "R3",
+      "module": "Blast::Ring",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "ring.rb",
+        "startLine": 15
+      },
+      "metrics": {
+        "lines": 9,
+        "memberCount": 4,
+        "blastRadius": 3
+      }
+    },
+    {
+      "id": "Blast::Ring::Tail",
+      "name": "Tail",
+      "module": "Blast::Ring",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "ring.rb",
+        "startLine": 25
+      },
+      "metrics": {
+        "lines": 5,
+        "memberCount": 2,
+        "blastRadius": 0
+      }
+    },
+    {
+      "id": "Blast::Ring::Leaf",
+      "name": "Leaf",
+      "module": "Blast::Ring",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "ring.rb",
+        "startLine": 31
+      },
+      "metrics": {
+        "lines": 5,
+        "memberCount": 2,
+        "blastRadius": 4
+      }
+    }
+  ],
+  "functions": [
+    {
+      "id": "Blast::Chain::C2#prev",
+      "name": "prev",
+      "module": "Blast::Chain",
+      "type": "Blast::Chain::C2",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "chain.rb",
+        "startLine": 7
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3,
+        "blastRadius": 7
+      }
+    },
+    {
+      "id": "Blast::Chain::C3#prev",
+      "name": "prev",
+      "module": "Blast::Chain",
+      "type": "Blast::Chain::C3",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "chain.rb",
+        "startLine": 13
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3,
+        "blastRadius": 6
+      }
+    },
+    {
+      "id": "Blast::Chain::C4#prev",
+      "name": "prev",
+      "module": "Blast::Chain",
+      "type": "Blast::Chain::C4",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "chain.rb",
+        "startLine": 19
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3,
+        "blastRadius": 5
+      }
+    },
+    {
+      "id": "Blast::Diamond::Bottom#size",
+      "name": "size",
+      "module": "Blast::Diamond",
+      "type": "Blast::Diamond::Bottom",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "diamond.rb",
+        "startLine": 4
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3,
+        "blastRadius": 3
+      }
+    },
+    {
+      "id": "Blast::Diamond::Right#shared",
+      "name": "shared",
+      "module": "Blast::Diamond",
+      "type": "Blast::Diamond::Right",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "diamond.rb",
+        "startLine": 13
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3,
+        "blastRadius": 1
+      }
+    },
+    {
+      "id": "Blast::Diamond::Top#parts",
+      "name": "parts",
+      "module": "Blast::Diamond",
+      "type": "Blast::Diamond::Top",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "diamond.rb",
+        "startLine": 19
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3,
+        "blastRadius": 0
+      }
+    },
+    {
+      "id": "Blast::Ring::R1#following",
+      "name": "following",
+      "module": "Blast::Ring",
+      "type": "Blast::Ring::R1",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "ring.rb",
+        "startLine": 4
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3,
+        "blastRadius": 3
+      }
+    },
+    {
+      "id": "Blast::Ring::R2#following",
+      "name": "following",
+      "module": "Blast::Ring",
+      "type": "Blast::Ring::R2",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "ring.rb",
+        "startLine": 10
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3,
+        "blastRadius": 3
+      }
+    },
+    {
+      "id": "Blast::Ring::R3#following",
+      "name": "following",
+      "module": "Blast::Ring",
+      "type": "Blast::Ring::R3",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "ring.rb",
+        "startLine": 16
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3,
+        "blastRadius": 3
+      }
+    },
+    {
+      "id": "Blast::Ring::R3#finish",
+      "name": "finish",
+      "module": "Blast::Ring",
+      "type": "Blast::Ring::R3",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "ring.rb",
+        "startLine": 20
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3,
+        "blastRadius": 3
+      }
+    },
+    {
+      "id": "Blast::Ring::Tail#head",
+      "name": "head",
+      "module": "Blast::Ring",
+      "type": "Blast::Ring::Tail",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "ring.rb",
+        "startLine": 26
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3,
+        "blastRadius": 0
+      }
+    },
+    {
+      "id": "Blast::Ring::Leaf#last",
+      "name": "last",
+      "module": "Blast::Ring",
+      "type": "Blast::Ring::Leaf",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "ring.rb",
+        "startLine": 32
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3,
+        "blastRadius": 4
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "from": "Blast::Chain::C2",
+      "to": "Blast::Chain::C1",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "Blast::Chain::C3",
+      "to": "Blast::Chain::C2",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "Blast::Chain::C4",
+      "to": "Blast::Chain::C3",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "Blast::Diamond::Left",
+      "to": "Blast::Diamond::Bottom",
+      "kind": "inheritance",
+      "phase": "runtime"
+    },
+    {
+      "from": "Blast::Diamond::Right",
+      "to": "Blast::Diamond::Bottom",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "Blast::Diamond::Top",
+      "to": "Blast::Diamond::Left",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "Blast::Diamond::Top",
+      "to": "Blast::Diamond::Right",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "Blast::Ring::R1",
+      "to": "Blast::Ring::R2",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "Blast::Ring::R2",
+      "to": "Blast::Ring::R3",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "Blast::Ring::R3",
+      "to": "Blast::Ring::R1",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "Blast::Ring::R3",
+      "to": "Blast::Ring::Leaf",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "Blast::Ring::Tail",
+      "to": "Blast::Ring::R1",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "Blast::Ring::Leaf",
+      "to": "Blast::Chain::C4",
+      "kind": "call",
+      "phase": "runtime"
+    }
+  ],
+  "cycles": [
+    {
+      "level": "type",
+      "members": [
+        "Blast::Ring::R1",
+        "Blast::Ring::R2",
+        "Blast::Ring::R3"
+      ]
+    }
+  ],
+  "skippedRules": [
+    {
+      "ruleId": "DSN003",
+      "reason": "missing-input",
+      "message": "No layers in the configuration"
+    }
+  ],
+  "diagnostics": []
+}

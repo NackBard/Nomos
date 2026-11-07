@@ -5,7 +5,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const forbidden = /\b(csharp|c#|roslyn|dotnet|python|typescript|golang|kotlin|tree-?sitter)\b|\.(cs|py|tsx?|go|java|kts?)["'`]/i;
+const forbidden = /\b(csharp|c#|roslyn|dotnet|python|typescript|golang|kotlin|ruby|prism|tree-?sitter)\b|\.(cs|py|tsx?|go|java|kts?|rb)["'`]/i;
 const problems = [];
 
 function scan(directory) {

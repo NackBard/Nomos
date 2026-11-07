@@ -91,6 +91,18 @@
         "**/node_modules/**",
         "extension/bundle/**"
       ]
+    },
+    {
+      "language": "ruby",
+      "command": [
+        "node",
+        "analyzers/ruby/run.mjs"
+      ],
+      "exclude": [
+        "conformance/**",
+        "**/node_modules/**",
+        "extension/bundle/**"
+      ]
     }
   ],
   "layers": [

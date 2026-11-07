@@ -1,0 +1,120 @@
+{
+  "schemaVersion": "1.3.0",
+  "analyzer": {
+    "name": "hand-computed",
+    "version": "0.0.0",
+    "language": "ruby"
+  },
+  "files": [
+    {
+      "path": "box.rb",
+      "lines": 3,
+      "loc": 3
+    },
+    {
+      "path": "store.rb",
+      "lines": 400,
+      "loc": 300
+    }
+  ],
+  "modules": [
+    {
+      "id": "Health::Big",
+      "name": "Big",
+      "files": [
+        "store.rb"
+      ],
+      "loc": 300,
+      "metrics": {},
+      "paradigmEvidence": [],
+      "health": {
+        "score": 90.5,
+        "categories": [],
+        "explanation": [
+          "100 * exp(-0.6 / 0.3 / 20)"
+        ]
+      }
+    },
+    {
+      "id": "Health::Tiny",
+      "name": "Tiny",
+      "files": [
+        "box.rb"
+      ],
+      "loc": 3,
+      "metrics": {},
+      "paradigmEvidence": [],
+      "health": {
+        "score": 100,
+        "categories": [],
+        "explanation": [
+          "no findings in the only weighted category"
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "id": "Health::Big::Store",
+      "name": "Store",
+      "module": "Health::Big",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "store.rb",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 396,
+        "memberCount": 286,
+        "methodCount": 1
+      }
+    },
+    {
+      "id": "Health::Tiny::Box",
+      "name": "Box",
+      "module": "Health::Tiny",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "box.rb",
+        "startLine": 1
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1
+      }
+    }
+  ],
+  "functions": [
+    {
+      "id": "Health::Big::Store#pairs",
+      "name": "pairs",
+      "module": "Health::Big",
+      "type": "Health::Big::Store",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "store.rb",
+        "startLine": 389
+      },
+      "metrics": {
+        "cyclomatic": 3,
+        "maxNesting": 2,
+        "parameterCount": 2,
+        "lines": 9
+      }
+    }
+  ],
+  "dependencies": [],
+  "cycles": [],
+  "skippedRules": [],
+  "diagnostics": [],
+  "health": {
+    "score": 90.6,
+    "categories": [],
+    "explanation": [
+      "(90.48 * 300 + 100 * 3) / 303"
+    ]
+  }
+}

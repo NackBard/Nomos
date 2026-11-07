@@ -1,0 +1,84 @@
+{
+  "schemaVersion": "1.3.0",
+  "analyzer": {
+    "name": "hand-computed",
+    "version": "0.0.0",
+    "language": "ruby"
+  },
+  "cycles": [],
+  "files": [
+    {
+      "path": "store.rb",
+      "lines": 11,
+      "loc": 9
+    }
+  ],
+  "modules": [
+    {
+      "id": "Store",
+      "name": "Store",
+      "files": [
+        "store.rb"
+      ],
+      "loc": 9,
+      "metrics": {},
+      "paradigmEvidence": []
+    }
+  ],
+  "types": [],
+  "functions": [
+    {
+      "id": "Store.find",
+      "name": "find",
+      "module": "Store",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "store.rb",
+        "startLine": 4
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 1,
+        "lines": 3
+      }
+    },
+    {
+      "id": "Store.total",
+      "name": "total",
+      "module": "Store",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "store.rb",
+        "startLine": 8
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 6,
+        "lines": 3
+      }
+    }
+  ],
+  "dependencies": [],
+  "skippedRules": [
+    {
+      "ruleId": "CC003",
+      "reason": "disabled-by-config",
+      "message": "m"
+    },
+    {
+      "ruleId": "DSN001",
+      "reason": "disabled-by-config",
+      "message": "m"
+    },
+    {
+      "ruleId": "SEC001",
+      "reason": "disabled-by-config",
+      "message": "m"
+    }
+  ],
+  "diagnostics": []
+}

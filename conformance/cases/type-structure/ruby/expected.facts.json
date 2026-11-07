@@ -1,0 +1,417 @@
+{
+  "schemaVersion": "1.3.0",
+  "analyzer": {
+    "name": "hand-computed",
+    "version": "0.0.0",
+    "language": "ruby"
+  },
+  "files": [
+    {
+      "path": "structure.rb",
+      "lines": 77,
+      "loc": 53
+    }
+  ],
+  "modules": [
+    {
+      "id": "Ts",
+      "name": "Ts",
+      "files": [
+        "structure.rb"
+      ],
+      "loc": 53,
+      "metrics": {},
+      "paradigmEvidence": []
+    }
+  ],
+  "types": [
+    {
+      "id": "Ts::Shape",
+      "name": "Shape",
+      "module": "Ts",
+      "kind": "trait",
+      "isAbstract": true,
+      "location": {
+        "file": "structure.rb",
+        "startLine": 2
+      },
+      "metrics": {}
+    },
+    {
+      "id": "Ts::Base",
+      "name": "Base",
+      "module": "Ts",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "structure.rb",
+        "startLine": 9
+      },
+      "metrics": {},
+      "members": [
+        {
+          "name": "name",
+          "kind": "property",
+          "visibility": "public",
+          "typeName": "String"
+        }
+      ]
+    },
+    {
+      "id": "Ts::Square",
+      "name": "Square",
+      "module": "Ts",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "structure.rb",
+        "startLine": 20
+      },
+      "metrics": {},
+      "members": [
+        {
+          "name": "SIDES",
+          "kind": "constant",
+          "visibility": "public"
+        },
+        {
+          "name": "@@created",
+          "kind": "field",
+          "visibility": "private",
+          "isStatic": true
+        },
+        {
+          "name": "unit",
+          "kind": "property",
+          "visibility": "public",
+          "typeName": "Scale",
+          "type": "Ts::Scale"
+        },
+        {
+          "name": "default_side",
+          "kind": "property",
+          "visibility": "public",
+          "isStatic": true
+        },
+        {
+          "name": "@side",
+          "kind": "field",
+          "visibility": "private"
+        },
+        {
+          "name": "@cells",
+          "kind": "field",
+          "visibility": "private",
+          "isCollection": true
+        }
+      ]
+    },
+    {
+      "id": "Ts::Scale",
+      "name": "Scale",
+      "module": "Ts",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "structure.rb",
+        "startLine": 50
+      },
+      "metrics": {},
+      "members": [
+        {
+          "name": "MM",
+          "kind": "constant",
+          "visibility": "public"
+        },
+        {
+          "name": "CM",
+          "kind": "constant",
+          "visibility": "public"
+        }
+      ]
+    },
+    {
+      "id": "Ts::Drawing",
+      "name": "Drawing",
+      "module": "Ts",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "structure.rb",
+        "startLine": 55
+      },
+      "metrics": {},
+      "members": [
+        {
+          "name": "@items",
+          "kind": "field",
+          "visibility": "private",
+          "isCollection": true
+        },
+        {
+          "name": "@frame",
+          "kind": "field",
+          "visibility": "private",
+          "type": "Ts::Square"
+        }
+      ]
+    },
+    {
+      "id": "Ts::Painter",
+      "name": "Painter",
+      "module": "Ts",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "structure.rb",
+        "startLine": 68
+      },
+      "metrics": {}
+    },
+    {
+      "id": "Ts::Point",
+      "name": "Point",
+      "module": "Ts",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "structure.rb",
+        "startLine": 76
+      },
+      "metrics": {},
+      "members": [
+        {
+          "name": "x",
+          "kind": "property",
+          "visibility": "public"
+        },
+        {
+          "name": "y",
+          "kind": "property",
+          "visibility": "public"
+        }
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "id": "Ts::Shape#area",
+      "name": "area",
+      "module": "Ts",
+      "type": "Ts::Shape",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "structure.rb",
+        "startLine": 4
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3
+      },
+      "parameters": [],
+      "returnTypeName": "Float",
+      "isAbstract": true
+    },
+    {
+      "id": "Ts::Base#initialize",
+      "name": "initialize",
+      "module": "Ts",
+      "type": "Ts::Base",
+      "kind": "constructor",
+      "visibility": "private",
+      "location": {
+        "file": "structure.rb",
+        "startLine": 15
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 1,
+        "lines": 3
+      },
+      "parameters": [
+        {
+          "name": "name"
+        }
+      ]
+    },
+    {
+      "id": "Ts::Square#initialize",
+      "name": "initialize",
+      "module": "Ts",
+      "type": "Ts::Square",
+      "kind": "constructor",
+      "visibility": "private",
+      "location": {
+        "file": "structure.rb",
+        "startLine": 32
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 1,
+        "lines": 6
+      },
+      "parameters": [
+        {
+          "name": "side",
+          "typeName": "Float"
+        }
+      ]
+    },
+    {
+      "id": "Ts::Square#area",
+      "name": "area",
+      "module": "Ts",
+      "type": "Ts::Square",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "structure.rb",
+        "startLine": 40
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3
+      },
+      "parameters": [],
+      "returnTypeName": "Float"
+    },
+    {
+      "id": "Ts::Square.unit_square",
+      "name": "unit_square",
+      "module": "Ts",
+      "type": "Ts::Square",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "structure.rb",
+        "startLine": 45
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3
+      },
+      "parameters": [],
+      "returnTypeName": "Square",
+      "isStatic": true
+    },
+    {
+      "id": "Ts::Drawing#initialize",
+      "name": "initialize",
+      "module": "Ts",
+      "type": "Ts::Drawing",
+      "kind": "constructor",
+      "visibility": "private",
+      "location": {
+        "file": "structure.rb",
+        "startLine": 56
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 4
+      },
+      "parameters": []
+    },
+    {
+      "id": "Ts::Drawing#add",
+      "name": "add",
+      "module": "Ts",
+      "type": "Ts::Drawing",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "structure.rb",
+        "startLine": 63
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 5,
+        "lines": 3
+      },
+      "parameters": [
+        {
+          "name": "item",
+          "typeName": "Object"
+        },
+        {
+          "name": "*tags",
+          "typeName": "String"
+        },
+        {
+          "name": "at:"
+        },
+        {
+          "name": "**options"
+        },
+        {
+          "name": "&block"
+        }
+      ]
+    },
+    {
+      "id": "Ts::Painter#paint",
+      "name": "paint",
+      "module": "Ts",
+      "type": "Ts::Painter",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "structure.rb",
+        "startLine": 71
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 1,
+        "lines": 3
+      },
+      "parameters": [
+        {
+          "name": "square",
+          "typeName": "Square"
+        }
+      ],
+      "returnTypeName": "Float"
+    }
+  ],
+  "dependencies": [
+    {
+      "from": "Ts::Base",
+      "to": "Ts::Shape",
+      "kind": "inheritance",
+      "phase": "runtime"
+    },
+    {
+      "from": "Ts::Square",
+      "to": "Ts::Base",
+      "kind": "inheritance",
+      "phase": "runtime"
+    },
+    {
+      "from": "Ts::Drawing",
+      "to": "Ts::Square",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "Ts::Painter",
+      "to": "Ts::Square",
+      "kind": "call",
+      "phase": "runtime"
+    }
+  ],
+  "cycles": [],
+  "skippedRules": [],
+  "diagnostics": []
+}

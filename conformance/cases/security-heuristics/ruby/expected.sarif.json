@@ -1,0 +1,24 @@
+{
+  "results": [
+    {
+      "ruleId": "SEC001",
+      "file": "store.rb",
+      "startLine": 2
+    },
+    {
+      "ruleId": "SEC001",
+      "file": "store.rb",
+      "startLine": 4
+    },
+    {
+      "ruleId": "SEC003",
+      "file": "store.rb",
+      "startLine": 7
+    },
+    {
+      "ruleId": "SEC003",
+      "file": "store.rb",
+      "startLine": 15
+    }
+  ]
+}

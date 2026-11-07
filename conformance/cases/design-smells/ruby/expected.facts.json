@@ -1,0 +1,349 @@
+{
+  "schemaVersion": "1.3.0",
+  "analyzer": {
+    "name": "hand-computed",
+    "version": "0.0.0",
+    "language": "ruby"
+  },
+  "files": [
+    {
+      "path": "god.rb",
+      "lines": 37,
+      "loc": 24
+    },
+    {
+      "path": "money.rb",
+      "lines": 5,
+      "loc": 5
+    },
+    {
+      "path": "order.rb",
+      "lines": 7,
+      "loc": 7
+    },
+    {
+      "path": "printer.rb",
+      "lines": 36,
+      "loc": 26
+    }
+  ],
+  "modules": [
+    {
+      "id": "Smell::Data",
+      "name": "Data",
+      "files": [
+        "money.rb",
+        "order.rb"
+      ],
+      "loc": 12,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "Smell::Report",
+      "name": "Report",
+      "files": [
+        "god.rb",
+        "printer.rb"
+      ],
+      "loc": 50,
+      "metrics": {},
+      "paradigmEvidence": []
+    }
+  ],
+  "types": [
+    {
+      "id": "Smell::Data::Money",
+      "name": "Money",
+      "module": "Smell::Data",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "money.rb",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 1,
+        "memberCount": 3
+      }
+    },
+    {
+      "id": "Smell::Data::Order",
+      "name": "Order",
+      "module": "Smell::Data",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "order.rb",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 3
+      }
+    },
+    {
+      "id": "Smell::Report::God",
+      "name": "God",
+      "module": "Smell::Report",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "god.rb",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 33,
+        "memberCount": 8,
+        "methodCount": 4,
+        "wmc": 8,
+        "atfd": 3,
+        "tcc": 0
+      }
+    },
+    {
+      "id": "Smell::Report::Printer",
+      "name": "Printer",
+      "module": "Smell::Report",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "printer.rb",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 32,
+        "memberCount": 9,
+        "methodCount": 6,
+        "wmc": 6,
+        "atfd": 6,
+        "tcc": 0
+      }
+    }
+  ],
+  "functions": [
+    {
+      "id": "Smell::Report::God#one",
+      "name": "one",
+      "module": "Smell::Report",
+      "type": "Smell::Report::God",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "god.rb",
+        "startLine": 5
+      },
+      "metrics": {
+        "cyclomatic": 2,
+        "maxNesting": 1,
+        "parameterCount": 1,
+        "lines": 5,
+        "foreignMembers": 1,
+        "ownMembers": 1
+      }
+    },
+    {
+      "id": "Smell::Report::God#two",
+      "name": "two",
+      "module": "Smell::Report",
+      "type": "Smell::Report::God",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "god.rb",
+        "startLine": 12
+      },
+      "metrics": {
+        "cyclomatic": 2,
+        "maxNesting": 1,
+        "parameterCount": 1,
+        "lines": 5,
+        "foreignMembers": 1,
+        "ownMembers": 1
+      }
+    },
+    {
+      "id": "Smell::Report::God#three",
+      "name": "three",
+      "module": "Smell::Report",
+      "type": "Smell::Report::God",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "god.rb",
+        "startLine": 19
+      },
+      "metrics": {
+        "cyclomatic": 2,
+        "maxNesting": 1,
+        "parameterCount": 1,
+        "lines": 5,
+        "foreignMembers": 1,
+        "ownMembers": 1
+      }
+    },
+    {
+      "id": "Smell::Report::God#four",
+      "name": "four",
+      "module": "Smell::Report",
+      "type": "Smell::Report::God",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "god.rb",
+        "startLine": 26
+      },
+      "metrics": {
+        "cyclomatic": 2,
+        "maxNesting": 1,
+        "parameterCount": 1,
+        "lines": 5,
+        "foreignMembers": 1,
+        "ownMembers": 1
+      }
+    },
+    {
+      "id": "Smell::Report::Printer#initialize",
+      "name": "initialize",
+      "module": "Smell::Report",
+      "type": "Smell::Report::Printer",
+      "kind": "constructor",
+      "visibility": "private",
+      "location": {
+        "file": "printer.rb",
+        "startLine": 4
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 5,
+        "foreignMembers": null,
+        "ownMembers": null
+      }
+    },
+    {
+      "id": "Smell::Report::Printer#envy",
+      "name": "envy",
+      "module": "Smell::Report",
+      "type": "Smell::Report::Printer",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "printer.rb",
+        "startLine": 11
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 1,
+        "lines": 3,
+        "foreignMembers": 3,
+        "ownMembers": 0
+      }
+    },
+    {
+      "id": "Smell::Report::Printer#balanced",
+      "name": "balanced",
+      "module": "Smell::Report",
+      "type": "Smell::Report::Printer",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "printer.rb",
+        "startLine": 16
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 1,
+        "lines": 3,
+        "foreignMembers": 3,
+        "ownMembers": 3
+      }
+    },
+    {
+      "id": "Smell::Report::Printer#few",
+      "name": "few",
+      "module": "Smell::Report",
+      "type": "Smell::Report::Printer",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "printer.rb",
+        "startLine": 21
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 1,
+        "lines": 3,
+        "foreignMembers": 2,
+        "ownMembers": 0
+      }
+    },
+    {
+      "id": "Smell::Report::Printer#reads_money",
+      "name": "reads_money",
+      "module": "Smell::Report",
+      "type": "Smell::Report::Printer",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "printer.rb",
+        "startLine": 26
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 1,
+        "lines": 3,
+        "foreignMembers": 0,
+        "ownMembers": 0
+      }
+    },
+    {
+      "id": "Smell::Report::Printer.sum",
+      "name": "sum",
+      "module": "Smell::Report",
+      "type": "Smell::Report::Printer",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "printer.rb",
+        "startLine": 31
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 1,
+        "lines": 3,
+        "foreignMembers": null,
+        "ownMembers": null
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "from": "Smell::Report::God",
+      "to": "Smell::Data::Order",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "Smell::Report::Printer",
+      "to": "Smell::Data::Money",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "Smell::Report::Printer",
+      "to": "Smell::Data::Order",
+      "kind": "type-ref",
+      "phase": "runtime"
+    }
+  ],
+  "cycles": [],
+  "skippedRules": [],
+  "diagnostics": []
+}

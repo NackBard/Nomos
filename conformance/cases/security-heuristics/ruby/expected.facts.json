@@ -1,0 +1,91 @@
+{
+  "schemaVersion": "1.3.0",
+  "analyzer": {
+    "name": "hand-computed",
+    "version": "0.0.0",
+    "language": "ruby"
+  },
+  "files": [
+    {
+      "path": "store.rb",
+      "lines": 17,
+      "loc": 14
+    }
+  ],
+  "modules": [
+    {
+      "id": "Store",
+      "name": "Store",
+      "files": [
+        "store.rb"
+      ],
+      "loc": 14,
+      "metrics": {},
+      "paradigmEvidence": []
+    }
+  ],
+  "types": [],
+  "functions": [
+    {
+      "id": "Store.query",
+      "name": "query",
+      "module": "Store",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "store.rb",
+        "startLine": 6
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 1,
+        "lines": 3
+      }
+    },
+    {
+      "id": "Store.fixed",
+      "name": "fixed",
+      "module": "Store",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "store.rb",
+        "startLine": 10
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3
+      }
+    },
+    {
+      "id": "Store.formatted",
+      "name": "formatted",
+      "module": "Store",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "store.rb",
+        "startLine": 14
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 1,
+        "lines": 3
+      }
+    }
+  ],
+  "dependencies": [],
+  "cycles": [],
+  "skippedRules": [
+    {
+      "ruleId": "SEC002",
+      "reason": "not-supported",
+      "message": "m"
+    }
+  ],
+  "diagnostics": []
+}

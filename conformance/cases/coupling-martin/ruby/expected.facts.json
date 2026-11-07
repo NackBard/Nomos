@@ -1,0 +1,343 @@
+{
+  "schemaVersion": "1.3.0",
+  "analyzer": {
+    "name": "hand-computed",
+    "version": "0.0.0",
+    "language": "ruby"
+  },
+  "files": [
+    {
+      "path": "app/program.rb",
+      "lines": 13,
+      "loc": 12
+    },
+    {
+      "path": "domain/entity.rb",
+      "lines": 7,
+      "loc": 7
+    },
+    {
+      "path": "domain/repo.rb",
+      "lines": 9,
+      "loc": 9
+    },
+    {
+      "path": "infra/sql_repo.rb",
+      "lines": 11,
+      "loc": 10
+    },
+    {
+      "path": "services/order_service.rb",
+      "lines": 15,
+      "loc": 13
+    }
+  ],
+  "modules": [
+    {
+      "id": "Shop::App",
+      "name": "App",
+      "files": [
+        "app/program.rb"
+      ],
+      "loc": 12,
+      "metrics": {
+        "ca": 0,
+        "ce": 2,
+        "instability": 1,
+        "abstractness": 0,
+        "distance": 0
+      },
+      "paradigmEvidence": []
+    },
+    {
+      "id": "Shop::Domain",
+      "name": "Domain",
+      "files": [
+        "domain/entity.rb",
+        "domain/repo.rb"
+      ],
+      "loc": 16,
+      "metrics": {
+        "ca": 2,
+        "ce": 0,
+        "instability": 0,
+        "abstractness": 0.5,
+        "distance": 0.5
+      },
+      "paradigmEvidence": []
+    },
+    {
+      "id": "Shop::Infra",
+      "name": "Infra",
+      "files": [
+        "infra/sql_repo.rb"
+      ],
+      "loc": 10,
+      "metrics": {
+        "ca": 1,
+        "ce": 2,
+        "instability": 0.6667,
+        "abstractness": 0,
+        "distance": 0.3333
+      },
+      "paradigmEvidence": []
+    },
+    {
+      "id": "Shop::Services",
+      "name": "Services",
+      "files": [
+        "services/order_service.rb"
+      ],
+      "loc": 13,
+      "metrics": {
+        "ca": 1,
+        "ce": 2,
+        "instability": 0.6667,
+        "abstractness": 0,
+        "distance": 0.3333
+      },
+      "paradigmEvidence": []
+    }
+  ],
+  "types": [
+    {
+      "id": "Shop::App::Program",
+      "name": "Program",
+      "module": "Shop::App",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "app/program.rb",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 9,
+        "memberCount": 4,
+        "methodCount": 2,
+        "dit": 0,
+        "cbo": 2
+      }
+    },
+    {
+      "id": "Shop::Domain::Entity",
+      "name": "Entity",
+      "module": "Shop::Domain",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "domain/entity.rb",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1,
+        "methodCount": 0,
+        "dit": 0,
+        "cbo": 0
+      }
+    },
+    {
+      "id": "Shop::Domain::Repo",
+      "name": "Repo",
+      "module": "Shop::Domain",
+      "kind": "trait",
+      "isAbstract": true,
+      "location": {
+        "file": "domain/repo.rb",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 5,
+        "memberCount": 1,
+        "methodCount": 1
+      }
+    },
+    {
+      "id": "Shop::Infra::SqlRepo",
+      "name": "SqlRepo",
+      "module": "Shop::Infra",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "infra/sql_repo.rb",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 7,
+        "memberCount": 2,
+        "methodCount": 1,
+        "dit": 0,
+        "cbo": 2
+      }
+    },
+    {
+      "id": "Shop::Services::OrderService",
+      "name": "OrderService",
+      "module": "Shop::Services",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "services/order_service.rb",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 11,
+        "memberCount": 4,
+        "methodCount": 2,
+        "dit": 0,
+        "cbo": 2
+      }
+    }
+  ],
+  "functions": [
+    {
+      "id": "Shop::App::Program#service",
+      "name": "service",
+      "module": "Shop::App",
+      "type": "Shop::App::Program",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "app/program.rb",
+        "startLine": 4
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3
+      }
+    },
+    {
+      "id": "Shop::App::Program#repo",
+      "name": "repo",
+      "module": "Shop::App",
+      "type": "Shop::App::Program",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "app/program.rb",
+        "startLine": 8
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3
+      }
+    },
+    {
+      "id": "Shop::Domain::Repo#find",
+      "name": "find",
+      "module": "Shop::Domain",
+      "type": "Shop::Domain::Repo",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "domain/repo.rb",
+        "startLine": 4
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 1,
+        "lines": 3
+      }
+    },
+    {
+      "id": "Shop::Infra::SqlRepo#cache",
+      "name": "cache",
+      "module": "Shop::Infra",
+      "type": "Shop::Infra::SqlRepo",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "infra/sql_repo.rb",
+        "startLine": 6
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3
+      }
+    },
+    {
+      "id": "Shop::Services::OrderService#initialize",
+      "name": "initialize",
+      "module": "Shop::Services",
+      "type": "Shop::Services::OrderService",
+      "kind": "constructor",
+      "visibility": "private",
+      "location": {
+        "file": "services/order_service.rb",
+        "startLine": 4
+      },
+      "metrics": {
+        "cyclomatic": 2,
+        "maxNesting": 1,
+        "parameterCount": 1,
+        "lines": 5
+      }
+    },
+    {
+      "id": "Shop::Services::OrderService#last",
+      "name": "last",
+      "module": "Shop::Services",
+      "type": "Shop::Services::OrderService",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "services/order_service.rb",
+        "startLine": 10
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "from": "Shop::App::Program",
+      "to": "Shop::Services::OrderService",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "Shop::App::Program",
+      "to": "Shop::Infra::SqlRepo",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "Shop::Infra::SqlRepo",
+      "to": "Shop::Domain::Repo",
+      "kind": "inheritance",
+      "phase": "runtime"
+    },
+    {
+      "from": "Shop::Infra::SqlRepo",
+      "to": "Shop::Domain::Entity",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "Shop::Services::OrderService",
+      "to": "Shop::Domain::Repo",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "Shop::Services::OrderService",
+      "to": "Shop::Domain::Entity",
+      "kind": "call",
+      "phase": "runtime"
+    }
+  ],
+  "cycles": [],
+  "skippedRules": [],
+  "diagnostics": []
+}

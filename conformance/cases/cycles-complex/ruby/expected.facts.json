@@ -1,0 +1,1275 @@
+{
+  "schemaVersion": "1.3.0",
+  "analyzer": {
+    "name": "hand-computed",
+    "version": "0.0.0",
+    "language": "ruby"
+  },
+  "files": [
+    {
+      "path": "a1.rb",
+      "lines": 7,
+      "loc": 7
+    },
+    {
+      "path": "a2.rb",
+      "lines": 6,
+      "loc": 6
+    },
+    {
+      "path": "b1.rb",
+      "lines": 14,
+      "loc": 12
+    },
+    {
+      "path": "b4.rb",
+      "lines": 6,
+      "loc": 6
+    },
+    {
+      "path": "base.rb",
+      "lines": 12,
+      "loc": 11
+    },
+    {
+      "path": "c1.rb",
+      "lines": 10,
+      "loc": 9
+    },
+    {
+      "path": "d1.rb",
+      "lines": 7,
+      "loc": 7
+    },
+    {
+      "path": "n1.rb",
+      "lines": 24,
+      "loc": 20
+    },
+    {
+      "path": "p.rb",
+      "lines": 16,
+      "loc": 14
+    },
+    {
+      "path": "top.rb",
+      "lines": 23,
+      "loc": 19
+    },
+    {
+      "path": "x1.rb",
+      "lines": 12,
+      "loc": 11
+    },
+    {
+      "path": "y1.rb",
+      "lines": 11,
+      "loc": 10
+    }
+  ],
+  "modules": [
+    {
+      "id": "Cx::A",
+      "name": "A",
+      "files": [
+        "a1.rb",
+        "a2.rb"
+      ],
+      "loc": 13,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "Cx::B",
+      "name": "B",
+      "files": [
+        "b1.rb",
+        "b4.rb"
+      ],
+      "loc": 18,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "Cx::Mixed",
+      "name": "Mixed",
+      "files": [
+        "base.rb"
+      ],
+      "loc": 11,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "Cx::C",
+      "name": "C",
+      "files": [
+        "c1.rb"
+      ],
+      "loc": 9,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "Cx::D",
+      "name": "D",
+      "files": [
+        "d1.rb"
+      ],
+      "loc": 7,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "Cx::Ring",
+      "name": "Ring",
+      "files": [
+        "n1.rb"
+      ],
+      "loc": 20,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "Cx::Eight",
+      "name": "Eight",
+      "files": [
+        "p.rb"
+      ],
+      "loc": 14,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "Cx::Dag",
+      "name": "Dag",
+      "files": [
+        "top.rb"
+      ],
+      "loc": 19,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "Cx::Left",
+      "name": "Left",
+      "files": [
+        "x1.rb"
+      ],
+      "loc": 11,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "Cx::Right",
+      "name": "Right",
+      "files": [
+        "y1.rb"
+      ],
+      "loc": 10,
+      "metrics": {},
+      "paradigmEvidence": []
+    }
+  ],
+  "types": [
+    {
+      "id": "Cx::A::A1",
+      "name": "A1",
+      "module": "Cx::A",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "a1.rb",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1
+      }
+    },
+    {
+      "id": "Cx::A::A2",
+      "name": "A2",
+      "module": "Cx::A",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "a2.rb",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 2,
+        "memberCount": 0
+      }
+    },
+    {
+      "id": "Cx::B::B1",
+      "name": "B1",
+      "module": "Cx::B",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "b1.rb",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 2,
+        "memberCount": 0
+      }
+    },
+    {
+      "id": "Cx::B::B2",
+      "name": "B2",
+      "module": "Cx::B",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "b1.rb",
+        "startLine": 6
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1
+      }
+    },
+    {
+      "id": "Cx::B::B3",
+      "name": "B3",
+      "module": "Cx::B",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "b1.rb",
+        "startLine": 10
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1
+      }
+    },
+    {
+      "id": "Cx::B::B4",
+      "name": "B4",
+      "module": "Cx::B",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "b4.rb",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 2,
+        "memberCount": 0
+      }
+    },
+    {
+      "id": "Cx::Mixed::Base",
+      "name": "Base",
+      "module": "Cx::Mixed",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "base.rb",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 5,
+        "memberCount": 1
+      }
+    },
+    {
+      "id": "Cx::Mixed::Derived",
+      "name": "Derived",
+      "module": "Cx::Mixed",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "base.rb",
+        "startLine": 9
+      },
+      "metrics": {
+        "lines": 2,
+        "memberCount": 0
+      }
+    },
+    {
+      "id": "Cx::C::C1",
+      "name": "C1",
+      "module": "Cx::C",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "c1.rb",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 2,
+        "memberCount": 0
+      }
+    },
+    {
+      "id": "Cx::C::C2",
+      "name": "C2",
+      "module": "Cx::C",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "c1.rb",
+        "startLine": 6
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1
+      }
+    },
+    {
+      "id": "Cx::D::D1",
+      "name": "D1",
+      "module": "Cx::D",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "d1.rb",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1
+      }
+    },
+    {
+      "id": "Cx::Ring::N1",
+      "name": "N1",
+      "module": "Cx::Ring",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "n1.rb",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1
+      }
+    },
+    {
+      "id": "Cx::Ring::N2",
+      "name": "N2",
+      "module": "Cx::Ring",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "n1.rb",
+        "startLine": 7
+      },
+      "metrics": {
+        "lines": 4,
+        "memberCount": 2
+      }
+    },
+    {
+      "id": "Cx::Ring::N3",
+      "name": "N3",
+      "module": "Cx::Ring",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "n1.rb",
+        "startLine": 12
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1
+      }
+    },
+    {
+      "id": "Cx::Ring::N4",
+      "name": "N4",
+      "module": "Cx::Ring",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "n1.rb",
+        "startLine": 16
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1
+      }
+    },
+    {
+      "id": "Cx::Ring::N5",
+      "name": "N5",
+      "module": "Cx::Ring",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "n1.rb",
+        "startLine": 20
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1
+      }
+    },
+    {
+      "id": "Cx::Eight::P",
+      "name": "P",
+      "module": "Cx::Eight",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "p.rb",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1
+      }
+    },
+    {
+      "id": "Cx::Eight::Q",
+      "name": "Q",
+      "module": "Cx::Eight",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "p.rb",
+        "startLine": 7
+      },
+      "metrics": {
+        "lines": 4,
+        "memberCount": 2
+      }
+    },
+    {
+      "id": "Cx::Eight::S",
+      "name": "S",
+      "module": "Cx::Eight",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "p.rb",
+        "startLine": 12
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1
+      }
+    },
+    {
+      "id": "Cx::Dag::Top",
+      "name": "Top",
+      "module": "Cx::Dag",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "top.rb",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 4,
+        "memberCount": 2
+      }
+    },
+    {
+      "id": "Cx::Dag::Mid1",
+      "name": "Mid1",
+      "module": "Cx::Dag",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "top.rb",
+        "startLine": 8
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1
+      }
+    },
+    {
+      "id": "Cx::Dag::Mid2",
+      "name": "Mid2",
+      "module": "Cx::Dag",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "top.rb",
+        "startLine": 12
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1
+      }
+    },
+    {
+      "id": "Cx::Dag::Bottom",
+      "name": "Bottom",
+      "module": "Cx::Dag",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "top.rb",
+        "startLine": 16
+      },
+      "metrics": {
+        "lines": 2,
+        "memberCount": 0
+      }
+    },
+    {
+      "id": "Cx::Dag::Self",
+      "name": "Self",
+      "module": "Cx::Dag",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "top.rb",
+        "startLine": 19
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1
+      }
+    },
+    {
+      "id": "Cx::Left::X1",
+      "name": "X1",
+      "module": "Cx::Left",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "x1.rb",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1
+      }
+    },
+    {
+      "id": "Cx::Left::X2",
+      "name": "X2",
+      "module": "Cx::Left",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "x1.rb",
+        "startLine": 7
+      },
+      "metrics": {
+        "lines": 4,
+        "memberCount": 2
+      }
+    },
+    {
+      "id": "Cx::Right::Y1",
+      "name": "Y1",
+      "module": "Cx::Right",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "y1.rb",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1
+      }
+    },
+    {
+      "id": "Cx::Right::Y2",
+      "name": "Y2",
+      "module": "Cx::Right",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "y1.rb",
+        "startLine": 7
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1
+      }
+    }
+  ],
+  "functions": [
+    {
+      "id": "Cx::A::A1#out",
+      "name": "out",
+      "module": "Cx::A",
+      "type": "Cx::A::A1",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "a1.rb",
+        "startLine": 4
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "Cx::B::B2#back",
+      "name": "back",
+      "module": "Cx::B",
+      "type": "Cx::B::B2",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "b1.rb",
+        "startLine": 7
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "Cx::B::B3#out",
+      "name": "out",
+      "module": "Cx::B",
+      "type": "Cx::B::B3",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "b1.rb",
+        "startLine": 11
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "Cx::Mixed::Base#make",
+      "name": "make",
+      "module": "Cx::Mixed",
+      "type": "Cx::Mixed::Base",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "base.rb",
+        "startLine": 4
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 3
+      }
+    },
+    {
+      "id": "Cx::C::C2#back",
+      "name": "back",
+      "module": "Cx::C",
+      "type": "Cx::C::C2",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "c1.rb",
+        "startLine": 7
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "Cx::D::D1#uses",
+      "name": "uses",
+      "module": "Cx::D",
+      "type": "Cx::D::D1",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "d1.rb",
+        "startLine": 4
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "Cx::Ring::N1#following",
+      "name": "following",
+      "module": "Cx::Ring",
+      "type": "Cx::Ring::N1",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "n1.rb",
+        "startLine": 4
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "Cx::Ring::N2#following",
+      "name": "following",
+      "module": "Cx::Ring",
+      "type": "Cx::Ring::N2",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "n1.rb",
+        "startLine": 8
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "Cx::Ring::N2#skip",
+      "name": "skip",
+      "module": "Cx::Ring",
+      "type": "Cx::Ring::N2",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "n1.rb",
+        "startLine": 9
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "Cx::Ring::N3#following",
+      "name": "following",
+      "module": "Cx::Ring",
+      "type": "Cx::Ring::N3",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "n1.rb",
+        "startLine": 13
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "Cx::Ring::N4#following",
+      "name": "following",
+      "module": "Cx::Ring",
+      "type": "Cx::Ring::N4",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "n1.rb",
+        "startLine": 17
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "Cx::Ring::N5#following",
+      "name": "following",
+      "module": "Cx::Ring",
+      "type": "Cx::Ring::N5",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "n1.rb",
+        "startLine": 21
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "Cx::Eight::P#following",
+      "name": "following",
+      "module": "Cx::Eight",
+      "type": "Cx::Eight::P",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "p.rb",
+        "startLine": 4
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "Cx::Eight::Q#back",
+      "name": "back",
+      "module": "Cx::Eight",
+      "type": "Cx::Eight::Q",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "p.rb",
+        "startLine": 8
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "Cx::Eight::Q#side",
+      "name": "side",
+      "module": "Cx::Eight",
+      "type": "Cx::Eight::Q",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "p.rb",
+        "startLine": 9
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "Cx::Eight::S#back",
+      "name": "back",
+      "module": "Cx::Eight",
+      "type": "Cx::Eight::S",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "p.rb",
+        "startLine": 13
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "Cx::Dag::Top#m1",
+      "name": "m1",
+      "module": "Cx::Dag",
+      "type": "Cx::Dag::Top",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "top.rb",
+        "startLine": 4
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "Cx::Dag::Top#m2",
+      "name": "m2",
+      "module": "Cx::Dag",
+      "type": "Cx::Dag::Top",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "top.rb",
+        "startLine": 5
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "Cx::Dag::Mid1#finish",
+      "name": "finish",
+      "module": "Cx::Dag",
+      "type": "Cx::Dag::Mid1",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "top.rb",
+        "startLine": 9
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "Cx::Dag::Mid2#finish",
+      "name": "finish",
+      "module": "Cx::Dag",
+      "type": "Cx::Dag::Mid2",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "top.rb",
+        "startLine": 13
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "Cx::Dag::Self#following",
+      "name": "following",
+      "module": "Cx::Dag",
+      "type": "Cx::Dag::Self",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "top.rb",
+        "startLine": 20
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "Cx::Left::X1#following",
+      "name": "following",
+      "module": "Cx::Left",
+      "type": "Cx::Left::X1",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "x1.rb",
+        "startLine": 4
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "Cx::Left::X2#back",
+      "name": "back",
+      "module": "Cx::Left",
+      "type": "Cx::Left::X2",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "x1.rb",
+        "startLine": 8
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "Cx::Left::X2#bridge",
+      "name": "bridge",
+      "module": "Cx::Left",
+      "type": "Cx::Left::X2",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "x1.rb",
+        "startLine": 9
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "Cx::Right::Y1#following",
+      "name": "following",
+      "module": "Cx::Right",
+      "type": "Cx::Right::Y1",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "y1.rb",
+        "startLine": 4
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "Cx::Right::Y2#back",
+      "name": "back",
+      "module": "Cx::Right",
+      "type": "Cx::Right::Y2",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "y1.rb",
+        "startLine": 8
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "from": "Cx::A::A1",
+      "to": "Cx::B::B1",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "Cx::B::B2",
+      "to": "Cx::A::A2",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "Cx::B::B3",
+      "to": "Cx::C::C1",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "Cx::Mixed::Base",
+      "to": "Cx::Mixed::Derived",
+      "kind": "call",
+      "phase": "runtime"
+    },
+    {
+      "from": "Cx::Mixed::Derived",
+      "to": "Cx::Mixed::Base",
+      "kind": "inheritance",
+      "phase": "runtime"
+    },
+    {
+      "from": "Cx::C::C2",
+      "to": "Cx::B::B4",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "Cx::D::D1",
+      "to": "Cx::A::A1",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "Cx::Ring::N1",
+      "to": "Cx::Ring::N2",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "Cx::Ring::N2",
+      "to": "Cx::Ring::N3",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "Cx::Ring::N2",
+      "to": "Cx::Ring::N4",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "Cx::Ring::N3",
+      "to": "Cx::Ring::N4",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "Cx::Ring::N4",
+      "to": "Cx::Ring::N5",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "Cx::Ring::N5",
+      "to": "Cx::Ring::N1",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "Cx::Eight::P",
+      "to": "Cx::Eight::Q",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "Cx::Eight::Q",
+      "to": "Cx::Eight::P",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "Cx::Eight::Q",
+      "to": "Cx::Eight::S",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "Cx::Eight::S",
+      "to": "Cx::Eight::Q",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "Cx::Dag::Top",
+      "to": "Cx::Dag::Mid1",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "Cx::Dag::Top",
+      "to": "Cx::Dag::Mid2",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "Cx::Dag::Mid1",
+      "to": "Cx::Dag::Bottom",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "Cx::Dag::Mid2",
+      "to": "Cx::Dag::Bottom",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "Cx::Left::X1",
+      "to": "Cx::Left::X2",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "Cx::Left::X2",
+      "to": "Cx::Left::X1",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "Cx::Left::X2",
+      "to": "Cx::Right::Y1",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "Cx::Right::Y1",
+      "to": "Cx::Right::Y2",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "Cx::Right::Y2",
+      "to": "Cx::Right::Y1",
+      "kind": "type-ref",
+      "phase": "runtime"
+    }
+  ],
+  "cycles": [
+    {
+      "level": "type",
+      "members": [
+        "Cx::Eight::P",
+        "Cx::Eight::Q",
+        "Cx::Eight::S"
+      ]
+    },
+    {
+      "level": "type",
+      "members": [
+        "Cx::Left::X1",
+        "Cx::Left::X2"
+      ]
+    },
+    {
+      "level": "type",
+      "members": [
+        "Cx::Mixed::Base",
+        "Cx::Mixed::Derived"
+      ]
+    },
+    {
+      "level": "type",
+      "members": [
+        "Cx::Right::Y1",
+        "Cx::Right::Y2"
+      ]
+    },
+    {
+      "level": "type",
+      "members": [
+        "Cx::Ring::N1",
+        "Cx::Ring::N2",
+        "Cx::Ring::N3",
+        "Cx::Ring::N4",
+        "Cx::Ring::N5"
+      ]
+    },
+    {
+      "level": "module",
+      "members": [
+        "Cx::A",
+        "Cx::B",
+        "Cx::C"
+      ]
+    }
+  ],
+  "skippedRules": [],
+  "diagnostics": []
+}

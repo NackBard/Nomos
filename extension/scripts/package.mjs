@@ -176,6 +176,30 @@ const analyzers = [];
   });
 }
 
+// Ruby: the sources run on the person's Ruby 3.3+ from PATH (RubyInstaller on Windows, the shims of rbenv, asdf or mise
+// elsewhere) without gems; Prism comes with Ruby 3.3. The same files serve every platform, tests stay out. The check
+// runs the manifest, so a Ruby older than 3.3 or one without Prism does not pass (D-061).
+{
+  const source = path.join(repository, "analyzers", "ruby");
+  const out = path.join(bundle, "ruby");
+  fs.mkdirSync(path.join(out, "lib", "nomos_ruby"), { recursive: true });
+  fs.copyFileSync(path.join(source, "main.rb"), path.join(out, "main.rb"));
+  for (const file of fs.readdirSync(path.join(source, "lib", "nomos_ruby")).filter((f) => f.endsWith(".rb") || f.endsWith(".json"))) {
+    fs.copyFileSync(path.join(source, "lib", "nomos_ruby", file), path.join(out, "lib", "nomos_ruby", file));
+  }
+  const { language, files } = manifest(process.execPath, [path.join(source, "run.mjs")]);
+  analyzers.push({
+    language, files,
+    command: ["${runtime}", "--disable-gems", "${bundle}/ruby/main.rb"],
+    runtime: {
+      name: "Ruby 3.3 or newer",
+      path: ["ruby"],
+      check: ["--disable-gems", "${bundle}/ruby/main.rb", "manifest"],
+      installUrl: "https://www.ruby-lang.org/en/documentation/installation/",
+    },
+  });
+}
+
 fs.writeFileSync(path.join(bundle, "analyzers.json"), JSON.stringify({ analyzers }, null, 2) + "\n");
 console.log(`bundle/analyzers.json: ${analyzers.map((a) => a.language).join(", ")}`);
 

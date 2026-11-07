@@ -1,0 +1,481 @@
+{
+  "schemaVersion": "1.3.0",
+  "analyzer": {
+    "name": "hand-computed",
+    "version": "0.0.0",
+    "language": "ruby"
+  },
+  "files": [
+    {
+      "path": "a1.rb",
+      "lines": 7,
+      "loc": 7
+    },
+    {
+      "path": "b1.rb",
+      "lines": 7,
+      "loc": 7
+    },
+    {
+      "path": "c1.rb",
+      "lines": 7,
+      "loc": 7
+    },
+    {
+      "path": "d1.rb",
+      "lines": 12,
+      "loc": 11
+    },
+    {
+      "path": "e1.rb",
+      "lines": 7,
+      "loc": 7
+    },
+    {
+      "path": "e2.rb",
+      "lines": 6,
+      "loc": 6
+    },
+    {
+      "path": "f1.rb",
+      "lines": 6,
+      "loc": 6
+    },
+    {
+      "path": "f2.rb",
+      "lines": 7,
+      "loc": 7
+    }
+  ],
+  "modules": [
+    {
+      "id": "Cyc::A",
+      "name": "A",
+      "files": [
+        "a1.rb"
+      ],
+      "loc": 7,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "Cyc::B",
+      "name": "B",
+      "files": [
+        "b1.rb"
+      ],
+      "loc": 7,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "Cyc::C",
+      "name": "C",
+      "files": [
+        "c1.rb"
+      ],
+      "loc": 7,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "Cyc::D",
+      "name": "D",
+      "files": [
+        "d1.rb"
+      ],
+      "loc": 11,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "Cyc::E",
+      "name": "E",
+      "files": [
+        "e1.rb",
+        "e2.rb"
+      ],
+      "loc": 13,
+      "metrics": {},
+      "paradigmEvidence": []
+    },
+    {
+      "id": "Cyc::F",
+      "name": "F",
+      "files": [
+        "f1.rb",
+        "f2.rb"
+      ],
+      "loc": 13,
+      "metrics": {},
+      "paradigmEvidence": []
+    }
+  ],
+  "types": [
+    {
+      "id": "Cyc::A::A1",
+      "name": "A1",
+      "module": "Cyc::A",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "a1.rb",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1
+      }
+    },
+    {
+      "id": "Cyc::B::B1",
+      "name": "B1",
+      "module": "Cyc::B",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "b1.rb",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1
+      }
+    },
+    {
+      "id": "Cyc::C::C1",
+      "name": "C1",
+      "module": "Cyc::C",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "c1.rb",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1
+      }
+    },
+    {
+      "id": "Cyc::D::D1",
+      "name": "D1",
+      "module": "Cyc::D",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "d1.rb",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 4,
+        "memberCount": 2
+      }
+    },
+    {
+      "id": "Cyc::D::D2",
+      "name": "D2",
+      "module": "Cyc::D",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "d1.rb",
+        "startLine": 8
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1
+      }
+    },
+    {
+      "id": "Cyc::E::E1",
+      "name": "E1",
+      "module": "Cyc::E",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "e1.rb",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1
+      }
+    },
+    {
+      "id": "Cyc::E::E2",
+      "name": "E2",
+      "module": "Cyc::E",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "e2.rb",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 2,
+        "memberCount": 0
+      }
+    },
+    {
+      "id": "Cyc::F::F1",
+      "name": "F1",
+      "module": "Cyc::F",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "f1.rb",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 2,
+        "memberCount": 0
+      }
+    },
+    {
+      "id": "Cyc::F::F2",
+      "name": "F2",
+      "module": "Cyc::F",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "f2.rb",
+        "startLine": 3
+      },
+      "metrics": {
+        "lines": 3,
+        "memberCount": 1
+      }
+    }
+  ],
+  "functions": [
+    {
+      "id": "Cyc::A::A1#following",
+      "name": "following",
+      "module": "Cyc::A",
+      "type": "Cyc::A::A1",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "a1.rb",
+        "startLine": 4
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "Cyc::B::B1#following",
+      "name": "following",
+      "module": "Cyc::B",
+      "type": "Cyc::B::B1",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "b1.rb",
+        "startLine": 4
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "Cyc::C::C1#following",
+      "name": "following",
+      "module": "Cyc::C",
+      "type": "Cyc::C::C1",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "c1.rb",
+        "startLine": 4
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "Cyc::D::D1#peer",
+      "name": "peer",
+      "module": "Cyc::D",
+      "type": "Cyc::D::D1",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "d1.rb",
+        "startLine": 4
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "Cyc::D::D1#entry",
+      "name": "entry",
+      "module": "Cyc::D",
+      "type": "Cyc::D::D1",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "d1.rb",
+        "startLine": 5
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "Cyc::D::D2#peer",
+      "name": "peer",
+      "module": "Cyc::D",
+      "type": "Cyc::D::D2",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "d1.rb",
+        "startLine": 9
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "Cyc::E::E1#other",
+      "name": "other",
+      "module": "Cyc::E",
+      "type": "Cyc::E::E1",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "e1.rb",
+        "startLine": 4
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    },
+    {
+      "id": "Cyc::F::F2#other",
+      "name": "other",
+      "module": "Cyc::F",
+      "type": "Cyc::F::F2",
+      "kind": "method",
+      "visibility": "public",
+      "location": {
+        "file": "f2.rb",
+        "startLine": 4
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 0,
+        "lines": 1
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "from": "Cyc::A::A1",
+      "to": "Cyc::B::B1",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "Cyc::B::B1",
+      "to": "Cyc::C::C1",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "Cyc::C::C1",
+      "to": "Cyc::A::A1",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "Cyc::D::D1",
+      "to": "Cyc::D::D2",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "Cyc::D::D1",
+      "to": "Cyc::A::A1",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "Cyc::D::D2",
+      "to": "Cyc::D::D1",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "Cyc::E::E1",
+      "to": "Cyc::F::F1",
+      "kind": "type-ref",
+      "phase": "runtime"
+    },
+    {
+      "from": "Cyc::F::F2",
+      "to": "Cyc::E::E2",
+      "kind": "type-ref",
+      "phase": "runtime"
+    }
+  ],
+  "cycles": [
+    {
+      "level": "type",
+      "members": [
+        "Cyc::A::A1",
+        "Cyc::B::B1",
+        "Cyc::C::C1"
+      ]
+    },
+    {
+      "level": "type",
+      "members": [
+        "Cyc::D::D1",
+        "Cyc::D::D2"
+      ]
+    },
+    {
+      "level": "module",
+      "members": [
+        "Cyc::A",
+        "Cyc::B",
+        "Cyc::C"
+      ]
+    },
+    {
+      "level": "module",
+      "members": [
+        "Cyc::E",
+        "Cyc::F"
+      ]
+    }
+  ],
+  "skippedRules": [],
+  "diagnostics": []
+}

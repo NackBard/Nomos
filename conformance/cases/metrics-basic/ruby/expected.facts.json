@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "1.3.0",
+  "analyzer": { "name": "hand-computed", "version": "0.0.0", "language": "ruby" },
+  "files": [
+    { "path": "basics.rb", "lines": 43, "loc": 37 }
+  ],
+  "modules": [
+    { "id": "Metrics", "name": "Metrics", "files": ["basics.rb"], "loc": 37, "metrics": { "ca": 0, "ce": 0, "instability": null, "abstractness": 0, "distance": null }, "paradigmEvidence": [] }
+  ],
+  "types": [
+    { "id": "Metrics::Basics", "name": "Basics", "module": "Metrics", "kind": "class", "isAbstract": false, "location": { "file": "basics.rb", "startLine": 2 },
+      "metrics": { "lines": 41, "memberCount": 4, "methodCount": 4, "dit": 0, "cbo": 0, "lcom4": null, "wmc": 15 } }
+  ],
+  "functions": [
+    { "id": "Metrics::Basics.straight", "name": "straight", "module": "Metrics", "type": "Metrics::Basics", "kind": "method", "visibility": "public", "location": { "file": "basics.rb", "startLine": 3 }, "metrics": { "cyclomatic": 1, "maxNesting": 0, "parameterCount": 1, "lines": 3 } },
+    { "id": "Metrics::Basics.branches", "name": "branches", "module": "Metrics", "type": "Metrics::Basics", "kind": "method", "visibility": "public", "location": { "file": "basics.rb", "startLine": 8 }, "metrics": { "cyclomatic": 5, "maxNesting": 1, "parameterCount": 2, "lines": 9 } },
+    { "id": "Metrics::Basics.loops", "name": "loops", "module": "Metrics", "type": "Metrics::Basics", "kind": "method", "visibility": "public", "location": { "file": "basics.rb", "startLine": 18 }, "metrics": { "cyclomatic": 4, "maxNesting": 3, "parameterCount": 2, "lines": 12 } },
+    { "id": "Metrics::Basics.switches", "name": "switches", "module": "Metrics", "type": "Metrics::Basics", "kind": "method", "visibility": "public", "location": { "file": "basics.rb", "startLine": 31 }, "metrics": { "cyclomatic": 5, "maxNesting": 2, "parameterCount": 2, "lines": 11 } }
+  ],
+  "dependencies": [],
+  "cycles": [],
+  "skippedRules": [],
+  "diagnostics": []
+}

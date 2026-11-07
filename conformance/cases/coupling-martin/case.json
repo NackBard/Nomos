@@ -18,7 +18,8 @@
     "javascript",
     "python",
     "java",
-    "kotlin"
+    "kotlin",
+    "ruby"
   ],
   "parity": [
     {
@@ -31,7 +32,8 @@
         "javascript": "domain",
         "python": "domain",
         "java": "shop.domain",
-        "kotlin": "shop.domain"
+        "kotlin": "shop.domain",
+        "ruby": "Shop::Domain"
       }
     },
     {
@@ -44,7 +46,8 @@
         "javascript": "domain",
         "python": "domain",
         "java": "shop.domain",
-        "kotlin": "shop.domain"
+        "kotlin": "shop.domain",
+        "ruby": "Shop::Domain"
       }
     },
     {
@@ -57,7 +60,8 @@
         "javascript": "domain",
         "python": "domain",
         "java": "shop.domain",
-        "kotlin": "shop.domain"
+        "kotlin": "shop.domain",
+        "ruby": "Shop::Domain"
       }
     },
     {
@@ -69,7 +73,8 @@
         "typescript": "domain",
         "python": "domain",
         "java": "shop.domain",
-        "kotlin": "shop.domain"
+        "kotlin": "shop.domain",
+        "ruby": "Shop::Domain"
       }
     },
     {
@@ -81,7 +86,8 @@
         "typescript": "domain",
         "python": "domain",
         "java": "shop.domain",
-        "kotlin": "shop.domain"
+        "kotlin": "shop.domain",
+        "ruby": "Shop::Domain"
       }
     },
     {
@@ -94,7 +100,8 @@
         "javascript": "infra",
         "python": "infra",
         "java": "shop.infra",
-        "kotlin": "shop.infra"
+        "kotlin": "shop.infra",
+        "ruby": "Shop::Infra"
       }
     },
     {
@@ -107,7 +114,8 @@
         "javascript": "infra",
         "python": "infra",
         "java": "shop.infra",
-        "kotlin": "shop.infra"
+        "kotlin": "shop.infra",
+        "ruby": "Shop::Infra"
       }
     },
     {
@@ -120,7 +128,8 @@
         "javascript": "infra",
         "python": "infra",
         "java": "shop.infra",
-        "kotlin": "shop.infra"
+        "kotlin": "shop.infra",
+        "ruby": "Shop::Infra"
       }
     },
     {
@@ -132,7 +141,8 @@
         "typescript": "infra",
         "python": "infra",
         "java": "shop.infra",
-        "kotlin": "shop.infra"
+        "kotlin": "shop.infra",
+        "ruby": "Shop::Infra"
       }
     },
     {
@@ -144,7 +154,8 @@
         "typescript": "infra",
         "python": "infra",
         "java": "shop.infra",
-        "kotlin": "shop.infra"
+        "kotlin": "shop.infra",
+        "ruby": "Shop::Infra"
       }
     },
     {
@@ -157,7 +168,8 @@
         "javascript": "services",
         "python": "services",
         "java": "shop.services",
-        "kotlin": "shop.services"
+        "kotlin": "shop.services",
+        "ruby": "Shop::Services"
       }
     },
     {
@@ -170,7 +182,8 @@
         "javascript": "services",
         "python": "services",
         "java": "shop.services",
-        "kotlin": "shop.services"
+        "kotlin": "shop.services",
+        "ruby": "Shop::Services"
       }
     },
     {
@@ -183,7 +196,8 @@
         "javascript": "services",
         "python": "services",
         "java": "shop.services",
-        "kotlin": "shop.services"
+        "kotlin": "shop.services",
+        "ruby": "Shop::Services"
       }
     },
     {
@@ -195,7 +209,8 @@
         "typescript": "services",
         "python": "services",
         "java": "shop.services",
-        "kotlin": "shop.services"
+        "kotlin": "shop.services",
+        "ruby": "Shop::Services"
       }
     },
     {
@@ -207,7 +222,8 @@
         "typescript": "services",
         "python": "services",
         "java": "shop.services",
-        "kotlin": "shop.services"
+        "kotlin": "shop.services",
+        "ruby": "Shop::Services"
       }
     },
     {
@@ -220,7 +236,8 @@
         "javascript": "app",
         "python": "app",
         "java": "shop.app",
-        "kotlin": "shop.app"
+        "kotlin": "shop.app",
+        "ruby": "Shop::App"
       }
     },
     {
@@ -233,7 +250,8 @@
         "javascript": "app",
         "python": "app",
         "java": "shop.app",
-        "kotlin": "shop.app"
+        "kotlin": "shop.app",
+        "ruby": "Shop::App"
       }
     },
     {
@@ -246,7 +264,8 @@
         "javascript": "app",
         "python": "app",
         "java": "shop.app",
-        "kotlin": "shop.app"
+        "kotlin": "shop.app",
+        "ruby": "Shop::App"
       }
     },
     {
@@ -258,7 +277,8 @@
         "typescript": "app",
         "python": "app",
         "java": "shop.app",
-        "kotlin": "shop.app"
+        "kotlin": "shop.app",
+        "ruby": "Shop::App"
       }
     },
     {
@@ -270,7 +290,8 @@
         "typescript": "app",
         "python": "app",
         "java": "shop.app",
-        "kotlin": "shop.app"
+        "kotlin": "shop.app",
+        "ruby": "Shop::App"
       }
     }
   ]

@@ -1,0 +1,98 @@
+{
+  "schemaVersion": "1.3.0",
+  "analyzer": {
+    "name": "hand-computed",
+    "version": "0.0.0",
+    "language": "ruby"
+  },
+  "files": [
+    {
+      "path": "calc.rb",
+      "lines": 3,
+      "loc": 3,
+      "coverage": 25
+    },
+    {
+      "path": "left.rb",
+      "lines": 10,
+      "loc": 10,
+      "coverage": 100
+    },
+    {
+      "path": "right.rb",
+      "lines": 10,
+      "loc": 10
+    }
+  ],
+  "modules": [
+    {
+      "id": "(global)",
+      "name": "(global)",
+      "files": [
+        "calc.rb",
+        "left.rb",
+        "right.rb"
+      ],
+      "loc": 23,
+      "metrics": {},
+      "paradigmEvidence": []
+    }
+  ],
+  "types": [
+    {
+      "id": "Left",
+      "name": "Left",
+      "module": "(global)",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "left.rb",
+        "startLine": 1
+      },
+      "metrics": {
+        "lines": 10,
+        "memberCount": 8
+      }
+    },
+    {
+      "id": "Right",
+      "name": "Right",
+      "module": "(global)",
+      "kind": "class",
+      "isAbstract": false,
+      "location": {
+        "file": "right.rb",
+        "startLine": 1
+      },
+      "metrics": {
+        "lines": 10,
+        "memberCount": 8
+      }
+    }
+  ],
+  "functions": [
+    {
+      "id": "add",
+      "name": "add",
+      "module": "(global)",
+      "kind": "function",
+      "visibility": "public",
+      "location": {
+        "file": "calc.rb",
+        "startLine": 1
+      },
+      "metrics": {
+        "cyclomatic": 1,
+        "maxNesting": 0,
+        "parameterCount": 2,
+        "lines": 3,
+        "halsteadVolume": 16.2535,
+        "maintainabilityIndex": 80.979
+      }
+    }
+  ],
+  "dependencies": [],
+  "cycles": [],
+  "skippedRules": [],
+  "diagnostics": []
+}
