@@ -10,6 +10,7 @@
   },
   "private": true,
   "license": "MIT",
+  "icon": "media/icon-128-min.png",
   "engines": {
     "vscode": "^1.90.0"
   },
