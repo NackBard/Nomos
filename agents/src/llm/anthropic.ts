@@ -1,6 +1,7 @@
 // Claude through the Anthropic API with the person's key (SecretStorage, else ANTHROPIC_API_KEY). The SDK is the
 // one dependency of the package that runs (D-063).
 import Anthropic from "@anthropic-ai/sdk";
+import type { BetaMessageStreamParams } from "@anthropic-ai/sdk/resources/beta/messages/messages";
 import type { Backend, Cancellation } from "./backend";
 import { BackendError } from "./backend";
 
@@ -20,15 +21,16 @@ export class AnthropicBackend implements Backend {
     // Without a key from the settings the SDK takes ANTHROPIC_API_KEY or a profile of `ant auth login`.
     const client = new Anthropic(this.apiKey ? { apiKey: this.apiKey } : {});
     const fallback = FallbackModels.has(this.model);
-    const stream = client.beta.messages.stream({
+    const params: BetaMessageStreamParams = {
       model: this.model,
       max_tokens: MaxTokens,
       thinking: { type: "adaptive" },
       output_config: { effort: this.effort },
       system,
       messages: [{ role: "user", content: user }],
-      ...(fallback ? { betas: [FallbackBeta], fallbacks: "default" } : {}),
-    } as Anthropic.Beta.Messages.MessageStreamParams);
+      ...(fallback ? { betas: [FallbackBeta], fallbacks: "default" as const } : {}),
+    };
+    const stream = client.beta.messages.stream(params);
     const subscription = cancellation.onCancellationRequested(() => stream.abort());
     try {
       for await (const event of stream) {
