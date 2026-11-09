@@ -21,8 +21,8 @@ import type { TreeTexts } from "./ui/trees";
 /** Language packs the person declined to be asked about again, kept in globalState (D-062). */
 const DeclinedPacksKey = "nomos.declinedPacks";
 
-/** What the end-to-end test reads; the extension has no other public surface. */
-export interface NomosApi { runs(): AnalysisRun[]; errors(): string[]; registry(): Registry }
+/** What the end-to-end test and the agents extension read (D-063); the extension has no other public surface. */
+export interface NomosApi { runs(): AnalysisRun[]; errors(): string[]; registry(): Registry; onDidAnalyze: vscode.Event<void> }
 
 const severities: Record<Finding["level"], vscode.DiagnosticSeverity> = {
   error: vscode.DiagnosticSeverity.Error,
@@ -107,6 +107,7 @@ export function activate(context: vscode.ExtensionContext): NomosApi {
   let running: AbortController | undefined;
 
   const output = vscode.window.createOutputChannel("Nomos");
+  const analyzedEvent = new vscode.EventEmitter<void>();
   const diagnostics = vscode.languages.createDiagnosticCollection("nomos");
   const status = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
   status.command = "nomos.analyze";
@@ -310,6 +311,7 @@ export function activate(context: vscode.ExtensionContext): NomosApi {
     errors = failures;
     practiceLines = lines;
     publish(planned);
+    analyzedEvent.fire();
     for (const message of failures) {
       output.appendLine(`${levelName("error", t)}: ${message}`);
       void vscode.window.showErrorMessage(`Nomos: ${message}`);
@@ -355,7 +357,7 @@ export function activate(context: vscode.ExtensionContext): NomosApi {
   });
 
   context.subscriptions.push(
-    output, diagnostics, status, findingsView,
+    output, analyzedEvent, diagnostics, status, findingsView,
     vscode.window.registerTreeDataProvider("nomos.paradigms", paradigms),
     vscode.languages.registerCodeLensProvider({ scheme: "file" }, lenses),
     vscode.commands.registerCommand("nomos.analyze", analyzeAll),
@@ -376,7 +378,7 @@ export function activate(context: vscode.ExtensionContext): NomosApi {
       if (!own && vscode.workspace.getConfiguration("nomos").get<boolean>("analyzeOnSave", false)) void analyzeAll();
     }),
   );
-  return { runs: () => runs, errors: () => errors, registry };
+  return { runs: () => runs, errors: () => errors, registry, onDidAnalyze: analyzedEvent.event };
 }
 
 export function deactivate(): void {}

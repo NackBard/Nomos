@@ -97,3 +97,9 @@ jobs:
           npm test
           npm run check-boundary
           npm run check-l10n
+      # D-063: the agents extension and the MCP server; their tests need git, which the runner has.
+      - name: Agents and MCP server
+        working-directory: agents
+        run: |
+          npm ci
+          npm test

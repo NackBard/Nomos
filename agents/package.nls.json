@@ -1,0 +1,23 @@
+{
+  "description": "Two agents over the Nomos analysis: review of paradigms and practices, and speed of functions with ways to optimize them. Includes the Nomos MCP server.",
+  "participant.review": "Reviews code for agreement with its paradigms and with practices and approaches",
+  "participant.performance": "Estimates the speed of functions and proposes optimizations",
+  "participant.command.changes": "Only the code changed against git",
+  "participant.command.all": "All analyzed code",
+  "command.review": "Agent: Review Paradigms and Practices",
+  "command.performance": "Agent: Speed of Functions",
+  "command.setAnthropicKey": "Agents: Set Anthropic API Key",
+  "command.clearAnthropicKey": "Agents: Forget Anthropic API Key",
+  "config.provider": "Which model the agents use.",
+  "config.provider.vscodeLm": "A language model available in VS Code (GitHub Copilot or another provider); no key needed.",
+  "config.provider.anthropic": "Claude through the Anthropic API with your key (command \"Set Anthropic API Key\" or ANTHROPIC_API_KEY).",
+  "config.scope.changes": "Only the code changed against git: the branch since the default branch, uncommitted and new files.",
+  "config.scope.all": "All analyzed code.",
+  "config.review.scope": "What the review agent looks at when the chat command does not say.",
+  "config.performance.scope": "What the performance agent looks at when the chat command does not say.",
+  "config.base": "Commit or branch to compare the changed code with. Empty: the merge base with the default branch.",
+  "config.contextCharacters": "Largest size of the context sent to the model, in characters. Functions that do not fit are named in the answer.",
+  "config.vscodeLm.family": "Model family for the commands, for example gpt-4o or claude-sonnet-4. Empty: the first available model. In the chat the chosen model is used.",
+  "config.anthropic.model": "Claude model id.",
+  "config.anthropic.effort": "How much the model thinks: low is faster and cheaper, max is the most thorough."
+}

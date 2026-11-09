@@ -1,4 +1,4 @@
-// ROADMAP stage 3: the extension holds no language-specific code. Fails on names of languages,
+// ROADMAP stage 3: the extension and the agents hold no language-specific code. Fails on names of languages,
 // parsers or source extensions anywhere in the code it ships.
 import fs from "node:fs";
 import path from "node:path";
@@ -23,6 +23,8 @@ function scan(directory) {
 
 scan(path.join(root, "src"));
 scan(path.join(root, "media"));
+// The agents extension reads the same contracts and must not know a language either (D-063).
+scan(path.join(root, "..", "agents", "src"));
 problems.forEach((p) => console.log(p));
 console.log(problems.length ? `${problems.length} language-specific line(s)` : "no language-specific code in the extension");
 process.exit(problems.length ? 1 : 0);

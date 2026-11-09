@@ -65,25 +65,33 @@ function checkBundle(dir, bundleFile) {
 
 const strings = checkBundle(path.join(extension, "src"), path.join(extension, "l10n", "bundle.l10n.ru.json"));
 const ciStrings = checkBundle(path.join(repo, "ci", "src"), path.join(repo, "ci", "l10n", "bundle.l10n.ru.json"));
+const agents = path.join(repo, "agents");
+const agentStrings = checkBundle(path.join(agents, "src"), path.join(agents, "l10n", "bundle.l10n.ru.json"));
 
-// package.json: every text of the contributions is a %key% with English and Russian values.
-const manifest = fs.readFileSync(path.join(extension, "package.json"), "utf8");
-const nls = read(path.join(extension, "package.nls.json"));
-const nlsRu = read(path.join(extension, "package.nls.ru.json"));
-const keys = [...manifest.matchAll(/"%([^"%]+)%"/g)].map((m) => m[1]);
-for (const key of keys) {
-  if (!nls[key]) problems.push(`package.json: %${key}% is not in package.nls.json`);
-  checkTemplate(`package.nls.ru.json "${key}"`, nls[key] ?? "", nlsRu[key]);
+/** package.json of an extension: every text of the contributions is a %key% with English and Russian values. */
+function checkManifest(dir) {
+  const name = relative(path.join(dir, "package.json"));
+  const manifest = fs.readFileSync(path.join(dir, "package.json"), "utf8");
+  const nls = read(path.join(dir, "package.nls.json"));
+  const nlsRu = read(path.join(dir, "package.nls.ru.json"));
+  const keys = [...new Set([...manifest.matchAll(/"%([^"%]+)%"/g)].map((m) => m[1]))];
+  for (const key of keys) {
+    if (!nls[key]) problems.push(`${name}: %${key}% is not in package.nls.json`);
+    checkTemplate(`${relative(path.join(dir, "package.nls.ru.json"))} "${key}"`, nls[key] ?? "", nlsRu[key]);
+  }
+  for (const key of Object.keys(nls)) if (!keys.includes(key)) problems.push(`${relative(path.join(dir, "package.nls.json"))}: "${key}" is not used`);
+  const contributed = read(path.join(dir, "package.json")).contributes;
+  const plain = [
+    ...(contributed.commands ?? []).map((c) => c.title),
+    ...Object.values(contributed.views ?? {}).flat().map((v) => v.name),
+    ...(contributed.viewsContainers?.activitybar ?? []).map((v) => v.title),
+    ...(contributed.chatParticipants ?? []).flatMap((p) => [p.description, ...(p.commands ?? []).map((c) => c.description)]),
+    ...Object.values(contributed.configuration?.properties ?? {}).flatMap((p) => [p.description ?? p.markdownDescription, ...(p.enumDescriptions ?? [])]),
+  ].filter((text) => typeof text === "string" && text !== "Nomos" && !/^%[^%]+%$/.test(text));
+  for (const text of plain) problems.push(`${name}: "${text}" is shown but not a %key% of package.nls.json`);
+  return keys.length;
 }
-for (const key of Object.keys(nls)) if (!keys.includes(key)) problems.push(`package.nls.json: "${key}" is not used`);
-const contributed = read(path.join(extension, "package.json")).contributes;
-const plain = [
-  ...contributed.commands.map((c) => c.title),
-  ...Object.values(contributed.views).flat().map((v) => v.name),
-  ...contributed.viewsContainers.activitybar.map((v) => v.title),
-  ...Object.values(contributed.configuration.properties).map((p) => p.description ?? p.markdownDescription),
-].filter((text) => typeof text === "string" && text !== "Nomos" && !/^%[^%]+%$/.test(text));
-for (const text of plain) problems.push(`package.json: "${text}" is shown but not a %key% of package.nls.json`);
+const keyCount = checkManifest(extension) + checkManifest(agents);
 
 // Rule and practice texts, and finding templates, from spec (npm run spec-json writes these files).
 for (const rule of read(path.join(extension, "rules.json"))) {
@@ -100,4 +108,4 @@ if (problems.length) {
   console.error(`\n${problems.length} problem(s)`);
   process.exit(1);
 }
-console.log(`Russian texts are complete: ${strings} strings of the extension, ${ciStrings} of ci, ${keys.length} of package.json, spec rules and practices`);
+console.log(`Russian texts are complete: ${strings} strings of the extension, ${ciStrings} of ci, ${agentStrings} of agents, ${keyCount} of package.json, spec rules and practices`);

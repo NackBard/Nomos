@@ -1,0 +1,23 @@
+{
+  "description": "Два агента поверх анализа Nomos: проверка парадигм и практик и скорость функций со способами оптимизации. С MCP-сервером Nomos.",
+  "participant.review": "Проверяет код на соответствие его парадигмам, практикам и подходам",
+  "participant.performance": "Оценивает скорость функций и предлагает оптимизации",
+  "participant.command.changes": "Только код, изменённый относительно git",
+  "participant.command.all": "Весь проанализированный код",
+  "command.review": "Агент: проверка парадигм и практик",
+  "command.performance": "Агент: скорость функций",
+  "command.setAnthropicKey": "Агенты: задать ключ Anthropic API",
+  "command.clearAnthropicKey": "Агенты: забыть ключ Anthropic API",
+  "config.provider": "Какую модель используют агенты.",
+  "config.provider.vscodeLm": "Языковая модель, доступная в VS Code (GitHub Copilot или другой поставщик); ключ не нужен.",
+  "config.provider.anthropic": "Claude через Anthropic API с вашим ключом (команда «Задать ключ Anthropic API» или ANTHROPIC_API_KEY).",
+  "config.scope.changes": "Только код, изменённый относительно git: ветка с момента ответвления от основной, незакоммиченные и новые файлы.",
+  "config.scope.all": "Весь проанализированный код.",
+  "config.review.scope": "Что смотрит агент проверки, если команда чата этого не указала.",
+  "config.performance.scope": "Что смотрит агент скорости, если команда чата этого не указала.",
+  "config.base": "Коммит или ветка, с которыми сравнивается изменённый код. Пусто — общий предок с основной веткой.",
+  "config.contextCharacters": "Наибольший размер контекста для модели в символах. Функции, которые не поместились, названы в ответе.",
+  "config.vscodeLm.family": "Семейство модели для команд, например gpt-4o или claude-sonnet-4. Пусто — первая доступная модель. В чате используется выбранная там модель.",
+  "config.anthropic.model": "Id модели Claude.",
+  "config.anthropic.effort": "Насколько глубоко модель думает: low быстрее и дешевле, max тщательнее всего."
+}
