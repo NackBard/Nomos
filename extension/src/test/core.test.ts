@@ -10,7 +10,7 @@ import { choiceToStore, describePractices, readPractices } from "../core/practic
 import type { Practice } from "../core/practices";
 import { AnalyzerError, analyze, readManifest, readWorkspace, writePractices } from "../core/runner";
 import { readFindings, readRuleTitles } from "../core/sarif";
-import { buildFocus, buildGraph, describeFinding, formatMetrics, groupFindings, groupSkipped, lensesFor, neighbourGroup, shapeOf, summarizeStyles } from "../core/views";
+import { buildFocus, buildGraph, describeFinding, formatMetrics, groupFindings, groupSkipped, lensesFor, moduleFolder, neighbourGroup, shapeOf, summarizeStyles } from "../core/views";
 
 const facts: Facts = {
   schemaVersion: "1.0.0",
@@ -214,6 +214,43 @@ test("graph layers grow with dependency depth, and a cycle shares one layer", ()
   } as Facts;
   const graph = buildGraph([{ language: "toy", root: ".", facts: chain, findings: [], partial: false }]);
   assert.deepEqual(Object.fromEntries(graph.nodes.map((n) => [n.id, n.layer])), { Top: 3, Mid: 2, Loop1: 1, Loop2: 1, Base: 0 });
+});
+
+test("the compact graph folds modules into folders within the limit, and opened folders show their modules", () => {
+  const dependency = (from: string, to: string, kind = "call") => ({ from, to, kind, phase: "runtime" });
+  const module = (id: string, files: string[]) => ({ id, name: id, files, loc: 10, metrics: {}, paradigmEvidence: [] });
+  const tree = {
+    ...facts,
+    modules: [
+      module("A", ["src/app/a.ts"]), module("B", ["src/app/b.ts"]), module("C", ["src/lib/deep/c.ts"]),
+      module("D", ["src/lib/deep/d.ts"]), module("E", ["tools/e.ts"]),
+    ],
+    types: [], functions: [],
+    dependencies: [dependency("A", "C"), dependency("A", "D", "import"), dependency("B", "C"), dependency("C", "D"), dependency("E", "A")],
+    cycles: [],
+  } as Facts;
+  const runs = [{ language: "toy", root: ".", facts: tree, findings: [], partial: false }];
+  assert.equal(moduleFolder(["src/lib/deep/c.ts", "src/lib/x.ts"]), "src/lib");
+  assert.equal(moduleFolder(["main.go"]), "");
+
+  // Five modules fit the default limit: nothing folds.
+  assert.deepEqual(buildGraph(runs, { opened: [] }).nodes.map((n) => n.id).sort(), ["A", "B", "C", "D", "E"]);
+
+  // With room for two nodes, src folds; a lone module in tools does not.
+  const folded = buildGraph(runs, { opened: [], limit: 2 });
+  assert.deepEqual(folded.nodes.map((n) => [n.id, n.role, n.label]).sort(), [["E", "module", "E"], ["src/", "folder", "src/ (4)"]]);
+  assert.deepEqual(folded.edges.map((e) => [e.from, e.to, e.weight, e.pair]), [["E", "src/", 1, undefined]]);
+
+  // Room for three: src opens, its folders stay folded; the chain src/lib/deep folds under its deepest name.
+  const three = buildGraph(runs, { opened: [], limit: 3 });
+  assert.deepEqual(three.nodes.map((n) => n.id).sort(), ["E", "src/app/", "src/lib/deep/"]);
+  const links = three.edges.map((e) => `${e.from}>${e.to}:${e.kind}:${e.weight}`).sort();
+  assert.deepEqual(links, ["E>src/app/:call:1", "src/app/>src/lib/deep/:call:2", "src/app/>src/lib/deep/:import:1"]);
+
+  // The person opened src/lib/deep: its modules show though the limit is passed, and src/app stays folded.
+  const opened = buildGraph(runs, { opened: ["src/lib/deep"], limit: 3 });
+  assert.deepEqual(opened.nodes.map((n) => n.id).sort(), ["C", "D", "E", "src/app/"]);
+  assert.deepEqual(opened.edges.find((e) => e.from === "C")?.pair, ["C", "D"]);
 });
 
 // A stand-in analyzer: the extension must work through the protocol alone, whatever the language.

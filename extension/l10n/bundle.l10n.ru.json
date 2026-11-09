@@ -151,5 +151,15 @@
   "No folder has a nomos.json or files that an installed analyzer reads. Click to analyze again.": "Ни в одной папке нет nomos.json или файлов, которые читает установленный анализатор. Щёлкните, чтобы повторить анализ.",
   "Language packs for the files found: {0}": "Языковые пакеты для найденных файлов: {0}",
   "Don't ask again": "Больше не спрашивать",
-  "Nomos can analyze the {0} files of this workspace with the language pack {1}.": "Nomos может анализировать файлы {0} в этой рабочей области, если поставить языковой пакет {1}."
+  "Nomos can analyze the {0} files of this workspace with the language pack {1}.": "Nomos может анализировать файлы {0} в этой рабочей области, если поставить языковой пакет {1}.",
+  "Compact": "Компактно",
+  "Draw the links between two nodes as one line, join the lines to another module into a trunk and fold modules into their folders": "Связи между двумя узлами — одной линией, линии к другому модулю — в общий ствол, модули — в их папки",
+  "Fold folders": "Свернуть папки",
+  "Fold again the folders you opened": "Снова свернуть папки, которые вы открыли",
+  "Click to show the modules of this folder": "Щёлкните, чтобы увидеть модули этой папки",
+  "Click to show these links one by one; Escape bundles them again": "Щёлкните, чтобы показать эти связи по отдельности; Esc снова соберёт их в пучок",
+  "Click to bundle these links again": "Щёлкните, чтобы снова собрать эти связи в пучок",
+  "{0}: {1} {1|line|lines|lines} joined": "{0}: {1} {1|линия сведена|линии сведены|линий сведено} в одну",
+  "folder": "папка",
+  "links of several kinds, click to open": "связи разных видов, щелчок раскрывает"
 }

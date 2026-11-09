@@ -17,6 +17,10 @@ let runsOf: () => AnalysisRun[] = () => [];
 // Types as UML classes; the choice stays while the user moves between modules.
 let uml = false;
 let stale = false;
+// The compact view (D-064) is remembered across sessions; the folders the person opened, while the panel lives.
+const CompactKey = "nomos.graph.compact";
+let memory: vscode.Memento | undefined;
+let opened: string[] = [];
 
 function page(webview: vscode.Webview, script: vscode.Uri): string {
   const t = interfaceTranslator();
@@ -34,12 +38,13 @@ function send(): void {
     focus = undefined;
     level = "module";
   }
-  let graph = level === "type" && shown ? shown : buildGraph(runsOf());
+  const compact = memory?.get<boolean>(CompactKey, true) ?? true;
+  let graph = level === "type" && shown ? shown : buildGraph(runsOf(), compact ? { opened } : undefined, t);
   if (level === "type" && shown && uml && focus) {
     const classes = focusDiagram(runsOf(), focus.module, focus.peer);
     if (classes) graph = withClasses(shown, classes.diagram);
   }
-  void panel.webview.postMessage({ type: "graph", level, focus, graph, uml, strings: graphStrings(t) });
+  void panel.webview.postMessage({ type: "graph", level, focus, graph, uml, compact, opened: opened.length, strings: graphStrings(t) });
 }
 
 /** The module or pair the types level of the graph shows, if any. */
@@ -62,6 +67,7 @@ export async function openNextToGraph(file: vscode.Uri, line: number, graph: vsc
 /** Opens the graph in a tab of its own, next to the code; the page asks for a level and receives only data from facts. */
 export function showGraph(context: vscode.ExtensionContext, runs: () => AnalysisRun[], preserveFocus = false): void {
   runsOf = runs;
+  memory = context.globalState;
   if (panel) {
     panel.reveal(undefined, preserveFocus);
     return;
@@ -70,12 +76,24 @@ export function showGraph(context: vscode.ExtensionContext, runs: () => Analysis
   panel = vscode.window.createWebviewPanel("nomos.graph", interfaceTranslator()("Nomos: Dependency Graph"), { viewColumn: vscode.ViewColumn.Beside, preserveFocus }, { enableScripts: true, localResourceRoots: [media], retainContextWhenHidden: true });
   panel.webview.html = page(panel.webview, vscode.Uri.joinPath(media, "graph.js"));
   panel.iconPath = vscode.Uri.joinPath(media, "icon.svg");
-  panel.onDidDispose(() => (panel = undefined));
+  panel.onDidDispose(() => {
+    panel = undefined;
+    opened = [];
+  });
   panel.onDidChangeViewState(() => {
     if (stale) send();
   });
-  panel.webview.onDidReceiveMessage(async (message: { type: string; level?: GraphLevel; module?: string; peer?: string; language?: string; file?: string; line?: number; on?: boolean }) => {
-    if (message.type === "uml") {
+  panel.webview.onDidReceiveMessage(async (message: { type: string; level?: GraphLevel; module?: string; peer?: string; language?: string; file?: string; line?: number; on?: boolean; folder?: string }) => {
+    if (message.type === "compact") {
+      await context.globalState.update(CompactKey, message.on === true);
+      send();
+    } else if (message.type === "unfold" && message.folder !== undefined) {
+      if (!opened.includes(message.folder)) opened.push(message.folder);
+      send();
+    } else if (message.type === "fold") {
+      opened = [];
+      send();
+    } else if (message.type === "uml") {
       uml = message.on === true;
       send();
     } else if (message.type === "export") {

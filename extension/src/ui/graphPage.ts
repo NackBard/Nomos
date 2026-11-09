@@ -67,7 +67,17 @@ export function graphPage(nonce: string, script: string, strings: GraphStrings, 
   #relations b { display: block; }
   #relations .verb { color: var(--vscode-descriptionForeground); }
   #relations .hint { color: var(--vscode-descriptionForeground); }
-  #umlToggle { display: flex; gap: 4px; align-items: center; cursor: pointer; }
+  #umlToggle, #compactToggle { display: flex; gap: 4px; align-items: center; cursor: pointer; }
+  /* The compact view (D-064): a bundle and a trunk are neutral lines, as thick as what they hold; the badge counts the links. */
+  .edge.bundle, .edge.trunk { stroke: var(--vscode-foreground); stroke-opacity: .6; }
+  .head.bundle { stroke: var(--vscode-foreground); stroke-opacity: .85; }
+  .badge { cursor: pointer; }
+  #legend span.bundle svg { width: 30px; height: 12px; fill: none; }
+  .badge circle { fill: var(--vscode-editor-background); stroke: var(--vscode-foreground); stroke-width: 1.25; vector-effect: non-scaling-stroke; }
+  .badge text { stroke: none; font-weight: 600; }
+  .badge:hover circle { fill: var(--vscode-button-secondaryBackground); }
+  .node.folder { stroke-dasharray: 3 2; }
+  .node.folder:not(.cycle) { stroke: var(--vscode-foreground); }
   [hidden] { display: none !important; }
   /* A UML class: a box in the background color, the header tinted with the color of its depth. */
   .class { cursor: pointer; }
@@ -95,7 +105,7 @@ ${Object.entries(UML_COLORS).map(([kind, color]) => `  .kind-${kind} { stroke: $
 </style>
 </head>
 <body>
-<div id="bar"><button data-level="module">${escape(strings.modules)}</button><button data-level="type">${escape(strings.types)}</button><label id="umlToggle" title="${escape(strings.umlHint)}" hidden><input type="checkbox" id="uml"><span> ${escape(strings.uml)}</span></label><button id="export" title="${escape(strings.exportHint)}" hidden>${escape(strings.exportDiagram)}</button><span id="info"></span><div id="legend" data-colors="${LAYER_COLORS.length}"></div></div>
+<div id="bar"><button data-level="module">${escape(strings.modules)}</button><button data-level="type">${escape(strings.types)}</button><label id="umlToggle" title="${escape(strings.umlHint)}" hidden><input type="checkbox" id="uml"><span> ${escape(strings.uml)}</span></label><button id="export" title="${escape(strings.exportHint)}" hidden>${escape(strings.exportDiagram)}</button><label id="compactToggle" title="${escape(strings.compactHint)}"><input type="checkbox" id="compact" checked><span> ${escape(strings.compact)}</span></label><button id="fold" title="${escape(strings.foldHint)}" hidden>${escape(strings.fold)}</button><span id="info"></span><div id="legend" data-colors="${LAYER_COLORS.length}"></div></div>
 <svg id="graph"></svg>
 <div id="relations"></div>
 <script nonce="${nonce}" src="${script}"></script>

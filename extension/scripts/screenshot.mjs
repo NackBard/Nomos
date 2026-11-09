@@ -2,6 +2,9 @@
 //   npm run compile
 //   node scripts/screenshot.mjs --facts <facts.json> --out <file.png> [--module <id> [--peer <id>]]
 //        [--hover <node name>] [--hide <kind,kind>] [--theme light] [--size 1500,900] [--locale ru] [--uml]
+//        [--flat] [--open <folder,folder>] [--limit N] [--expand]
+// --flat draws without the compact view (D-064); --open opens folders, --limit changes how many nodes the compact
+// graph keeps, --expand opens the first bundle.
 // Facts come from an analyzer: `dotnet bundle/csharp/nomos-csharp.dll analyze --root <project> > facts.json`
 // (after `npm run package -- --bundle-only`). BROWSER overrides the path to Edge or Chrome.
 // The page, graph.js and the data go to a folder next to the screenshot; nothing is written into the extension.
@@ -37,7 +40,10 @@ const runs = [{ language: facts.analyzer.language, root: ".", facts, findings: [
 const locale = localeOf(option("locale") ?? "en");
 const t = translator(readBundle(path.join(extension, "l10n", `bundle.l10n.${locale}.json`)), locale);
 const strings = graphStrings(t);
-const focusGraph = module ? buildFocus(runs, module, peer, t) : buildGraph(runs);
+const compact = !process.argv.includes("--flat");
+const opened = (option("open") ?? "").split(",").filter(Boolean);
+const limit = option("limit") ? Number(option("limit")) : undefined;
+const focusGraph = module ? buildFocus(runs, module, peer, t) : buildGraph(runs, compact ? { opened, limit } : undefined, t);
 if (!focusGraph) throw new Error(`module ${module} is not in ${factsFile}`);
 // --uml draws the types as UML classes, as the check box of the page does (spec/structure.md).
 const uml = process.argv.includes("--uml") && Boolean(module);
@@ -55,11 +61,12 @@ const hide = (option("hide") ?? "").split(",").filter(Boolean);
 const hover = option("hover") ?? "";
 const host = `
 window.acquireVsCodeApi = () => ({ postMessage(message) {
-  if (message.type === "level") setTimeout(() => window.postMessage({ type: "graph", level: ${JSON.stringify(level)}, focus: ${JSON.stringify(module ? { module, peer } : undefined)}, graph: ${JSON.stringify(graph)}, uml: ${uml}, strings: ${JSON.stringify(strings)} }, "*"), 0);
+  if (message.type === "level") setTimeout(() => window.postMessage({ type: "graph", level: ${JSON.stringify(level)}, focus: ${JSON.stringify(module ? { module, peer } : undefined)}, graph: ${JSON.stringify(graph)}, uml: ${uml}, compact: ${compact}, opened: ${opened.length}, strings: ${JSON.stringify(strings)} }, "*"), 0);
 } });
 window.addEventListener("load", () => setTimeout(() => {
   for (const kind of ${JSON.stringify(hide.map((kind) => strings.kinds[kind]?.name ?? kind))}) [...document.querySelectorAll("#legend button.link")].find((b) => b.textContent === kind)?.click();
   const name = ${JSON.stringify(hover)};
+  if (${process.argv.includes("--expand")}) document.querySelector("g.badge")?.dispatchEvent(new MouseEvent("click"));
   if (name) [...document.querySelectorAll("path.node, g.class")].find((p) => p.querySelector("title").textContent.split(" (")[0].endsWith(name))?.dispatchEvent(new MouseEvent("mouseenter"));
 }, 300));`;
 

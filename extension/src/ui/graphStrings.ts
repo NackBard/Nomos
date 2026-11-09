@@ -36,6 +36,15 @@ export function graphStrings(t: Translate) {
     umlHint: t.template("Show the types as UML classes with fields, methods and UML relations"),
     exportDiagram: t.template("Export…"),
     exportHint: t.template("Save this class diagram as PlantUML or Mermaid text"),
+    compact: t.template("Compact"),
+    bundle: t.template("links of several kinds, click to open"),
+    compactHint: t.template("Draw the links between two nodes as one line, join the lines to another module into a trunk and fold modules into their folders"),
+    fold: t.template("Fold folders"),
+    foldHint: t.template("Fold again the folders you opened"),
+    openFolder: t.template("Click to show the modules of this folder"),
+    openBundle: t.template("Click to show these links one by one; Escape bundles them again"),
+    closeBundle: t.template("Click to bundle these links again"),
+    trunk: t.template("{0}: {1} {1|line|lines|lines} joined"),
   };
 }
 

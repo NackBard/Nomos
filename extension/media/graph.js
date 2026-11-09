@@ -61,6 +61,22 @@
   const exportButton = document.getElementById("export");
   let umlOn = false;
   let boxes = [];
+  // The compact view (D-064): links of several kinds between two nodes are one line, a bundle, that opens on a click;
+  // links of one kind both ways are one line with a fin each way; lines from the types of the focused module to another
+  // module meet in a trunk; the host folds modules into folders.
+  const compactBox = document.getElementById("compactToggle");
+  const compactCheck = document.getElementById("compact");
+  const foldButton = document.getElementById("fold");
+  let compactOn = true;
+  // Bundles the person opened, by pair of nodes; Escape closes them all.
+  const expanded = new Set();
+  // A trunk gathers at least TRUNK_MIN lines that reach one side of a module, TRUNK before the module.
+  const TRUNK_MIN = 3;
+  const TRUNK = 70;
+  // What the lines are drawn from: a switch in the legend or an opened bundle redraws the lines, not the layout.
+  let scene = null;
+  let nodeItems = [];
+  let linkItems = [];
   // Room a node takes in its column, and the width of a column that holds it.
   const slotOf = (node) => (node.waypoint ? WAYPOINT : node.box ? node.box.h + BOX_GAP_Y : ROW);
   const widthOf = (node) => (node.box ? node.box.w + BOX_GAP_X : COLUMN);
@@ -421,11 +437,15 @@
       label.setAttribute("y", node.y + r + font);
       label.setAttribute("font-size", font);
     }
-    for (const { mid, ux, uy, head, via } of links) {
-      if (!head) continue;
+    for (const { fins, badge, via, viaAt } of links) {
       const length = 5 * size;
-      head.setAttribute("d", finPath({ x: mid.x + (ux * length) / 2, y: mid.y + (uy * length) / 2 }, ux, uy, length));
+      for (const { el, at, ux, uy } of fins) el.setAttribute("d", finPath({ x: at.x + (ux * length) / 2, y: at.y + (uy * length) / 2 }, ux, uy, length));
+      if (badge) {
+        badge.circle.setAttribute("r", Math.min(7 * size, LARGEST));
+        badge.label.setAttribute("font-size", Math.min(9 * size, LABEL_ROOM));
+      }
       if (!via) continue;
+      const { at: mid, ux, uy } = viaAt;
       // The name runs along the line, on its upper side, and is never upside down.
       let angle = (Math.atan2(uy, ux) * 180) / Math.PI;
       if (angle > 90) angle -= 180;
@@ -443,10 +463,8 @@
   function setKind(kind, shown) {
     if (shown) hidden.delete(kind);
     else hidden.add(kind);
-    for (const link of links) {
-      if (link.edge.kind !== kind) continue;
-      for (const part of link.parts) part.classList.toggle("off", !shown);
-    }
+    // A hidden kind leaves a bundle, which may then be a single link: the lines are drawn again.
+    drawLinks();
   }
 
   // The links of one node, one line each, so that "who inherits, calls or uses whom" reads without following curves.
@@ -520,6 +538,16 @@
         toggle.setAttribute("aria-pressed", String(shown));
       });
     }
+    // A bundle is a line of no kind of its own: the legend shows what it looks like when the graph has one.
+    if (compactOn && pairsOf(edges).some((p) => new Set(p.edges.filter((e) => !e.kind.startsWith("uml-")).map((e) => e.kind)).size > 1)) {
+      const entry = legend.appendChild(document.createElement("span"));
+      entry.className = "bundle";
+      const sample = element("svg", { viewBox: "0 0 30 12" }, entry);
+      element("path", { d: "M1 6H29", class: "edge bundle" }, sample);
+      const badge = element("g", { class: "badge" }, sample);
+      element("circle", { cx: 15, cy: 6, r: 5 }, badge);
+      entry.append(S.bundle);
+    }
     const shapes = new Map(nodes.filter((n) => n.kind && !n.box).map((n) => [n.kind, n.shape]));
     for (const kind of [...shapes.keys()].sort()) {
       const entry = document.createElement("span");
@@ -536,30 +564,39 @@
    * node. Parallel links of different kinds keep the same order at both ends. `start` stays inside the node, `bend`
    * pulls the curve into its lane.
    */
-  function assignLanes(edges, routes) {
+  function assignLanes(items) {
     const sides = new Map();
-    const lanes = edges.map(() => ({ a: { start: 0, bend: 0 }, b: { start: 0, bend: 0 } }));
+    const lanes = items.map(() => ({ a: { start: 0, bend: 0 }, b: { start: 0, bend: 0 } }));
     const add = (node, side, entry) => {
       const key = `${node.id}\u0000${side}`;
-      if (!sides.has(key)) sides.set(key, { node, entries: [] });
+      if (!sides.has(key)) sides.set(key, { node, side, entries: [] });
       sides.get(key).entries.push(entry);
     };
     // Links between two nodes of one column (members of a cycle) are brackets left of the column: each pair of nodes gets
     // its brackets nested one inside the other, in a stable order, instead of lanes.
     const brackets = new Map();
     // The other end of a lane is the next point of the route: a waypoint for a long link, so lanes follow the real path.
-    edges.forEach((edge, i) => {
-      const route = routes[i];
+    items.forEach((item, i) => {
+      const route = item.route;
       const a = route[0], next = route[1], b = route[route.length - 1], previous = route[route.length - 2];
       if (route.length === 2 && a.x === b.x) {
         const key = [a.id, b.id].sort().join("\u0000");
         if (!brackets.has(key)) brackets.set(key, []);
-        brackets.get(key).push({ lane: lanes[i], kind: edge.kind, index: i });
+        brackets.get(key).push({ lane: lanes[i], kind: item.kind, index: i });
         return;
       }
-      add(a, a.x <= next.x ? 1 : -1, { lane: lanes[i].a, other: next, kind: edge.kind, index: i });
-      add(b, previous.x <= b.x ? -1 : 1, { lane: lanes[i].b, other: previous, kind: edge.kind, index: i });
+      add(a, a.x <= next.x ? 1 : -1, { lane: lanes[i].a, other: next, kind: item.kind, index: i, item, into: false });
+      add(b, previous.x <= b.x ? -1 : 1, { lane: lanes[i].b, other: previous, kind: item.kind, index: i, item, into: true });
     });
+    // In the compact view the lines that reach one side of another module from the types of the focused one meet in a
+    // trunk in front of it. UML relations keep their own ends: the end is what says their kind.
+    const trunks = [];
+    for (const { node, side, entries } of sides.values()) {
+      if (!compactOn || !focused || node.role !== "module" || entries.length < TRUNK_MIN || entries.some((e) => e.kind.startsWith("uml-"))) continue;
+      const join = { x: node.x + side * TRUNK, y: node.y };
+      for (const entry of entries) entry.lane.join = join;
+      trunks.push({ node, side, join, entries: entries.splice(0) });
+    }
     for (const { node, entries } of sides.values()) {
       entries.sort((p, q) => p.other.y - q.other.y || p.other.x - q.other.x || (p.kind < q.kind ? -1 : p.kind > q.kind ? 1 : 0) || p.index - q.index);
       const step = entries.length > 1 ? Math.min(LANE, LANES_SPREAD / (entries.length - 1)) : 0;
@@ -575,7 +612,7 @@
       entries.sort((p, q) => (p.kind < q.kind ? -1 : p.kind > q.kind ? 1 : 0) || p.index - q.index);
       entries.forEach((entry, rank) => (entry.lane.bracket = rank));
     }
-    return lanes;
+    return { lanes, trunks };
   }
 
   /**
@@ -585,7 +622,9 @@
   // Where a line meets a node on the side facing the given way: the centre of a dot, the border of a class.
   const edgeX = (node, way) => node.x + (node.box ? (way >= 0 ? 1 : -1) * node.box.w / 2 : 0);
 
-  function curveThrough(route, lane) {
+  function curveThrough(path, lane) {
+    // A line that joins a trunk ends at the joint instead of the node.
+    const route = lane.a.join || lane.b.join ? path.map((p, i) => (i === 0 && lane.a.join) || (i === path.length - 1 && lane.b.join) || p) : path;
     const last = route.length - 2;
     if (last === 0 && lane.bracket !== undefined) {
       // A bracket to the left of the column, where the links to dependencies leave and fewer lines run (none at depth 0):
@@ -629,14 +668,20 @@
     });
   }
 
-  // The middle of a route and the direction there: the middle of the central piece, or the central waypoint.
-  function middleOf(segments) {
-    if (segments.length % 2) {
-      const { start, c1, c2, end } = segments[(segments.length - 1) / 2];
-      return { mid: { x: (start.x + 3 * c1.x + 3 * c2.x + end.x) / 8, y: (start.y + 3 * c1.y + 3 * c2.y + end.y) / 8 }, dx: end.x + c2.x - c1.x - start.x, dy: end.y + c2.y - c1.y - start.y };
-    }
-    const { c2, end } = segments[segments.length / 2 - 1];
-    return { mid: end, dx: end.x - c2.x, dy: end.y - c2.y };
+  // A point along a route (0 at its start, 1 at its end, by pieces) and the unit direction there. The middle of a route
+  // with an even number of pieces is its central waypoint.
+  function pointAt(segments, t) {
+    const scaled = Math.min(t * segments.length, segments.length - 1e-9);
+    const { start: s, c1, c2, end: e } = segments[Math.floor(scaled)];
+    const u = scaled - Math.floor(scaled), v = 1 - u;
+    const at = {
+      x: v * v * v * s.x + 3 * v * v * u * c1.x + 3 * v * u * u * c2.x + u * u * u * e.x,
+      y: v * v * v * s.y + 3 * v * v * u * c1.y + 3 * v * u * u * c2.y + u * u * u * e.y,
+    };
+    const dx = 3 * v * v * (c1.x - s.x) + 6 * v * u * (c2.x - c1.x) + 3 * u * u * (e.x - c2.x);
+    const dy = 3 * v * v * (c1.y - s.y) + 6 * v * u * (c2.y - c1.y) + 3 * u * u * (e.y - c2.y);
+    const direction = unit(dx, dy);
+    return { at, ux: direction.x, uy: direction.y };
   }
 
   function highlight(id, items) {
@@ -652,7 +697,188 @@
     return focus.peer ? `${focus.module} ↔ ${focus.peer}` : focus.module;
   }
 
-  function draw(level, focus, graph) {
+  // The links between the same two nodes, both ways. They share one route, so a bundle opens in place, without a new layout.
+  function pairsOf(edges) {
+    const pairs = new Map();
+    for (const edge of edges) {
+      const key = edge.from < edge.to ? `${edge.from}\u0000${edge.to}` : `${edge.to}\u0000${edge.from}`;
+      if (!pairs.has(key)) pairs.set(key, { key, from: edge.from, to: edge.to, edges: [] });
+      pairs.get(key).edges.push(edge);
+    }
+    return [...pairs.values()];
+  }
+
+  // What is drawn for a pair: each shown link on its own or, in the compact view, one line. Links of several kinds are a
+  // bundle that opens on a click; links of one kind both ways are a line with a fin each way. `open` marks an opened bundle.
+  function shapesOf(pair) {
+    const visible = pair.edges.filter((e) => !hidden.has(e.kind));
+    const single = (edge) => ({ pair, edges: [edge], from: edge.from, to: edge.to, route: edge.from === pair.from ? pair.route : [...pair.route].reverse(), kind: edge.kind, forward: true, backward: false });
+    const uml = visible.filter((e) => e.kind.startsWith("uml-")).map(single);
+    const rest = visible.filter((e) => !e.kind.startsWith("uml-"));
+    const several = new Set(rest.map((e) => e.kind)).size > 1;
+    if (!compactOn || rest.length < 2 || (several && expanded.has(pair.key))) return { items: [...uml, ...rest.map(single)], open: compactOn && several };
+    const forward = rest.some((e) => e.from === pair.from), backward = rest.some((e) => e.from !== pair.from);
+    const merged = { pair, edges: rest, from: pair.from, to: pair.to, route: pair.route, kind: several ? "bundle" : rest[0].kind, forward, backward, bundle: several };
+    return { items: [...uml, merged], open: false };
+  }
+
+  const weightOf = (edges) => edges.reduce((sum, e) => sum + e.weight, 0);
+  // A bundle and a trunk are as thick as the links they hold, on a log scale, so one heavy line does not hide the rest.
+  const thickness = (weight) => String(1.5 + Math.min(3, Math.log2(Math.max(weight, 1)) / 2));
+
+  function linkLine(edge) {
+    const { index } = scene;
+    return `${index.get(edge.from).label} ${kindOf(edge.kind).out} ${index.get(edge.to).label}${edge.weight > 1 ? ` (${edge.weight})` : ""}${edge.via?.length ? `: ${edge.via.join(", ")}` : ""}`;
+  }
+
+  // A round mark on a line with a number or a sign; it scales like the nodes (apply).
+  function badgeAt(at, text, hint, onClick, parts) {
+    const g = element("g", { class: "badge" }, scene.headLayer);
+    const circle = element("circle", { cx: at.x, cy: at.y }, g);
+    const label = element("text", { x: at.x, y: at.y, "dominant-baseline": "central" }, g);
+    label.textContent = text;
+    element("title", {}, g).textContent = hint;
+    g.addEventListener("pointerdown", (event) => event.stopPropagation());
+    g.addEventListener("click", (event) => {
+      event.stopPropagation();
+      onClick();
+    });
+    parts.push(g);
+    return { circle, label };
+  }
+
+  function drawItem(item, segments) {
+    const { index, lineLayer, headLayer } = scene;
+    const d = `M${segments[0].start.x} ${segments[0].start.y}` + segments.map((s) => `C${s.c1.x} ${s.c1.y} ${s.c2.x} ${s.c2.y} ${s.end.x} ${s.end.y}`).join("");
+    const edge = item.edges[0];
+    const pair = item.bundle || item.edges.length > 1 && !edge.pair ? undefined : edge.pair;
+    const parts = [];
+    // A cycle keeps the line of its kind and gets a red underlay.
+    if (item.edges.some((e) => e.cycle)) parts.push(element("path", { d, class: "halo" }, lineLayer));
+    const line = element("path", { d, class: item.bundle ? "edge bundle" : `edge kind-${item.kind}` }, lineLayer);
+    if (item.bundle) line.style.strokeWidth = thickness(weightOf(item.edges));
+    const hit = element("path", { d, class: item.bundle || pair ? "hit open" : "hit" }, lineLayer);
+    parts.push(line, hit);
+    const fins = [];
+    let badge, via, viaAt;
+    if (item.kind.startsWith("uml-")) {
+      // A UML relation says what it is at its ends.
+      const first = segments[0], last = segments[segments.length - 1];
+      const su = unit(first.c1.x - first.start.x, first.c1.y - first.start.y);
+      const eu = unit(last.end.x - last.c2.x, last.end.y - last.c2.y);
+      for (const mark of relationMarks(edge.kind, first.start, su, last.end, eu)) parts.push(element("path", { d: mark.d, class: `mark ${mark.cls} kind-${edge.kind}` }, headLayer));
+      const name = edge.label ?? (edge.kind === "uml-embed" ? "«embed»" : undefined);
+      if (name) {
+        // The role name sits near the end it names, above the line, with the multiplicity of a collection: two links
+        // to one class end close together, and separate labels for the multiplicity would stack on each other.
+        const anchor = edge.kind === "uml-embed" ? { x: first.start.x + su.x * 34, y: first.start.y + su.y * 34 } : { x: last.end.x - eu.x * 26, y: last.end.y - eu.y * 26 };
+        const role = element("text", { class: "role", x: anchor.x, y: anchor.y - 5 }, headLayer);
+        role.textContent = edge.many ? `${name} [*]` : name;
+        parts.push(role);
+      }
+    } else {
+      // Other links carry a fin in the middle, pointing to the target: at the target it would hide under the label, which
+      // hangs on the side links arrive from, and many fins would pile up at one node. A line both ways has a fin each way,
+      // a bundle has them on both sides of its number.
+      const spots = item.bundle ? [0.3, 0.7] : item.forward && item.backward ? [0.4, 0.6] : [0.5, 0.5];
+      const fin = (t, way) => {
+        const { at, ux, uy } = pointAt(segments, t);
+        const el = element("path", { class: item.bundle ? "head bundle" : `head kind-${item.kind}` }, headLayer);
+        parts.push(el);
+        fins.push({ el, at, ux: ux * way, uy: uy * way });
+      };
+      if (item.forward) fin(spots[0], 1);
+      if (item.backward) fin(spots[1], -1);
+    }
+    const text = item.edges.map(linkLine).join("\n") + (item.bundle ? `\n${S.openBundle}` : pair ? `\n${S.openPair}` : "");
+    element("title", {}, hit).textContent = text;
+    const openBundle = () => {
+      expanded.add(item.pair.key);
+      drawLinks();
+    };
+    if (item.bundle) {
+      badge = badgeAt(pointAt(segments, 0.5).at, String(item.edges.length), text, openBundle, parts);
+      hit.addEventListener("click", openBundle);
+    } else if (pair) {
+      hit.addEventListener("click", () => vscode.postMessage({ type: "focus", module: pair[0], peer: pair[1] }));
+    }
+    // A line to a folded module says which of its types it reaches (or which come from it), faintly, above the fin.
+    if (item.edges.length === 1 && edge.via?.length) {
+      via = element("text", { class: "via" }, headLayer);
+      via.textContent = edge.via.length > 2 ? `${edge.via.slice(0, 2).join(", ")} +${edge.via.length - 2}` : edge.via.join(", ");
+      viaAt = pointAt(segments, 0.5);
+      parts.push(via);
+    }
+    links.push({ fins, badge, via, viaAt });
+    const ids = new Set([item.from, item.to]);
+    for (const part of parts) linkItems.push({ element: part, ids });
+  }
+
+  // The common part of the lines that meet in front of a module: from the joint to the module, a fin for each way they go.
+  function drawTrunk({ node, side, join, entries }) {
+    const { lineLayer, headLayer } = scene;
+    const d = `M${join.x} ${join.y}L${node.x} ${node.y}`;
+    const items = entries.map((e) => e.item);
+    const edges = items.flatMap((i) => i.edges);
+    const parts = [];
+    if (edges.some((e) => e.cycle)) parts.push(element("path", { d, class: "halo" }, lineLayer));
+    const line = element("path", { d, class: "edge trunk" }, lineLayer);
+    line.style.strokeWidth = thickness(weightOf(edges));
+    const hit = element("path", { d, class: "hit" }, lineLayer);
+    parts.push(line, hit);
+    element("title", {}, hit).textContent = [fmt(S.trunk, node.label, items.length), ...edges.map(linkLine)].join("\n");
+    const inward = entries.some((e) => (e.into && e.item.forward) || (!e.into && e.item.backward));
+    const outward = entries.some((e) => (!e.into && e.item.forward) || (e.into && e.item.backward));
+    const fins = [];
+    const at = (t) => ({ x: join.x + (node.x - join.x) * t, y: join.y });
+    for (const [go, t, way] of [[inward, inward && outward ? 0.35 : 0.45, -side], [outward, inward && outward ? 0.6 : 0.45, side]]) {
+      if (!go) continue;
+      const el = element("path", { class: "head bundle" }, headLayer);
+      parts.push(el);
+      fins.push({ el, at: at(t), ux: way, uy: 0 });
+    }
+    links.push({ fins });
+    const ids = new Set([node.id, ...items.flatMap((i) => [i.from, i.to])]);
+    for (const part of parts) linkItems.push({ element: part, ids });
+  }
+
+  function drawLinks() {
+    if (!scene) return;
+    scene.lineLayer.replaceChildren();
+    scene.headLayer.replaceChildren();
+    links = [];
+    linkItems = [];
+    const items = [];
+    const opened = [];
+    for (const pair of scene.pairs) {
+      const { items: shapes, open } = shapesOf(pair);
+      if (open && shapes.length) opened.push({ pair, item: shapes[0] });
+      items.push(...shapes);
+    }
+    const { lanes, trunks } = assignLanes(items);
+    const drawn = new Map();
+    items.forEach((item, i) => {
+      const segments = curveThrough(item.route, lanes[i]);
+      drawn.set(item, segments);
+      drawItem(item, segments);
+    });
+    for (const trunk of trunks) drawTrunk(trunk);
+    // An opened bundle keeps a mark on its first line that bundles it again.
+    for (const { pair, item } of opened) {
+      const parts = [];
+      const badge = badgeAt(pointAt(drawn.get(item), 0.5).at, "−", S.closeBundle, () => {
+        expanded.delete(pair.key);
+        drawLinks();
+      }, parts);
+      links.push({ fins: [], badge });
+      for (const part of parts) linkItems.push({ element: part, ids: new Set([pair.from, pair.to]) });
+    }
+    apply();
+  }
+
+  const everything = () => [...nodeItems, ...linkItems];
+
+  function draw(level, focus, graph, opened) {
     buttons.forEach((b) => {
       b.setAttribute("aria-pressed", String(b.dataset.level === level));
       if (b.dataset.level === "type") b.disabled = !focus;
@@ -662,6 +888,8 @@
     umlBox.hidden = !focused;
     exportButton.hidden = !focused || !umlOn;
     umlCheck.checked = umlOn;
+    compactCheck.checked = compactOn;
+    foldButton.hidden = focused || !compactOn || !opened;
     for (const node of graph.nodes) if (node.uml) node.box = classBox(node.uml);
     svg.replaceChildren();
     const cyclic = graph.nodes.filter((n) => n.cycle).length;
@@ -669,6 +897,11 @@
     root = element("g", {}, svg);
     marks = [];
     boxes = [];
+    links = [];
+    nodeItems = [];
+    linkItems = [];
+    scene = null;
+    expanded.clear();
     legend.replaceChildren();
     if (!graph.nodes.length) {
       info.textContent = focused ? fmt(S.noTypeLinks, title(level, focus)) : S.noData;
@@ -678,67 +911,16 @@
     root.classList.toggle("busy", graph.edges.filter((e) => e.via?.length).length > NAMED);
     const box = svg.getBoundingClientRect();
     const top = bar.getBoundingClientRect().bottom;
-    const { index, routes } = layout(graph.nodes, graph.edges, box.width / Math.max(box.height - top, 1) || 1.5);
-    const items = [];
-    const lanes = assignLanes(graph.edges, routes);
-    links = [];
+    // The layout places one route per pair of nodes; the links of a pair follow it in lanes.
+    const pairs = pairsOf(graph.edges);
+    const { index, routes } = layout(graph.nodes, pairs, box.width / Math.max(box.height - top, 1) || 1.5);
+    pairs.forEach((pair, i) => (pair.route = routes[i]));
     relations.replaceChildren();
     const hint = relations.appendChild(document.createElement("div"));
     hint.className = "hint";
     hint.textContent = graph.nodes.some((n) => n.box) ? S.umlPointHint : S.pointHint;
     // Lines under heads, heads under nodes: a head is never hidden by a line crossing it.
-    const lineLayer = element("g", {}, root);
-    const headLayer = element("g", {}, root);
-    graph.edges.forEach((edge, i) => {
-      const a = index.get(edge.from), b = index.get(edge.to);
-      const segments = curveThrough(routes[i], lanes[i]);
-      const d = `M${segments[0].start.x} ${segments[0].start.y}` + segments.map((s) => `C${s.c1.x} ${s.c1.y} ${s.c2.x} ${s.c2.y} ${s.end.x} ${s.end.y}`).join("");
-      const parts = [];
-      // A cycle keeps the line of its kind and gets a red underlay.
-      if (edge.cycle) parts.push(element("path", { d, class: "halo" }, lineLayer));
-      const line = element("path", { d, class: `edge kind-${edge.kind}` }, lineLayer);
-      const hit = element("path", { d, class: edge.pair ? "hit open" : "hit" }, lineLayer);
-      parts.push(line, hit);
-      // A UML relation says what it is at its ends; other links carry a fin in the middle.
-      let head;
-      if (edge.kind.startsWith("uml-")) {
-        const first = segments[0], last = segments[segments.length - 1];
-        const su = unit(first.c1.x - first.start.x, first.c1.y - first.start.y);
-        const eu = unit(last.end.x - last.c2.x, last.end.y - last.c2.y);
-        for (const mark of relationMarks(edge.kind, first.start, su, last.end, eu)) parts.push(element("path", { d: mark.d, class: `mark ${mark.cls} kind-${edge.kind}` }, headLayer));
-        const name = edge.label ?? (edge.kind === "uml-embed" ? "«embed»" : undefined);
-        if (name) {
-          // The role name sits near the end it names, above the line, with the multiplicity of a collection: two links
-          // to one class end close together, and separate labels for the multiplicity would stack on each other.
-          const anchor = edge.kind === "uml-embed" ? { x: first.start.x + su.x * 34, y: first.start.y + su.y * 34 } : { x: last.end.x - eu.x * 26, y: last.end.y - eu.y * 26 };
-          const role = element("text", { class: "role", x: anchor.x, y: anchor.y - 5 }, headLayer);
-          role.textContent = edge.many ? `${name} [*]` : name;
-          parts.push(role);
-        }
-      } else {
-        head = element("path", { class: `head kind-${edge.kind}` }, headLayer);
-        parts.push(head);
-      }
-      // A line to a folded module says which of its types it reaches (or which come from it), faintly, above the fin.
-      let via;
-      if (edge.via?.length) {
-        via = element("text", { class: "via" }, headLayer);
-        via.textContent = edge.via.length > 2 ? `${edge.via.slice(0, 2).join(", ")} +${edge.via.length - 2}` : edge.via.join(", ");
-        parts.push(via);
-      }
-      const from = a.label, to = b.label;
-      element("title", {}, hit).textContent = `${from} ${kindOf(edge.kind).out} ${to}${edge.weight > 1 ? ` (${edge.weight})` : ""}${edge.via?.length ? `\n${edge.via.join(", ")}` : ""}${edge.pair ? `\n${S.openPair}` : ""}`;
-      if (edge.pair) hit.addEventListener("click", () => vscode.postMessage({ type: "focus", module: edge.pair[0], peer: edge.pair[1] }));
-      // The head sits in the middle of the curve, pointing to the target: at the target it would hide under the label,
-      // which hangs on the side links arrive from, and many heads would pile up at one node.
-      const { mid, dx, dy } = middleOf(segments);
-      const length = Math.hypot(dx, dy) || 1;
-      links.push({ edge, mid, ux: dx / length, uy: dy / length, head, via, parts });
-      for (const part of parts) {
-        part.classList.toggle("off", hidden.has(edge.kind));
-        items.push({ element: part, ids: new Set([edge.from, edge.to]) });
-      }
-    });
+    scene = { graph, pairs, index, lineLayer: element("g", {}, root), headLayer: element("g", {}, root) };
     for (const node of graph.nodes) {
       const neighbours = new Set([node.id]);
       for (const edge of graph.edges) {
@@ -747,24 +929,26 @@
       }
       const peer = focused && node.role === "module";
       const color = peer ? "peer" : `layer-${Math.min(node.layer, colors - 1)}`;
-      const open = (at) => vscode.postMessage(node.role === "module" ? { type: "focus", module: node.id } : { type: "open", language: node.language, file: at?.file ?? node.file, line: at?.line ?? node.line });
+      const open = (at) => vscode.postMessage(node.role === "folder" ? { type: "unfold", folder: node.folder }
+        : node.role === "module" ? { type: "focus", module: node.id }
+        : { type: "open", language: node.language, file: at?.file ?? node.file, line: at?.line ?? node.line });
       if (node.box) {
         const box = drawClass(node, root, open);
         boxes.push(box);
-        items.push({ element: box, ids: neighbours });
-        box.addEventListener("mouseenter", () => { highlight(node.id, items); describe(node, graph); });
-        box.addEventListener("mouseleave", () => highlight(null, items));
+        nodeItems.push({ element: box, ids: neighbours });
+        box.addEventListener("mouseenter", () => { highlight(node.id, everything()); describe(node, graph); });
+        box.addEventListener("mouseleave", () => highlight(null, everything()));
         box.addEventListener("click", () => open());
         continue;
       }
-      const circle = element("path", { class: `node ${color}${node.cycle ? " cycle" : ""}` }, root);
-      element("title", {}, circle).textContent = node.kind ? `${node.id} (${node.kind})` : node.id;
+      const circle = element("path", { class: `node ${color}${node.cycle ? " cycle" : ""}${node.role === "folder" ? " folder" : ""}` }, root);
+      element("title", {}, circle).textContent = (node.kind ? `${node.id} (${node.kind})` : node.id) + (node.role === "folder" ? `\n${S.openFolder}` : "");
       const label = element("text", peer ? { class: "peer" } : {}, root);
       label.textContent = node.label;
       marks.push({ node, circle, label });
-      items.push({ element: circle, ids: neighbours }, { element: label, ids: neighbours });
-      circle.addEventListener("mouseenter", () => { highlight(node.id, items); describe(node, graph); });
-      circle.addEventListener("mouseleave", () => highlight(null, items));
+      nodeItems.push({ element: circle, ids: neighbours }, { element: label, ids: neighbours });
+      circle.addEventListener("mouseenter", () => { highlight(node.id, everything()); describe(node, graph); });
+      circle.addEventListener("mouseleave", () => highlight(null, everything()));
       circle.addEventListener("click", () => open());
     }
     // Waypoints may take rows below or above the nodes; the view fits them too.
@@ -778,7 +962,7 @@
     view.k = Math.min(box.width / (right - left), (box.height - top) / (lower - upper), 1.5);
     view.x = box.width / 2 - view.k * (left + right) / 2;
     view.y = (box.height + top) / 2 - view.k * (upper + lower) / 2;
-    apply();
+    drawLinks();
   }
 
   svg.addEventListener("wheel", (event) => {
@@ -803,16 +987,28 @@
   buttons.forEach((b) => b.addEventListener("click", () => vscode.postMessage({ type: "level", level: b.dataset.level })));
   umlCheck.addEventListener("change", () => vscode.postMessage({ type: "uml", on: umlCheck.checked }));
   exportButton.addEventListener("click", () => vscode.postMessage({ type: "export" }));
+  compactCheck.addEventListener("change", () => vscode.postMessage({ type: "compact", on: compactCheck.checked }));
+  foldButton.addEventListener("click", () => vscode.postMessage({ type: "fold" }));
+  window.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape" || !expanded.size) return;
+    expanded.clear();
+    drawLinks();
+  });
   window.addEventListener("message", (event) => {
     if (event.data.type !== "graph") return;
     S = event.data.strings;
     umlOn = event.data.uml === true;
+    compactOn = event.data.compact !== false;
+    compactBox.title = S.compactHint;
+    compactBox.lastChild.textContent = ` ${S.compact}`;
+    foldButton.textContent = S.fold;
+    foldButton.title = S.foldHint;
     buttons.forEach((b) => (b.textContent = b.dataset.level === "type" ? S.types : S.modules));
     umlBox.title = S.umlHint;
     umlBox.lastChild.textContent = ` ${S.uml}`;
     exportButton.textContent = S.exportDiagram;
     exportButton.title = S.exportHint;
-    draw(event.data.level, event.data.focus, event.data.graph);
+    draw(event.data.level, event.data.focus, event.data.graph, event.data.opened ?? 0);
   });
   vscode.postMessage({ type: "level", level: "module" });
 })();

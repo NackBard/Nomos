@@ -109,7 +109,7 @@ export function lensesFor(facts: Facts, file: string): Lens[] {
 
 export type NodeShape = "circle" | "triangle" | "diamond" | "square" | "rounded" | "hexagon" | "pentagon" | "dot";
 /** A type node drawn as a UML class carries the class (core/uml.ts). */
-export interface GraphNode { id: string; label: string; language: string; cycle: boolean; size: number; layer: number; role: "module" | "type"; shape: NodeShape; kind?: string; file?: string; line?: number; uml?: UmlClass }
+export interface GraphNode { id: string; label: string; language: string; cycle: boolean; size: number; layer: number; role: "module" | "type" | "folder"; shape: NodeShape; kind?: string; file?: string; line?: number; uml?: UmlClass; folder?: string; members?: number }
 /**
  * One edge per kind of dependency between two nodes. A pair names the two modules this edge opens, when it joins modules.
  * Via names the types behind a folded module at the far end of the edge, in order: what is called, used or inherited there, or who does it.
@@ -196,8 +196,10 @@ class EdgeSet {
   add(from: string, to: string, kind: string, count: number | undefined, cycle: boolean, pair?: [string, string], via?: string): void {
     const key = `${from}\u0000${to}\u0000${kind}`;
     let edge = this.edges.get(key);
-    if (edge) edge.weight += count ?? 1;
-    else this.edges.set(key, (edge = { from, to, kind, weight: count ?? 1, cycle, pair }));
+    if (edge) {
+      edge.weight += count ?? 1;
+      edge.cycle ||= cycle;
+    } else this.edges.set(key, (edge = { from, to, kind, weight: count ?? 1, cycle, pair }));
     if (via !== undefined) {
       const names = this.via.get(edge) ?? new Set<string>();
       this.via.set(edge, names.add(via));
@@ -220,14 +222,105 @@ function moduleNode(m: Module, language: string, cycle: boolean): GraphNode {
   return { id: m.id, label: m.name, language, cycle, size: m.loc, layer: 0, role: "module", shape: "circle" };
 }
 
-/** The graph of modules from facts; dependencies on external targets stay out, as in spec/metrics.md. */
-export function buildGraph(runs: AnalysisRun[]): Graph {
-  const nodes: GraphNode[] = [];
-  const edges = new EdgeSet();
+/** How the compact graph folds modules into their folders (D-064). Without it every module is drawn. */
+export interface Folding {
+  /** Folders the person opened; opening a folder opens the folders above it. */
+  opened: readonly string[];
+  /** The compact graph opens folders while it shows at most this many nodes: a sensitivity of the view, not a verdict. */
+  limit?: number;
+}
+
+export const CompactNodes = 30;
+
+/** The folder of a module: the longest folder all its files share, "" for the root. Paths in facts use "/". */
+export function moduleFolder(files: readonly string[]): string {
+  if (!files.length) return "";
+  let common = files[0].split("/").slice(0, -1);
+  for (const file of files.slice(1)) {
+    const parts = file.split("/").slice(0, -1);
+    let same = 0;
+    while (same < common.length && same < parts.length && common[same] === parts[same]) same++;
+    common = common.slice(0, same);
+  }
+  return common.join("/");
+}
+
+function prefixes(folder: string): string[] {
+  const parts = folder ? folder.split("/") : [];
+  return parts.map((_, i) => parts.slice(0, i + 1).join("/"));
+}
+
+/**
+ * The node each module is drawn as: itself, or `<folder>/` for the folder that holds it. A folder folds only when it holds
+ * two modules or more; a chain of folders that hold nothing but one folder folds as its deepest link, so the name says where
+ * the modules are. Folders open by the person's choice and then, the shallowest first, while the graph stays within the limit.
+ */
+function foldModules(modules: { id: string; folder: string }[], folding: Folding): Map<string, string> {
+  const limit = folding.limit ?? CompactNodes;
+  const count = new Map<string, number>();
+  const direct = new Map<string, number>();
+  const children = new Map<string, Set<string>>();
+  for (const m of modules) {
+    const chain = prefixes(m.folder);
+    chain.forEach((p, i) => {
+      count.set(p, (count.get(p) ?? 0) + 1);
+      if (i > 0) children.set(chain[i - 1], (children.get(chain[i - 1]) ?? new Set<string>()).add(p));
+    });
+    if (m.folder) direct.set(m.folder, (direct.get(m.folder) ?? 0) + 1);
+  }
+  const deepest = (folder: string): string => {
+    let at = folder;
+    for (;;) {
+      const below = children.get(at);
+      if ((direct.get(at) ?? 0) > 0 || !below || below.size !== 1) return at;
+      at = [...below][0];
+    }
+  };
+  const open = new Set<string>();
+  const openWith = (set: Set<string>, folder: string) => {
+    for (const p of prefixes(folder)) set.add(p);
+  };
+  for (const folder of folding.opened) openWith(open, folder);
+  const unitsWith = (opened: Set<string>) => {
+    const units = new Map<string, string>();
+    for (const m of modules) {
+      const closed = prefixes(m.folder).find((p) => !opened.has(p) && (count.get(p) ?? 0) >= 2);
+      units.set(m.id, closed === undefined ? m.id : `${deepest(closed)}/`);
+    }
+    return units;
+  };
+  const size = (units: Map<string, string>) => new Set(units.values()).size;
+  const depth = (unit: string) => unit.split("/").length;
+  let units = unitsWith(open);
+  for (let grown = true; grown; ) {
+    grown = false;
+    const folded = [...new Set([...units].filter(([id, unit]) => id !== unit).map(([, unit]) => unit))];
+    folded.sort((a, b) => depth(a) - depth(b) || compare(a, b));
+    for (const unit of folded) {
+      const trial = new Set(open);
+      openWith(trial, unit.slice(0, -1));
+      const next = unitsWith(trial);
+      if (size(next) > limit) continue;
+      openWith(open, unit.slice(0, -1));
+      units = next;
+      grown = true;
+      break;
+    }
+  }
+  return units;
+}
+
+/**
+ * The graph of modules from facts; dependencies on external targets stay out, as in spec/metrics.md. With folding the
+ * modules of a folded folder are one node and their links add up; only a line between two modules opens the types of a pair.
+ */
+export function buildGraph(runs: AnalysisRun[], folding?: Folding, translate: Translate = english): Graph {
+  const modules: { id: string; folder: string; node: GraphNode }[] = [];
+  const links: { from: string; to: string; kind: string; count?: number; cycle: boolean }[] = [];
   for (const { language, facts } of runs) {
     const cycles = cycleMembers(facts.cycles, "module");
     const known = new Set(facts.modules.map((m) => m.id));
-    for (const m of facts.modules) nodes.push(moduleNode(m, language, cycles.some((c) => c.has(m.id))));
+    for (const m of facts.modules) modules.push({ id: m.id, folder: moduleFolder(m.files), node: moduleNode(m, language, cycles.some((c) => c.has(m.id))) });
     const owners = new Map([...facts.types, ...facts.functions].map((e) => [e.id, e.module]));
     const unit = (id: string) => (known.has(id) ? id : owners.get(id));
     for (const dependency of facts.dependencies) {
@@ -235,10 +328,36 @@ export function buildGraph(runs: AnalysisRun[]): Graph {
       const from = unit(dependency.from);
       const to = unit(dependency.to);
       if (!from || !to || from === to) continue;
-      edges.add(from, to, dependency.kind, dependency.count, cycles.some((c) => c.has(from) && c.has(to)), [from, to]);
+      links.push({ from, to, kind: dependency.kind, count: dependency.count, cycle: cycles.some((c) => c.has(from) && c.has(to)) });
     }
   }
-  return withLayers(nodes, edges.list());
+  const units = folding ? foldModules(modules, folding) : new Map(modules.map((m) => [m.id, m.id]));
+  const nodes = new Map<string, GraphNode>();
+  for (const { id, node } of modules) {
+    const unit = units.get(id)!;
+    if (unit === id) {
+      nodes.set(id, node);
+      continue;
+    }
+    const folder = nodes.get(unit);
+    if (folder) {
+      folder.size += node.size;
+      folder.cycle ||= node.cycle;
+      folder.members! += 1;
+      continue;
+    }
+    const path = unit.slice(0, -1);
+    nodes.set(unit, { id: unit, label: path.slice(path.lastIndexOf("/") + 1), language: node.language, cycle: node.cycle, size: node.size, layer: 0, role: "folder", shape: "rounded", kind: translate("folder"), folder: path, members: 1 });
+  }
+  for (const node of nodes.values()) if (node.role === "folder") node.label = `${node.label}/ (${node.members})`;
+  const edges = new EdgeSet();
+  for (const link of links) {
+    const from = units.get(link.from)!;
+    const to = units.get(link.to)!;
+    if (from === to) continue;
+    edges.add(from, to, link.kind, link.count, link.cycle, from === link.from && to === link.to ? [from, to] : undefined);
+  }
+  return withLayers([...nodes.values()], edges.list());
 }
 
 /**
