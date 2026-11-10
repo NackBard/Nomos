@@ -1,0 +1,8 @@
+src/**
+out/test/**
+tsconfig.json
+**/*.map
+*.vsix
+dist/**
+CLAUDE.md
+scripts/**

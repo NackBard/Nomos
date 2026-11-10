@@ -1,0 +1,6 @@
+{
+  "description": "Scores of stability, extensibility, conformance and maintainability, Martin's diagram, percolation and the key problems of a system, over the Nomos analysis",
+  "command.showSystem": "Score: System Dashboard",
+  "command.openWindow": "Score: Open in a Separate Window",
+  "command.inspect": "Score: Module Dashboard"
+}

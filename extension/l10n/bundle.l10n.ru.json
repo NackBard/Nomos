@@ -161,5 +161,6 @@
   "Click to bundle these links again": "Щёлкните, чтобы снова собрать эти связи в пучок",
   "{0}: {1} {1|line|lines|lines} joined": "{0}: {1} {1|линия сведена|линии сведены|линий сведено} в одну",
   "folder": "папка",
-  "links of several kinds, click to open": "связи разных видов, щелчок раскрывает"
+  "links of several kinds, click to open": "связи разных видов, щелчок раскрывает",
+  "Double-click a module or a type to open its scores.": "Двойной щелчок по модулю или типу открывает его баллы."
 }

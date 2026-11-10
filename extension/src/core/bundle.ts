@@ -132,6 +132,18 @@ export const PackageKey = "nomos";
 export interface InstalledExtension { id: string; extensionPath: string; packageJSON: unknown }
 
 /**
+ * The command an installed extension offers for a double click on a node of the graph (`nomos.inspect.command` of its
+ * package.json, D-065); extensions are read in id order and the first one wins. Undefined: a double click does nothing.
+ */
+export function inspectCommand(extensions: InstalledExtension[]): string | undefined {
+  for (const extension of [...extensions].sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))) {
+    const command = (extension.packageJSON as { [PackageKey]?: { inspect?: { command?: unknown } } } | undefined)?.[PackageKey]?.inspect?.command;
+    if (typeof command === "string" && command) return command;
+  }
+  return undefined;
+}
+
+/**
  * The registry of the installed language packs (D-062), then the analyzers of the core's own bundle, which development
  * and e2e use. Packs are read in id order; a language goes to the first entry that names it. Nothing of a pack runs here.
  */

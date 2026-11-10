@@ -68,6 +68,19 @@
   const compactCheck = document.getElementById("compact");
   const foldButton = document.getElementById("fold");
   let compactOn = true;
+  // An installed extension takes double clicks on nodes (D-065): a single click then waits out the double click's pause.
+  let inspectOn = false;
+  let pendingClick;
+  const DOUBLE_CLICK_MS = 250;
+  function clicked(action) {
+    clearTimeout(pendingClick);
+    if (inspectOn) pendingClick = setTimeout(action, DOUBLE_CLICK_MS);
+    else action();
+  }
+  function inspect(node) {
+    clearTimeout(pendingClick);
+    if (inspectOn && node.role !== "folder") vscode.postMessage({ type: "inspect", language: node.language, role: node.role, id: node.id });
+  }
   // Bundles the person opened, by pair of nodes; Escape closes them all.
   const expanded = new Set();
   // A trunk gathers at least TRUNK_MIN lines that reach one side of a module, TRUNK before the module.
@@ -918,7 +931,7 @@
     relations.replaceChildren();
     const hint = relations.appendChild(document.createElement("div"));
     hint.className = "hint";
-    hint.textContent = graph.nodes.some((n) => n.box) ? S.umlPointHint : S.pointHint;
+    hint.textContent = (graph.nodes.some((n) => n.box) ? S.umlPointHint : S.pointHint) + (inspectOn ? ` ${S.inspectHint}` : "");
     // Lines under heads, heads under nodes: a head is never hidden by a line crossing it.
     scene = { graph, pairs, index, lineLayer: element("g", {}, root), headLayer: element("g", {}, root) };
     for (const node of graph.nodes) {
@@ -929,9 +942,9 @@
       }
       const peer = focused && node.role === "module";
       const color = peer ? "peer" : `layer-${Math.min(node.layer, colors - 1)}`;
-      const open = (at) => vscode.postMessage(node.role === "folder" ? { type: "unfold", folder: node.folder }
+      const open = (at) => clicked(() => vscode.postMessage(node.role === "folder" ? { type: "unfold", folder: node.folder }
         : node.role === "module" ? { type: "focus", module: node.id }
-        : { type: "open", language: node.language, file: at?.file ?? node.file, line: at?.line ?? node.line });
+        : { type: "open", language: node.language, file: at?.file ?? node.file, line: at?.line ?? node.line }));
       if (node.box) {
         const box = drawClass(node, root, open);
         boxes.push(box);
@@ -939,6 +952,7 @@
         box.addEventListener("mouseenter", () => { highlight(node.id, everything()); describe(node, graph); });
         box.addEventListener("mouseleave", () => highlight(null, everything()));
         box.addEventListener("click", () => open());
+        box.addEventListener("dblclick", () => inspect(node));
         continue;
       }
       const circle = element("path", { class: `node ${color}${node.cycle ? " cycle" : ""}${node.role === "folder" ? " folder" : ""}` }, root);
@@ -950,6 +964,7 @@
       circle.addEventListener("mouseenter", () => { highlight(node.id, everything()); describe(node, graph); });
       circle.addEventListener("mouseleave", () => highlight(null, everything()));
       circle.addEventListener("click", () => open());
+      circle.addEventListener("dblclick", () => inspect(node));
     }
     // Waypoints may take rows below or above the nodes; the view fits them too.
     const points = [...graph.nodes, ...routes.flat()];
@@ -999,6 +1014,7 @@
     S = event.data.strings;
     umlOn = event.data.uml === true;
     compactOn = event.data.compact !== false;
+    inspectOn = event.data.inspect === true;
     compactBox.title = S.compactHint;
     compactBox.lastChild.textContent = ` ${S.compact}`;
     foldButton.textContent = S.fold;

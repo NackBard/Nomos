@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import test from "node:test";
-import { PacksFileName, RegistryFileName, collectRegistry, findRuntime, missingPacks, readPacks, programIn, implicitWorkspace, launchConfig, readRegistry, runtimeArgument, selectBundled, writeWorkspaceFile } from "../core/bundle";
+import { PacksFileName, RegistryFileName, collectRegistry, findRuntime, inspectCommand, missingPacks, readPacks, programIn, implicitWorkspace, launchConfig, readRegistry, runtimeArgument, selectBundled, writeWorkspaceFile } from "../core/bundle";
 import type { RuntimeHost, RuntimeRequirement } from "../core/bundle";
 import { ContractError, checkContract } from "../core/contracts";
 import type { AnalysisRun, Facts, Finding } from "../core/model";
@@ -548,6 +548,13 @@ test("language packs give registry entries from their package.json, ahead of the
   assert.deepEqual(registry.analyzers.map((a) => [a.language, a.folder]), [["toy", path.join("/ext/pub.alpha", "bundle")], ["own", "/core/bundle"]]);
   const config = launchConfig(registry.analyzers[0], "/core/bundle", temporaryFolder());
   assert.deepEqual(config.command, [`${path.join("/ext/pub.alpha", "bundle")}/x`], "${bundle} is the folder of the pack");
+});
+
+test("the double click of the graph goes to the first extension that declares nomos.inspect.command (D-065)", () => {
+  const ext = (id: string, packageJSON: unknown) => ({ id, extensionPath: "/ext/" + id, packageJSON });
+  assert.equal(inspectCommand([ext("other.ext", { name: "other" }), ext("pub.pack", { nomos: { analyzers: [] } })]), undefined);
+  assert.equal(inspectCommand([ext("pub.zeta", { nomos: { inspect: { command: "zeta.inspect" } } }), ext("pub.alpha", { nomos: { inspect: { command: "alpha.inspect" } } })]), "alpha.inspect");
+  assert.equal(inspectCommand([ext("pub.bad", { nomos: { inspect: { command: 1 } } })]), undefined);
 });
 
 test("a known pack is offered only when its files exist and nothing installed reads them", async () => {

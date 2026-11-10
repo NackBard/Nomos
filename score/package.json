@@ -1,0 +1,82 @@
+{
+  "name": "nomos-score",
+  "displayName": "Nomos Score",
+  "description": "%description%",
+  "version": "0.1.0",
+  "publisher": "honestarchitector",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NackBard/Nomos.git"
+  },
+  "private": true,
+  "license": "MIT",
+  "icon": "media/icon.png",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Linters",
+    "Visualization"
+  ],
+  "extensionDependencies": [
+    "honestarchitector.nomos"
+  ],
+  "main": "./out/extension.js",
+  "activationEvents": [],
+  "nomos": {
+    "inspect": {
+      "command": "nomosScore.inspect"
+    }
+  },
+  "contributes": {
+    "commands": [
+      {
+        "command": "nomosScore.showSystem",
+        "title": "%command.showSystem%",
+        "icon": "$(dashboard)",
+        "category": "Nomos"
+      },
+      {
+        "command": "nomosScore.openWindow",
+        "title": "%command.openWindow%",
+        "icon": "$(empty-window)",
+        "category": "Nomos"
+      },
+      {
+        "command": "nomosScore.inspect",
+        "title": "%command.inspect%",
+        "category": "Nomos"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "nomosScore.showSystem",
+          "when": "view == nomos.findings",
+          "group": "navigation"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "nomosScore.openWindow",
+          "when": "activeWebviewPanelId == nomosScore.dashboard",
+          "group": "navigation"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p .",
+    "vscode:prepublish": "npm run compile",
+    "test": "npm run compile && node --test \"out/test/**/*.test.js\"",
+    "screenshot": "node scripts/screenshot.mjs",
+    "package": "node -e \"require('fs').mkdirSync('dist',{recursive:true})\" && vsce package --out dist/"
+  },
+  "devDependencies": {
+    "@types/node": "24.3.0",
+    "@types/vscode": "1.90.0",
+    "@vscode/vsce": "4.0.0",
+    "typescript": "5.9.2"
+  },
+  "l10n": "./l10n"
+}

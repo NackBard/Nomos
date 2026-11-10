@@ -1,6 +1,7 @@
 import { randomBytes } from "node:crypto";
 import path from "node:path";
 import * as vscode from "vscode";
+import { inspectCommand } from "../core/bundle";
 import type { AnalysisRun } from "../core/model";
 import { focusDiagram, withClasses } from "../core/uml";
 import { buildFocus, buildGraph, neighbourGroup } from "../core/views";
@@ -27,6 +28,11 @@ function page(webview: vscode.Webview, script: vscode.Uri): string {
   return graphPage(randomBytes(16).toString("hex"), webview.asWebviewUri(script).toString(), graphStrings(t), t.locale);
 }
 
+/** The command of an installed extension for a double click on a node (D-065), read anew: extensions come and go. */
+function inspector(): string | undefined {
+  return inspectCommand(vscode.extensions.all.map((e) => ({ id: e.id, extensionPath: e.extensionPath, packageJSON: e.packageJSON as unknown })));
+}
+
 function send(): void {
   if (!panel) return;
   // A hidden page has no size to fit the graph to, so it gets the data when it is shown.
@@ -44,7 +50,7 @@ function send(): void {
     const classes = focusDiagram(runsOf(), focus.module, focus.peer);
     if (classes) graph = withClasses(shown, classes.diagram);
   }
-  void panel.webview.postMessage({ type: "graph", level, focus, graph, uml, compact, opened: opened.length, strings: graphStrings(t) });
+  void panel.webview.postMessage({ type: "graph", level, focus, graph, uml, compact, opened: opened.length, inspect: inspector() !== undefined, strings: graphStrings(t) });
 }
 
 /** The module or pair the types level of the graph shows, if any. */
@@ -83,8 +89,12 @@ export function showGraph(context: vscode.ExtensionContext, runs: () => Analysis
   panel.onDidChangeViewState(() => {
     if (stale) send();
   });
-  panel.webview.onDidReceiveMessage(async (message: { type: string; level?: GraphLevel; module?: string; peer?: string; language?: string; file?: string; line?: number; on?: boolean; folder?: string }) => {
-    if (message.type === "compact") {
+  panel.webview.onDidReceiveMessage(async (message: { type: string; level?: GraphLevel; module?: string; peer?: string; language?: string; file?: string; line?: number; on?: boolean; folder?: string; role?: string; id?: string }) => {
+    if (message.type === "inspect" && message.id) {
+      const command = inspector();
+      const root = runs().find((r) => r.language === message.language)?.root;
+      if (command) await vscode.commands.executeCommand(command, { language: message.language, root, role: message.role, id: message.id });
+    } else if (message.type === "compact") {
       await context.globalState.update(CompactKey, message.on === true);
       send();
     } else if (message.type === "unfold" && message.folder !== undefined) {

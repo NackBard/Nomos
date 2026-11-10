@@ -67,6 +67,8 @@ const strings = checkBundle(path.join(extension, "src"), path.join(extension, "l
 const ciStrings = checkBundle(path.join(repo, "ci", "src"), path.join(repo, "ci", "l10n", "bundle.l10n.ru.json"));
 const agents = path.join(repo, "agents");
 const agentStrings = checkBundle(path.join(agents, "src"), path.join(agents, "l10n", "bundle.l10n.ru.json"));
+const score = path.join(repo, "score");
+const scoreStrings = checkBundle(path.join(score, "src"), path.join(score, "l10n", "bundle.l10n.ru.json"));
 
 /** package.json of an extension: every text of the contributions is a %key% with English and Russian values. */
 function checkManifest(dir) {
@@ -91,7 +93,7 @@ function checkManifest(dir) {
   for (const text of plain) problems.push(`${name}: "${text}" is shown but not a %key% of package.nls.json`);
   return keys.length;
 }
-const keyCount = checkManifest(extension) + checkManifest(agents);
+const keyCount = checkManifest(extension) + checkManifest(agents) + checkManifest(score);
 
 // Rule and practice texts, and finding templates, from spec (npm run spec-json writes these files).
 for (const rule of read(path.join(extension, "rules.json"))) {
@@ -108,4 +110,4 @@ if (problems.length) {
   console.error(`\n${problems.length} problem(s)`);
   process.exit(1);
 }
-console.log(`Russian texts are complete: ${strings} strings of the extension, ${ciStrings} of ci, ${agentStrings} of agents, ${keyCount} of package.json, spec rules and practices`);
+console.log(`Russian texts are complete: ${strings} strings of the extension, ${ciStrings} of ci, ${agentStrings} of agents, ${scoreStrings} of score, ${keyCount} of package.json, spec rules and practices`);

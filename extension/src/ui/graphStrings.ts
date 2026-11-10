@@ -44,6 +44,7 @@ export function graphStrings(t: Translate) {
     openFolder: t.template("Click to show the modules of this folder"),
     openBundle: t.template("Click to show these links one by one; Escape bundles them again"),
     closeBundle: t.template("Click to bundle these links again"),
+    inspectHint: t.template("Double-click a module or a type to open its scores."),
     trunk: t.template("{0}: {1} {1|line|lines|lines} joined"),
   };
 }
