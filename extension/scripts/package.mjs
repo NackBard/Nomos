@@ -227,6 +227,8 @@ if (!process.argv.includes("--bundle-only")) {
   const onlyIndex = process.argv.indexOf("--only");
   const only = onlyIndex > 0 ? process.argv[onlyIndex + 1].split(",") : undefined;
 
+  // The license of the repository goes into the core as a copy that git ignores; each pack gets its own below.
+  fs.copyFileSync(path.join(repository, "LICENSE"), path.join(extension, "LICENSE"));
   // The core is the same on every platform: it carries no analyzer.
   if (!only || only.includes(core.name)) {
     run(process.execPath, [vsce, "package", ...legal, "-o", path.join(out, `${core.name}-${core.version}.vsix`)], { cwd: extension, stdio: ["ignore", "inherit", "inherit"] });
@@ -248,7 +250,7 @@ if (!process.argv.includes("--bundle-only")) {
       engines: core.engines,
       categories: ["Linters"],
       extensionDependencies: [`${core.publisher}.${core.name}`],
-      files: ["bundle/**", "README.md"],
+      files: ["bundle/**", "README.md", "LICENSE"],
       nomos: { analyzers: pack.analyzers },
     };
     fs.writeFileSync(path.join(folder, "package.json"), JSON.stringify(manifest, null, 2) + "\n");
