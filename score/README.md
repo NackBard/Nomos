@@ -25,7 +25,7 @@ A component that is not defined for a module (a module of free functions has no 
 ## The dashboards
 
 - **Key problems** — the places where the system's overall score loses most points; together they add up exactly to 100 minus the overall score. Each names the module, the component, its inputs and what usually raises it.
-- **Martin's diagram** — abstractness against instability with the main sequence and the zones of pain and uselessness; size is lines, color is the overall score.
+- **Abstractness and instability (main sequence)** — R. Martin's diagram of abstractness against instability with the main sequence and the zones of pain and uselessness; size is lines, color is the overall score.
 - **Coupling of modules** — afferent against efferent coupling.
 - **Core and periphery** — units by how many depend on them and how many they depend on, transitively: core, shared, control and periphery.
 - **Percolation** — the largest connected part of the system as its best linked units (by links and by blast radius) are removed one by one, with the share at which it halves.
@@ -33,6 +33,6 @@ A component that is not defined for a module (a module of free functions has no 
 - **Propagation hubs** — units whose change reaches at least a quarter of the system.
 - **Modules** — every module with its scores and Martin's metrics; click a header to sort.
 
-The dashboard of a module adds its components, its place on Martin's diagram, its units and most complex functions, its findings by category and its links to other modules. A click on a unit or a function opens its code.
+The dashboard of a module adds its components, its place on the abstractness and instability diagram, its units and most complex functions, its findings by category and its links to other modules. A click on a unit or a function opens its code.
 
 With several analyzed languages, choose the analysis at the top.

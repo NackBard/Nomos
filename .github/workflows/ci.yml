@@ -97,6 +97,18 @@ jobs:
           npm test
           npm run check-boundary
           npm run check-l10n
+      # D-046: a real VS Code on a folder without nomos.json with files of every language, analyzed by the analyzers of
+      # the core's bundle; the C# runtime comes from the .NET Install Tool, installed into the test profile. VS Code is the
+      # latest stable archive; its Chromium sandbox needs user namespaces, which AppArmor on Ubuntu 24 restricts.
+      - name: Extension e2e without nomos.json
+        working-directory: extension
+        run: |
+          npm run package -- --bundle-only
+          curl -fsSL -o "$RUNNER_TEMP/vscode.tar.gz" https://update.code.visualstudio.com/latest/linux-x64/stable
+          tar -xzf "$RUNNER_TEMP/vscode.tar.gz" -C "$RUNNER_TEMP"
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+          cp -r ../conformance/cases/metrics-basic "$RUNNER_TEMP/sample"
+          PATH="$RUNNER_TEMP/VSCode-linux-x64/bin:$PATH" VSCODE_EXE="$RUNNER_TEMP/VSCode-linux-x64/code" xvfb-run -a npm run e2e -- "$RUNNER_TEMP/sample"
       # D-063: the agents extension and the MCP server; their tests need git, which the runner has.
       - name: Agents and MCP server
         working-directory: agents

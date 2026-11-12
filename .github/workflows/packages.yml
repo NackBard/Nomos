@@ -60,10 +60,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { target: linux-x64, os: ubuntu-latest }
+          - { target: linux-x64, os: ubuntu-latest, e2e: true }
           - { target: linux-arm64, os: ubuntu-24.04-arm }
           - { target: alpine-x64, os: ubuntu-latest, container: "node:22.18-alpine" }
-          - { target: win32-x64, os: windows-latest }
+          - { target: win32-x64, os: windows-latest, e2e: true }
           - { target: win32-arm64, os: windows-11-arm }
           - { target: darwin-x64, os: macos-15-intel }
           - { target: darwin-arm64, os: macos-latest }
@@ -91,3 +91,47 @@ jobs:
       - name: Packs on ${{ matrix.target }}
         working-directory: extension
         run: node scripts/check-packs.mjs --target ${{ matrix.target }} --require go,typescript,javascript
+      # Stage 18: a real VS Code with the core and the packs of this target installed into a clean profile, on a folder
+      # without nomos.json with files of every language (npm run e2e -- <folder> --packs, D-062). Every analyzer must run
+      # from its pack; the runtimes are the oldest the analyzers support, the C# one comes from the .NET Install Tool.
+      - if: ${{ matrix.e2e }}
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.10"
+      - if: ${{ matrix.e2e }}
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+      - if: ${{ matrix.e2e }}
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+          bundler: none
+      - if: ${{ matrix.e2e }}
+        name: Only the packs of this target
+        working-directory: extension
+        shell: bash
+        run: |
+          find dist -name 'nomos-go-*.vsix' ! -name 'nomos-go-${{ matrix.target }}-*' -delete
+          cp -r ../conformance/cases/metrics-basic "$RUNNER_TEMP/sample"
+      - if: ${{ matrix.e2e && runner.os == 'Linux' }}
+        name: e2e with the packs on ${{ matrix.target }}
+        working-directory: extension
+        run: |
+          curl -fsSL -o "$RUNNER_TEMP/vscode.tar.gz" https://update.code.visualstudio.com/latest/linux-x64/stable
+          tar -xzf "$RUNNER_TEMP/vscode.tar.gz" -C "$RUNNER_TEMP"
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+          PATH="$RUNNER_TEMP/VSCode-linux-x64/bin:$PATH" VSCODE_EXE="$RUNNER_TEMP/VSCode-linux-x64/code" xvfb-run -a npm run e2e -- "$RUNNER_TEMP/sample" --packs
+      - if: ${{ matrix.e2e && runner.os == 'Windows' }}
+        name: e2e with the packs on ${{ matrix.target }}
+        working-directory: extension
+        shell: pwsh
+        run: |
+          $ProgressPreference = "SilentlyContinue"
+          Invoke-WebRequest https://update.code.visualstudio.com/latest/win32-x64-archive/stable -OutFile "$env:RUNNER_TEMP\vscode.zip"
+          Expand-Archive "$env:RUNNER_TEMP\vscode.zip" "$env:RUNNER_TEMP\vscode"
+          $env:PATH = "$env:RUNNER_TEMP\vscode\bin;$env:PATH"
+          $env:VSCODE_EXE = "$env:RUNNER_TEMP\vscode\Code.exe"
+          npm run e2e -- "$env:RUNNER_TEMP\sample" --packs
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }

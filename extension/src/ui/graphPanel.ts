@@ -3,7 +3,7 @@ import path from "node:path";
 import * as vscode from "vscode";
 import { inspectCommand } from "../core/bundle";
 import type { AnalysisRun } from "../core/model";
-import { focusDiagram, withClasses } from "../core/uml";
+import { focusDiagram, moduleOfUtility, withClasses } from "../core/uml";
 import { buildFocus, buildGraph, neighbourGroup } from "../core/views";
 import type { GraphLevel } from "../core/views";
 import { graphPage } from "./graphPage";
@@ -93,7 +93,8 @@ export function showGraph(context: vscode.ExtensionContext, runs: () => Analysis
     if (message.type === "inspect" && message.id) {
       const command = inspector();
       const root = runs().find((r) => r.language === message.language)?.root;
-      if (command) await vscode.commands.executeCommand(command, { language: message.language, root, role: message.role, id: message.id });
+      // A module's utility (D-066) is no entity of the facts: the module stands for it.
+      if (command) await vscode.commands.executeCommand(command, { language: message.language, root, role: message.role, id: moduleOfUtility(message.id) });
     } else if (message.type === "compact") {
       await context.globalState.update(CompactKey, message.on === true);
       send();
@@ -106,8 +107,6 @@ export function showGraph(context: vscode.ExtensionContext, runs: () => Analysis
     } else if (message.type === "uml") {
       uml = message.on === true;
       send();
-    } else if (message.type === "export") {
-      await vscode.commands.executeCommand("nomos.exportClassDiagram", focus);
     } else if (message.type === "level") {
       level = message.level === "type" && focus ? "type" : "module";
       if (level === "type" && focus) focus = { module: focus.module };

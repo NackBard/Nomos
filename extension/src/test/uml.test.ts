@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import type { AnalysisRun, Facts } from "../core/model";
-import { classDiagram, focusDiagram, toMermaid, toPlantUml, withClasses } from "../core/uml";
+import { classDiagram, focusDiagram, projectDiagram, toMermaid, toPlantUml, withClasses } from "../core/uml";
 import { buildFocus } from "../core/views";
 
 const at = (line: number) => ({ file: "s.toy", startLine: line });
@@ -131,10 +131,13 @@ test("the types level as classes: type nodes carry their class, links between cl
   const focus = buildFocus([run], "M")!;
   const classes = withClasses(focus, focusDiagram([run], "M")!.diagram);
   assert.equal(classes.nodes.find((n) => n.id === "M.S")?.uml?.name, "S<T>");
-  assert.equal(classes.nodes.find((n) => n.id === "M.F")?.uml, undefined);
-  assert.deepEqual(classes.nodes.map((n) => [n.id, n.layer]), focus.nodes.map((n) => [n.id, n.layer]));
+  // The free function F folds into the utility of M, in its place, and its link is the utility's (D-066).
+  assert.equal(classes.nodes.find((n) => n.id === "M.F"), undefined);
+  assert.equal(classes.nodes.find((n) => n.id === "M «utility»")?.uml?.stereotype, "utility");
+  assert.deepEqual(classes.nodes.map((n) => n.id), focus.nodes.map((n) => (n.id === "M.F" ? "M «utility»" : n.id)));
   const kinds = classes.edges.map((e) => `${e.from} ${e.kind} ${e.to}`).sort();
-  assert.ok(kinds.includes("M.F call M.S"), "a free function keeps its link");
+  assert.ok(kinds.includes("M «utility» uml-dependency M.S"), "the utility depends on what its function calls");
+  assert.ok(!kinds.some((k) => k.startsWith("M.F ")), "no link of the folded function is left");
   assert.ok(kinds.includes("M.C call P"), "a link to a folded module stays");
   assert.ok(kinds.includes("M.S uml-association M.C"));
   assert.ok(!kinds.includes("M.S type-ref M.C"));
@@ -147,4 +150,36 @@ test("a pair of modules exports only the types the pair view shows", () => {
   assert.deepEqual(found.diagram.classes.map((c) => c.id), ["M.C", "P.Q"]);
   assert.deepEqual(found.diagram.relations, [{ from: "M.C", to: "P.Q", kind: "dependency" }]);
   assert.equal(focusDiagram([run], "Gone"), undefined);
+});
+
+test("the free functions of a module are one «utility» class with static operations, linked like a type (D-066)", () => {
+  // Hand-made: G is a second free function of M with no links, L a lambda, which stays out. A module of functions only
+  // (P2) still gets its class, so its diagram is not empty.
+  const more: Facts = {
+    ...facts,
+    modules: [...facts.modules, { id: "P2", name: "Util", files: ["u.toy"], loc: 5, metrics: {}, paradigmEvidence: [] }],
+    functions: [
+      ...facts.functions,
+      { id: "M.G", name: "G", module: "M", kind: "function", visibility: "internal", location: at(25), metrics: {}, parameters: [{ name: "x", typeName: "int" }], returnTypeName: "bool" },
+      { id: "M.L", name: "L", module: "M", kind: "lambda", location: at(26), metrics: {} },
+      { id: "P2.h", name: "h", module: "P2", kind: "function", location: { file: "u.toy", startLine: 1 }, metrics: {} },
+    ],
+    dependencies: [...facts.dependencies, { from: "P2.h", to: "M.G", kind: "call", phase: "runtime" }],
+  };
+  const moreRun: AnalysisRun = { ...run, facts: more };
+  const m = focusDiagram([moreRun], "M")!.diagram;
+  const utility = m.classes.find((c) => c.id === "M «utility»")!;
+  assert.equal(utility.name, "M");
+  assert.deepEqual(utility.operations.map((o) => `${o.text} static=${o.isStatic}`), ["F() static=true", "~G(x: int): bool static=true"]);
+  assert.deepEqual(utility.functions, ["M.F", "M.G"]);
+  assert.deepEqual(m.relations.filter((r) => r.from === "M «utility»"), [{ from: "M «utility»", to: "M.S", kind: "dependency" }]);
+  assert.match(toPlantUml(m), /\nclass "M" as C1 <<utility>> \{\n  \{static\} F\(\)\n  \{static\} ~G\(x: int\) : bool\n\}\n/);
+  assert.match(toMermaid(m), /\n  class M \{\n    <<utility>>\n    F\(\)\$\n    ~G\(x: int\)\$ bool\n  \}\n/);
+
+  const util = focusDiagram([moreRun], "P2")!.diagram;
+  assert.deepEqual(util.classes.map((c) => c.id), ["P2 «utility»"]);
+
+  const whole = projectDiagram(more, "all");
+  assert.deepEqual(whole.classes.filter((c) => c.stereotype === "utility").map((c) => c.id), ["M «utility»", "P2 «utility»"]);
+  assert.ok(whole.relations.some((r) => r.from === "P2 «utility»" && r.to === "M «utility»" && r.kind === "dependency"), "utilities depend on each other through calls");
 });

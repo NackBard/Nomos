@@ -4,7 +4,7 @@
 //        [--hover <node name>] [--hide <kind,kind>] [--theme light] [--size 1500,900] [--locale ru] [--uml]
 //        [--flat] [--open <folder,folder>] [--limit N] [--expand]
 // --flat draws without the compact view (D-064); --open opens folders, --limit changes how many nodes the compact
-// graph keeps, --expand opens the first bundle.
+// graph keeps, --expand opens every bundle.
 // Facts come from an analyzer: `dotnet bundle/csharp/nomos-csharp.dll analyze --root <project> > facts.json`
 // (after `npm run package -- --bundle-only`). BROWSER overrides the path to Edge or Chrome.
 // The page, graph.js and the data go to a folder next to the screenshot; nothing is written into the extension.
@@ -66,7 +66,9 @@ window.acquireVsCodeApi = () => ({ postMessage(message) {
 window.addEventListener("load", () => setTimeout(() => {
   for (const kind of ${JSON.stringify(hide.map((kind) => strings.kinds[kind]?.name ?? kind))}) [...document.querySelectorAll("#legend button.link")].find((b) => b.textContent === kind)?.click();
   const name = ${JSON.stringify(hover)};
-  if (${process.argv.includes("--expand")}) document.querySelector("g.badge")?.dispatchEvent(new MouseEvent("click"));
+  // A bundle's mark holds its number; opening one draws the lines again, so the marks are looked up after each click.
+  const closed = () => [...document.querySelectorAll("g.badge")].find((g) => /^[0-9]+$/.test(g.querySelector("text")?.textContent ?? ""));
+  for (let mark = closed(); ${process.argv.includes("--expand")} && mark; mark = closed()) mark.dispatchEvent(new MouseEvent("click"));
   if (name) [...document.querySelectorAll("path.node, g.class")].find((p) => p.querySelector("title").textContent.split(" (")[0].endsWith(name))?.dispatchEvent(new MouseEvent("mouseenter"));
 }, 300));`;
 

@@ -1,5 +1,7 @@
-// Every text Nomos shows has a Russian translation (D-052): strings of the interface (calls of t), package.nls,
-// rule and practice texts of spec, finding templates, and the reports of ci. Usage: npm run check-l10n.
+// Every text Nomos shows has a translation (D-052, docs/TRANSLATING.md): strings of the interface (calls of t),
+// package.nls, rule and practice texts of spec, finding templates, and the reports of ci. Usage: npm run check-l10n.
+// Russian must be complete. Any other language with files (bundle.l10n.<lang>.json, package.nls.<lang>.json) is checked
+// too: a broken template or a key nobody uses fails, a missing string only warns, since VS Code shows English for it.
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -8,6 +10,8 @@ import ts from "typescript";
 const extension = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const repo = path.resolve(extension, "..");
 const problems = [];
+const warnings = [];
+const Required = "ru";
 const read = (file) => JSON.parse(fs.readFileSync(file, "utf8"));
 const relative = (file) => path.relative(repo, file).replaceAll("\\", "/");
 
@@ -45,41 +49,69 @@ function lookups(dir) {
 const HOLE = /\{\{|\}\}|\{(\d+)(?:\|([^{}]*))?\}/g;
 const holes = (text) => [...new Set([...text.matchAll(HOLE)].filter((m) => m[1] !== undefined).map((m) => Number(m[1])))].sort().join(",");
 
-function checkTemplate(where, english, russian) {
-  if (typeof russian !== "string" || !russian.trim()) return problems.push(`${where}: no Russian text`);
-  if (holes(english) !== holes(russian)) problems.push(`${where}: the translation uses {${holes(russian)}}, the original {${holes(english)}}`);
-  for (const m of russian.matchAll(HOLE)) if (m[2] !== undefined && m[2].split("|").length !== 3) problems.push(`${where}: ${m[0]} needs three forms`);
+/** Checks one translation; true when it is missing in a language that may be partial (the caller counts those). */
+function checkTemplate(where, english, translated, locale = Required) {
+  if (typeof translated !== "string" || !translated.trim()) {
+    if (locale === Required) problems.push(`${where}: no Russian text`);
+    return locale !== Required;
+  }
+  if (holes(english) !== holes(translated)) problems.push(`${where}: the translation uses {${holes(translated)}}, the original {${holes(english)}}`);
+  for (const m of translated.matchAll(HOLE)) if (m[2] !== undefined && m[2].split("|").length !== 3) problems.push(`${where}: ${m[0]} needs three forms`);
 }
 
-/** Every looked-up string is in the bundle, and the bundle has nothing else. */
-function checkBundle(dir, bundleFile) {
+const packages = [extension, path.join(repo, "ci"), path.join(repo, "agents"), path.join(repo, "score")];
+const NAMED = /^(?:bundle\.l10n|package\.nls)\.([A-Za-z]{2,3}(?:-[A-Za-z0-9]+)?)\.json$/;
+/** Russian, then every other language some package has files for, in Ordinal order. */
+const locales = [Required, ...[...new Set(packages.flatMap((dir) => [dir, path.join(dir, "l10n")])
+  .filter((dir) => fs.existsSync(dir))
+  .flatMap((dir) => fs.readdirSync(dir).map((file) => NAMED.exec(file)?.[1]).filter(Boolean)))]
+  .filter((locale) => locale !== Required).sort()];
+
+/** Every looked-up string is in the bundle of each language, and a bundle has nothing else. */
+function checkBundle(dir, l10nDir) {
   const used = lookups(dir);
-  const bundle = fs.existsSync(bundleFile) ? read(bundleFile) : {};
-  for (const [text, where] of [...used].sort()) {
-    const entry = bundle[text];
-    checkTemplate(`${where} "${text}"`, text, typeof entry === "object" ? entry?.message : entry);
+  for (const locale of locales) {
+    const bundleFile = path.join(l10nDir, `bundle.l10n.${locale}.json`);
+    if (locale !== Required && !fs.existsSync(bundleFile)) {
+      if (used.size) warnings.push(`${relative(bundleFile)}: missing, ${used.size} strings are shown in English`);
+      continue;
+    }
+    const bundle = fs.existsSync(bundleFile) ? read(bundleFile) : {};
+    let missing = 0;
+    for (const [text, where] of [...used].sort()) {
+      const entry = bundle[text];
+      if (checkTemplate(`${where} "${text}" (${locale})`, text, typeof entry === "object" ? entry?.message : entry, locale)) missing++;
+    }
+    if (missing) warnings.push(`${relative(bundleFile)}: ${missing} of ${used.size} strings are not translated, English is shown`);
+    for (const key of Object.keys(bundle).sort()) if (!used.has(key)) problems.push(`${relative(bundleFile)}: "${key}" is not used any more`);
   }
-  for (const key of Object.keys(bundle).sort()) if (!used.has(key)) problems.push(`${relative(bundleFile)}: "${key}" is not used any more`);
   return used.size;
 }
 
-const strings = checkBundle(path.join(extension, "src"), path.join(extension, "l10n", "bundle.l10n.ru.json"));
-const ciStrings = checkBundle(path.join(repo, "ci", "src"), path.join(repo, "ci", "l10n", "bundle.l10n.ru.json"));
+const strings = checkBundle(path.join(extension, "src"), path.join(extension, "l10n"));
+const ciStrings = checkBundle(path.join(repo, "ci", "src"), path.join(repo, "ci", "l10n"));
 const agents = path.join(repo, "agents");
-const agentStrings = checkBundle(path.join(agents, "src"), path.join(agents, "l10n", "bundle.l10n.ru.json"));
+const agentStrings = checkBundle(path.join(agents, "src"), path.join(agents, "l10n"));
 const score = path.join(repo, "score");
-const scoreStrings = checkBundle(path.join(score, "src"), path.join(score, "l10n", "bundle.l10n.ru.json"));
+const scoreStrings = checkBundle(path.join(score, "src"), path.join(score, "l10n"));
 
-/** package.json of an extension: every text of the contributions is a %key% with English and Russian values. */
+/** package.json of an extension: every text of the contributions is a %key% with English and translated values. */
 function checkManifest(dir) {
   const name = relative(path.join(dir, "package.json"));
   const manifest = fs.readFileSync(path.join(dir, "package.json"), "utf8");
   const nls = read(path.join(dir, "package.nls.json"));
-  const nlsRu = read(path.join(dir, "package.nls.ru.json"));
   const keys = [...new Set([...manifest.matchAll(/"%([^"%]+)%"/g)].map((m) => m[1]))];
-  for (const key of keys) {
-    if (!nls[key]) problems.push(`${name}: %${key}% is not in package.nls.json`);
-    checkTemplate(`${relative(path.join(dir, "package.nls.ru.json"))} "${key}"`, nls[key] ?? "", nlsRu[key]);
+  for (const key of keys) if (!nls[key]) problems.push(`${name}: %${key}% is not in package.nls.json`);
+  for (const locale of locales) {
+    const file = path.join(dir, `package.nls.${locale}.json`);
+    if (locale !== Required && !fs.existsSync(file)) {
+      warnings.push(`${relative(file)}: missing, menus and settings are shown in English`);
+      continue;
+    }
+    const translated = read(file);
+    const missing = keys.filter((key) => checkTemplate(`${relative(file)} "${key}"`, nls[key] ?? "", translated[key], locale)).length;
+    if (missing) warnings.push(`${relative(file)}: ${missing} of ${keys.length} texts are not translated, English is shown`);
+    for (const key of Object.keys(translated)) if (!keys.includes(key)) problems.push(`${relative(file)}: "${key}" is not used`);
   }
   for (const key of Object.keys(nls)) if (!keys.includes(key)) problems.push(`${relative(path.join(dir, "package.nls.json"))}: "${key}" is not used`);
   const contributed = read(path.join(dir, "package.json")).contributes;
@@ -105,9 +137,12 @@ for (const practice of read(path.join(extension, "practices.json"))) {
   for (const field of ["title", "description"]) checkTemplate(`spec/practices.yaml ${practice.id}.${field}`, practice[field], practice.l10n?.ru?.[field]);
 }
 
+for (const warning of warnings) console.warn(`WARN  ${warning}`);
 if (problems.length) {
   for (const problem of problems) console.error(`FAIL  ${problem}`);
   console.error(`\n${problems.length} problem(s)`);
   process.exit(1);
 }
-console.log(`Russian texts are complete: ${strings} strings of the extension, ${ciStrings} of ci, ${agentStrings} of agents, ${scoreStrings} of score, ${keyCount} of package.json, spec rules and practices`);
+const others = locales.filter((locale) => locale !== Required);
+console.log(`Russian texts are complete: ${strings} strings of the extension, ${ciStrings} of ci, ${agentStrings} of agents, ${scoreStrings} of score, ${keyCount} of package.json, spec rules and practices`
+  + (others.length ? `; also checked: ${others.join(", ")}, ${warnings.length} file(s) not complete` : ""));
