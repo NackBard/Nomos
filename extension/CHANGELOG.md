@@ -2,7 +2,7 @@
 
 The language packs (`nomos-csharp`, `nomos-go`, `nomos-typescript`, `nomos-python`, `nomos-java`, `nomos-kotlin`, `nomos-ruby`) are released together with the core and carry the same version.
 
-## Unreleased
+## 0.1.2
 
 - **Nothing runs by itself.** Opening the Nomos side bar no longer starts an analysis or opens the graph; **Analyze** and the graph button do. An empty side bar says so and offers the analysis.
 - **Settings menu**: the gear on the side bar (`Nomos: Settings`) switches the metrics above the code, how findings look in the editor and the analysis on save, and leads to the practices and to all settings. Switching the metrics off hides them at once.
