@@ -138,7 +138,8 @@ export function activate(context: vscode.ExtensionContext): NomosApi {
    */
   function runtimePath(requirement: RuntimeRequirement, language: string, folder: string, bundle: string): Promise<string> {
     const optional = requirement.path !== undefined;
-    const key = requirement.extension + "\n" + requirement.command + (optional ? "\n" + folder : "");
+    // The whole requirement is the key: runtimes found in PATH have no extension or command, and two of them must not share one.
+    const key = JSON.stringify(requirement) + (optional ? "\n" + folder : "");
     const known = runtimes.get(key);
     if (known) return known;
     const pending = optional ? optionalRuntime(requirement, language, folder, bundle) : requiredRuntime(requirement, language);

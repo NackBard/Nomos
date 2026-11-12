@@ -32,7 +32,8 @@ const isolation = [`--extensions-dir=${extensionsDir}`];
 if (bundled) {
   const registry = path.join(extension, "bundle", "analyzers.json");
   if (!fs.existsSync(registry)) throw new Error(`${folder} has no nomos.json and the extension has no bundle; run: npm run package -- --bundle-only`);
-  // Only analyzers with files in the folder start, so only their runtimes are installed (globs of the form **/*.ext).
+  // Only analyzers with files in the folder start, so only their runtimes are installed (globs of the form **/*.ext:
+  // the extension is what follows "**/*", dot included).
   const extensions = new Set();
   const walk = (dir) => {
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -42,10 +43,13 @@ if (bundled) {
     }
   };
   walk(folder);
-  const present = (analyzer) => analyzer.files.some((glob) => !/^\*\*\/\*\.[^/*]+$/.test(glob) || extensions.has(glob.slice(3)));
+  const present = (analyzer) => analyzer.files.some((glob) => !/^\*\*\/\*\.[^/*]+$/.test(glob) || extensions.has(glob.slice(4)));
   // A runtime with PATH programs (`path`) works without its extension, which is then not installed (D-057).
   const runtimes = [...new Set(JSON.parse(fs.readFileSync(registry, "utf8")).analyzers.filter(present).flatMap((a) => (a.runtime && !a.runtime.path ? [a.runtime.extension] : [])))];
-  const cli = spawnSync(process.platform === "win32" ? "where" : "which", ["code"], { encoding: "utf8" }).stdout.split(/\r?\n/).find(Boolean);
+  // On Windows `where` lists bin\code (a shell script for WSL) before bin\code.cmd; only the .cmd runs here.
+  const found = spawnSync(process.platform === "win32" ? "where" : "which", ["code"], { encoding: "utf8" }).stdout.split(/\r?\n/).filter(Boolean);
+  const cli = (process.platform === "win32" && found.find((f) => f.toLowerCase().endsWith(".cmd"))) || found[0];
+  if (!cli) throw new Error("the code command was not found in PATH; it installs the runtimes into the test profile");
   // The core goes first: the packs depend on it, and it is not in the Marketplace yet. The development copy of the core
   // then replaces the installed one, while the packs stay.
   const dist = path.join(extension, "dist");
