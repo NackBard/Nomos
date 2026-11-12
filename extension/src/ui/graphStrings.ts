@@ -34,8 +34,6 @@ export function graphStrings(t: Translate) {
     umlPointHint: t.template("Point at a class to list its relations; the end of a line shows its kind: a triangle for a general type, a diamond for an embedded one, an arrow for a field or a use."),
     uml: t.template("UML"),
     umlHint: t.template("Show the types as UML classes with fields, methods and UML relations"),
-    exportDiagram: t.template("Export…"),
-    exportHint: t.template("Save this class diagram as PlantUML or Mermaid text"),
     compact: t.template("Compact"),
     bundle: t.template("links of several kinds, click to open"),
     compactHint: t.template("Draw the links between two nodes as one line, join the lines to another module into a trunk and fold modules into their folders"),

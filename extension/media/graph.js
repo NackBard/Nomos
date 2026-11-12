@@ -58,7 +58,6 @@
   const BOX_ROWS = 8;
   const umlBox = document.getElementById("umlToggle");
   const umlCheck = document.getElementById("uml");
-  const exportButton = document.getElementById("export");
   let umlOn = false;
   let boxes = [];
   // The compact view (D-064): links of several kinds between two nodes are one line, a bundle, that opens on a click;
@@ -729,7 +728,19 @@
     const uml = visible.filter((e) => e.kind.startsWith("uml-")).map(single);
     const rest = visible.filter((e) => !e.kind.startsWith("uml-"));
     const several = new Set(rest.map((e) => e.kind)).size > 1;
-    if (!compactOn || rest.length < 2 || (several && expanded.has(pair.key))) return { items: [...uml, ...rest.map(single)], open: compactOn && several };
+    if (!compactOn || rest.length < 2 || (several && expanded.has(pair.key))) {
+      const items = rest.map(single);
+      const open = compactOn && several;
+      if (open) {
+        // The lines of an opened bundle share their route and meet again in its middle: each puts its fin and name at
+        // its own point along the route, and the mark that bundles them again takes the point nearest the middle.
+        const slots = Array.from({ length: items.length + 1 }, (_, j) => 0.3 + (0.4 * j) / items.length);
+        const middle = Math.round(items.length / 2);
+        items.forEach((item, k) => (item.spot = slots[k < middle ? k : k + 1]));
+        items[0].badgeSpot = slots[middle];
+      }
+      return { items: [...uml, ...items], open };
+    }
     const forward = rest.some((e) => e.from === pair.from), backward = rest.some((e) => e.from !== pair.from);
     const merged = { pair, edges: rest, from: pair.from, to: pair.to, route: pair.route, kind: several ? "bundle" : rest[0].kind, forward, backward, bundle: several };
     return { items: [...uml, merged], open: false };
@@ -793,7 +804,7 @@
       // Other links carry a fin in the middle, pointing to the target: at the target it would hide under the label, which
       // hangs on the side links arrive from, and many fins would pile up at one node. A line both ways has a fin each way,
       // a bundle has them on both sides of its number.
-      const spots = item.bundle ? [0.3, 0.7] : item.forward && item.backward ? [0.4, 0.6] : [0.5, 0.5];
+      const spots = item.bundle ? [0.3, 0.7] : item.forward && item.backward ? [0.4, 0.6] : [item.spot ?? 0.5, item.spot ?? 0.5];
       const fin = (t, way) => {
         const { at, ux, uy } = pointAt(segments, t);
         const el = element("path", { class: item.bundle ? "head bundle" : `head kind-${item.kind}` }, headLayer);
@@ -819,7 +830,7 @@
     if (item.edges.length === 1 && edge.via?.length) {
       via = element("text", { class: "via" }, headLayer);
       via.textContent = edge.via.length > 2 ? `${edge.via.slice(0, 2).join(", ")} +${edge.via.length - 2}` : edge.via.join(", ");
-      viaAt = pointAt(segments, 0.5);
+      viaAt = pointAt(segments, item.spot ?? 0.5);
       parts.push(via);
     }
     links.push({ fins, badge, via, viaAt });
@@ -865,7 +876,7 @@
     const opened = [];
     for (const pair of scene.pairs) {
       const { items: shapes, open } = shapesOf(pair);
-      if (open && shapes.length) opened.push({ pair, item: shapes[0] });
+      if (open && shapes.length) opened.push({ pair, item: shapes.find((s) => s.badgeSpot !== undefined) ?? shapes[0] });
       items.push(...shapes);
     }
     const { lanes, trunks } = assignLanes(items);
@@ -879,7 +890,7 @@
     // An opened bundle keeps a mark on its first line that bundles it again.
     for (const { pair, item } of opened) {
       const parts = [];
-      const badge = badgeAt(pointAt(drawn.get(item), 0.5).at, "−", S.closeBundle, () => {
+      const badge = badgeAt(pointAt(drawn.get(item), item.badgeSpot ?? 0.5).at, "−", S.closeBundle, () => {
         expanded.delete(pair.key);
         drawLinks();
       }, parts);
@@ -899,7 +910,6 @@
     focused = level === "type";
     // UML applies to the types level; the host keeps the choice while the user moves between modules.
     umlBox.hidden = !focused;
-    exportButton.hidden = !focused || !umlOn;
     umlCheck.checked = umlOn;
     compactCheck.checked = compactOn;
     foldButton.hidden = focused || !compactOn || !opened;
@@ -1001,7 +1011,6 @@
 
   buttons.forEach((b) => b.addEventListener("click", () => vscode.postMessage({ type: "level", level: b.dataset.level })));
   umlCheck.addEventListener("change", () => vscode.postMessage({ type: "uml", on: umlCheck.checked }));
-  exportButton.addEventListener("click", () => vscode.postMessage({ type: "export" }));
   compactCheck.addEventListener("change", () => vscode.postMessage({ type: "compact", on: compactCheck.checked }));
   foldButton.addEventListener("click", () => vscode.postMessage({ type: "fold" }));
   window.addEventListener("keydown", (event) => {
@@ -1022,8 +1031,6 @@
     buttons.forEach((b) => (b.textContent = b.dataset.level === "type" ? S.types : S.modules));
     umlBox.title = S.umlHint;
     umlBox.lastChild.textContent = ` ${S.uml}`;
-    exportButton.textContent = S.exportDiagram;
-    exportButton.title = S.exportHint;
     draw(event.data.level, event.data.focus, event.data.graph, event.data.opened ?? 0);
   });
   vscode.postMessage({ type: "level", level: "module" });

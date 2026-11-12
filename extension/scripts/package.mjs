@@ -248,14 +248,16 @@ if (!process.argv.includes("--bundle-only")) {
       ...(core.repository ? { repository: core.repository } : {}),
       ...(core.private ? { private: true } : {}),
       engines: core.engines,
+      ...(core.icon ? { icon: path.posix.basename(core.icon) } : {}),
       categories: ["Linters"],
       extensionDependencies: [`${core.publisher}.${core.name}`],
-      files: ["bundle/**", "README.md", "LICENSE"],
+      files: ["bundle/**", "README.md", "LICENSE", ...(core.icon ? [path.posix.basename(core.icon)] : [])],
       nomos: { analyzers: pack.analyzers },
     };
     fs.writeFileSync(path.join(folder, "package.json"), JSON.stringify(manifest, null, 2) + "\n");
     fs.writeFileSync(path.join(folder, "README.md"), `# Nomos: ${pack.title}\n\nThe ${pack.title} analyzer of Nomos. It has no code of its own in VS Code: the Nomos extension, installed with it, runs the analyzer and shows the result.\n`);
     fs.copyFileSync(path.join(extension, "..", "LICENSE"), path.join(folder, "LICENSE"));
+    if (core.icon) fs.copyFileSync(path.join(extension, core.icon), path.join(folder, path.posix.basename(core.icon)));
     const file = `${pack.name}-${pack.native ? target + "-" : ""}${core.version}.vsix`;
     run(process.execPath, [vsce, "package", ...(pack.native ? ["--target", target] : []), ...legal, "--no-dependencies", "-o", path.join(out, file)],
       { cwd: folder, stdio: ["ignore", "inherit", "inherit"] });

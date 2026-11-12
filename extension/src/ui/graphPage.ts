@@ -105,7 +105,7 @@ ${Object.entries(UML_COLORS).map(([kind, color]) => `  .kind-${kind} { stroke: $
 </style>
 </head>
 <body>
-<div id="bar"><button data-level="module">${escape(strings.modules)}</button><button data-level="type">${escape(strings.types)}</button><label id="umlToggle" title="${escape(strings.umlHint)}" hidden><input type="checkbox" id="uml"><span> ${escape(strings.uml)}</span></label><button id="export" title="${escape(strings.exportHint)}" hidden>${escape(strings.exportDiagram)}</button><label id="compactToggle" title="${escape(strings.compactHint)}"><input type="checkbox" id="compact" checked><span> ${escape(strings.compact)}</span></label><button id="fold" title="${escape(strings.foldHint)}" hidden>${escape(strings.fold)}</button><span id="info"></span><div id="legend" data-colors="${LAYER_COLORS.length}"></div></div>
+<div id="bar"><button data-level="module">${escape(strings.modules)}</button><button data-level="type">${escape(strings.types)}</button><label id="umlToggle" title="${escape(strings.umlHint)}" hidden><input type="checkbox" id="uml"><span> ${escape(strings.uml)}</span></label><label id="compactToggle" title="${escape(strings.compactHint)}"><input type="checkbox" id="compact" checked><span> ${escape(strings.compact)}</span></label><button id="fold" title="${escape(strings.foldHint)}" hidden>${escape(strings.fold)}</button><span id="info"></span><div id="legend" data-colors="${LAYER_COLORS.length}"></div></div>
 <svg id="graph"></svg>
 <div id="relations"></div>
 <script nonce="${nonce}" src="${script}"></script>

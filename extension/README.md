@@ -6,15 +6,17 @@ Nothing here is a verdict. There are no scores to pass and no thresholds to fail
 
 ## Features
 
-Open the Nomos icon in the activity bar. The extension looks at the folder, starts the analyzers for the languages whose files it finds, and shows:
+Open the Nomos icon in the activity bar and press **Analyze** on its title. Nothing runs before that. The extension looks at the folder, starts the analyzers for the languages whose files it finds, and shows:
 
 - **Findings** in the side bar, grouped by module, and as faint hints in the editor. `nomos.diagnostics` turns them into underlines in the Problems panel or hides them.
 - **Metrics** above declarations (CodeLens).
-- **Dependency graph** next to the code: modules by dependency depth, types of the selected module.
+- **Dependency graph** next to the code, from its button on the side bar: modules by dependency depth, types of the selected module.
 - **Class diagram** of the selected module, exportable.
 - **Paradigms and skipped rules** for each module, with the reason a rule was skipped.
 
-`Nomos: Analyze Workspace` runs the analysis again. `nomos.analyzeOnSave` runs it after each save.
+The gear on the side bar (`Nomos: Settings`) turns the metrics above the code on and off, sets how findings look in the editor and whether a save runs the analysis, and leads to the practices and to all Nomos settings.
+
+`Nomos: Analyze Workspace` runs the analysis too. After the first analysis it runs again by itself only when you change the practices or the language packs; `nomos.analyzeOnSave` (off by default) runs it after each save.
 
 ## Languages
 

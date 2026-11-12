@@ -49,6 +49,12 @@
         "category": "Nomos"
       },
       {
+        "command": "nomos.settings",
+        "title": "%command.settings%",
+        "icon": "$(settings-gear)",
+        "category": "Nomos"
+      },
+      {
         "command": "nomos.exportClassDiagram",
         "title": "%command.exportClassDiagram%",
         "icon": "$(export)",
@@ -77,6 +83,13 @@
         }
       ]
     },
+    "viewsWelcome": [
+      {
+        "view": "nomos.findings",
+        "contents": "%welcome.findings%",
+        "when": "!nomos.analyzed"
+      }
+    ],
     "menus": {
       "view/title": [
         {
@@ -91,6 +104,11 @@
         },
         {
           "command": "nomos.choosePractices",
+          "when": "view == nomos.findings",
+          "group": "navigation"
+        },
+        {
+          "command": "nomos.settings",
           "when": "view == nomos.findings",
           "group": "navigation"
         }

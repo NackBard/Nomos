@@ -14,6 +14,7 @@ import { confidenceText, lensesFor } from "./core/views";
 import { exportClassDiagram } from "./ui/exportDiagram";
 import type { DiagramTarget } from "./ui/exportDiagram";
 import { openGraphWindow, refreshGraph, showGraph } from "./ui/graphPanel";
+import { showSettingsMenu } from "./ui/settingsMenu";
 import { interfaceTranslator } from "./ui/translate";
 import { FindingsTree, ParadigmsTree, locationOf } from "./ui/trees";
 import type { TreeTexts } from "./ui/trees";
@@ -154,11 +155,26 @@ export function activate(context: vscode.ExtensionContext): NomosApi {
       if (choice !== install) throw new Error(t("{0}: skipped, {1} is not available (the extension {2} was not installed)", language, requirement.name, (requirement.extension ?? "")));
       await vscode.commands.executeCommand("workbench.extensions.installExtension", (requirement.extension ?? ""));
     }
+    // A just-installed extension reaches the extension host a little later; its commands exist only after that.
+    const provider = await installedExtension(requirement.extension ?? "", 60000);
+    if (!provider) throw new Error(t("{0}: skipped, {1} is not available (the extension {2} was not installed)", language, requirement.name, (requirement.extension ?? "")));
+    await provider.activate();
     const result = await vscode.commands.executeCommand<Record<string, unknown> | undefined>(
       requirement.command ?? "", { ...requirement.argument, requestingExtensionId: context.extension.id });
     const value = requirement.resultField ? result?.[requirement.resultField] : result;
     if (typeof value !== "string" || !value) throw new Error(t("{0}: {1} did not provide {2}", language, requirement.extension ?? "", requirement.name));
     return value;
+  }
+
+  /** The extension once VS Code has loaded it, or undefined after the timeout. */
+  function installedExtension(id: string, timeout: number): Promise<vscode.Extension<unknown> | undefined> {
+    const present = vscode.extensions.getExtension(id);
+    if (present) return Promise.resolve(present);
+    return new Promise((resolve) => {
+      const done = (extension: vscode.Extension<unknown> | undefined): void => { clearTimeout(timer); listener.dispose(); resolve(extension); };
+      const listener = vscode.extensions.onDidChange(() => { const loaded = vscode.extensions.getExtension(id); if (loaded) done(loaded); });
+      const timer = setTimeout(() => done(vscode.extensions.getExtension(id)), timeout);
+    });
   }
 
   async function optionalRuntime(requirement: RuntimeRequirement, language: string, folder: string, bundle: string): Promise<string> {
@@ -203,8 +219,17 @@ export function activate(context: vscode.ExtensionContext): NomosApi {
       void vscode.window.showInformationMessage(t("Nomos can analyze the {0} files of this workspace with the language pack {1}.", pack.languages.join(", "), pack.id), install, never)
         .then(async (choice) => {
           // Installing changes the extensions; the listener below analyzes again.
-          if (choice === install) await vscode.commands.executeCommand("workbench.extensions.installExtension", pack.id);
-          else if (choice === never) await context.globalState.update(DeclinedPacksKey, [...declined, pack.id]);
+          if (choice === install) {
+            try {
+              await vscode.commands.executeCommand("workbench.extensions.installExtension", pack.id);
+            } catch (error) {
+              // Not in the Marketplace, or no network: say so instead of failing silently.
+              const vsix = t("Install from VSIX…");
+              const answer = await vscode.window.showWarningMessage(
+                t("Nomos could not install the language pack {0}: {1}. It can be installed from a VSIX file.", pack.id, error instanceof Error ? error.message : String(error)), vsix);
+              if (answer === vsix) await vscode.commands.executeCommand("workbench.extensions.action.installVSIX");
+            }
+          } else if (choice === never) await context.globalState.update(DeclinedPacksKey, [...declined, pack.id]);
         });
     }
   }
@@ -281,6 +306,7 @@ export function activate(context: vscode.ExtensionContext): NomosApi {
     const failures: string[] = [];
     let planned = 0;
     missingIds = new Set<string>();
+    if (!analyzed) void vscode.commands.executeCommand("setContext", "nomos.analyzed", true);
     analyzed = true;
     const lines: string[] = [];
     await vscode.window.withProgress({ location: vscode.ProgressLocation.Window, title: t("Nomos: analyzing") }, async () => {
@@ -348,13 +374,8 @@ export function activate(context: vscode.ExtensionContext): NomosApi {
     }
   }
 
-  // The side bar icon opens the graph next to the code; there is nothing to draw before the first analysis.
+  // Opening the side bar starts nothing: the analysis and the graph run only from their buttons (D-042).
   const findingsView = vscode.window.createTreeView("nomos.findings", { treeDataProvider: findings });
-  findingsView.onDidChangeVisibility(({ visible }) => {
-    if (!visible) return;
-    showGraph(context, () => runs, true);
-    if (!runs.length && !running) void analyzeAll();
-  });
 
   context.subscriptions.push(
     output, analyzedEvent, diagnostics, status, findingsView,
@@ -364,6 +385,7 @@ export function activate(context: vscode.ExtensionContext): NomosApi {
     vscode.commands.registerCommand("nomos.showGraph", () => showGraph(context, () => runs)),
     vscode.commands.registerCommand("nomos.openGraphWindow", () => openGraphWindow(context, () => runs)),
     vscode.commands.registerCommand("nomos.choosePractices", choosePractices),
+    vscode.commands.registerCommand("nomos.settings", () => showSettingsMenu(context.extension.id)),
     vscode.commands.registerCommand("nomos.exportClassDiagram", (target?: DiagramTarget) => exportClassDiagram(runs, target)),
     // A language pack installed, removed, enabled or disabled changes what can run (D-062).
     vscode.extensions.onDidChange(() => {
@@ -372,6 +394,8 @@ export function activate(context: vscode.ExtensionContext): NomosApi {
     vscode.workspace.onDidChangeConfiguration((event) => {
       if (event.affectsConfiguration("nomos.practices")) void analyzeAll();
       if (event.affectsConfiguration("nomos.diagnostics")) showDiagnostics();
+      // The metrics above the code appear or go at once, without a new analysis.
+      if (event.affectsConfiguration("nomos.codeLens")) lenses.refresh();
     }),
     vscode.workspace.onDidSaveTextDocument((document) => {
       const own = path.basename(document.uri.fsPath) === WorkspaceFileName || path.basename(path.dirname(document.uri.fsPath)) === ".nomos";

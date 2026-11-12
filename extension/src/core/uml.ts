@@ -34,6 +34,8 @@ export interface UmlClass {
   isEnum: boolean;
   attributes: UmlMember[];
   operations: UmlMember[];
+  /** A module's utility (D-066): the free functions folded into it. */
+  functions?: string[];
 }
 
 export interface UmlRelation { from: string; to: string; kind: UmlRelationKind; label?: string; many?: boolean }
@@ -91,14 +93,47 @@ function umlClass(type: TypeEntity, functions: FunctionEntity[]): UmlClass {
   };
 }
 
+/** The id of a module's utility class: the module's own id names the module itself (D-066). */
+export const utilityId = (module: string) => `${module} «utility»`;
+
+/** The module a utility id names, or the id itself when it names something else. */
+export const moduleOfUtility = (id: string) => (id.endsWith(" «utility»") ? id.slice(0, -" «utility»".length) : id);
+
+const isFree = (f: FunctionEntity) => !f.type && f.kind !== "lambda" && f.kind !== "accessor";
+
+/** One «utility» class per module of the given free functions, its operations static (spec/structure.md, D-066). */
+function utilities(facts: Facts, functionIds: Iterable<string>): UmlClass[] {
+  const wanted = new Set(functionIds);
+  const byModule = new Map<string, FunctionEntity[]>();
+  for (const f of facts.functions) {
+    if (!wanted.has(f.id) || !isFree(f)) continue;
+    if (!byModule.has(f.module)) byModule.set(f.module, []);
+    byModule.get(f.module)!.push(f);
+  }
+  const names = new Map(facts.modules.map((m) => [m.id, m.name]));
+  return [...byModule].map(([module, functions]) => ({
+    id: utilityId(module),
+    name: names.get(module) ?? module,
+    stereotype: "utility",
+    isAbstract: false,
+    isInterface: false,
+    isEnum: false,
+    attributes: [],
+    operations: functions.sort(byPlace).map((f) => ({ ...operation(f), isStatic: true })),
+    functions: functions.map((f) => f.id),
+  }));
+}
+
 /**
- * The classes of the given types and the relations between them (spec/structure.md, "Связи диаграммы классов").
- * Types outside the list, external targets and free functions stay out.
+ * The classes of the given types, the utilities of the given free functions and the relations between them
+ * (spec/structure.md, "Связи диаграммы классов" and "Утилита модуля"). External targets and other units stay out.
  */
-export function classDiagram(facts: Facts, typeIds: Iterable<string>, title: string): ClassDiagram {
+export function classDiagram(facts: Facts, typeIds: Iterable<string>, title: string, functionIds: Iterable<string> = []): ClassDiagram {
   const shown = new Set(typeIds);
   const types = facts.types.filter((t) => shown.has(t.id)).sort((a, b) => compare(a.id, b.id));
   const byId = new Map(facts.types.map((t) => [t.id, t]));
+  const utilityClasses = utilities(facts, functionIds);
+  for (const u of utilityClasses) shown.add(u.id);
   const relations: UmlRelation[] = [];
   const key = (from: string, to: string) => `${from}\u0000${to}`;
   const linked = new Set<string>();
@@ -127,6 +162,7 @@ export function classDiagram(facts: Facts, typeIds: Iterable<string>, title: str
   }
   // Members of a type fold into it, as in the graph; a dependency is drawn only where nothing else joins the pair.
   const owner = new Map(facts.functions.filter((f) => f.type).map((f) => [f.id, f.type!]));
+  for (const u of utilityClasses) for (const f of u.functions ?? []) owner.set(f, u.id);
   const unit = (id: string) => owner.get(id) ?? id;
   const dependencies = new Set<string>();
   for (const edge of facts.dependencies) {
@@ -143,7 +179,13 @@ export function classDiagram(facts: Facts, typeIds: Iterable<string>, title: str
   const unique = new Map(relations.map((r) => [`${r.from}\u0000${r.to}\u0000${r.kind}\u0000${r.label ?? ""}`, r]));
   const sorted = [...unique.values()].sort((a, b) => compare(a.from, b.from) || compare(a.to, b.to) || RANK[a.kind] - RANK[b.kind] || compare(a.label ?? "", b.label ?? ""));
   const functions = facts.functions.filter((f) => f.type && shown.has(f.type));
-  return { title, classes: types.map((t) => umlClass(t, functions)), relations: sorted };
+  const classes = [...types.map((t) => umlClass(t, functions)), ...utilityClasses].sort((a, b) => compare(a.id, b.id));
+  return { title, classes, relations: sorted };
+}
+
+/** Every type and every module's utility of an analysis: the diagram of the whole project. */
+export function projectDiagram(facts: Facts, title: string): ClassDiagram {
+  return classDiagram(facts, facts.types.map((t) => t.id), title, facts.functions.map((f) => f.id));
 }
 
 /**
@@ -152,8 +194,35 @@ export function classDiagram(facts: Facts, typeIds: Iterable<string>, title: str
  */
 export function withClasses(graph: Graph, diagram: ClassDiagram): Graph {
   const classes = new Map(diagram.classes.map((c) => [c.id, c]));
-  const nodes: GraphNode[] = graph.nodes.map((n) => (classes.has(n.id) ? { ...n, uml: classes.get(n.id) } : n));
-  const kept = graph.edges.filter((e) => !(classes.has(e.from) && classes.has(e.to)));
+  // The free functions of a module fold into its utility (D-066): one class in place of the first of them, their links its.
+  const folded = new Map<string, UmlClass>();
+  for (const c of diagram.classes) for (const f of c.functions ?? []) folded.set(f, c);
+  const nodes: GraphNode[] = [];
+  for (const n of graph.nodes) {
+    const utility = folded.get(n.id);
+    if (!utility) nodes.push(classes.has(n.id) ? { ...n, uml: classes.get(n.id) } : n);
+    else if (!nodes.some((m) => m.id === utility.id)) {
+      const first = utility.operations[0];
+      nodes.push({ ...n, id: utility.id, label: utility.name, cycle: false, size: utility.operations.length, shape: "square", kind: "«utility»", file: first?.file, line: first?.line, uml: utility });
+    }
+  }
+  // A utility none of whose functions is linked still stands on the diagram, as an unlinked type does.
+  const language = graph.nodes.find((n) => n.role === "type")?.language ?? graph.nodes[0]?.language ?? "";
+  for (const c of diagram.classes) {
+    if (!c.functions || nodes.some((n) => n.id === c.id)) continue;
+    const first = c.operations[0];
+    nodes.push({ id: c.id, label: c.name, language, cycle: false, size: c.operations.length, layer: 0, role: "type", shape: "square", kind: "«utility»", file: first?.file, line: first?.line, uml: c });
+  }
+  const merged = new Map<string, GraphEdge>();
+  for (const e of graph.edges) {
+    const from = folded.get(e.from)?.id ?? e.from, to = folded.get(e.to)?.id ?? e.to;
+    if (from === to) continue;
+    const key = `${from}\u0000${to}\u0000${e.kind}\u0000${e.pair?.join("\u0000") ?? ""}`;
+    const known = merged.get(key);
+    if (!known) merged.set(key, { ...e, from, to });
+    else merged.set(key, { ...known, weight: known.weight + e.weight, cycle: known.cycle || e.cycle, ...(known.via || e.via ? { via: [...new Set([...(known.via ?? []), ...(e.via ?? [])])] } : {}) });
+  }
+  const kept = [...merged.values()].filter((e) => !(classes.has(e.from) && classes.has(e.to)));
   const relations: GraphEdge[] = diagram.relations.map((r) => ({
     from: r.from, to: r.to, kind: `uml-${r.kind}`, weight: 1, cycle: graph.edges.some((e) => e.cycle && e.from === r.from && e.to === r.to),
     ...(r.label !== undefined ? { label: r.label } : {}), ...(r.many ? { many: true } : {}),
@@ -258,5 +327,9 @@ export function focusDiagram(runs: AnalysisRun[], module: string, peer?: string)
   if (!graph || !run) return undefined;
   const types = new Set(run.facts.types.map((t) => t.id));
   const ids = graph.nodes.filter((n) => n.role === "type" && types.has(n.id)).map((n) => n.id);
-  return { diagram: classDiagram(run.facts, ids, peer ? `${module} ↔ ${peer}` : module), graph };
+  // A module's utility holds every free function of it, linked or not; a pair shows only what joins the two (D-066).
+  const free = peer
+    ? graph.nodes.filter((n) => n.role === "type" && !types.has(n.id)).map((n) => n.id)
+    : run.facts.functions.filter((f) => f.module === module).map((f) => f.id);
+  return { diagram: classDiagram(run.facts, ids, peer ? `${module} ↔ ${peer}` : module, free), graph };
 }
