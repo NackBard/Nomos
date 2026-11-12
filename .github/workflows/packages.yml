@@ -1,0 +1,93 @@
+name: Packages
+
+# Stage 18: the core and the language packs for every VS Code target, each checked on its own platform. Only the Go pack
+# is per target; the core and the other packs are the same everywhere and are checked on every platform too. It runs on
+# demand and on version tags, not on every push: the macOS and ARM runners cost more minutes.
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: analyzers/csharp/global.json
+      - uses: actions/setup-go@v6
+        with:
+          go-version: "1.26"
+          cache: false
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22.18
+      # The build asks every analyzer for its manifest, so each needs its runtime here (D-057, D-058, D-061).
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.10"
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+          bundler: none
+      - name: Analyzer dependencies
+        run: |
+          (cd analyzers/typescript && npm ci)
+          (cd analyzers/kotlin && node run.mjs --fetch)
+      - name: Core and language packs
+        working-directory: extension
+        run: |
+          npm ci
+          npm run package -- --target linux-x64
+          for target in linux-arm64 alpine-x64 win32-x64 win32-arm64 darwin-x64 darwin-arm64; do
+            npm run package -- --target "$target" --only nomos-go
+          done
+          ls -l dist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: packages
+          path: extension/dist/*.vsix
+          if-no-files-found: error
+
+  check:
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { target: linux-x64, os: ubuntu-latest }
+          - { target: linux-arm64, os: ubuntu-24.04-arm }
+          - { target: alpine-x64, os: ubuntu-latest, container: "node:22.18-alpine" }
+          - { target: win32-x64, os: windows-latest }
+          - { target: win32-arm64, os: windows-11-arm }
+          - { target: darwin-x64, os: macos-15-intel }
+          - { target: darwin-arm64, os: macos-latest }
+    name: check ${{ matrix.target }}
+    runs-on: ${{ matrix.os }}
+    container: ${{ matrix.container }}
+    steps:
+      - uses: actions/checkout@v5
+      - if: ${{ !matrix.container }}
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22.18
+      - name: Core runner for the check
+        working-directory: extension
+        run: |
+          npm ci
+          npm run compile
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages
+          path: extension/dist
+      # Go, TypeScript and JavaScript need nothing on the machine, so they must run everywhere; the others run where the
+      # runner image has their runtime and are reported as skipped elsewhere. C# takes its runtime from the .NET Install
+      # Tool extension, which is not here, so it is always skipped.
+      - name: Packs on ${{ matrix.target }}
+        working-directory: extension
+        run: node scripts/check-packs.mjs --target ${{ matrix.target }} --require go,typescript,javascript
