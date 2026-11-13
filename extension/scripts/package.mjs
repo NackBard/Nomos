@@ -205,9 +205,15 @@ console.log(`bundle/analyzers.json: ${analyzers.map((a) => a.language).join(", "
 
 // Language packs (D-056, D-062): one extension per analyzer folder of the bundle, without code, that depends on the
 // core and holds its registry entries under "nomos" in package.json. Only a pack with a native program is per target.
+// `needs` goes into the pack's README, `keywords` into its manifest for the Marketplace search.
 const packInfo = {
-  csharp: { title: "C#" }, go: { title: "Go", native: true }, typescript: { title: "TypeScript and JavaScript" },
-  python: { title: "Python" }, java: { title: "Java" }, kotlin: { title: "Kotlin" }, ruby: { title: "Ruby" },
+  csharp: { title: "C#", needs: "the .NET runtime; the .NET Install Tool extension installs it for you", keywords: ["csharp", "c#", "dotnet", "roslyn"] },
+  go: { title: "Go", native: true, needs: "nothing: the pack carries a binary for your platform", keywords: ["go", "golang"] },
+  typescript: { title: "TypeScript and JavaScript", needs: "nothing beyond VS Code", keywords: ["typescript", "javascript", "node"] },
+  python: { title: "Python", needs: "Python 3.10 or newer, the interpreter the Python extension selected or one from PATH", keywords: ["python"] },
+  java: { title: "Java", needs: "a JDK 17 or newer", keywords: ["java", "jdk"] },
+  kotlin: { title: "Kotlin", needs: "Java 17 or newer", keywords: ["kotlin", "jvm"] },
+  ruby: { title: "Ruby", needs: "Ruby 3.3 or newer in PATH", keywords: ["ruby", "prism"] },
 };
 const folderOf = (analyzer) => analyzer.command.find((part) => part.startsWith("${bundle}/")).split("/")[1];
 for (const analyzer of analyzers) if (!packInfo[folderOf(analyzer)]) throw new Error(`${analyzer.language}: no language pack for bundle/${folderOf(analyzer)}`);
@@ -250,12 +256,34 @@ if (!process.argv.includes("--bundle-only")) {
       engines: core.engines,
       ...(core.icon ? { icon: path.posix.basename(core.icon) } : {}),
       categories: ["Linters"],
+      keywords: [...pack.keywords, "static analysis", "code metrics", "nomos"],
       extensionDependencies: [`${core.publisher}.${core.name}`],
       files: ["bundle/**", "README.md", "LICENSE", ...(core.icon ? [path.posix.basename(core.icon)] : [])],
       nomos: { analyzers: pack.analyzers },
     };
     fs.writeFileSync(path.join(folder, "package.json"), JSON.stringify(manifest, null, 2) + "\n");
-    fs.writeFileSync(path.join(folder, "README.md"), `# Nomos: ${pack.title}\n\nThe ${pack.title} analyzer of Nomos. It has no code of its own in VS Code: the Nomos extension, installed with it, runs the analyzer and shows the result.\n`);
+    const coreUrl = `https://marketplace.visualstudio.com/items?itemName=${core.publisher}.${core.name}`;
+    fs.writeFileSync(path.join(folder, "README.md"), [
+      `# Nomos: ${pack.title}`,
+      "",
+      `**The ${pack.title} analyzer of [Nomos](${coreUrl}): statistics and heuristic observations about your code, without verdicts.**`,
+      "",
+      `This pack has no code of its own in VS Code. [Nomos](${coreUrl}), installed with it, runs the analyzer and shows the result: findings, metrics above the code, the dependency graph and class diagrams.`,
+      "",
+      "![The dependency graph of modules in Nomos](https://raw.githubusercontent.com/NackBard/Nomos/main/docs/images/graph-modules.png)",
+      "",
+      "## Use",
+      "",
+      "1. Open a folder with your code.",
+      "2. Open the **Nomos** icon in the activity bar and press **Analyze**.",
+      "",
+      `**Needs on your machine:** ${pack.needs}.`,
+      "",
+      "## Links",
+      "",
+      `[Nomos](${coreUrl}) · [Source code](https://github.com/NackBard/Nomos) · [Issues](https://github.com/NackBard/Nomos/issues) · MIT License`,
+      "",
+    ].join("\n"));
     fs.copyFileSync(path.join(extension, "..", "LICENSE"), path.join(folder, "LICENSE"));
     if (core.icon) fs.copyFileSync(path.join(extension, core.icon), path.join(folder, path.posix.basename(core.icon)));
     const file = `${pack.name}-${pack.native ? target + "-" : ""}${core.version}.vsix`;

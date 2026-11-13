@@ -18,6 +18,28 @@
     "Linters",
     "Visualization"
   ],
+  "keywords": [
+    "static analysis",
+    "code metrics",
+    "complexity",
+    "cyclomatic complexity",
+    "dependency graph",
+    "architecture",
+    "uml",
+    "class diagram",
+    "coupling",
+    "cohesion",
+    "paradigms",
+    "heuristics",
+    "csharp",
+    "go",
+    "typescript",
+    "javascript",
+    "python",
+    "java",
+    "kotlin",
+    "ruby"
+  ],
   "main": "./out/extension.js",
   "activationEvents": [
     "workspaceContains:nomos.json"

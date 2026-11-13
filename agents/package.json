@@ -9,6 +9,7 @@
     "url": "https://github.com/NackBard/Nomos.git"
   },
   "private": true,
+  "preview": true,
   "license": "MIT",
   "icon": "media/icon.png",
   "engines": {
@@ -18,6 +19,20 @@
     "AI",
     "Chat",
     "Linters"
+  ],
+  "keywords": [
+    "ai",
+    "agent",
+    "code review",
+    "mcp",
+    "mcp server",
+    "copilot",
+    "claude",
+    "anthropic",
+    "performance",
+    "optimization",
+    "paradigms",
+    "static analysis"
   ],
   "extensionDependencies": [
     "honestarchitector.nomos"

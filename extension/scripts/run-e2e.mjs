@@ -30,8 +30,10 @@ const bundled = !fs.existsSync(path.join(folder, "nomos.json"));
 const extensionsDir = path.join(profile, "extensions");
 const isolation = [`--extensions-dir=${extensionsDir}`];
 if (bundled) {
+  // With --packs the analyzers come from the packs installed below, so dist/ is all there is: the machines that check
+  // the packs in CI have no bundle/. Without --packs they come from the development bundle.
   const registry = path.join(extension, "bundle", "analyzers.json");
-  if (!fs.existsSync(registry)) throw new Error(`${folder} has no nomos.json and the extension has no bundle; run: npm run package -- --bundle-only`);
+  if (!packs && !fs.existsSync(registry)) throw new Error(`${folder} has no nomos.json and the extension has no bundle; run: npm run package -- --bundle-only`);
   // Only analyzers with files in the folder start, so only their runtimes are installed (globs of the form **/*.ext:
   // the extension is what follows "**/*", dot included).
   const extensions = new Set();
@@ -44,8 +46,6 @@ if (bundled) {
   };
   walk(folder);
   const present = (analyzer) => analyzer.files.some((glob) => !/^\*\*\/\*\.[^/*]+$/.test(glob) || extensions.has(glob.slice(4)));
-  // A runtime with PATH programs (`path`) works without its extension, which is then not installed (D-057).
-  const runtimes = [...new Set(JSON.parse(fs.readFileSync(registry, "utf8")).analyzers.filter(present).flatMap((a) => (a.runtime && !a.runtime.path ? [a.runtime.extension] : [])))];
   // On Windows `where` lists bin\code (a shell script for WSL) before bin\code.cmd; only the .cmd runs here.
   const found = spawnSync(process.platform === "win32" ? "where" : "which", ["code"], { encoding: "utf8" }).stdout.split(/\r?\n/).filter(Boolean);
   const cli = (process.platform === "win32" && found.find((f) => f.toLowerCase().endsWith(".cmd"))) || found[0];
@@ -57,11 +57,23 @@ if (bundled) {
   if (packs && !vsix.length) throw new Error("dist/ has no .vsix; run: npm run package");
   // Only the Windows shell needs the quotes; without a shell they would become part of the argument.
   const quote = (text) => (process.platform === "win32" ? `"${text}"` : text);
-  for (const id of [...runtimes, ...vsix]) {
+  const install = (id) => {
     // The CLI script is a .cmd on Windows, which only starts through a shell; the arguments are fixed here.
-    const install = spawnSync(process.platform === "win32" ? `"${cli}"` : cli, [`--extensions-dir=${quote(extensionsDir)}`, "--install-extension", quote(id)], { env, stdio: "inherit", shell: process.platform === "win32" });
-    if (install.status !== 0) throw new Error(`could not install ${id} into the test profile`);
-  }
+    const result = spawnSync(process.platform === "win32" ? `"${cli}"` : cli, [`--extensions-dir=${quote(extensionsDir)}`, "--install-extension", quote(id)], { env, stdio: "inherit", shell: process.platform === "win32" });
+    if (result.status !== 0) throw new Error(`could not install ${id} into the test profile`);
+  };
+  vsix.forEach(install);
+  // The registry entries: those of the installed packs (the "nomos" key of their package.json, D-062) or the bundle's.
+  const analyzers = packs
+    ? fs.readdirSync(extensionsDir, { withFileTypes: true }).filter((e) => e.isDirectory())
+      .flatMap((e) => {
+        const manifest = path.join(extensionsDir, e.name, "package.json");
+        return fs.existsSync(manifest) ? JSON.parse(fs.readFileSync(manifest, "utf8")).nomos?.analyzers ?? [] : [];
+      })
+    : JSON.parse(fs.readFileSync(registry, "utf8")).analyzers;
+  if (!analyzers.length) throw new Error(packs ? "the installed packs have no analyzers" : `${registry} has no analyzers`);
+  // A runtime with PATH programs (`path`) works without its extension, which is then not installed (D-057).
+  [...new Set(analyzers.filter(present).flatMap((a) => (a.runtime && !a.runtime.path ? [a.runtime.extension] : [])))].forEach(install);
 } else {
   isolation.push("--disable-extensions");
 }
