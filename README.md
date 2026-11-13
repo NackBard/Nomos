@@ -100,4 +100,4 @@ nomos-<язык> analyze --root <путь> [--sarif <файл>] [--config <nomos
 
 ## Лицензия
 
-[MIT](LICENSE). Издатель в Marketplace — `honestarchitector`. Прежнее название проекта — DeepCode.Analizer (D-024).
+[MIT](LICENSE). Издатель в Marketplace — `honestarchitector`.
