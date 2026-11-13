@@ -1,65 +1,70 @@
 # Nomos
 
-**Статический осмотр кода: статистика и наблюдения без вердиктов.**
+**English** · [Русский](README.ru.md)
 
-Зависимости, метрики, сложность алгоритмов, парадигмы, паттерны, чистота кода и базовая безопасность — для **C#, Go, TypeScript, JavaScript, Python, Java, Kotlin и Ruby**.
+**Static inspection of code: statistics and observations, without verdicts.**
 
-Все выводы — эвристики. У каждой находки есть уровень уверенности и объяснение, почему она появилась. Nomos показывает статистику для анализа разработчиком: порогов приёмки, оценок и кодов возврата от числа находок нет.
+Dependencies, metrics, algorithmic complexity, paradigms, patterns, clean code and basic security for **C#, Go, TypeScript, JavaScript, Python, Java, Kotlin and Ruby**.
 
-![Граф зависимостей модулей: Nomos на собственном коде TypeScript](docs/images/graph-modules.png)
+Every result is a heuristic. Each finding states how confident it is and why it was raised. Nomos gives statistics for a developer to read: there are no acceptance thresholds, no grades and no exit codes that depend on the number of findings.
 
-## Расширения VS Code
+![The dependency graph of the Nomos Score modules, drawn by Nomos](docs/images/graph-modules.png)
 
-| Расширение | Что делает |
+## VS Code extensions
+
+| Extension | What it does |
 |---|---|
-| [**Nomos**](https://marketplace.visualstudio.com/items?itemName=honestarchitector.nomos) | Ядро: находки, метрики над кодом, граф зависимостей, диаграммы классов, парадигмы, русский интерфейс |
-| **Nomos: C#**, **Go**, **TypeScript and JavaScript**, **Python**, **Java**, **Kotlin**, **Ruby** | Языковые пакеты: по анализатору на язык. Ядро само предложит нужный пакет |
-| [**Nomos Score**](https://marketplace.visualstudio.com/items?itemName=honestarchitector.nomos-score) | Баллы от 0 до 100 с разбором и панели системы и модуля |
-| [**Nomos Agents**](https://marketplace.visualstudio.com/items?itemName=honestarchitector.nomos-agents) (preview) | ИИ-агенты проверки парадигм и практик и скорости функций, MCP-сервер |
+| [**Nomos**](https://marketplace.visualstudio.com/items?itemName=honestarchitector.nomos) | The core: findings, metrics above the code, the dependency graph, class diagrams, paradigms; English and Russian interface |
+| **Nomos: C#**, **Go**, **TypeScript and JavaScript**, **Python**, **Java**, **Kotlin**, **Ruby** | Language packs, one analyzer per language. The core offers the pack your project needs |
+| [**Nomos Score**](https://marketplace.visualstudio.com/items?itemName=honestarchitector.nomos-score) | Scores from 0 to 100 with what each is made of, and dashboards of the system and of each module |
+| [**Nomos Agents**](https://marketplace.visualstudio.com/items?itemName=honestarchitector.nomos-agents) (preview) | AI agents that review paradigms, practices and the speed of functions; an MCP server over the analysis |
 
 <table>
 <tr>
-<td width="50%"><img src="docs/images/class-diagram.png" alt="Диаграмма классов модуля"><br><sub>Диаграмма классов модуля</sub></td>
-<td width="50%"><img src="docs/images/score-system.png" alt="Панель системы Nomos Score"><br><sub>Nomos Score: баллы и ключевые проблемы</sub></td>
+<td width="50%"><img src="docs/images/class-diagram.png" alt="A class diagram of one module"><br><sub>A class diagram of one module</sub></td>
+<td width="50%"><img src="docs/images/score-system.png" alt="The system dashboard of Nomos Score"><br><sub>Nomos Score: scores and key problems</sub></td>
 </tr>
 </table>
 
-## Состав
+## Parts
 
-Поставка тремя частями (D-056, D-062):
+Nomos ships in three parts (D-056, D-062):
 
-- **Ядро** — расширение VS Code в `extension/`: дерево, граф, диаграмма классов, находки, настройки, русский интерфейс. Языков не знает.
-- **Каталог правил** — `rules.json` и `practices.json`, собираются из `spec/`. Едут в составе ядра.
-- **Языковые анализаторы** — `analyzers/<язык>/`, каждый на родных инструментах языка. Поставляются отдельными пакетами: `nomos-csharp`, `nomos-go`, `nomos-typescript` (TypeScript и JavaScript), `nomos-python`, `nomos-java`, `nomos-kotlin`, `nomos-ruby`.
+- **The core**, the VS Code extension in `extension/`: the tree, the graph, the class diagram, findings, settings, localization. It knows no language.
+- **The rule catalog**, `rules.json` and `practices.json`, built from `spec/`. It ships inside the core.
+- **Language analyzers**, `analyzers/<language>/`, each built on the language's own tools. They ship as separate packs: `nomos-csharp`, `nomos-go`, `nomos-typescript` (TypeScript and JavaScript), `nomos-python`, `nomos-java`, `nomos-kotlin`, `nomos-ruby`.
 
-Общие `contracts/` (форматы данных), `spec/` (формулы, правила, парадигмы) и `conformance/` (эталонные случаи, которые проходит каждый анализатор) — один закон для всех языков.
+The shared `contracts/` (data formats), `spec/` (formulas, rules, paradigms) and `conformance/` (reference cases every analyzer passes) are one law for all languages.
 
-Рядом — `score/` (Nomos Score, D-065), `agents/` (Nomos Agents и MCP-сервер, D-063) и `ci/` (`nomos-ci` для конвейеров).
+Next to them are `score/` (Nomos Score, D-065), `agents/` (Nomos Agents and the MCP server, D-063) and `ci/` (`nomos-ci` for pipelines).
 
-### Документация
+### Documentation
+
+Each of these documents has a Russian copy next to it (`.ru.md`). The working documents (the specifications in `spec/`, the decisions and the roadmap) are in Russian only.
 
 | | |
 |---|---|
-| [Архитектура](docs/ARCHITECTURE.md) | как устроены ядро, анализаторы и контракты |
-| [Как добавить язык](docs/EXTENDING.md) | новый анализатор от манифеста до пакета |
-| [Каталог правил](docs/ANALYZERS.md) | все правила и практики, генерируется из `spec/` |
-| [Перевод](docs/TRANSLATING.md) | как добавить язык интерфейса |
-| [Журнал решений](docs/DECISIONS.md) | список решений, сами решения — в [docs/decisions](docs/decisions/) |
-| [Порядок работ](docs/ROADMAP.md) | этапы, сделанное — в [roadmap-done](docs/roadmap-done.md) |
+| [Architecture](docs/ARCHITECTURE.md) | how the core, the analyzers and the contracts fit together |
+| [Adding a language](docs/EXTENDING.md) | a new analyzer from the manifest to the pack |
+| [Rule catalog](docs/ANALYZERS.md) | every rule and practice, generated from `spec/` |
+| [Conformance](conformance/README.md) | the reference cases every analyzer passes |
+| [Translating](docs/TRANSLATING.md) | how to add an interface language |
+| [Decision log](docs/DECISIONS.md) | the list of decisions; the decisions themselves are in [docs/decisions](docs/decisions/) |
+| [Roadmap](docs/ROADMAP.md) | stages; what is done is in [roadmap-done](docs/roadmap-done.md) |
 
-## Сборка и проверка
+## Build and check
 
-Расширение и пакеты собираются из `extension/`:
+The extension and the packs are built from `extension/`:
 
 ```powershell
 cd extension
 npm install
-npm test                                # ядро без VS Code
-npm run check-boundary                  # в ядре нет языко-специфичного кода
-npm run package -- --target win32-x64   # dist/: ядро и языковые пакеты
+npm test                                # the core without VS Code
+npm run check-boundary                  # no language-specific code in the core
+npm run package -- --target win32-x64   # dist/: the core and the language packs
 ```
 
-Анализатор C# (нужен .NET SDK 10):
+The C# analyzer (needs the .NET 10 SDK):
 
 ```powershell
 cd analyzers/csharp
@@ -69,9 +74,9 @@ dotnet run --project src/Nomos.Analyzer.CSharp -- manifest
 dotnet run --project src/Nomos.Analyzer.CSharp -- analyze --root tests/fixtures/golden/sample-project --sarif nomos.sarif > facts.json
 ```
 
-Facts печатаются в stdout, находки пишутся в файл SARIF.
+Facts go to stdout, findings to the SARIF file.
 
-Conformance — все анализаторы на одних и тех же случаях:
+Conformance runs every analyzer on the same cases:
 
 ```powershell
 cd conformance/runner
@@ -79,25 +84,25 @@ npm install
 npm run all
 ```
 
-Подробнее о harness и его командах — [conformance/README.md](conformance/README.md).
+More on the harness and its commands is in [conformance/README.md](conformance/README.md).
 
-## Протокол анализатора
+## Analyzer protocol
 
 ```
-nomos-<язык> manifest
-nomos-<язык> analyze --root <путь> [--sarif <файл>] [--config <nomos.json>] [--rules <id,id>]
+nomos-<language> manifest
+nomos-<language> analyze --root <path> [--sarif <file>] [--config <nomos.json>] [--rules <id,id>]
 ```
 
-| Код выхода | Значение |
+| Exit code | Meaning |
 |---|---|
-| 0 | успех |
-| 1 | непредвиденная ошибка |
-| 2 | ошибка использования |
-| 3 | входные данные не годятся |
-| 4 | частичный результат |
+| 0 | success |
+| 1 | unexpected error |
+| 2 | usage error |
+| 3 | the input is not usable |
+| 4 | partial result |
 
-Число находок и балл на код выхода не влияют.
+The number of findings and the scores do not affect the exit code.
 
-## Лицензия
+## License
 
-[MIT](LICENSE). Издатель в Marketplace — `honestarchitector`.
+[MIT](LICENSE). The Marketplace publisher is `honestarchitector`.

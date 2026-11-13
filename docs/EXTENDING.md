@@ -1,68 +1,76 @@
-# Как добавить анализатор для нового языка
+# Adding an analyzer for a new language
 
-Добавление языка не меняет `extension/`, существующие контракты и чужие анализаторы. Всё, что нужно, — самостоятельная программа, которая говорит по протоколу и проходит conformance.
+**English** · [Русский](EXTENDING.ru.md)
 
-Предыдущая версия этого документа описывала расширение .NET-ядра через `[Analyzer]` и `ILanguageAdapter`; она устарела (D-020).
+Adding a language does not change `extension/`, the existing contracts or other analyzers. All it takes is a standalone program that speaks the protocol and passes conformance.
 
-## Шаги
+An earlier version of this document described extending the .NET core through `[Analyzer]` and `ILanguageAdapter`; it is obsolete (D-020).
 
-1. **Выберите родные средства языка.** Python — `ast` и `tokenize`, TypeScript — компилятор TS, Go — `go/parser` и `go/types`, Kotlin — PSI из компилятора Kotlin, Ruby — Prism из стандартной библиотеки, и т. п. Анализатор пишется на самом языке или на том, чьи инструменты разбора для него родные; из этого выбора следует точность.
+## Steps
 
-2. **Создайте `analyzers/<язык>/`** с исполняемой точкой входа, поддерживающей:
-   - `manifest` — печатает manifest (`contracts/manifest.schema.json`);
-   - `analyze --root <путь> [--files <список>] [--sarif <файл>] [--config <nomos.json>] [--rules <ids>]` — печатает facts (`contracts/facts.schema.json`).
-   Коды возврата — в `docs/ARCHITECTURE.md`.
+1. **Choose the language's own tools.** Python — `ast` and `tokenize`, TypeScript — the TS compiler, Go — `go/parser` and `go/types`, Kotlin — PSI from the Kotlin compiler, Ruby — Prism from the standard library, and so on. The analyzer is written in the language itself or in the one whose parsing tools are native to it; accuracy follows from this choice.
 
-3. **Определите модуль языка.** Для C# это namespace, для Python — пакет или файл, для TypeScript — файл или каталог. Решение записывается в `docs/DECISIONS.md`: от него зависят Ca, Ce и циклы.
+2. **Create `analyzers/<language>/`** with an executable entry point that supports:
+   - `manifest` — prints the manifest (`contracts/manifest.schema.json`);
+   - `analyze --root <path> [--files <list>] [--sarif <file>] [--config <nomos.json>] [--rules <ids>]` — prints facts (`contracts/facts.schema.json`).
+   The exit codes are in [ARCHITECTURE](ARCHITECTURE.md#exit-codes).
 
-4. **Объявите парадигмы и признаки.** `manifest.paradigms` — что язык поддерживает; в facts для каждого модуля `paradigmEvidence` и `activeParadigms` по `spec/paradigms.md`. Если язык вводит новую парадигму, сначала добавьте её в `spec/paradigms.md`.
+3. **Define the language's module.** For C# it is a namespace, for Python a package or a file, for TypeScript a file or a folder. The choice is recorded as a decision: Ca, Ce and cycles depend on it.
 
-5. **Выберите правила.** Из `spec/rules/*.yaml` реализуйте только то, что можете сделать надёжно, и перечислите в `capabilities.supportedRules`. Остальное — `skippedRules` с причиной `not-supported`. Правила, свойственные только этому языку, добавьте в `spec/rules/<язык>.yaml` с префиксом (`PY.`, `TS.`).
+4. **Declare paradigms and evidence.** `manifest.paradigms` is what the language supports; facts carry `paradigmEvidence` and `activeParadigms` for each module by `spec/paradigms.md`. If the language brings a new paradigm, add it to `spec/paradigms.md` first.
 
-6. **Посчитайте метрики по `spec/metrics.md`.** Не придумывайте собственные формулы под удобство языка. Если формула неудобна для языка, это предложение изменить спецификацию, а не локальное отклонение.
+5. **Choose the rules.** Implement only the rules of `spec/rules/*.yaml` you can do reliably, and list them in `capabilities.supportedRules`. The rest get `skippedRules` with the reason `not-supported`. Rules specific to this language go to `spec/rules/<language>.yaml` with a prefix (`PY.`, `TS.`).
 
-   Строение типов описывается по `spec/structure.md`: `members`, `typeParameters`, `parameters`, `returnTypeName`, `isStatic`, `isAbstract`, а при структурной типизации — `satisfies`. Из них строится диаграмма классов; случай `type-structure` проверяет их на каждом языке.
+6. **Compute the metrics by `spec/metrics.md`.** Do not invent formulas to suit the language. If a formula does not fit the language, that is a proposal to change the spec, not a local deviation.
 
-   Тексты правил нужны в сборке анализатора. Если родные средства не умеют читать YAML, сгенерируйте JSON из `spec/rules`: так сделано для Go (`npm run spec-json`, прежнее имя `go-rules`), актуальность проверяет `npm run validate`.
+   The structure of types follows `spec/structure.md`: `members`, `typeParameters`, `parameters`, `returnTypeName`, `isStatic`, `isAbstract`, and `satisfies` for structural typing. The class diagram is built from them; the `type-structure` case checks them in every language.
 
-   Директивы `nomos-disable` реализуются по `spec/suppressions.md`.
+   The rule texts are needed in the analyzer's build. If the language's tools cannot read YAML, generate JSON from `spec/rules`, as Go does (`npm run spec-json`); `npm run validate` checks that it is up to date.
 
-   Поле `practices` в `--config` (D-051): правило вне выбранных практик `spec/practices.yaml` не запускается и получает `skippedRules` с причиной `disabled-by-config` и тем же сообщением, что у C# и Go; явное `rules.<id>.enabled` сильнее практики, незнакомая практика — код 3. Каталог берётся из JSON `npm run spec-json`, если родные средства не читают YAML. Новое правило языка (`spec/rules/<язык>.yaml`) добавляется хотя бы в одну практику, иначе `npm run validate` не пройдёт.
+   `nomos-disable` directives follow `spec/suppressions.md`.
 
-7. **Выдавайте результаты в SARIF** по `contracts/sarif-profile.md`: `confidence` и объяснение обязательны для каждого результата. Порогов приёмки и «провала» нет. Каждый текст находки — шаблон `messages` своего правила в spec с аргументами (`spec/l10n.md`): в SARIF идут `message.id`, `message.arguments` и `properties.explanationMessage`. Новый текст сначала вписывается в spec вместе с русским переводом; в аргументах нет английских слов. Тест анализатора читает тексты из исходников и сверяет их со spec, как `MessageTemplateTests` в C# и `TestTemplatesAreInSpec` в Go.
+   The `practices` field of `--config` (D-051): a rule outside the chosen practices of `spec/practices.yaml` does not run and gets `skippedRules` with the reason `disabled-by-config` and the same message as in C# and Go; an explicit `rules.<id>.enabled` is stronger than a practice, and an unknown practice is exit code 3. The catalog comes from the JSON of `npm run spec-json` if the language's tools cannot read YAML. A new language rule (`spec/rules/<language>.yaml`) goes into at least one practice, or `npm run validate` fails.
 
-8. **Пройдите conformance.** Добавьте исходники вашего языка в каждый случай `conformance/cases/*` с эталоном, посчитанным вручную: `<случай>/<язык>/src`, `expected.facts.json`, при `config` и `expectSarif` также `nomos.json` и `expected.sarif.json`. Язык, к которому случай неприменим, записывается в `exceptions` в `case.json` с причиной; без записи случай падает. Добавьте анализатор в `npm run all`, допишите `parity` в случаи, где числа должны совпадать между языками.
+7. **Write results as SARIF** by `contracts/sarif-profile.md`: `confidence` and an explanation are required for every result. There are no acceptance thresholds and no "failure". Every finding text is a `messages` template of its rule in the spec, with arguments (`spec/l10n.md`): SARIF carries `message.id`, `message.arguments` and `properties.explanationMessage`. A new text goes into the spec first, together with its Russian translation; arguments hold no English words. The analyzer's test reads the texts from its sources and checks them against the spec, like `MessageTemplateTests` in C# and `TestTemplatesAreInSpec` in Go.
 
-9. **Зарегистрируйте анализатор** в `nomos.json`. Команда запускается из папки `nomos.json`, а путь `--sarif` относителен ей же, поэтому `cwd` лучше не задавать:
+8. **Pass conformance.** Add sources in your language to every case in `conformance/cases/*`, with a reference computed by hand: `<case>/<language>/src`, `expected.facts.json`, and with `config` and `expectSarif` also `nomos.json` and `expected.sarif.json`. A language a case does not apply to is listed in `exceptions` of `case.json` with a reason; without the entry the case fails. Add the analyzer to `npm run all` and add `parity` to the cases where the numbers must match between languages.
+
+9. **Register the analyzer** in `nomos.json`. The command runs from the folder of `nomos.json`, and the `--sarif` path is relative to it too, so it is better not to set `cwd`:
 
 ```json
 { "language": "go", "command": ["go", "run", "nomos/analyzers/go/cmd/nomos-go"], "exclude": ["conformance/**"] }
 ```
 
-Чтобы анализатор попал в опубликованное расширение и работал в папках без `nomos.json` (D-046), объявите в manifest `files` — шаблоны файлов, которые он читает (`["**/*.go"]`), и добавьте его сборку в `extension/scripts/package.mjs`: бинарник под целевую платформу в `bundle/<язык>/` и запись в `analyzers.json` с `files` из manifest. Анализатор должен работать без `--config`. Анализатор на JavaScript запускается через `${node}` — Node самого VS Code (так сделан `analyzers/typescript`, D-055). Если ему нужна среда, которую ставит другое расширение VS Code, опишите её в поле `runtime` записи; среду, которая может быть и в `PATH` (интерпретатор), — с полями `path`, `check` и `installUrl`, как у `analyzers/python` (D-057) и `analyzers/ruby` (D-061); среду, папку которой называют настройки VS Code или переменные окружения (JDK), — полями `settings`, `environment` и `home`, как у `analyzers/java` (D-058) и `analyzers/kotlin` (D-059). Большую родную зависимость, которой нет в репозитории (компилятор Kotlin), закрепите версией и суммами в файле анализатора и скачивайте отдельной командой, как `analyzers/kotlin/deps.json` и `run.mjs --fetch`.
+For the analyzer to reach the published extension and work in folders without `nomos.json` (D-046), declare `files` in the manifest — the patterns of the files it reads (`["**/*.go"]`) — and add its build to `extension/scripts/package.mjs`: a binary for the target platform in `bundle/<language>/` and an entry in `analyzers.json` with `files` from the manifest. The analyzer must work without `--config`.
 
-10. **Запишите решения** новым файлом `docs/decisions/D-0xx.md` и строкой в `docs/DECISIONS.md`: выбор модуля, границы поддержки, отличия.
+- An analyzer in JavaScript runs on `${node}`, the Node of VS Code itself (as `analyzers/typescript` does, D-055).
+- If it needs a runtime that another VS Code extension installs, describe it in the `runtime` field of the entry.
+- A runtime that may also be in `PATH` (an interpreter) uses the `path`, `check` and `installUrl` fields, as `analyzers/python` (D-057) and `analyzers/ruby` (D-061) do.
+- A runtime whose folder is named by VS Code settings or environment variables (a JDK) uses the `settings`, `environment` and `home` fields, as `analyzers/java` (D-058) and `analyzers/kotlin` (D-059) do.
+- A large native dependency that is not in the repository (the Kotlin compiler) is pinned by version and checksums in a file of the analyzer and fetched by a separate command, like `analyzers/kotlin/deps.json` and `run.mjs --fetch`.
 
-## Чек-лист готовности
+10. **Record the decisions** in a new file `docs/decisions/D-0xx.md` and a line in `docs/DECISIONS.md`: the choice of module, the limits of support, the differences.
 
-- [ ] `manifest` и `analyze` валидны по схемам, в manifest есть `files`;
-- [ ] вывод детерминирован (два запуска побайтово равны);
-- [ ] нет абсолютных путей, времени и случайных идентификаторов;
-- [ ] код возврата не зависит от числа находок;
-- [ ] каждый текст находки — шаблон spec с русским переводом, `message.id` и `explanationMessage` есть у каждого результата (harness это проверяет);
-- [ ] `practices` из `--config` выключает правила вне выбранных практик (случай `practices`);
-- [ ] все случаи conformance пройдены или имеют записанное исключение;
-- [ ] `extension/` не менялся.
+## Readiness checklist
 
-## Как добавить правило
+- [ ] `manifest` and `analyze` are valid against the schemas, the manifest has `files`;
+- [ ] the output is deterministic (two runs are byte for byte equal);
+- [ ] no absolute paths, no time, no random identifiers;
+- [ ] the exit code does not depend on the number of findings;
+- [ ] every finding text is a spec template with a Russian translation, and every result has `message.id` and `explanationMessage` (the harness checks this);
+- [ ] `practices` from `--config` turns off the rules outside the chosen practices (the `practices` case);
+- [ ] every conformance case passes or has a recorded exception;
+- [ ] `extension/` has not changed.
 
-1. Добавьте запись в подходящий `spec/rules/*.yaml` (поля — `contracts/rule.schema.json`): id, категория, описание, обоснование, парадигмы, серьёзность, порог по умолчанию.
-2. Реализуйте детектор в анализаторах, которые могут его реализовать; добавьте id в их `supportedRules`.
-3. Добавьте случай conformance, если правило опирается на метрику, которой ещё нет в facts.
-4. Если правило требует нового поля в facts, это изменение контракта (см. «Контракты» в [ARCHITECTURE](ARCHITECTURE.md)).
+## Adding a rule
 
-## Как добавить метрику
+1. Add an entry to the right `spec/rules/*.yaml` (fields in `contracts/rule.schema.json`): id, category, description, rationale, paradigms, severity, default threshold.
+2. Implement the detector in the analyzers that can do it; add the id to their `supportedRules`.
+3. Add a conformance case if the rule relies on a metric that facts do not have yet.
+4. If the rule needs a new field in facts, that is a change of a contract (see "Contracts" in [ARCHITECTURE](ARCHITECTURE.md#contracts)).
 
-1. Опишите формулу в `spec/metrics.md`: определение, граничные случаи (`null`), допуск.
-2. Метрика сущности — произвольное числовое поле `metrics`, схему менять не нужно. Новое поле вне `metrics` — минорная версия контракта и запись в `DECISIONS.md`.
-3. Реализуйте во всех анализаторах, добавьте случай conformance и `parity`.
+## Adding a metric
+
+1. Describe the formula in `spec/metrics.md`: definition, edge cases (`null`), tolerance.
+2. An entity metric is any numeric field of `metrics`; the schema does not change. A new field outside `metrics` is a minor version of the contract and a decision.
+3. Implement it in every analyzer and add a conformance case and `parity`.
