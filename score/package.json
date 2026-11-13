@@ -18,6 +18,21 @@
     "Linters",
     "Visualization"
   ],
+  "keywords": [
+    "code metrics",
+    "architecture",
+    "dashboard",
+    "main sequence",
+    "abstractness",
+    "instability",
+    "coupling",
+    "cohesion",
+    "maintainability",
+    "maintainability index",
+    "percolation",
+    "blast radius",
+    "technical debt"
+  ],
   "extensionDependencies": [
     "honestarchitector.nomos"
   ],

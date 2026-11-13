@@ -11,6 +11,7 @@ The language packs (`nomos-csharp`, `nomos-go`, `nomos-typescript`, `nomos-pytho
 - **Language packs**: each has the Nomos icon; when a pack cannot be installed from the Marketplace, Nomos says why and offers to install it from a VSIX file.
 - **C#**: after installing the .NET Install Tool, Nomos waits for it before asking for .NET, instead of failing with "command 'dotnet.acquire' not found".
 - **Several runtimes from PATH in one folder**: Ruby no longer runs with the Java found for Java or Kotlin ("Unrecognized option: --disable-gems").
+- **Marketplace pages**: screenshots, search keywords and a fuller description for the core and each language pack.
 
 ## 0.1.1
 
