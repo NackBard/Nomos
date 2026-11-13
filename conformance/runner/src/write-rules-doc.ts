@@ -1,4 +1,4 @@
 import fs from "node:fs";
-import { renderRulesDoc, rulesDocPath } from "./rules-doc.ts";
+import { renderRulesDocs } from "./rules-doc.ts";
 
-fs.writeFileSync(rulesDocPath, renderRulesDoc());
+for (const { file, content } of renderRulesDocs()) fs.writeFileSync(file, content);

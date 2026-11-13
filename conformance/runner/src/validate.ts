@@ -3,7 +3,7 @@ import path from "node:path";
 import YAML from "yaml";
 import { casesDir, contractsDir, practicesFile, repoRoot, rulesDir } from "./paths.ts";
 import { generatedFiles } from "./go-rules.ts";
-import { renderRulesDoc, rulesDocPath } from "./rules-doc.ts";
+import { renderRulesDocs } from "./rules-doc.ts";
 import { createAjv, formatErrors, loadValidators, readJson, schemaFiles } from "./schemas.ts";
 import { placeholders, templateProblems } from "./l10n.ts";
 
@@ -127,8 +127,10 @@ export function validateRepository(): string[] {
   if (!validateWorkspace(readJson(workspace))) {
     for (const message of formatErrors(validateWorkspace)) errors.push(`nomos.json: ${message}`);
   }
-  const documented = fs.existsSync(rulesDocPath) ? fs.readFileSync(rulesDocPath, "utf8").replaceAll("\r\n", "\n") : "";
-  if (documented !== renderRulesDoc()) errors.push("docs/ANALYZERS.md is out of date: run npm run rules-doc");
+  for (const { file, content } of renderRulesDocs()) {
+    const documented = fs.existsSync(file) ? fs.readFileSync(file, "utf8").replaceAll("\r\n", "\n") : "";
+    if (documented !== content) errors.push(`${path.relative(repoRoot, file).replaceAll("\\", "/")} is out of date: run npm run rules-doc`);
+  }
   for (const { file, content } of generatedFiles()) {
     const current = fs.existsSync(file) ? fs.readFileSync(file, "utf8").replaceAll("\r\n", "\n") : "";
     if (current !== content) errors.push(`${path.relative(repoRoot, file).replaceAll("\\", "/")} is out of date: run npm run spec-json`);

@@ -1,0 +1,94 @@
+# Conformance
+
+[English](README.md) · **Русский**
+
+Анализаторы пишутся независимо, на разных языках. Чтобы одинаковые метрики оставались одинаковыми, каждый анализатор обязан пройти эти тесты. Без них дублирование формул между языками дрейфовало бы незаметно.
+
+## Структура
+
+```
+conformance/
+  README.md
+  runner/                          # harness: запускает анализаторы, сравнивает, проверяет схемы
+  cases/
+    <case-id>/
+      case.json                    # contracts/conformance-case.schema.json
+      <язык>/
+        src/                       # исходники на этом языке
+        expected.facts.json        # ожидаемый facts, проверяется по contracts/facts.schema.json
+        expected.sarif.json        # только если case.json: expectSarif = true
+        nomos.json                 # только если case.json: config = true, передаётся как --config
+```
+
+Один случай — один сценарий, реализованный на каждом языке с одинаковой формой: те же модули, те же зависимости, те же ветвления. Исходники пишутся так, чтобы ожидаемые числа совпадали между языками; места, где язык вносит отличие (например, `object` как корень), описаны в `case.json` и в `expected.facts.json` этого языка.
+
+## Что проверяет harness
+
+1. `<analyzer> manifest` соответствует `manifest.schema.json`; набор `rules[].id` равен `capabilities.supportedRules`; все id существуют в `spec/rules` или имеют префикс языка.
+2. `<analyzer> analyze --root cases/<id>/<язык>/src` даёт документ, валидный по `facts.schema.json`.
+3. Фактический facts совпадает с `expected.facts.json`: сущности сопоставляются по `id`, метрики — по допускам `case.json` (`spec/metrics.md`, раздел «Допуски»). Лишние сущности — ошибка, отсутствующие — ошибка. Порядок массивов не сравнивается, но вывод обязан быть детерминированным (два запуска побайтово равны).
+4. Для каждого пункта `parity` значение метрики совпадает у всех перечисленных языков.
+5. SARIF проверяется по профилю (`contracts/sarif-profile.md`) для каждого случая; официальная схема SARIF 2.1.0 проверяется, если скачана командой `npm run fetch-sarif-schema` (копии в репозитории нет, D-029). При `expectSarif` множество `(ruleId, файл, startLine)` правил из `covers` совпадает с эталоном `expected.sarif.json` вида `{ "results": [{ "ruleId": "CC001", "file": "A.cs", "startLine": 12 }] }`; результаты остальных правил не сравниваются. Запись может содержать `measured`, тогда `{ metric, value, threshold }` сравнивается точно.
+   Манифест сверяется со spec: парадигмы и категория каждого общего правила равны записи в `spec/rules`.
+6. Применимость: `activeParadigms` следуют из признаков с отметкой «да» в таблицах `spec/paradigms.md`; правило без активной парадигмы имеет запись `paradigm-not-detected`, а правило с активной её не имеет.
+7. Внешние входы: правило с `requires` в `spec/rules`, чьего входа нет в `nomos.json` случая, имеет запись `missing-input`, а правило со входом её не имеет.
+
+## Запуск
+
+```powershell
+cd conformance/runner
+npm install
+npm run validate     # контракты, spec/rules, случаи и их эталоны
+npm test             # самопроверка сравнения
+npm run selftest     # эхо-анализатор: путь успеха harness
+npm run rules-doc    # пересобрать docs/ANALYZERS.md и docs/ANALYZERS.ru.md из spec/rules
+npm run spec-json    # пересобрать rules.json и practices.json анализаторов, читающих JSON
+npm run csharp       # собранный анализатор C#: dotnet build analyzers/csharp/Nomos.slnx, затем harness на всех случаях
+npm run go           # сборка и все случаи для Go
+npm run typescript   # все случаи для TypeScript и JavaScript (один анализатор, два языка)
+npm run python       # все случаи для Python; интерпретатор 3.10+ ищет analyzers/python/run.mjs (NOMOS_PYTHON, python3, python, py)
+npm run java         # все случаи для Java; JDK 17+ ищет analyzers/java/run.mjs (NOMOS_JAVA, JAVA_HOME, java)
+npm run kotlin       # все случаи для Kotlin; сначала node analyzers/kotlin/run.mjs --fetch (jar компилятора), Java 17+ как у Java
+npm run ruby         # все случаи для Ruby; Ruby 3.3+ ищет analyzers/ruby/run.mjs (NOMOS_RUBY, ruby)
+npm run all          # все анализаторы и parity между ними
+node src/cli.ts run --analyzer "csharp=<команда>" [--case cycles]
+```
+
+Правила сравнения и принятые границы случаев — D-026 в `docs/DECISIONS.md`. Код возврата harness (0/1) относится к самому harness; на коды возврата анализаторов он не влияет.
+
+## Набор случаев
+
+Готовы все случаи таблицы, эталоны посчитаны вручную.
+
+Код возврата анализатора в `run` не задаётся в `case.json`: он выводится из эталона. Если в `expected.facts.json` есть файл с `parsed: false`, ожидается код 4 (частичный результат), иначе 0.
+
+| Случай | Что покрывает |
+|---|---|
+| `metrics-basic` | `lines`, `loc`, `parameterCount`, `cyclomatic`, `maxNesting` на функциях с известной структурой |
+| `coupling-martin` | `ca`, `ce`, `instability`, `abstractness`, `distance` на трёх модулях |
+| `cycles` | `cycles` уровней type и module на простом графе |
+| `cycles-complex` | компоненты на сложных графах: общие вершины, хорда, односторонний мост, цикл модулей без цикла типов; DSN002 |
+| `oop-cohesion` | `dit`, `cbo`, `lcom4`, `wmc`, `atfd`, `tcc` |
+| `blast-radius` | `blastRadius` на цепочке, ромбе и кольце с хвостом; функция наследует значение типа; DSN006, запись `missing-input` у DSN003 |
+| `layers` | DSN003 через `nomos.json` |
+| `design-smells` | DSN004, DSN005, `foreignMembers`, `ownMembers` |
+| `complexity-estimates` | `timeDegree`, `timeLogFactor`, `timeExponential`, `spaceDegree`, `allocationDepth`; ALG001, ALG003, ALG004 и их `measured` |
+| `paradigm-evidence` | признаки `oop.*`, `fp.*`, `str.*`; запись `paradigm-not-detected` для модуля без классов |
+| `paradigm-activation` | точные `activeParadigms`: лямбды и глобальное состояние сами по себе ничего не активируют; `disabled-by-config`; `hofOrder`, `lambdaNesting`, `typeTests`, `measured` у OOP003 |
+| `health` | балл здоровья: нормировка по `loc`, а не по физическим строкам; взвешивание модулей |
+| `patterns` | PAT001–PAT007, PAT101–PAT103, `settableProperties`, `forwardingMethods` |
+| `security-heuristics` | SEC001–SEC003 и безобидные двойники их шаблонов |
+| `suppressions` | директивы `spec/suppressions.md`; подавленное не попадает в SARIF, метрики остаются |
+| `maintainability` | `halsteadVolume`, `maintainabilityIndex`, `coverage`; MNT002–MNT004 |
+| `partial-failure` | файл с синтаксической ошибкой: код возврата 4, `parsed: false`, `diagnostics` |
+
+## Как добавить случай
+
+1. Создайте `cases/<id>/case.json` и перечислите языки.
+2. Напишите исходники для **каждого** языка, который уже есть. Случай, который проходит только один язык, не является conformance-случаем.
+3. Получите `expected.facts.json` вручную по `spec/metrics.md` и сверьте глазами. Эталон нельзя сгенерировать из вывода проверяемого анализатора: тогда тест подтверждал бы сам себя.
+4. Запустите harness для всех анализаторов.
+
+## Новый язык
+
+Анализатор нового языка считается готовым к подключению, когда проходит все существующие случаи. Если случай по природе языка не выразим, в `case.json` в `exceptions` записывается язык и причина; случай без исходников и без записи падает.

@@ -1,111 +1,115 @@
-# Архитектура Nomos
+# Nomos architecture
 
-Платформа состоит из независимых **анализаторов** (по одному на язык), общих **контрактов** и **расширения VS Code**, которое только отображает результат. Единого ядра, разбирающего все языки, нет (D-020).
+**English** · [Русский](ARCHITECTURE.ru.md)
 
-Платформа даёт статистику и наблюдения для последующего анализа разработчиком. Порогов приёмки, оценок «пройдено/не пройдено» и вердиктов нет; находки — эвристики с уровнем уверенности и объяснением.
+Nomos is made of independent **analyzers** (one per language), shared **contracts** and a **VS Code extension** that only shows the result. There is no single core that parses every language (D-020).
 
-## Общая схема
+Nomos gives statistics and observations for a developer to read. There are no acceptance thresholds, no pass or fail grades and no verdicts; findings are heuristics with a confidence level and an explanation.
 
+## Overview
+
+```mermaid
+flowchart LR
+  code(["project sources"]) --> analyzers
+  spec["<b>spec/</b><br/>rules, formulas, paradigms"] -. data .-> analyzers
+  contracts["<b>contracts/</b><br/>JSON Schema, SARIF profile"] -. output shape .-> analyzers
+  conformance["<b>conformance/</b><br/>reference cases"] -. checks .-> analyzers
+  analyzers["<b>analyzers/&lt;language&gt;</b><br/>C# · Go · TypeScript and JavaScript<br/>Python · Java · Kotlin · Ruby"]
+  analyzers -- "facts + SARIF" --> extension["<b>extension/</b><br/>the VS Code core"]
+  analyzers -- "facts + SARIF" --> ci["<b>ci/</b><br/>reports without an IDE"]
+  extension -- "NomosApi.onDidAnalyze" --> score["<b>score/</b><br/>Nomos Score"]
+  extension -- "NomosApi.onDidAnalyze" --> agents["<b>agents/</b><br/>Nomos Agents and MCP"]
+
+  classDef law fill:#2d6a4f22,stroke:#2d6a4f
+  classDef analyzer fill:#1d4ed822,stroke:#1d4ed8
+  classDef view fill:#b4530922,stroke:#b45309
+  class spec,contracts,conformance law
+  class analyzers analyzer
+  class extension,ci,score,agents view
 ```
-          spec/rules/*.yaml   spec/metrics.md   spec/paradigms.md
-                  │                  │                  │
-                  └────── общие спецификации (данные и текст) ──────┐
-                                                                    ▼
-исходники ──> analyzers/<язык> (родные средства языка) ──> facts (JSON) + SARIF 2.1.0
-                                                                    │
-                           nomos.json ─> extension/ (TypeScript) ◄── contracts/*.schema.json
-                                                                    │
-                                          дерево проблем, Diagnostics, CodeLens, граф (webview)
 
-conformance/ ── прогоняет каждый анализатор на эталонных фикстурах и сверяет facts
-```
+Green is the law shared by all languages, blue the analyzers, orange what only shows the result. The only links between the parts are the files in `contracts/` and the text in `spec/`. The extension does not know how an analyzer works; an analyzer does not know about the extension. Score and Agents get the result from the core and never look into the analyzers. Each part is described below: [contracts](#contracts), [rules and metrics](#rules-and-metrics), [conformance](../conformance/README.md), [running without an IDE](#running-without-an-ide), [the extension](#the-vs-code-extension).
 
-Единственные связи между частями — файлы в `contracts/` и текст в `spec/`. Расширение не знает, как устроен анализатор; анализатор не знает о расширении.
+### Analyzers
 
-## Структура репозитория
+Each analyzer is a standalone program built on its language's own tools.
 
-| Папка | Содержимое | Кто меняет |
-|---|---|---|
-| `contracts/` | JSON Schema: manifest, facts, правила, практики, nomos.json, conformance-case; профиль SARIF | только через `schemaVersion` и запись в DECISIONS.md |
-| `spec/` | `rules/*.yaml` — правила как данные; `practices.yaml` — практики, наборы правил; `metrics.md` — формулы; `structure.md` — члены типов и связи диаграммы классов; `paradigms.md` — признаки стиля; `suppressions.md` — подавления | при добавлении правил и метрик |
-| `analyzers/csharp/` | анализатор C# на Roslyn | |
-| `analyzers/go/` | анализатор Go на `go/parser` и `go/types` | |
-| `analyzers/typescript/` | анализатор TypeScript и JavaScript на TypeScript Compiler API | |
-| `analyzers/python/` | анализатор Python на `ast` и `tokenize` стандартной библиотеки | |
-| `analyzers/java/` | анализатор Java на javac Tree API (`jdk.compiler`) | |
-| `analyzers/kotlin/` | анализатор Kotlin на PSI из `kotlin-compiler-embeddable` | |
-| `analyzers/<язык>/` | будущие анализаторы | |
-| `extension/` | расширение VS Code, только потребитель контрактов | |
-| `conformance/` | фикстуры, эталонные facts, harness | |
-| `ci/` | запуск анализаторов без IDE, отчёты md/html из facts и SARIF, baseline | |
-| `docs/` | эта документация | |
+| Language | Folder | Parsing | Runs as | Decision |
+|---|---|---|---|---|
+| C# | `analyzers/csharp` | Roslyn | `src/Nomos.Analyzer.CSharp` (`nomos-csharp`) on .NET 10 | D-031 |
+| Go | `analyzers/go` | `go/parser`, `go/types` | `cmd/nomos-go`, a binary per platform | D-038 |
+| TypeScript, JavaScript | `analyzers/typescript` | TypeScript Compiler API | `src/main.ts` on VS Code's own Node; `--language javascript` picks the language | D-055 |
+| Python | `analyzers/python` | `ast`, `tokenize` | `main.py` on the user's interpreter, `python -I`, 3.10+ | D-057 |
+| Java | `analyzers/java` | javac Tree API (`jdk.compiler`) | `run.mjs` on the user's JDK 17+ | D-058 |
+| Kotlin | `analyzers/kotlin` | PSI from `kotlin-compiler-embeddable` | `run.mjs` on Java 17+; the compiler is pinned in `deps.json` and fetched by `run.mjs --fetch` | D-059 |
+| Ruby | `analyzers/ruby` | Prism from the standard library | `main.rb` on the user's interpreter, Ruby 3.3+ | D-061 |
 
-Анализатор Go лежит в `analyzers/go/`, точка входа `cmd/nomos-go`, зависимостей вне стандартной библиотеки нет. Анализатор TypeScript и JavaScript лежит в `analyzers/typescript/`, точка входа `src/main.ts`; язык выбирает первый аргумент `--language javascript`, единственная зависимость — компилятор `typescript` (D-055). Анализатор Python лежит в `analyzers/python/`, точка входа `main.py`, запускается интерпретатором пользователя в изолированном режиме (`python -I`), зависимостей вне стандартной библиотеки нет (D-057). Анализатор Java лежит в `analyzers/java/`, собирается и запускается `run.mjs` на JDK 17+ пользователя, зависимостей вне JDK нет (D-058). Анализатор Kotlin лежит в `analyzers/kotlin/`, написан на Kotlin, разбирает код PSI из компилятора Kotlin (`kotlin-compiler-embeddable`, версия и суммы — `deps.json`, загрузка — `run.mjs --fetch`) и запускается на Java 17+ пользователя (D-059). Анализатор C# лежит в `analyzers/csharp/` (`src/`, `tests/`, `Nomos.slnx`, `Directory.*`). Точка входа — `src/Nomos.Analyzer.CSharp` (`nomos-csharp`), она говорит по протоколу `manifest`/`analyze`.
+No analyzer depends on anything beyond its language's standard tools, except for the `typescript` compiler and the Kotlin compiler.
 
-## Контракты
+## Contracts
 
-Каждый файл в `contracts/` имеет `$id` с версией и поле `x-contractVersion`. Каждый документ, выдаваемый анализатором, содержит `schemaVersion`; расширение отклоняет документы незнакомой мажорной версии с понятным сообщением.
+Each file in `contracts/` has an `$id` with a version and an `x-contractVersion` field. Each document an analyzer prints has a `schemaVersion`; the extension rejects documents of an unknown major version with a clear message.
 
-| Контракт | Файл | Кто производит | Кто читает |
+| Contract | File | Produced by | Read by |
 |---|---|---|---|
-| Manifest | `manifest.schema.json` | анализатор, команда `manifest` | расширение, harness |
-| Facts | `facts.schema.json` | анализатор, команда `analyze` | расширение (граф, метрики, дерево), harness |
-| Результаты проверок | SARIF 2.1.0 + `sarif-profile.md` | анализатор, `analyze --sarif` | расширение (Diagnostics, дерево), CI, GitHub Code Scanning |
-| Правило | `rule.schema.json` | авторы правил | harness, генератор документации |
-| Практика | `practice.schema.json` (`spec/practices.yaml`) | авторы правил | анализаторы, расширение (через `npm run spec-json`), harness |
-| Рабочая область | `nomos.schema.json` | пользователь; расширение пишет `practices` по команде и свой файл без `nomos.json` | анализаторы, расширение, CI-запуск |
-| Случай conformance | `conformance-case.schema.json` | авторы случаев | harness |
+| Manifest | `manifest.schema.json` | the analyzer, `manifest` command | the extension, the harness |
+| Facts | `facts.schema.json` | the analyzer, `analyze` command | the extension (graph, metrics, tree), the harness |
+| Check results | SARIF 2.1.0 + `sarif-profile.md` | the analyzer, `analyze --sarif` | the extension (Diagnostics, tree), CI, GitHub Code Scanning |
+| Rule | `rule.schema.json` | rule authors | the harness, the documentation generator |
+| Practice | `practice.schema.json` (`spec/practices.yaml`) | rule authors | analyzers, the extension (through `npm run spec-json`), the harness |
+| Workspace | `nomos.schema.json` | the user; the extension writes `practices` on command and its own file when there is no `nomos.json` | analyzers, the extension, the CI run |
+| Conformance case | `conformance-case.schema.json` | case authors | the harness |
 
-Правила изменения:
+Rules of change:
 
-- версия меняется явным увеличением `schemaVersion` и решением в `docs/decisions/`;
-- добавление необязательного поля — минорная версия, всё остальное — мажорная;
-- новый анализатор не меняет существующие контракты без обсуждения.
+- a version changes by an explicit increase of `schemaVersion` and a decision in `docs/decisions/`;
+- adding an optional field is a minor version, anything else is major;
+- a new analyzer does not change existing contracts without a discussion.
 
-### Что в facts
+### What facts hold
 
-Facts — измерения и наблюдения, без вердиктов:
+Facts are measurements and observations, without verdicts:
 
-- `files`: пути (относительно `--root`, прямые слэши), строки, `loc`;
-- `modules`, `types`, `functions` со стабильными идентификаторами (родное квалифицированное имя языка) и метриками из `spec/metrics.md`;
-- `dependencies`: `from`, `to`, `kind` (`import`, `inheritance`, `call`, `type-ref`), `phase` (`runtime` или `type-only`), признаки `external`/`stdlib`;
-- `cycles` (Тарьян), `health` (число и вывод, без оценки);
-- `paradigmEvidence` по каждому модулю;
-- `skippedRules`: какое правило не применено, к какому модулю и почему;
-- `diagnostics`: предупреждения и ошибки анализа.
+- `files`: paths (relative to `--root`, forward slashes), lines, `loc`;
+- `modules`, `types`, `functions` with stable identifiers (the language's native qualified name) and the metrics of `spec/metrics.md`;
+- `dependencies`: `from`, `to`, `kind` (`import`, `inheritance`, `call`, `type-ref`), `phase` (`runtime` or `type-only`), the `external`/`stdlib` flags;
+- `cycles` (Tarjan), `health` (a number and how it was reached, not a grade);
+- `paradigmEvidence` for each module;
+- `skippedRules`: which rule was not applied, to which module, and why;
+- `diagnostics`: warnings and errors of the analysis.
 
-Результаты проверок в facts не дублируются: они только в SARIF.
+Check results are not repeated in facts: they are only in SARIF.
 
-## Протокол запуска анализатора
+## Analyzer protocol
 
-Анализатор — самостоятельная программа. Расширение и CI зовут её одинаково:
+An analyzer is a standalone program. The extension and CI call it the same way:
 
-| Команда | Результат |
+| Command | Result |
 |---|---|
-| `<analyzer> manifest` | manifest в stdout |
-| `<analyzer> analyze --root <путь> [--files <список>] [--sarif <файл>]` | facts в stdout; при `--sarif` результаты проверок пишутся в файл, путь отражается в `checks.sarifFile` |
+| `<analyzer> manifest` | the manifest on stdout |
+| `<analyzer> analyze --root <path> [--files <list>] [--sarif <file>]` | facts on stdout; with `--sarif` the check results go to the file, whose path is in `checks.sarifFile` |
 
-`--files` — список путей относительно `--root`, разделитель — перевод строки в файле `@список.txt` либо аргументы через запятую. Если анализатор не поддерживает частичный анализ (`capabilities.partialAnalysis = false`), он игнорирует `--files` и анализирует всё; клиент это учитывает. Оба текущих анализатора работают так, и клиенты всегда анализируют весь корень: графы, Ca, Ce и циклы по части файлов неверны (D-040).
+`--files` is a list of paths relative to `--root`, one per line in a file `@list.txt` or comma-separated arguments. An analyzer without partial analysis (`capabilities.partialAnalysis = false`) ignores `--files` and analyzes everything; the client takes this into account. All current analyzers work this way, and the clients always analyze the whole root: graphs, Ca, Ce and cycles over part of the files are wrong (D-040).
 
-Дополнительные опции, общие для всех: `--config <nomos.json>` (файл рабочей области, `contracts/nomos.schema.json`), `--rules <список id через запятую>`. Поведение при отсутствии опций определяется manifest и значениями по умолчанию из `spec/rules`. Без `--config` анализатор обязан работать: так его запускает расширение в папке без `nomos.json`.
+Further options shared by all: `--config <nomos.json>` (the workspace file, `contracts/nomos.schema.json`) and `--rules <comma-separated ids>`. Without options, behavior follows the manifest and the defaults of `spec/rules`. An analyzer must work without `--config`: that is how the extension runs it in a folder without `nomos.json`.
 
-Вывод детерминирован: в нём нет времени, абсолютных путей, случайных идентификаторов; массивы упорядочены по Ordinal. Два запуска на одних данных побайтово равны.
+The output is deterministic: no time, no absolute paths, no random identifiers; arrays are in Ordinal order. Two runs on the same input are byte for byte equal.
 
-### Коды возврата
+### Exit codes
 
-| Код | Значение | Что в stdout |
+| Code | Meaning | On stdout |
 |---|---|---|
-| 0 | успех; число находок на код не влияет | facts |
-| 1 | непредвиденная ошибка анализатора | пусто, подробности в stderr |
-| 2 | ошибка использования: неизвестная команда или опция | пусто |
-| 3 | входные данные не годятся: `--root` не существует, нет файлов этого языка | пусто |
-| 4 | частичный результат: часть файлов не разобрана | валидный facts, файлы с `parsed: false`, причины в `diagnostics` |
+| 0 | success; the number of findings does not affect the code | facts |
+| 1 | an unexpected error in the analyzer | nothing, details on stderr |
+| 2 | a usage error: unknown command or option | nothing |
+| 3 | the input is not usable: `--root` does not exist, no files of the language | nothing |
+| 4 | a partial result: some files were not parsed | valid facts, the files with `parsed: false`, the reasons in `diagnostics` |
 
-Ошибки и предупреждения для человека — в stderr. Разбор stderr клиентом — только для показа; всё машинное — в stdout и в файле SARIF.
+Errors and warnings for people go to stderr. A client reads stderr only to show it; everything for machines is on stdout and in the SARIF file.
 
-## Как расширение находит анализаторы
+## How the extension finds analyzers
 
-`nomos.json` в корне рабочей области (`contracts/nomos.schema.json`):
+`nomos.json` at the workspace root (`contracts/nomos.schema.json`):
 
 ```json
 {
@@ -116,11 +120,11 @@ Facts — измерения и наблюдения, без вердиктов:
 }
 ```
 
-Расширение запускает `command + ["manifest"]`, проверяет ответ по схеме и запоминает возможности. Для анализа добавляет `analyze --root ... --sarif ...`. Расширение ничего не знает о внутреннем устройстве анализатора и не содержит языко-специфичной логики.
+The extension runs `command + ["manifest"]`, checks the answer against the schema and remembers the capabilities. For analysis it adds `analyze --root ... --sarif ...`. The extension knows nothing about how an analyzer works inside and has no language-specific logic.
 
-### Без `nomos.json`: встроенные анализаторы
+### Without `nomos.json`: bundled analyzers
 
-Опубликованное расширение несёт анализаторы с собой (D-046). Пакет собирается под платформу (`npm run package -- --target win32-x64` в `extension/`), в папку `bundle/` кладутся сборки анализаторов и реестр `bundle/analyzers.json`:
+The published extension carries the analyzers with it (D-046), in language packs (D-056, D-062). A package is built per platform (`npm run package -- --target win32-x64` in `extension/`); the builds of the analyzers go to `bundle/`, together with the registry `bundle/analyzers.json`:
 
 ```json
 { "analyzers": [
@@ -134,64 +138,65 @@ Facts — измерения и наблюдения, без вердиктов:
 ] }
 ```
 
-Реестр пишет скрипт сборки; `files` он берёт из manifest анализатора (поле `files`, контракт 1.2.0). В папке без `nomos.json` расширение запускает те анализаторы, для которых нашёлся хотя бы один файл по `files`, без `--config`, с настройками по умолчанию. Настройки задаются настройками VS Code рабочей области (D-050): если задана `nomos.practices`, расширение пишет файл рабочей области с командой анализатора и `practices` в своё хранилище (`workspaces/<папка>-<язык>.json`) и передаёт его через `--config`. `ci` этих настроек не видит. Рабочая папка анализатора — хранилище расширения, поэтому SARIF не попадает в проект. `${node}` — Node.js, на котором работает само расширение: в VS Code это его исполняемый файл с `ELECTRON_RUN_AS_NODE=1`, ставить ничего не нужно (D-055). `runtime` — программа, которую выдаёт другое расширение VS Code: расширение спрашивает разрешения на его установку, вызывает `command` и берёт путь из `resultField` (без него — весь результат). Если задан `path`, расширение-поставщик необязательно и не ставится: его ответ для папки (`${folder}` в `argument`) проверяется аргументами `check`, а без него проверяются программы `path` в `PATH` по порядку; если не подошла ни одна, пользователь видит причину и ссылку `installUrl`, а анализатор пропускается (D-057). Всё это — данные реестра; код расширения языков не называет. Если `nomos.json` есть, используется только он.
+The build script writes the registry and takes `files` from the analyzer's manifest (the `files` field, contract 1.2.0). In a folder without `nomos.json`, the extension runs the analyzers that match at least one file by `files`, without `--config`, with default settings. Settings come from the VS Code workspace settings (D-050): when `nomos.practices` is set, the extension writes a workspace file with the analyzer's command and `practices` into its own storage (`workspaces/<folder>-<language>.json`) and passes it with `--config`. `ci` does not see these settings. The analyzer's working folder is the extension's storage, so SARIF does not land in the project.
 
-## Правила и метрики
+`${node}` is the Node.js the extension itself runs on: in VS Code this is its executable with `ELECTRON_RUN_AS_NODE=1`, nothing to install (D-055). `runtime` is a program that another VS Code extension provides: the extension asks permission to install it, calls `command` and takes the path from `resultField` (or the whole result without it). When `path` is set, the provider extension is optional and not installed: its answer for the folder (`${folder}` in `argument`) is checked with the `check` arguments, and without it the programs of `path` are tried in `PATH` in order; if none fits, the user sees the reason and the `installUrl` link, and the analyzer is skipped (D-057). All of this is registry data; the extension's code names no language. When `nomos.json` exists, only it is used.
 
-- Правила — данные в `spec/rules/*.yaml`: id, категория, описание, обоснование, парадигмы, серьёзность, порог по умолчанию. Общий список для всех языков.
-- Порог — это чувствительность детектора (с какого значения о нём стоит сообщить), а не граница приёмки. Сырое значение метрики всегда присутствует в facts.
-- Анализатор реализует детекторы только для правил из своего `supportedRules`. Языко-специфичные правила имеют префикс (`CS.`, `PY.`) и лежат в `spec/rules/<язык>.yaml`.
-- Формулы метрик — в `spec/metrics.md`, один раз. Каждый анализатор считает их сам.
-- Общие метрики сверяются `conformance/`.
+## Rules and metrics
 
-### Применимость и парадигмы
+- Rules are data in `spec/rules/*.yaml`: id, category, description, rationale, paradigms, severity, default threshold. One list for all languages.
+- A threshold is the sensitivity of a detector (from which value it is worth reporting), not an acceptance limit. The raw value of the metric is always in facts.
+- An analyzer implements detectors only for the rules in its `supportedRules`. Language-specific rules have a prefix (`CS.`, `PY.`) and live in `spec/rules/<language>.yaml`.
+- Metric formulas are in `spec/metrics.md`, once. Each analyzer computes them itself.
+- Shared metrics are checked by `conformance/`.
 
-Правило с парадигмой применяется только к модулям, где найден признак этой парадигмы (`spec/paradigms.md`). Остальные модули получают запись `skippedRules` с причиной `paradigm-not-detected`, а правила выключенной конфигурацией парадигмы — `disabled-by-config`. Молчаливых исключений нет.
+### Applicability and paradigms
 
-### Практики
+A rule with a paradigm applies only to modules where evidence of that paradigm was found (`spec/paradigms.md`). The other modules get a `skippedRules` entry with the reason `paradigm-not-detected`, and the rules of a paradigm turned off by configuration get `disabled-by-config`. There are no silent exclusions.
 
-Практика — именованный набор правил из `spec/practices.yaml` (D-051). `practices` в `nomos.json` (контракт 1.1.0) перечисляет выбранные; правило вне них не запускается и получает запись `skippedRules` на весь запуск с причиной `disabled-by-config` и сообщением, называющим его практики. Нет поля — работают все правила. Явное `rules.<id>.enabled` сильнее практики. Практики выбирают находки, а не метрики: facts, граф и CodeLens не меняются. Незнакомый id практики — код 3.
+### Practices
 
-Анализаторы и расширение получают каталог как данные: C# встраивает YAML, Go и расширение — JSON из `npm run spec-json` (`conformance/runner`); `npm run validate` проверяет, что JSON не устарел и что каждое правило входит хотя бы в одну практику.
+A practice is a named set of rules from `spec/practices.yaml` (D-051). `practices` in `nomos.json` (contract 1.1.0) lists the chosen ones; a rule outside them does not run and gets a `skippedRules` entry for the whole run with the reason `disabled-by-config` and a message naming its practices. Without the field, every rule runs. An explicit `rules.<id>.enabled` is stronger than a practice. Practices select findings, not metrics: facts, the graph and CodeLens do not change. An unknown practice id is exit code 3.
 
-## Запуск без IDE
+Analyzers and the extension get the catalog as data: C# embeds the YAML, the others and the extension read the JSON of `npm run spec-json` (`conformance/runner`); `npm run validate` checks that the JSON is up to date and that every rule belongs to at least one practice.
 
-`ci/` читает `nomos.json`, запускает каждый анализатор по протоколу и пишет в выходную папку (`.nomos`) `<язык>.facts.json`, `<язык>.sarif`, `report.md`, `report.html`. Как и расширение, он не знает языков: только контракты.
+## Running without an IDE
+
+`ci/` reads `nomos.json`, runs each analyzer by the protocol and writes `<language>.facts.json`, `<language>.sarif`, `report.md` and `report.html` to the output folder (`.nomos`). Like the extension, it knows no language: only the contracts.
 
 ```powershell
-node ci/src/cli.ts --workspace nomos.json --out .nomos --write-baseline baseline.json   # снимок
-node ci/src/cli.ts --workspace nomos.json --out .nomos --baseline baseline.json         # сравнение
+node ci/src/cli.ts --workspace nomos.json --out .nomos --write-baseline baseline.json   # snapshot
+node ci/src/cli.ts --workspace nomos.json --out .nomos --baseline baseline.json         # comparison
 ```
 
-Сравнение идёт по `partialFingerprints["nomos/v1"]`, результат — `diff.json` и раздел отчёта: новые, исчезнувшие, неизменные. Код возврата: 0 — отчёты полные, в том числе при частичном результате анализатора; 1 — анализатор не завершился, отчёт это показывает; 2 — ошибка использования; 3 — нет файла рабочей области. Число находок, балл и появление новых находок на код не влияют (D-021).
+The comparison goes by `partialFingerprints["nomos/v1"]`; the result is `diff.json` and a report section: new, gone, unchanged. Exit code: 0 — the reports are complete, including when an analyzer gave a partial result; 1 — an analyzer did not finish, and the report says so; 2 — a usage error; 3 — no workspace file. The number of findings, the score and new findings do not affect the code (D-021).
 
-## Расширение VS Code
+## The VS Code extension
 
-Папка `extension/`, TypeScript. Логика чтения контрактов лежит в `src/core` и не зависит от `vscode`, интерфейс — в `src/ui`. Получает данные только из контрактов:
+The `extension/` folder, TypeScript. The logic that reads the contracts is in `src/core` and does not depend on `vscode`; the interface is in `src/ui`. It takes data only from the contracts:
 
-| Функция | Источник |
+| Feature | Source |
 |---|---|
-| Дерево проблем | SARIF, сгруппированный по модулю и категории; рядом метрики из facts |
-| Diagnostics | SARIF (`message`, `region`; `level` — только при `nomos.diagnostics: level`, по умолчанию подсказки, D-054) |
-| CodeLens | метрики функций и типов из facts |
-| Граф | `modules`/`types`, `dependencies`, `cycles` из facts; webview: модули, типы выбранного модуля, связи типов двух модулей (D-045) |
-| Признаки парадигм | `paradigmEvidence`, `activeParadigms`, `skippedRules` |
-| Выбор практик | `practices.json` пакета (из `spec/practices.yaml`); выбор — в `practices` у `nomos.json` или в настройке `nomos.practices` |
+| Problem tree | SARIF grouped by module and category, with metrics from facts next to it |
+| Diagnostics | SARIF (`message`, `region`; `level` only with `nomos.diagnostics: level`, hints by default, D-054) |
+| CodeLens | metrics of functions and types from facts |
+| Graph | `modules`/`types`, `dependencies`, `cycles` from facts; a webview of modules, the types of the selected module, the links between the types of two modules (D-045) |
+| Paradigm evidence | `paradigmEvidence`, `activeParadigms`, `skippedRules` |
+| Choice of practices | the package's `practices.json` (from `spec/practices.yaml`); the choice is `practices` in `nomos.json` or the `nomos.practices` setting |
 
-Запрещено: ветвления по языку, разбор исходников, знание о Roslyn или иных парсерах. Если расширению чего-то не хватает, это расширение контракта (см. правила изменения).
+Forbidden: branching by language, parsing sources, knowledge of Roslyn or other parsers. When the extension lacks something, that is a change of a contract (see the rules of change).
 
-## Миграция существующего .NET-кода
+## Migration of the earlier .NET code
 
-Миграция завершена (D-031). Прежняя реализация была построена вокруг общей модели IR и ядра с плагинами; D-020 изменило границы, а содержимое стало внутренностями анализатора C#:
+The migration is complete (D-031). The earlier implementation was built around a shared IR model and a core with plugins; D-020 changed the boundaries, and the content became the internals of the C# analyzer:
 
-| Было | Стало |
+| Was | Now |
 |---|---|
-| `Languages.CSharp` (Roslyn → IR) | остаётся внутри `analyzers/csharp` как слой разбора |
-| `Abstractions` (IR, `Queries`, `Flow`) | внутренняя модель анализатора C# |
-| `Analyzers.*` (детекторы) | детекторы правил `analyzers/csharp`, привязанные к id из `spec/rules` |
-| `Core` (движок, подавления, `HealthScorer`) | движок анализатора C#; поиск плагинов удалён, детекторы перечислены в `BuiltInComponents` |
-| `Reporting` | удалён: json заменили facts, SARIF — `SarifProfileWriter`, md/html — `ci/` (D-039) |
-| `Graph` | расчёт метрик на уровне facts (Ca, Ce, Тарьян, blast radius) |
-| `Languages.TreeSitter` | удалён: общего мультиязычного разбора нет (D-017 отменён D-020) |
-| `Cli` | удалён; его заменил `Nomos.Analyzer.CSharp` |
-
+| `Languages.CSharp` (Roslyn → IR) | stays inside `analyzers/csharp` as the parsing layer |
+| `Abstractions` (IR, `Queries`, `Flow`) | the internal model of the C# analyzer |
+| `Analyzers.*` (detectors) | the rule detectors of `analyzers/csharp`, bound to ids from `spec/rules` |
+| `Core` (engine, suppressions, `HealthScorer`) | the engine of the C# analyzer; plugin discovery removed, detectors listed in `BuiltInComponents` |
+| `Reporting` | removed: facts replaced json, `SarifProfileWriter` writes SARIF, `ci/` writes md/html (D-039) |
+| `Graph` | metrics at the facts level (Ca, Ce, Tarjan, blast radius) |
+| `Languages.TreeSitter` | removed: there is no shared multi-language parsing (D-017 revoked by D-020) |
+| `Cli` | removed; replaced by `Nomos.Analyzer.CSharp` |
