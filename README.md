@@ -105,4 +105,4 @@ The number of findings and the scores do not affect the exit code.
 
 ## License
 
-[MIT](LICENSE). The Marketplace publisher is `honestarchitector`. The project was formerly called DeepCode.Analizer (D-024).
+[MIT](LICENSE). The Marketplace publisher is `honestarchitector`.
