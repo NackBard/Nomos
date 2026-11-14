@@ -1,5 +1,6 @@
 {
   "description": "Two agents over the Nomos analysis: review of paradigms and practices, and speed of functions with ways to optimize them. Includes the Nomos MCP server.",
+  "untrustedWorkspaces": "Nomos Agents run git in the folder and send its code to a language model; they work only in a trusted folder.",
   "participant.review": "Reviews code for agreement with its paradigms and with practices and approaches",
   "participant.performance": "Estimates the speed of functions and proposes optimizations",
   "participant.command.changes": "Only the code changed against git",

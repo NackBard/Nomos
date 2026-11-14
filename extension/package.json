@@ -44,6 +44,13 @@
   "activationEvents": [
     "workspaceContains:nomos.json"
   ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false,
+      "description": "%untrustedWorkspaces%"
+    },
+    "virtualWorkspaces": false
+  },
   "contributes": {
     "commands": [
       {

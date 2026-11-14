@@ -51,6 +51,8 @@ export function activate(context: vscode.ExtensionContext): void {
   let listening = false;
 
   async function core(): Promise<NomosApi> {
+    // The agents run git in the folder and send its code to a model: never in an untrusted folder (D-069).
+    if (!vscode.workspace.isTrusted) throw new BackendError(t("Nomos Agents work only in a trusted folder."));
     const extension = vscode.extensions.getExtension<NomosApi>(CoreId);
     if (!extension) throw new BackendError(t("The Nomos extension is not installed; the agents read its analysis."));
     const api = extension.isActive ? extension.exports : await extension.activate();

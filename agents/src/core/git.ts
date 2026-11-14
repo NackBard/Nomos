@@ -15,8 +15,12 @@ export class GitError extends Error {}
 
 const BaseCandidates = ["origin/HEAD", "origin/main", "origin/master", "main", "master"];
 
+// The repository's own config can name programs that git runs by itself: the file system monitor here, the external
+// diff and text conversion through the options of diff (D-069). Reading a diff needs none of them.
+const Safe = ["-c", "core.fsmonitor=false", "-c", "core.quotepath=off"];
+
 function git(cwd: string, args: string[]): string {
-  return execFileSync("git", ["-c", "core.quotepath=off", ...args], { cwd, encoding: "utf8", maxBuffer: 256 * 1024 * 1024, windowsHide: true, stdio: ["ignore", "pipe", "pipe"] });
+  return execFileSync("git", [...Safe, ...args], { cwd, encoding: "utf8", maxBuffer: 256 * 1024 * 1024, windowsHide: true, stdio: ["ignore", "pipe", "pipe"] });
 }
 
 function tryGit(cwd: string, args: string[]): string | undefined {
@@ -59,6 +63,8 @@ export function parseUnifiedDiff(text: string): Map<string, LineRange[]> {
 /** The commit to compare with: the one given, else the merge base with the default branch, else HEAD. */
 export function resolveBase(cwd: string, base?: string): { base: string; description: string } | undefined {
   if (base) {
+    // A base comes from a setting or an MCP client; one that starts with "-" would be read as an option.
+    if (base.startsWith("-")) throw new GitError(`the base "${base}" is not a commit or a branch`);
     const commit = tryGit(cwd, ["rev-parse", "--verify", `${base}^{commit}`]);
     if (!commit) throw new GitError(`git does not know the base "${base}"`);
     return { base: commit, description: base };
@@ -83,7 +89,7 @@ export function changes(root: string, base?: string): Changes {
   const files = new Map<string, ChangedFile>();
 
   if (resolved) {
-    const diff = git(top, ["diff", "--unified=0", "--no-color", "--no-ext-diff", "--diff-filter=d", resolved.base, "--"]);
+    const diff = git(top, ["diff", "--unified=0", "--no-color", "--no-ext-diff", "--no-textconv", "--diff-filter=d", resolved.base, "--"]);
     for (const [file, ranges] of parseUnifiedDiff(diff)) {
       const relative = fromTop(file);
       if (inside(relative)) files.set(relative, { file: relative, ranges });

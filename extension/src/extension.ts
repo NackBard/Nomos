@@ -300,6 +300,12 @@ export function activate(context: vscode.ExtensionContext): NomosApi {
   }
 
   async function analyzeAll(): Promise<void> {
+    // The analyzers are commands of nomos.json and programs named by workspace settings: never in an untrusted folder.
+    // package.json already keeps the extension off there; this guards against being called anyway (D-069).
+    if (!vscode.workspace.isTrusted) {
+      void vscode.window.showWarningMessage(t("Nomos analyzes only a trusted folder: it runs the commands of nomos.json and programs named by the workspace settings."));
+      return;
+    }
     running?.abort();
     const controller = new AbortController();
     running = controller;

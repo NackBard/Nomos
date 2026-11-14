@@ -1,5 +1,6 @@
 {
   "description": "Statistics and observations about code from Nomos analyzers. Findings are heuristics, not verdicts.",
+  "untrustedWorkspaces": "Nomos runs the analyzer commands of nomos.json and programs found through workspace settings; it works only in a trusted folder.",
   "command.analyze": "Analyze Workspace",
   "command.showGraph": "Show Dependency Graph",
   "command.openGraphWindow": "Open Dependency Graph in New Window",
