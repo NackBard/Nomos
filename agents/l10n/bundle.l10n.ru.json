@@ -23,5 +23,6 @@
   "The Nomos extension is not installed; the agents read its analysis.": "Расширение Nomos не установлено, а агенты читают его анализ.",
   "the whole analyzed root": "вся проанализированная папка",
   "Unexpected error: {0}": "Непредвиденная ошибка: {0}",
-  "What should the agent look at?": "Что смотреть агенту?"
+  "What should the agent look at?": "Что смотреть агенту?",
+  "Nomos Agents work only in a trusted folder.": "Агенты Nomos работают только в доверенной папке."
 }

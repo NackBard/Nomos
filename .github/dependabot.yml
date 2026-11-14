@@ -1,0 +1,12 @@
+# D-069: the actions are pinned to commits, and Dependabot moves the pins forward once a month in one pull request.
+# npm, NuGet and Go dependencies are pinned too; for them only security updates come, which the repository settings
+# turn on, so that a version bump stays a decision of its own (CLAUDE.md: a new dependency is a decision).
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      actions:
+        patterns: ["*"]

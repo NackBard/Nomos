@@ -38,6 +38,13 @@
   ],
   "main": "./out/extension.js",
   "activationEvents": [],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false,
+      "description": "%untrustedWorkspaces%"
+    },
+    "virtualWorkspaces": false
+  },
   "nomos": {
     "inspect": {
       "command": "nomosScore.inspect"

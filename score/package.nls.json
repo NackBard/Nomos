@@ -1,5 +1,6 @@
 {
   "description": "Scores of stability, extensibility, conformance and maintainability, the abstractness and instability of modules, percolation and the key problems of a system, over the Nomos analysis",
+  "untrustedWorkspaces": "Nomos Score shows the analysis of the Nomos core, which works only in a trusted folder.",
   "command.showSystem": "Score: System Dashboard",
   "command.openWindow": "Score: Open in a Separate Window",
   "command.inspect": "Score: Module Dashboard"

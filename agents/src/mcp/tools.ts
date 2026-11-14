@@ -171,8 +171,11 @@ export function callTool(name: string, args: Args, snapshot: () => Snapshot): st
       if (!file) throw new ToolInputError("file is required");
       const root = snapshot().root;
       const full = path.resolve(root, file);
-      if (path.relative(root, full).startsWith("..") || path.isAbsolute(path.relative(root, full))) throw new ToolInputError("file must be under the analyzed root");
+      const outside = (from: string, to: string) => path.relative(from, to).startsWith("..") || path.isAbsolute(path.relative(from, to));
+      if (outside(root, full)) throw new ToolInputError("file must be under the analyzed root");
       if (!fs.existsSync(full)) throw new ToolInputError(`no file ${file}`);
+      // A link inside the root may point outside it (D-069).
+      if (outside(fs.realpathSync(root), fs.realpathSync(full))) throw new ToolInputError("file must be under the analyzed root");
       const lines = fs.readFileSync(full, "utf8").split(/\r?\n/);
       const start = count(args, "startLine", 1);
       const end = Math.min(count(args, "endLine", lines.length), lines.length, start + 1999);

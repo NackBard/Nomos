@@ -5,7 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import { test } from "node:test";
 import { buildRequest } from "../core/agents";
-import { changes, parseUnifiedDiff } from "../core/git";
+import { GitError, changes, parseUnifiedDiff } from "../core/git";
 import type { Facts, Finding, Snapshot } from "../core/model";
 import { changedFunctions, performanceCandidates, allFunctions, timeEstimate } from "../core/select";
 import { flattenSarif, readSnapshot, writeSnapshot } from "../core/snapshot";
@@ -128,6 +128,44 @@ test("the changes scope compares with git, marks changed lines and counts untrac
   assert.match(request.user, /^7\*\|     for y in ys$/m);
   assert.match(request.user, /^6 \|   for x in xs$/m);
   assert.match(request.system, /Only the changed code/);
+});
+
+test("git runs no program named by the repository's config, and a base cannot be an option", () => {
+  const root = temp();
+  const marker = path.join(temp(), "ran").replaceAll("\\", "/");
+  const run = (...args: string[]) => execFileSync("git", args, { cwd: root, stdio: "pipe" });
+  run("init", "-q", "-b", "main");
+  run("config", "user.email", "test@example.com");
+  run("config", "user.name", "test");
+  fs.writeFileSync(path.join(root, "a.x"), "one\n");
+  run("add", ".");
+  run("commit", "-q", "-m", "one");
+  run("config", "core.fsmonitor", `echo > "${marker}"`);
+  // The check means something only if plain git runs the monitor here.
+  run("status", "--porcelain");
+  assert.ok(fs.existsSync(marker), "plain git status runs core.fsmonitor");
+  fs.rmSync(marker);
+
+  fs.writeFileSync(path.join(root, "a.x"), "two\n");
+  assert.deepEqual(changes(root).files, [{ file: "a.x", ranges: [{ start: 1, end: 1 }] }]);
+  assert.ok(!fs.existsSync(marker));
+  assert.throws(() => changes(root, "--output=x"), GitError);
+});
+
+test("nomos_source does not follow a link out of the analyzed root", () => {
+  const root = temp();
+  const outside = temp();
+  fs.writeFileSync(path.join(outside, "secret"), "secret\n");
+  try {
+    fs.symlinkSync(outside, path.join(root, "link"), "junction");
+  } catch {
+    return; // No right to make links here.
+  }
+  writeSnapshot(path.join(root, ".snap"), snapshot(root));
+  const answer = handle({ jsonrpc: "2.0", id: 1, method: "tools/call", params: { name: "nomos_source", arguments: { file: "link/secret" } } },
+    { snapshot: path.join(root, ".snap"), root, locale: "en" }) as any;
+  assert.equal(answer.result.isError, true);
+  assert.match(answer.result.content[0].text, /under the analyzed root/);
 });
 
 test("the MCP server answers initialize, lists tools and prompts, and reports a missing analysis as a tool error", () => {

@@ -42,6 +42,13 @@
     "nomos-mcp": "./out/mcp/server.js"
   },
   "activationEvents": [],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false,
+      "description": "%untrustedWorkspaces%"
+    },
+    "virtualWorkspaces": false
+  },
   "contributes": {
     "chatParticipants": [
       {
