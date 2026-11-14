@@ -1,0 +1,7 @@
+# Анализатор Kotlin
+
+`node run.mjs --fetch` — один раз: jar компилятора Kotlin 2.4.21 из `deps.json` в `lib/` (Maven Central, суммы SHA-1 и SHA-256 проверяются; в auto mode качать просит пользователя через `!`). `node run.mjs manifest | analyze --root …` — собирает классы в `build/` CLI-компилятором из `kotlin-compiler-embeddable` (kotlinc и Gradle не нужны) и запускает на Java 17+: `NOMOS_JAVA`, `JAVA_HOME`, `java` из `PATH`; JRE достаточно. Тесты: `node run.mjs --test` (`test/nomos/kotlin/Tests.kt`, свой каркас). Пакет: `node run.mjs --bundle <папка>` — `nomos-kotlin.jar` с `Class-Path` и три jar компилятора (нужен JDK для `jar`). Решения — D-059.
+
+Разбор — PSI (`KotlinCoreEnvironment`, `KtPsiFactory`) без резолвера компилятора; API окружения — opt-in (`CompilerConfiguration.Internals`, `CoreEnvironmentDeprecation`, `ExperimentalCompilerApi`), `extensionsStorage` обязателен. Код собирается с `-Werror`. Имена и типы выражений — `Resolver.kt` (`refs`, `exprTypes`), граф — `Graph.kt` по `refs`; токены — листья PSI, строковый шаблон — один токен. Тексты правил и практики — `src/nomos/kotlin/rules.json` и `practices.json` из `npm run spec-json` (ресурсы jar); тексты находок — `tx("шаблон spec", …)`, их проверяет тест `templatesAreInSpec`.
+
+Модуль — пакет, `(global)` без `package`. Единицы — типы и функции верхнего уровня; `companion object` — не единица, его члены и члены `object` статические. Все рёбра `runtime`, `: Base(id)` — только `inheritance`. `semantic: false`. Все случаи — `npm run kotlin` в `conformance/runner`.

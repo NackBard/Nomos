@@ -20,11 +20,8 @@ node_modules/
 nomos-report/
 
 # AI assistant context and local agent settings: kept on the developer's machine only
-CLAUDE.md
-CLAUDE.local.md
 .claude/
 .mcp.json
-AGENTS.md
 GEMINI.md
 .cursor/
 .cursorrules
